@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import { ToastProvider } from './context/ToastContext'
 import { FavoritesProvider } from './context/FavoritesContext'
-import { LanguageProvider } from './context/LanguageContext'
+import { LanguageProvider, useLanguage } from './context/LanguageContext'
+import universalTranslator from './utils/universalTranslator'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 // Common Layout & Components
@@ -75,6 +76,20 @@ const RutaProtegida = ({ children }) => {
 
 const AppLayout = () => {
   const location = useLocation()
+  const { idioma } = useLanguage()
+
+  // Traduce automáticamente cada nueva página al navegar cuando el idioma es EN
+  useEffect(() => {
+    if (idioma === 'EN') {
+      universalTranslator.translateTree(document.body)
+      const t1 = setTimeout(() => universalTranslator.translateTree(document.body), 150)
+      const t2 = setTimeout(() => universalTranslator.translateTree(document.body), 500)
+      return () => {
+        clearTimeout(t1)
+        clearTimeout(t2)
+      }
+    }
+  }, [location.pathname, idioma])
   const esRutaPanel =
     location.pathname.startsWith('/admin') ||
     location.pathname.startsWith('/panel-vendedor') ||
