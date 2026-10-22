@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '@/hooks/useCart'
+import { useLanguage } from '@/hooks/useLanguage'
 import CartItem from '@/features/pedidos/components/CartItem'
 import CartSummary from '@/features/pedidos/components/CartSummary'
 import Button from '@/components/common/Button'
@@ -8,21 +9,22 @@ import { ShoppingBag, ArrowLeft, Trash2 } from 'lucide-react'
 
 export const Carrito = () => {
   const { items, limpiarCarrito } = useCart()
+  const { t } = useLanguage()
   const navigate = useNavigate()
 
   if (items.length === 0) {
     return (
-      <div className="py-20 text-center space-y-4">
+      <div className="py-20 text-center space-y-4 font-sans">
         <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center text-slate-400 mx-auto">
           <ShoppingBag size={40} />
         </div>
-        <h2 className="text-xl font-bold text-slate-800 dark:text-white">Tu carrito de compras está vacío</h2>
+        <h2 className="text-xl font-bold text-slate-800 dark:text-white">{t('carrito_vacio')}</h2>
         <p className="text-xs text-slate-500 max-w-sm mx-auto">
-          Encuentra productos increíbles de nuestros proveedores y agrégalos para comprar.
+          {t('carrito_vacio_desc')}
         </p>
         <Link to="/catalogo">
-          <Button variant="primary" size="md" className="mt-4">
-            Explorar el Catálogo
+          <Button variant="primary" size="md" className="mt-4 cursor-pointer">
+            {t('explorar_productos')}
           </Button>
         </Link>
       </div>
@@ -30,18 +32,18 @@ export const Carrito = () => {
   }
 
   return (
-    <div className="space-y-6 pb-20">
+    <div className="space-y-6 pb-20 font-sans">
       <div className="flex justify-between items-center pb-4 border-b border-slate-200 dark:border-slate-800">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white">Carrito de Compras</h1>
-          <p className="text-xs text-slate-500 mt-0.5">{items.length} productos agregados</p>
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white">{t('tu_carrito')}</h1>
+          <p className="text-xs text-slate-500 mt-0.5">{items.length} {t('productos')}</p>
         </div>
         <button
           onClick={limpiarCarrito}
           className="text-xs text-rose-500 hover:underline flex items-center gap-1 cursor-pointer"
         >
           <Trash2 size={13} />
-          <span>Vaciar Carrito</span>
+          <span>{t('vaciar_carrito')}</span>
         </button>
       </div>
 
@@ -54,7 +56,7 @@ export const Carrito = () => {
           <div className="pt-4">
             <Link to="/catalogo" className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:underline">
               <ArrowLeft size={14} />
-              <span>Continuar comprando</span>
+              <span>{t('continuar_comprando')}</span>
             </Link>
           </div>
         </div>

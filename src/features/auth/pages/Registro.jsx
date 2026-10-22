@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/useToast'
+import { useLanguage } from '@/hooks/useLanguage'
 import Input from '@/components/common/Input'
 import Button from '@/components/common/Button'
 import GoogleLoginButton from '../components/GoogleLoginButton'
@@ -28,6 +29,7 @@ export const Registro = () => {
   const [loading, setLoading] = useState(false)
   const { registro, loginGoogle } = useAuth()
   const { success, error, info } = useToast()
+  const { t, idioma } = useLanguage()
   const navigate = useNavigate()
 
   const handleGoogle = async (credential) => {
@@ -36,10 +38,10 @@ export const Registro = () => {
     setLoading(false)
 
     if (res?.exito) {
-      success('¡Cuenta creada con Google! Bienvenido a Mercatto.')
+      success(idioma === 'EN' ? 'Account created with Google! Welcome to Mercatto.' : '¡Cuenta creada con Google! Bienvenido a Mercatto.')
       window.location.replace('/')
     } else {
-      error(res?.mensaje || 'No se pudo continuar con Google')
+      error(res?.mensaje || (idioma === 'EN' ? 'Could not continue with Google' : 'No se pudo continuar con Google'))
     }
   }
 
@@ -50,36 +52,36 @@ export const Registro = () => {
     const emailTrim = email.trim()
 
     if (!nombreTrim) {
-      error('Por favor ingresa tu nombre completo')
+      error(idioma === 'EN' ? 'Please enter your full name' : 'Por favor ingresa tu nombre completo')
       return
     }
 
     if (!emailTrim || !/\S+@\S+\.\S+/.test(emailTrim)) {
-      error('Por favor ingresa un correo electrónico válido')
+      error(idioma === 'EN' ? 'Please enter a valid email address' : 'Por favor ingresa un correo electrónico válido')
       return
     }
 
     if (password.length < 6) {
-      error('La contraseña debe tener al menos 6 caracteres')
+      error(idioma === 'EN' ? 'Password must be at least 6 characters' : 'La contraseña debe tener al menos 6 caracteres')
       return
     }
 
     if (password !== confirmPassword) {
-      error('Las contraseñas no coinciden. Por favor verifícalas.')
+      error(idioma === 'EN' ? 'Passwords do not match' : 'Las contraseñas no coinciden. Por favor verifícalas.')
       return
     }
 
     if (rol === 'VENDEDOR') {
       if (!nombreTienda.trim()) {
-        error('Por favor ingresa el nombre de tu tienda')
+        error(idioma === 'EN' ? 'Please enter your store name' : 'Por favor ingresa el nombre de tu tienda')
         return
       }
       if (!nitCedula.trim()) {
-        error('Por favor ingresa el NIT o Cédula de tu negocio')
+        error(idioma === 'EN' ? 'Please enter your Tax ID / Citizen ID' : 'Por favor ingresa el NIT o Cédula de tu negocio')
         return
       }
       if (!ciudad.trim()) {
-        error('Por favor ingresa la ciudad de tu negocio en Colombia')
+        error(idioma === 'EN' ? 'Please enter your city' : 'Por favor ingresa la ciudad de tu negocio en Colombia')
         return
       }
     }
@@ -99,7 +101,7 @@ export const Registro = () => {
               ciudad: ciudad.trim(),
               tipo: 'PERSONA_NATURAL',
             }
-          : null,
+          : undefined,
     }
 
     const res = await registro(payload)
@@ -107,31 +109,31 @@ export const Registro = () => {
 
     if (res?.exito) {
       if (rol === 'VENDEDOR') {
-        info('¡Solicitud enviada! Tu cuenta de vendedor está en revisión por el administrador.')
-        navigate('/login')
+        success(idioma === 'EN' ? 'Store registered! Check your email to verify your account.' : '¡Tienda registrada! Verifica tu correo o ingresa para comenzar.')
+        navigate('/login?registro=pendiente')
       } else {
-        success('¡Cuenta creada exitosamente! Bienvenido a Mercatto.')
+        success(idioma === 'EN' ? 'Account created successfully! Welcome to Mercatto.' : '¡Cuenta creada con éxito! Bienvenido a Mercatto.')
         window.location.replace('/')
       }
     } else {
-      error(res?.mensaje || 'Error al procesar el registro. Intenta nuevamente.')
+      error(res?.mensaje || (idioma === 'EN' ? 'Error creating account' : 'Error al crear la cuenta'))
     }
   }
 
   return (
-    <div className="max-w-xl mx-auto py-12 px-4">
-      <div className="bg-white dark:bg-slate-900 p-8 sm:p-10 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xl shadow-violet-500/5 space-y-6">
+    <div className="min-h-[80vh] flex items-center justify-center py-10 px-4 font-sans">
+      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-xl space-y-6">
         
-        {/* Cabecera Oficial Mercatto con el logo estilizado */}
+        {/* Header con Marca y Tipografía Coherente */}
         <div className="text-center space-y-2">
-          <Link to="/" className="inline-flex justify-center transition-transform hover:scale-105" title="Volver al inicio">
-            <MercattoLogo className="text-3xl sm:text-4xl" />
-          </Link>
+          <div className="flex justify-center mb-2">
+            <MercattoLogo size={36} showSlogan={true} />
+          </div>
           <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-            Crear una Cuenta
+            {t('crear_cuenta_mercatto')}
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-            Únete a Mercatto como comprador o como proveedor/vendedor oficial
+            {t('registro_sub')}
           </p>
         </div>
 
@@ -147,7 +149,7 @@ export const Registro = () => {
             }`}
           >
             <User size={15} />
-            <span>Soy Comprador</span>
+            <span>{t('quiero_comprar')}</span>
           </button>
 
           <button
@@ -160,14 +162,14 @@ export const Registro = () => {
             }`}
           >
             <Store size={15} />
-            <span>Soy Proveedor / Vendedor</span>
+            <span>{t('quiero_vender')}</span>
           </button>
         </div>
 
         {/* Formulario de Registro con validaciones completas */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
-            label="Nombre Completo o Titular"
+            label={t('nombre_completo')}
             placeholder="Ej: Fernando Barboza"
             icon={User}
             value={nombre}
@@ -177,9 +179,9 @@ export const Registro = () => {
           />
 
           <Input
-            label="Correo Electrónico"
+            label={t('correo_electronico')}
             type="email"
-            placeholder="ejemplo@mercatto.com"
+            placeholder={t('correo_placeholder')}
             icon={Mail}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -189,7 +191,7 @@ export const Registro = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Input
-              label="Contraseña"
+              label={t('contrasena')}
               type={showPassword ? 'text' : 'password'}
               placeholder="Mínimo 6 caracteres"
               icon={Lock}
@@ -211,7 +213,7 @@ export const Registro = () => {
             />
 
             <Input
-              label="Confirmar Contraseña"
+              label={t('confirmar_contrasena')}
               type={showConfirmPassword ? 'text' : 'password'}
               placeholder="Repite la contraseña"
               icon={Lock}
@@ -238,11 +240,11 @@ export const Registro = () => {
             <div className="p-4 sm:p-5 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 space-y-3.5">
               <div className="flex items-center gap-2 text-xs font-bold text-amber-900 dark:text-amber-300">
                 <Store size={15} />
-                <span>Datos del Negocio / Tienda Oficial</span>
+                <span>{idioma === 'EN' ? 'Store & Business Information' : 'Datos del Negocio / Tienda Oficial'}</span>
               </div>
 
               <Input
-                label="Nombre de tu Tienda Virtual"
+                label={idioma === 'EN' ? 'Store Name' : 'Nombre de tu Tienda Virtual'}
                 placeholder="Ej: Alien Tech Colombia"
                 icon={Store}
                 value={nombreTienda}
@@ -252,7 +254,7 @@ export const Registro = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Input
-                  label="NIT o Cédula"
+                  label={idioma === 'EN' ? 'Tax ID / National ID' : 'NIT o Cédula'}
                   placeholder="Ej: 900.123.456-7"
                   icon={Building}
                   value={nitCedula}
@@ -260,7 +262,7 @@ export const Registro = () => {
                   required
                 />
                 <Input
-                  label="Ciudad en Colombia"
+                  label={idioma === 'EN' ? 'City in Colombia' : 'Ciudad en Colombia'}
                   placeholder="Ej: Bogotá, Medellín, Cali"
                   icon={MapPin}
                   value={ciudad}
@@ -275,14 +277,16 @@ export const Registro = () => {
             type="submit" 
             variant="primary" 
             size="lg" 
-            className={`w-full font-bold shadow-lg mt-2 ${
+            className={`w-full font-bold shadow-lg mt-2 cursor-pointer ${
               rol === 'VENDEDOR'
                 ? 'bg-amber-600 hover:bg-amber-700 text-white shadow-amber-600/25'
                 : 'bg-violet-600 hover:bg-violet-700 text-white shadow-violet-600/25'
             }`} 
             loading={loading}
           >
-            {rol === 'VENDEDOR' ? 'Enviar Solicitud de Tienda' : 'Crear Cuenta en Mercatto'}
+            {rol === 'VENDEDOR' 
+              ? (idioma === 'EN' ? 'Submit Store Application' : 'Enviar Solicitud de Tienda') 
+              : t('crear_cuenta_mercatto')}
           </Button>
         </form>
 
@@ -290,7 +294,7 @@ export const Registro = () => {
           <>
             <div className="flex items-center gap-3">
               <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
-              <span className="text-xs text-slate-400 font-medium">o regístrate con</span>
+              <span className="text-xs text-slate-400 font-medium">{t('o_continua_con')}</span>
               <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
             </div>
             <GoogleLoginButton onCredential={handleGoogle} texto="signup_with" />
@@ -298,9 +302,9 @@ export const Registro = () => {
         )}
 
         <div className="text-center pt-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
-          ¿Ya tienes una cuenta registrada?{' '}
+          {t('ya_tienes_cuenta')}{' '}
           <Link to="/login" className="font-bold text-violet-600 dark:text-violet-400 hover:underline">
-            Inicia sesión aquí
+            {t('iniciar_sesion')}
           </Link>
         </div>
 

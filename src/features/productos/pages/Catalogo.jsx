@@ -5,6 +5,7 @@ import ProductGrid from '../components/ProductGrid'
 import ProductFilters from '../components/ProductFilters'
 import Pagination from '@/components/common/Pagination'
 import ModalContactoVendedor from '../components/ModalContactoVendedor'
+import { useLanguage } from '@/hooks/useLanguage'
 
 export const Catalogo = () => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -12,6 +13,7 @@ export const Catalogo = () => {
   const [totalPages, setTotalPages] = useState(0)
   const [loading, setLoading] = useState(true)
   const [productoContacto, setProductoContacto] = useState(null)
+  const { t } = useLanguage()
 
   const categoriaId = searchParams.get('categoriaId') || null
   const marca = searchParams.get('marca') || ''
@@ -97,12 +99,12 @@ export const Catalogo = () => {
   }
 
   return (
-    <div className="space-y-6 pb-16">
+    <div className="space-y-6 pb-16 font-sans">
       <div>
         <h1 className="text-2xl font-black text-slate-900 dark:text-white">
-          {termino ? `Resultados para: "${termino}"` : 'Catálogo de Productos'}
+          {termino ? `${t('resultados_para')}: "${termino}"` : t('catalogo_de_productos')}
         </h1>
-        <p className="text-xs text-slate-500 mt-1">Explora productos publicados por tiendas y proveedores verificados</p>
+        <p className="text-xs text-slate-500 mt-1">{t('explora_productos_publicados')}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">

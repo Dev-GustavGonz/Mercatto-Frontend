@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useCart } from '@/hooks/useCart'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/useToast'
+import { useLanguage } from '@/hooks/useLanguage'
 import AddressForm from '../components/AddressForm'
 import PaymentForm from '../components/PaymentForm'
 import CartSummary from '../components/CartSummary'
@@ -16,6 +17,7 @@ export const Checkout = () => {
   const { items, cupon, limpiarCarrito, total } = useCart()
   const { autenticado, usuario } = useAuth()
   const { error: toastError } = useToast()
+  const { t, idioma } = useLanguage()
   const navigate = useNavigate()
 
   const STORAGE_KEY_CHECKOUT = 'mercatto_checkout_draft'
@@ -91,134 +93,127 @@ export const Checkout = () => {
     // 1. Validaciones estrictas
     if (!autenticado) {
       if (!emailInvitado.trim()) {
-        toastError('Por favor ingresa tu correo electrónico para enviarte la factura y confirmación.')
+        toastError(idioma === 'EN' ? 'Please enter your email to receive invoice and tracking.' : 'Por favor ingresa tu correo electrónico para enviarte la factura y confirmación.')
         return
       }
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       if (!emailRegex.test(emailInvitado.trim())) {
-        toastError('El correo electrónico ingresado no tiene un formato válido (ejemplo: usuario@correo.com).')
+        toastError(idioma === 'EN' ? 'Invalid email format' : 'El correo electrónico ingresado no tiene un formato válido (ejemplo: usuario@correo.com).')
         return
       }
     }
 
-    if (!direccion.nombreCompleto?.trim()) {
-      toastError('Por favor ingresa el nombre de quien recibirá el pedido.')
+    if (!direccion.nombreCompleto.trim()) {
+      toastError(idioma === 'EN' ? 'Please enter recipient name' : 'Por favor ingresa el nombre de quien recibe el pedido.')
       return
     }
 
-    if (!direccion.telefono?.trim() || direccion.telefono.trim().length < 7) {
-      toastError('Por favor ingresa un número de teléfono válido para la transportadora.')
+    const telLimpio = direccion.telefono.replace(/\D/g, '')
+    if (!telLimpio || telLimpio.length < 7 || telLimpio.length > 10) {
+      toastError(idioma === 'EN' ? 'Valid Colombian phone number required (7-10 digits)' : 'El teléfono de contacto debe tener entre 7 y 10 dígitos numéricos en Colombia.')
       return
     }
 
-    if (!direccion.direccion?.trim()) {
-      toastError('Por favor ingresa la dirección exacta de entrega.')
+    if (!direccion.direccion.trim() || direccion.direccion.trim().length < 5) {
+      toastError(idioma === 'EN' ? 'Full street address required' : 'Por favor ingresa una dirección de entrega completa (calle, carrera, número, interior/apto).')
       return
     }
 
-    if (!direccion.ciudad?.trim() || !direccion.departamento?.trim()) {
-      toastError('Por favor especifica la ciudad y departamento de entrega.')
+    if (!direccion.ciudad.trim()) {
+      toastError(idioma === 'EN' ? 'Destination city required' : 'Por favor especifica la ciudad de destino en Colombia.')
+      return
+    }
+
+    if (!direccion.departamento.trim()) {
+      toastError(idioma === 'EN' ? 'Department required' : 'Por favor selecciona el departamento de entrega.')
       return
     }
 
     setLoading(true)
+
     try {
-      // 2. Construir payload del pedido
-      const pedidoPayload = {
-        nuevaDireccion: direccion,
-        cuponCodigo: cupon?.codigo || null,
-        metodoPago,
-        emailInvitado: !autenticado ? emailInvitado.trim() : null,
-        nombreInvitado: !autenticado ? direccion.nombreCompleto.trim() : null,
-        telefonoInvitado: !autenticado ? direccion.telefono.trim() : null,
-        items: items.map((i) => ({
-          productoId: i.producto.id,
-          varianteId: i.variante?.id || null,
-          cantidad: i.cantidad,
-        })),
-      }
+      const itemsPayload = items.map((i) => ({
+        productoId: i.producto.id,
+        varianteId: i.variante?.id || null,
+        cantidad: i.cantidad,
+      }))
 
-      // 3. Crear pedido según modo (autenticado o invitado)
-      const pedidoRes = autenticado
-        ? await pedidoService.crearPedido(pedidoPayload)
-        : await pedidoService.crearPedidoInvitado(pedidoPayload)
+      let pedidoRes
 
-      // 4. Iniciar Pasarela de Pago
-      const pagoRes = autenticado
-        ? await pagoService.iniciarPago(pedidoRes.id, metodoPago)
-        : await pagoService.iniciarPagoInvitado(pedidoRes.id, metodoPago)
-
-      // 5. Manejar según método de pago
-      if (metodoPago === 'WOMPI') {
-        if (window.WidgetCheckout && pagoRes.publicKey) {
-          try {
-            const checkout = new window.WidgetCheckout({
-              currency: pagoRes.currency || 'COP',
-              amountInCents: pagoRes.amountInCents,
-              reference: pagoRes.reference,
-              publicKey: pagoRes.publicKey,
-              signature: { integrity: pagoRes.signatureIntegrity },
-              customerData: {
-                email: pagoRes.customerEmail || emailInvitado,
-                fullName: pagoRes.customerFullName || direccion.nombreCompleto,
-                phoneNumber: pagoRes.customerPhoneNumber || direccion.telefono,
-              },
-            })
-
-            checkout.open(async (result) => {
-              const transaction = result.transaction
-              if (transaction?.status === 'APPROVED') {
-                if (autenticado) {
-                  await pagoService.confirmarPago(pedidoRes.id, transaction.id)
-                } else {
-                  await pagoService.confirmarPagoInvitado(pedidoRes.id, transaction.id)
-                }
-                limpiarCarrito()
-                limpiarBorradorCheckout()
-                setPedidoCreado({ ...pedidoRes, metodoPago: 'Tarjeta de Crédito / Débito', total, transaccionId: transaction.id })
-              } else if (transaction?.status === 'DECLINED' || transaction?.status === 'ERROR') {
-                toastError('El pago fue rechazado por la entidad bancaria. Por favor intenta con otro medio.')
-              }
-            })
-          } catch (widgetErr) {
-            console.error('Wompi Widget error:', widgetErr)
-            toastError('No se pudo abrir la pasarela de pago segura de Wompi. Por favor verifica si tienes extensiones o bloqueadores de anuncios activos e intenta nuevamente.')
-          }
-        } else {
-          // Si el script de pasarela está bloqueado por adblocker o no cargó
-          toastError('El componente de pagos seguros no pudo cargarse en tu navegador (posible bloqueo por extensiones de seguridad o adblockers). Por favor recarga la página o selecciona otro medio de pago.')
-        }
-      } else if (metodoPago === 'CONTRA_ENTREGA') {
-        limpiarCarrito()
-        limpiarBorradorCheckout()
-        setPedidoCreado({
-          ...pedidoRes,
-          metodoPago: 'Pago Contra Entrega',
-          total,
-          instrucciones: pagoRes.instrucciones,
+      if (autenticado) {
+        pedidoRes = await pedidoService.crear({
+          items: itemsPayload,
+          direccionEntrega: {
+            nombre: direccion.nombreCompleto.trim(),
+            telefono: telLimpio,
+            direccion: direccion.direccion.trim(),
+            barrio: direccion.barrio.trim() || 'Principal',
+            ciudad: direccion.ciudad.trim(),
+            departamento: direccion.departamento.trim(),
+            pais: 'Colombia',
+            notas: direccion.notasEntrega.trim(),
+          },
+          metodoPago,
+          codigoCupon: cupon?.codigo || null,
         })
       } else {
-        if (autenticado) {
-          await pagoService.confirmarPago(pedidoRes.id, pagoRes.referencia || 'TX-SUCCESS-MOCK')
-        } else {
-          await pagoService.confirmarPagoInvitado(pedidoRes.id, pagoRes.referencia || 'TX-SUCCESS-MOCK')
-        }
-        limpiarCarrito()
-        limpiarBorradorCheckout()
-        setPedidoCreado({ ...pedidoRes, metodoPago, total })
+        pedidoRes = await pedidoService.crearInvitado({
+          email: emailInvitado.trim(),
+          nombre: direccion.nombreCompleto.trim(),
+          telefono: telLimpio,
+          items: itemsPayload,
+          direccionEntrega: {
+            nombre: direccion.nombreCompleto.trim(),
+            telefono: telLimpio,
+            direccion: direccion.direccion.trim(),
+            barrio: direccion.barrio.trim() || 'Principal',
+            ciudad: direccion.ciudad.trim(),
+            departamento: direccion.departamento.trim(),
+            pais: 'Colombia',
+            notas: direccion.notasEntrega.trim(),
+          },
+          metodoPago,
+          codigoCupon: cupon?.codigo || null,
+        })
       }
+
+      const pagoPayload = {
+        pedidoId: pedidoRes.id,
+        metodoPago,
+        email: autenticado ? usuario?.email : emailInvitado.trim(),
+      }
+
+      let pagoRes
+      if (autenticado) {
+        pagoRes = await pagoService.iniciar(pagoPayload)
+      } else {
+        pagoRes = await pagoService.iniciarInvitado(pagoPayload)
+      }
+
+      if (metodoPago === 'WOMPI') {
+        const checkoutUrl = pagoRes.urlCheckout || pagoRes.checkoutUrl || pagoRes.data?.urlCheckout
+        if (checkoutUrl) {
+          limpiarBorradorCheckout()
+          window.location.href = checkoutUrl
+          return
+        }
+      }
+
+      limpiarCarrito()
+      limpiarBorradorCheckout()
+      setPedidoCreado({ ...pedidoRes, metodoPago, total })
     } catch (err) {
-      toastError(err.response?.data?.message || err.response?.data?.mensaje || 'Error al procesar la compra')
+      toastError(err.response?.data?.message || err.response?.data?.mensaje || (idioma === 'EN' ? 'Error processing purchase' : 'Error al procesar la compra'))
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="space-y-8 pb-20 max-w-6xl mx-auto">
+    <div className="space-y-8 pb-20 max-w-6xl mx-auto font-sans">
       <div className="flex items-center gap-3 pb-4 border-b border-slate-200 dark:border-slate-800">
         <Lock size={20} className="text-emerald-600" />
-        <h1 className="text-2xl font-black text-slate-900 dark:text-white">Checkout Seguro</h1>
+        <h1 className="text-2xl font-black text-slate-900 dark:text-white">{t('checkout_titulo')}</h1>
       </div>
 
       <form onSubmit={handleProcesarCompra} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -232,10 +227,10 @@ export const Checkout = () => {
                 <div>
                   <h3 className="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    Compra Rápida sin Registro
+                    {idioma === 'EN' ? 'Fast Checkout without Account' : 'Compra Rápida sin Registro'}
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Solo ingresa tu correo para enviarte el recibo y la guía de tu paquete.
+                    {idioma === 'EN' ? 'Enter your email for the invoice and tracking link.' : 'Solo ingresa tu correo para enviarte el recibo y la guía de tu paquete.'}
                   </p>
                 </div>
                 <button
@@ -243,17 +238,17 @@ export const Checkout = () => {
                   onClick={() => navigate('/login?redirect=/checkout')}
                   className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 cursor-pointer"
                 >
-                  <span>¿Ya tienes cuenta? Inicia sesión</span>
+                  <span>{t('ya_tienes_cuenta')} {t('iniciar_sesion')}</span>
                 </button>
               </div>
 
               <div>
                 <label className="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1.5">
-                  Correo Electrónico para Factura y Rastreo *
+                  {t('correo_electronico')} *
                 </label>
                 <input
                   type="email"
-                  placeholder="ejemplo@correo.com"
+                  placeholder={t('correo_placeholder')}
                   value={emailInvitado}
                   onChange={(e) => setEmailInvitado(e.target.value)}
                   className="w-full text-sm px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none text-slate-900 dark:text-white shadow-xs"
@@ -264,7 +259,7 @@ export const Checkout = () => {
           ) : (
             <div className="bg-emerald-50 dark:bg-emerald-950/30 p-4 rounded-2xl border border-emerald-200 dark:border-emerald-800/50 flex items-center justify-between text-xs">
               <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 font-semibold">
-                <span>Comprando como:</span>
+                <span>{idioma === 'EN' ? 'Ordering as:' : 'Comprando como:'}</span>
                 <strong className="font-bold">{usuario?.nombre || usuario?.email}</strong>
                 <span className="text-[11px] opacity-75">({usuario?.email})</span>
               </div>
@@ -275,7 +270,7 @@ export const Checkout = () => {
           <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
             <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800 font-bold text-slate-800 dark:text-white text-sm">
               <MapPin size={18} className="text-indigo-600" />
-              <span>1. Dirección de Entrega</span>
+              <span>1. {t('direccion_entrega')}</span>
             </div>
             <AddressForm direccion={direccion} onChange={setDireccion} />
           </div>
@@ -284,7 +279,7 @@ export const Checkout = () => {
           <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
             <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800 font-bold text-slate-800 dark:text-white text-sm">
               <CreditCard size={18} className="text-indigo-600" />
-              <span>2. Método de Pago</span>
+              <span>2. {t('metodo_pago')}</span>
             </div>
             <PaymentForm metodoSeleccionado={metodoPago} onSelectMetodo={setMetodoPago} />
           </div>
@@ -294,11 +289,11 @@ export const Checkout = () => {
             type="submit"
             variant="primary"
             size="lg"
-            className="w-full text-base font-extrabold shadow-xl"
+            className="w-full text-base font-extrabold shadow-xl cursor-pointer"
             loading={loading}
           >
             <ShieldCheck size={20} className="mr-2" />
-            <span>Confirmar y Pagar Pedido</span>
+            <span>{t('confirmar_pedido')}</span>
           </Button>
         </div>
 

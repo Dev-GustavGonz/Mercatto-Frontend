@@ -5,11 +5,13 @@ import { formatCurrency } from '@/utils/formatCurrency'
 import { ESTADOS_PEDIDO } from '@/utils/constants'
 import Spinner from '@/components/common/Spinner'
 import EmptyState from '@/components/common/EmptyState'
+import { useLanguage } from '@/hooks/useLanguage'
 import { Package, Truck, Calendar } from 'lucide-react'
 
 export const MisPedidos = () => {
   const [pedidos, setPedidos] = useState([])
   const [loading, setLoading] = useState(true)
+  const { t, idioma } = useLanguage()
 
   useEffect(() => {
     pedidoService
@@ -27,19 +29,19 @@ export const MisPedidos = () => {
     return (
       <EmptyState
         icon={Package}
-        title="Aún no tienes pedidos registrados"
-        description="Explora nuestro catálogo y haz tu primer pedido con pago seguro."
-        actionLabel="Ir al Catálogo"
+        title={idioma === 'EN' ? 'No orders registered yet' : 'Aún no tienes pedidos registrados'}
+        description={idioma === 'EN' ? 'Explore our catalog and place your first order with secure payment.' : 'Explora nuestro catálogo y haz tu primer pedido con pago seguro.'}
+        actionLabel={t('ver_todo_catalogo')}
         onAction={() => window.location.href = '/catalogo'}
       />
     )
   }
 
   return (
-    <div className="space-y-6 pb-20 max-w-4xl mx-auto">
+    <div className="space-y-6 pb-20 max-w-4xl mx-auto font-sans">
       <div>
-        <h1 className="text-2xl font-black text-slate-900 dark:text-white">Mis Pedidos</h1>
-        <p className="text-xs text-slate-500 mt-1">Historial de compras y estado de envíos</p>
+        <h1 className="text-2xl font-black text-slate-900 dark:text-white">{t('mis_pedidos')}</h1>
+        <p className="text-xs text-slate-500 mt-1">{idioma === 'EN' ? 'Purchase history and delivery tracking' : 'Historial de compras y estado de envíos'}</p>
       </div>
 
       <div className="space-y-4">
@@ -54,13 +56,13 @@ export const MisPedidos = () => {
               {/* Header */}
               <div className="flex flex-wrap justify-between items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
                 <div>
-                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Código de Orden</span>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{idioma === 'EN' ? 'Order Code' : 'Código de Orden'}</span>
                   <p className="text-sm font-extrabold text-slate-900 dark:text-white">{p.codigo}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-slate-400 flex items-center gap-1">
                     <Calendar size={13} />
-                    {p.fechaCreacion ? new Date(p.fechaCreacion).toLocaleDateString('es-CO') : '-'}
+                    {p.fechaCreacion ? new Date(p.fechaCreacion).toLocaleDateString(idioma === 'EN' ? 'en-US' : 'es-CO') : '-'}
                   </span>
                   <span className="px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 dark:bg-indigo-950/50 dark:text-indigo-300">
                     {infoEstado.label}
@@ -86,7 +88,7 @@ export const MisPedidos = () => {
                           <p className="text-[11px] text-slate-400">{item.nombreVariante}</p>
                         )}
                         <p className="text-[11px] text-slate-500">
-                          Vendido por: <span className="font-semibold text-slate-700 dark:text-slate-300">{item.nombreTienda}</span>
+                          {t('vendido_por')}: <span className="font-semibold text-slate-700 dark:text-slate-300">{item.nombreTienda}</span>
                         </p>
                       </div>
                     </div>
@@ -97,7 +99,7 @@ export const MisPedidos = () => {
                         to={`/producto/${item.productoId}#reviews`}
                         className="inline-block text-[11px] font-bold text-amber-600 dark:text-amber-400 hover:underline pt-1"
                       >
-                        ⭐ Calificar Producto
+                        ⭐ {idioma === 'EN' ? 'Rate Product' : 'Calificar Producto'}
                       </Link>
                     </div>
                   </div>
@@ -109,16 +111,16 @@ export const MisPedidos = () => {
                 <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800 flex items-center gap-2 text-xs text-purple-900 dark:text-purple-300">
                   <Truck size={16} />
                   <span>
-                    Despachado por <strong>{p.empresaEnvio || 'Transportadora'}</strong> — Número de Guía: <strong>{p.guiaSeguimiento}</strong>
+                    {idioma === 'EN' ? 'Dispatched via' : 'Despachado por'} <strong>{p.empresaEnvio || 'Transportadora'}</strong> — {idioma === 'EN' ? 'Tracking Number' : 'Número de Guía'}: <strong>{p.guiaSeguimiento}</strong>
                   </span>
                 </div>
               )}
 
               {/* Footer Total */}
               <div className="flex justify-between items-center pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
-                <span className="text-slate-500">Método de pago: <strong className="text-slate-700 dark:text-slate-300">{p.metodoPago || 'STRIPE'}</strong></span>
+                <span className="text-slate-500">{t('metodo_pago')}: <strong className="text-slate-700 dark:text-slate-300">{p.metodoPago || 'WOMPI'}</strong></span>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-slate-500">Total pagado:</span>
+                  <span className="text-slate-500">{idioma === 'EN' ? 'Total paid:' : 'Total pagado:'}</span>
                   <span className="text-base font-black text-indigo-600 dark:text-indigo-400">{formatCurrency(p.total)}</span>
                 </div>
               </div>

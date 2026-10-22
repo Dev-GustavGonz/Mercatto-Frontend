@@ -1,11 +1,12 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { ShieldCheck, Truck, RefreshCw, Headphones, Settings } from 'lucide-react'
+import { ShieldCheck, Truck, RefreshCw, Headphones } from 'lucide-react'
 import { useLanguage } from '@/hooks/useLanguage'
 import MercattoLogo from '@/components/common/MercattoLogo'
 
 export const Footer = () => {
   const { idioma, t } = useLanguage()
+  const isEn = idioma === 'EN'
   const location = useLocation()
 
   // Ocultar footer en las rutas de paneles de administración y vendedor
@@ -29,7 +30,7 @@ export const Footer = () => {
               </div>
               <div>
                 <h4 className="text-sm font-bold text-white">{t('envios_colombia')}</h4>
-                <p className="text-xs text-slate-400">{idioma === 'EN' ? 'Free from $150.000 COP' : 'Gratis desde $150.000'}</p>
+                <p className="text-xs text-slate-400">{isEn ? 'Free from $150.000 COP' : 'Gratis desde $150.000'}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 bg-slate-800/40 p-4 rounded-2xl border border-slate-700/50 hover:border-slate-600 transition-colors">
@@ -38,7 +39,7 @@ export const Footer = () => {
               </div>
               <div>
                 <h4 className="text-sm font-bold text-white">{t('compra_segura')}</h4>
-                <p className="text-xs text-slate-400">{idioma === 'EN' ? 'Encrypted & protected checkout' : 'Pasarela cifrada y protegida'}</p>
+                <p className="text-xs text-slate-400">{isEn ? 'Encrypted & protected checkout' : 'Pasarela cifrada y protegida'}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 bg-slate-800/40 p-4 rounded-2xl border border-slate-700/50 hover:border-slate-600 transition-colors">
@@ -46,8 +47,8 @@ export const Footer = () => {
                 <RefreshCw size={24} />
               </div>
               <div>
-                <h4 className="text-sm font-bold text-white">{idioma === 'EN' ? 'Warranty & Returns' : 'Garantía y Devolución'}</h4>
-                <p className="text-xs text-slate-400">{idioma === 'EN' ? 'Direct store resolution' : 'Soporte directo con vendedores'}</p>
+                <h4 className="text-sm font-bold text-white">{isEn ? 'Warranty & Returns' : 'Garantía y Devolución'}</h4>
+                <p className="text-xs text-slate-400">{isEn ? 'Direct store resolution' : 'Soporte directo con vendedores'}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 bg-slate-800/40 p-4 rounded-2xl border border-slate-700/50 hover:border-slate-600 transition-colors">
@@ -56,7 +57,7 @@ export const Footer = () => {
               </div>
               <div>
                 <h4 className="text-sm font-bold text-white">{t('atencion_cliente')}</h4>
-                <p className="text-xs text-slate-400">{idioma === 'EN' ? 'Official WhatsApp & tickets' : 'Habla directo con soporte'}</p>
+                <p className="text-xs text-slate-400">{isEn ? 'Official WhatsApp & tickets' : 'Habla directo con soporte'}</p>
               </div>
             </div>
           </div>
@@ -70,41 +71,43 @@ export const Footer = () => {
               <MercattoLogo className="text-3xl text-violet-400" />
             </Link>
             <p className="text-sm text-slate-400 leading-relaxed pr-4">
-              La plataforma que une compradores y proveedores directamente. Compra con seguridad y comunícate sin intermediarios.
+              {isEn 
+                ? 'The direct platform connecting buyers and suppliers across Colombia. Buy securely and communicate without intermediaries.' 
+                : 'La plataforma que une compradores y proveedores directamente. Compra con seguridad y comunícate sin intermediarios.'}
             </p>
           </div>
           <div>
-            <h4 className="text-sm font-bold text-white mb-4">Comprar</h4>
+            <h4 className="text-sm font-bold text-white mb-4">{isEn ? 'Shop' : 'Comprar'}</h4>
             <ul className="space-y-3 text-sm">
-              <li><Link to="/catalogo" className="text-slate-400 hover:text-mercatto-accent transition-colors">Explorar Catálogo</Link></li>
-              <li><Link to="/catalogo?orden=ofertas" className="text-slate-400 hover:text-mercatto-accent transition-colors">Ofertas Especiales</Link></li>
-              <li><Link to="/favoritos" className="text-slate-400 hover:text-mercatto-accent transition-colors">Lista de Deseos</Link></li>
-              <li><Link to="/rastreo" className="text-violet-400 font-semibold hover:text-white transition-colors">Rastrear mi Pedido</Link></li>
+              <li><Link to="/catalogo" className="text-slate-400 hover:text-mercatto-accent transition-colors">{t('todo_catalogo')}</Link></li>
+              <li><Link to="/catalogo?orden=ventas" className="text-slate-400 hover:text-mercatto-accent transition-colors">{t('mas_vendidos')}</Link></li>
+              <li><Link to="/favoritos" className="text-slate-400 hover:text-mercatto-accent transition-colors">{t('mis_favoritos')}</Link></li>
+              <li><Link to="/rastreo" className="text-violet-400 font-semibold hover:text-white transition-colors">{isEn ? 'Track Order' : 'Rastrear mi Pedido'}</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="text-sm font-bold text-white mb-4">Vendedores</h4>
+            <h4 className="text-sm font-bold text-white mb-4">{isEn ? 'Sellers' : 'Vendedores'}</h4>
             <ul className="space-y-3 text-sm">
-              <li><Link to="/registro?rol=VENDEDOR" className="text-slate-400 hover:text-mercatto-accent transition-colors">Crear Tienda Virtual</Link></li>
-              <li><Link to="/vendedor" className="text-slate-400 hover:text-mercatto-accent transition-colors">Panel de Vendedor</Link></li>
-              <li><Link to="/login" className="text-slate-400 hover:text-mercatto-accent transition-colors">Acceso Proveedores</Link></li>
+              <li><Link to="/registro?rol=VENDEDOR" className="text-slate-400 hover:text-mercatto-accent transition-colors">{isEn ? 'Open Virtual Store' : 'Crear Tienda Virtual'}</Link></li>
+              <li><Link to="/vendedor" className="text-slate-400 hover:text-mercatto-accent transition-colors">{t('panel_vendedor')}</Link></li>
+              <li><Link to="/login" className="text-slate-400 hover:text-mercatto-accent transition-colors">{isEn ? 'Supplier Access' : 'Acceso Proveedores'}</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="text-sm font-bold text-white mb-4">Soporte</h4>
+            <h4 className="text-sm font-bold text-white mb-4">{t('contacto')}</h4>
             <ul className="space-y-3 text-sm">
               <li><span className="text-slate-400">soporte@mercatto.com</span></li>
-              <li><span className="text-slate-400">+57 (300) 123-4567</span></li>
-              <li><span className="text-slate-400">Lunes a Sábado: 8am - 6pm</span></li>
+              <li><span className="text-slate-400">+57 (323) 388-2717</span></li>
+              <li><span className="text-slate-400">{isEn ? 'Mon - Sat: 8am - 6pm' : 'Lunes a Sábado: 8am - 6pm'}</span></li>
             </ul>
           </div>
         </div>
 
         <div className="pt-8 border-t border-slate-800 text-center text-sm text-slate-500 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p>© {new Date().getFullYear()} Mercatto Marketplace. Todos los derechos reservados.</p>
+          <p>© {new Date().getFullYear()} Mercatto Marketplace. {t('derechos_reservados')}.</p>
           <div className="flex gap-4">
-            <Link to="/privacidad" className="hover:text-violet-400 transition-colors">Política de Privacidad</Link>
-            <Link to="/terminos" className="hover:text-violet-400 transition-colors">Términos y Condiciones</Link>
+            <Link to="/privacidad" className="hover:text-violet-400 transition-colors">{isEn ? 'Privacy Policy' : 'Política de Privacidad'}</Link>
+            <Link to="/terminos" className="hover:text-violet-400 transition-colors">{isEn ? 'Terms & Conditions' : 'Términos y Condiciones'}</Link>
           </div>
         </div>
       </div>

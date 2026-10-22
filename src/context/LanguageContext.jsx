@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import i18n from '@/i18n'
-import { universalTranslator } from '@/utils/universalTranslator'
+import { translations } from '@/utils/translations'
 
 const LanguageContext = createContext(null)
 
@@ -10,13 +10,12 @@ export const LanguageProvider = ({ children }) => {
   })
 
   useEffect(() => {
-    localStorage.setItem('mercatto_idioma', idioma)
-    document.documentElement.lang = idioma
-    if (i18n.language !== idioma) {
-      i18n.changeLanguage(idioma)
+    const lang = (idioma || 'es').toLowerCase()
+    localStorage.setItem('mercatto_idioma', lang)
+    document.documentElement.lang = lang
+    if (i18n.language !== lang) {
+      i18n.changeLanguage(lang)
     }
-    universalTranslator.init(idioma)
-    universalTranslator.setLanguage(idioma)
   }, [idioma])
 
   const cambiarIdioma = (nuevoIdioma) => {
@@ -25,12 +24,27 @@ export const LanguageProvider = ({ children }) => {
     localStorage.setItem('mercatto_idioma', lang)
     document.documentElement.lang = lang
     i18n.changeLanguage(lang)
-    universalTranslator.setLanguage(lang)
   }
 
   const t = (clave, params) => {
+    if (!clave) return ''
+    const currentLang = (idioma || 'es').toLowerCase()
+    
+    // 1. Intento por i18next directo
     const translated = i18n.t(clave, params)
-    return translated || clave
+    if (translated && translated !== clave) {
+      return translated
+    }
+
+    // 2. Búsqueda en el diccionario estructurado de translations.js
+    const dict = translations[currentLang] || {}
+    if (dict[clave]) return dict[clave]
+
+    // 3. Fallback con clave normalizada (minúsculas y sin espacios laterales)
+    const normalized = String(clave).trim().toLowerCase()
+    if (dict[normalized]) return dict[normalized]
+
+    return clave
   }
 
   return (

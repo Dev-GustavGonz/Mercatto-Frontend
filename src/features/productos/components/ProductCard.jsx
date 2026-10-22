@@ -4,6 +4,7 @@ import { useCart } from '@/hooks/useCart'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/useToast'
 import { useFavorites } from '@/hooks/useFavorites'
+import { useLanguage } from '@/hooks/useLanguage'
 import { productoService } from '@/features/productos'
 import { formatCurrency } from '@/utils/formatCurrency'
 import { resolveProductImage } from '@/utils/productUtils'
@@ -14,6 +15,7 @@ export const ProductCard = ({ producto, onContactClick }) => {
   const { autenticado } = useAuth()
   const { success, info } = useToast()
   const { favoriteIds, toggleFavoriteId } = useFavorites()
+  const { t } = useLanguage()
   const navigate = useNavigate()
 
   const esFavorito = favoriteIds.includes(producto.id)
@@ -37,14 +39,14 @@ export const ProductCard = ({ producto, onContactClick }) => {
     e.preventDefault()
     e.stopPropagation()
     if (!autenticado) {
-      info('Inicia sesión para guardar en favoritos')
+      info(t('guardar_favoritos'))
       navigate('/login')
       return
     }
     try {
       const res = await productoService.toggleFavorito(producto.id)
       toggleFavoriteId(producto.id)
-      success(res?.mensaje || 'Favorito actualizado')
+      success(res?.mensaje || t('guardar_favoritos'))
     } catch {
       // Manejo silencioso
     }
@@ -60,7 +62,7 @@ export const ProductCard = ({ producto, onContactClick }) => {
     e.preventDefault()
     e.stopPropagation()
     if (!autenticado) {
-      info('Inicia sesión para consultar al vendedor')
+      info(t('preguntar_vendedor'))
       navigate('/login')
       return
     }
@@ -71,7 +73,7 @@ export const ProductCard = ({ producto, onContactClick }) => {
   return (
     <div 
       onClick={() => navigate(`/producto/${producto.id}`)}
-      className="group bg-white rounded-3xl p-4 transition-all duration-300 flex flex-col relative h-[390px] border border-slate-100 hover:border-violet-200 hover:shadow-xl hover:shadow-violet-500/10 hover:-translate-y-1.5 cursor-pointer select-none"
+      className="group bg-white dark:bg-slate-900 rounded-3xl p-4 transition-all duration-300 flex flex-col relative h-[390px] border border-slate-100 dark:border-slate-800 hover:border-violet-200 hover:shadow-xl hover:shadow-violet-500/10 hover:-translate-y-1.5 cursor-pointer select-none"
     >
       {/* Insignia de descuento real */}
       {tieneDescuentoReal && (
@@ -84,8 +86,8 @@ export const ProductCard = ({ producto, onContactClick }) => {
       {/* Botón de favoritos con efecto pop */}
       <button
         onClick={handleToggleFavorito}
-        className="absolute top-4 right-4 z-10 p-2.5 rounded-full bg-white/90 backdrop-blur-md shadow-sm border border-slate-100 text-slate-400 hover:text-rose-500 hover:scale-115 active:scale-95 transition-all cursor-pointer"
-        title="Guardar en favoritos"
+        className="absolute top-4 right-4 z-10 p-2.5 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-md shadow-sm border border-slate-100 dark:border-slate-700 text-slate-400 hover:text-rose-500 hover:scale-115 active:scale-95 transition-all cursor-pointer"
+        title={t('guardar_favoritos')}
       >
         <Heart 
           size={16} 
@@ -94,7 +96,7 @@ export const ProductCard = ({ producto, onContactClick }) => {
       </button>
 
       {/* Contenedor de Imagen con fondo suave */}
-      <div className="relative h-44 w-full flex items-center justify-center rounded-2xl bg-slate-50/80 p-3 mt-4 overflow-hidden group-hover:bg-violet-50/30 transition-colors">
+      <div className="relative h-44 w-full flex items-center justify-center rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 p-3 mt-4 overflow-hidden group-hover:bg-violet-50/30 transition-colors">
         <img
           src={imagenPrincipal}
           alt={producto.titulo}
@@ -105,7 +107,7 @@ export const ProductCard = ({ producto, onContactClick }) => {
 
       {/* Calificación y Tienda */}
       <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
-        <div className="flex items-center gap-1 font-bold text-slate-800 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-100">
+        <div className="flex items-center gap-1 font-bold text-slate-800 dark:text-slate-200 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded-md border border-amber-100 dark:border-amber-900/50">
           <Star size={12} className="text-amber-500 fill-amber-500" />
           <span>{producto.calificacion != null ? Number(producto.calificacion).toFixed(1) : '5.0'}</span>
         </div>
@@ -116,8 +118,8 @@ export const ProductCard = ({ producto, onContactClick }) => {
               e.stopPropagation()
               navigate(`/tienda/${producto.vendedor.id || producto.vendedor.usuarioId}`)
             }}
-            className="inline-flex items-center gap-1 font-medium text-slate-500 hover:text-violet-600 transition truncate max-w-[140px]"
-            title={`Ver tienda ${producto.vendedor.nombreTienda}`}
+            className="inline-flex items-center gap-1 font-medium text-slate-500 dark:text-slate-400 hover:text-violet-600 transition truncate max-w-[140px]"
+            title={`${t('tienda_oficial')}: ${producto.vendedor.nombreTienda}`}
           >
             <Store size={12} className="shrink-0 text-violet-500" />
             <span className="truncate">{producto.vendedor.nombreTienda}</span>
@@ -128,7 +130,7 @@ export const ProductCard = ({ producto, onContactClick }) => {
       {/* Título de Producto */}
       <div className="mt-2 flex-1">
         <h3 
-          className="text-sm sm:text-base font-bold text-slate-800 line-clamp-2 group-hover:text-violet-600 transition-colors leading-snug"
+          className="text-sm sm:text-base font-bold text-slate-800 dark:text-white line-clamp-2 group-hover:text-violet-600 transition-colors leading-snug"
           title={producto.titulo}
         >
           {producto.titulo}
@@ -136,9 +138,9 @@ export const ProductCard = ({ producto, onContactClick }) => {
       </div>
 
       {/* Precios y Botones de Acción */}
-      <div className="mt-auto pt-3 border-t border-slate-100 flex items-center justify-between">
+      <div className="mt-auto pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
         <div>
-          <div className="text-lg font-black text-slate-900 tracking-tight">
+          <div className="text-lg font-black text-slate-900 dark:text-white tracking-tight">
             {formatCurrency(precioFinal)}
           </div>
           {tieneDescuentoReal && (
@@ -153,8 +155,8 @@ export const ProductCard = ({ producto, onContactClick }) => {
           {onContactClick && (
             <button
               onClick={handleContactarDirecto}
-              className="p-2.5 rounded-full bg-slate-50 hover:bg-violet-50 text-slate-600 hover:text-violet-600 border border-slate-200 transition-all hover:scale-105"
-              title="Preguntar al vendedor"
+              className="p-2.5 rounded-full bg-slate-50 dark:bg-slate-800 hover:bg-violet-50 dark:hover:bg-violet-950/50 text-slate-600 dark:text-slate-300 hover:text-violet-600 border border-slate-200 dark:border-slate-700 transition-all hover:scale-105"
+              title={t('preguntar_vendedor')}
             >
               <MessageSquare size={15} />
             </button>
@@ -162,8 +164,8 @@ export const ProductCard = ({ producto, onContactClick }) => {
 
           <button
             onClick={handleAddToCart}
-            className="p-2.5 rounded-full bg-slate-900 group-hover:bg-violet-600 text-white shadow-md hover:shadow-violet-500/25 transition-all hover:scale-110 active:scale-95"
-            title="Añadir al Carrito"
+            className="p-2.5 rounded-full bg-slate-900 dark:bg-slate-100 dark:text-slate-900 group-hover:bg-violet-600 dark:group-hover:bg-violet-600 dark:group-hover:text-white text-white shadow-md hover:shadow-violet-500/25 transition-all hover:scale-110 active:scale-95"
+            title={t('anadir')}
           >
             <ShoppingCart size={16} />
           </button>
