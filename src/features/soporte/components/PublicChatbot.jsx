@@ -374,75 +374,65 @@ export const PublicChatbot = () => {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 font-sans">
-      {/* Botón Flotante Circular IA */}
-      {!abierto && (
-        <button
-          onClick={() => setAbierto(true)}
-          className="group relative w-14 h-14 rounded-full bg-gradient-to-tr from-violet-600 via-indigo-600 to-purple-700 hover:from-violet-500 hover:to-purple-600 text-white shadow-xl shadow-violet-600/35 hover:shadow-2xl hover:shadow-violet-600/50 hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center cursor-pointer border-2 border-white/30"
-          aria-label="Abrir Asistente Mercatto AI"
-          title="Mercatto AI"
-        >
-          <div className="relative flex items-center justify-center">
-            <Sparkles size={24} className="text-white group-hover:rotate-12 transition-transform duration-300 drop-shadow" />
-            <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-400 border-2 border-violet-700 rounded-full animate-pulse" />
-          </div>
-        </button>
-      )}
-
-      {/* Ventana de Atención Flotante */}
+    <div className="fixed bottom-3 right-3 sm:bottom-5 sm:right-5 z-50 flex flex-col items-end pointer-events-none font-sans">
+      {/* Ventana de Atención Flotante (Se coloca ARRIBA de la pestañita) */}
       {abierto && (
-        <div className="w-[360px] sm:w-[420px] h-[600px] max-h-[88vh] bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200 backdrop-blur-sm">
+        <div className="pointer-events-auto mb-2.5 w-[calc(100vw-24px)] sm:w-[400px] h-[520px] max-h-[calc(100dvh-85px)] sm:max-h-[calc(100vh-95px)] bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-200 backdrop-blur-sm">
           
           {/* Header Elegante Degradado */}
-          <div className="px-5 py-4 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white flex items-center justify-between border-b border-indigo-500/20 shadow-md">
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold shadow-lg shadow-indigo-500/30">
-                  <Sparkles size={20} />
+          <div className="px-4 sm:px-5 py-3 sm:py-3.5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white flex items-center justify-between border-b border-indigo-500/20 shadow-md shrink-0">
+            <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+              <div className="relative shrink-0">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white flex items-center justify-center font-bold shadow-lg shadow-violet-500/30">
+                  <span 
+                    className="text-white text-xl sm:text-2xl font-normal leading-none select-none -mt-0.5"
+                    style={{ fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif" }}
+                  >
+                    M
+                  </span>
                 </div>
-                <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-slate-900 rounded-full" />
+                <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-slate-900 rounded-full" />
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h4 className="text-sm font-bold text-white tracking-wide">Mercatto Bot</h4>
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <h4 className="text-xs sm:text-sm font-bold text-white tracking-wide truncate">Mercatto Bot</h4>
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9.5px] sm:text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shrink-0">
                     IA Activa
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-300 flex items-center gap-1">
-                  <span>Asistente Oficial con Gemini</span>
+                <p className="text-[10px] sm:text-[11px] text-slate-300 truncate">
+                  Asistente Oficial con Gemini
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1 shrink-0">
               <button
                 onClick={reiniciarConversacion}
-                className="p-2 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition cursor-pointer text-xs"
+                className="p-1.5 sm:p-2 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition cursor-pointer text-xs"
                 title="Reiniciar conversación"
               >
-                <RefreshCw size={15} />
+                <RefreshCw size={14} />
               </button>
               <button
                 onClick={() => setVistaActual(vistaActual === 'menu_opciones' ? 'chat' : 'menu_opciones')}
-                className="p-2 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition cursor-pointer text-xs"
+                className="p-1.5 sm:p-2 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition cursor-pointer text-xs"
                 title="Guía rápida"
               >
-                <HelpCircle size={16} />
+                <HelpCircle size={15} />
               </button>
               <button
                 onClick={() => setAbierto(false)}
-                className="p-2 rounded-xl hover:bg-white/10 text-slate-400 hover:text-white transition cursor-pointer"
-                title="Cerrar ventana"
+                className="p-1.5 sm:p-2 rounded-xl hover:bg-white/10 text-slate-400 hover:text-white transition cursor-pointer"
+                title="Minimizar ventana"
               >
-                <X size={18} />
+                <X size={16} />
               </button>
             </div>
           </div>
 
           {/* Subheader Informativo */}
-          <div className="px-4 py-2 bg-indigo-50/70 dark:bg-slate-800/80 border-b border-indigo-100 dark:border-slate-800 flex items-center justify-between text-xs">
+          <div className="px-4 py-2 bg-indigo-50/70 dark:bg-slate-800/80 border-b border-indigo-100 dark:border-slate-800 flex items-center justify-between text-xs shrink-0">
             <span className="text-slate-600 dark:text-slate-300 text-[11px] font-medium flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
               Comisión fija única: <strong className="text-indigo-600 dark:text-indigo-400">4% por venta</strong>
@@ -479,23 +469,23 @@ export const PublicChatbot = () => {
                   return (
                     <button
                       key={op.id}
-                      onClick={() => seleccionarOpcion(op.id)}
-                      className="w-full p-3 rounded-2xl border text-left transition-all duration-200 hover:scale-[1.01] cursor-pointer flex items-center justify-between gap-3 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700 shadow-xs"
+                      onClick={() => seleccionarOpcionGuia(op.id)}
+                      className="w-full text-left p-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 hover:border-indigo-500/50 hover:shadow-md transition group cursor-pointer flex items-center justify-between"
                     >
                       <div className="flex items-center gap-3">
-                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${op.color}`}>
-                          <Icono size={17} />
+                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${op.color} shadow-xs`}>
+                          <Icono size={18} />
                         </div>
                         <div>
-                          <h5 className="text-xs font-bold text-slate-800 dark:text-white leading-tight">
+                          <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                             {op.titulo}
-                          </h5>
+                          </h4>
                           <p className="text-[11px] text-slate-500 dark:text-slate-400">
                             {op.subtitulo}
                           </p>
                         </div>
                       </div>
-                      <ChevronRight size={14} className="text-slate-400 shrink-0" />
+                      <ChevronRight size={15} className="text-slate-400 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition" />
                     </button>
                   )
                 })}
@@ -621,15 +611,20 @@ export const PublicChatbot = () => {
                   >
                     <div className="flex items-end gap-2 max-w-[90%]">
                       {esBot && (
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center shrink-0 mb-1 shadow-xs">
-                          <Sparkles size={12} />
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-violet-600 to-indigo-600 text-white flex items-center justify-center shrink-0 mb-1 shadow-xs">
+                          <span 
+                            className="text-white text-[12px] font-normal leading-none select-none"
+                            style={{ fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif" }}
+                          >
+                            M
+                          </span>
                         </div>
                       )}
                       <div
                         className={`p-3.5 rounded-2xl leading-relaxed whitespace-pre-line shadow-sm text-xs ${
                           esBot
                             ? 'bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 text-slate-800 dark:text-slate-100 rounded-bl-xs'
-                            : 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-br-xs shadow-indigo-500/10'
+                            : 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-br-xs shadow-violet-500/10'
                         }`}
                       >
                         {renderizarTextoFormateado(m.texto)}
@@ -669,16 +664,21 @@ export const PublicChatbot = () => {
                 )
               })}
 
-              {/* Indicador suave de IA Pensando */}
+              {/* Indicador suave de IA Pensando con logo M */}
               {escribiendo && (
                 <div className="flex items-end gap-2">
-                  <div className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center shrink-0 mb-1">
-                    <Sparkles size={12} />
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-violet-600 to-indigo-600 text-white flex items-center justify-center shrink-0 mb-1 shadow-xs">
+                    <span 
+                      className="text-white text-[12px] font-normal leading-none select-none"
+                      style={{ fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif" }}
+                    >
+                      M
+                    </span>
                   </div>
                   <div className="flex items-center gap-1.5 px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl rounded-bl-xs shadow-xs">
-                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-bounce" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-bounce [animation-delay:0.2s]" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-bounce [animation-delay:0.4s]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-violet-600 animate-bounce" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-violet-600 animate-bounce [animation-delay:0.2s]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-violet-600 animate-bounce [animation-delay:0.4s]" />
                   </div>
                 </div>
               )}
@@ -687,9 +687,9 @@ export const PublicChatbot = () => {
 
           {/* Barra de Acciones y Entrada de Texto */}
           {vistaActual === 'chat' && (
-            <div className="p-3 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 space-y-2.5">
+            <div className="p-3 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 space-y-2.5 shrink-0">
               
-              {/* Chips de Preguntas Frecuentes Rápidas (Scroll invisible suave) */}
+              {/* Chips de Preguntas Frecuentes Rápidas */}
               <div
                 className="flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px]"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
@@ -731,12 +731,12 @@ export const PublicChatbot = () => {
                   value={mensajeInput}
                   onChange={(e) => setMensajeInput(e.target.value)}
                   placeholder="Pregúntale a Mercatto Bot..."
-                  className="flex-1 text-xs px-4 py-3 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-900 text-slate-800 dark:text-slate-100 transition shadow-inner"
+                  className="flex-1 text-xs px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:bg-white dark:focus:bg-slate-900 text-slate-800 dark:text-slate-100 transition shadow-inner min-w-0"
                 />
                 <button
                   type="submit"
                   disabled={!mensajeInput.trim()}
-                  className="p-3 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:opacity-40 text-white transition-all duration-200 cursor-pointer shrink-0 shadow-md shadow-indigo-500/25 active:scale-95 hover:scale-105"
+                  className="p-2.5 sm:p-3 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 disabled:opacity-40 text-white transition-all duration-200 cursor-pointer shrink-0 shadow-md shadow-violet-500/25 active:scale-95 hover:scale-105"
                   title="Enviar consulta"
                 >
                   <Send size={15} />
@@ -746,8 +746,31 @@ export const PublicChatbot = () => {
           )}
         </div>
       )}
+
+      {/* Pestañita / Botón del Chatbot con M en blanco en estilo Mercatto */}
+      <button
+        onClick={() => setAbierto(!abierto)}
+        className="pointer-events-auto group flex items-center gap-2.5 px-4 py-2 sm:px-4.5 sm:py-2.5 rounded-full bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-xl shadow-violet-600/35 hover:shadow-2xl hover:shadow-violet-600/50 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer border border-white/25 select-none"
+        aria-label={abierto ? "Minimizar chat" : "Abrir Asistente Mercatto"}
+        title="Mercatto Bot"
+      >
+        {/* M en blanco con estilo Mercatto */}
+        <span 
+          className="text-white text-2xl font-normal leading-none drop-shadow-sm flex items-center justify-center -mt-0.5"
+          style={{ fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif" }}
+        >
+          M
+        </span>
+        <span className="text-xs sm:text-sm font-bold tracking-tight text-white pr-0.5">
+          {abierto ? 'Minimizar' : 'Mercatto Bot'}
+        </span>
+        <span className="relative flex h-2 w-2 shrink-0">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+        </span>
+      </button>
     </div>
   )
 }
 
-export default PublicChatbot
+export default PublicChatbot;

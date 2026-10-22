@@ -205,75 +205,81 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], onAddTo
               ))}
             </div>
 
-            {/* Cabecera del Hero con Tipografía Bento y Pill de Acción */}
-            <div className="relative z-10 space-y-3 sm:space-y-4 max-w-sm sm:max-w-md">
-              <div className="space-y-1.5 sm:space-y-2">
-                <span className="inline-block text-[11px] font-black tracking-widest uppercase text-violet-600 dark:text-violet-400 bg-violet-100/80 dark:bg-violet-950/80 px-3 py-0.5 rounded-full">
-                  {currentHero.marca || currentHero.vendedor?.nombreTienda || t('tienda_oficial')}
-                </span>
-                
-                <h1 className="text-2xl sm:text-3xl lg:text-[38px] font-black text-slate-900 dark:text-white tracking-tight leading-tight font-sans line-clamp-2">
-                  {currentHero.titulo}
-                </h1>
-                
-                {/* Precio destacado en píldora con Mayúscula Inicial */}
-                <div className="pt-1 flex items-baseline gap-2">
-                  <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-950 text-white dark:bg-white dark:text-slate-950 font-black text-lg sm:text-xl shadow-xs">
-                    {formatCurrency(currentHero.precioOferta || currentHero.precio)} COP
+            {/* Contenido principal: texto e imagen en flujo responsivo sin superposición */}
+            <div className="relative z-10 flex flex-col md:flex-row items-center md:items-stretch justify-between gap-5 my-auto py-2">
+              {/* Cabecera del Hero con Tipografía Bento y Pill de Acción */}
+              <div className="w-full md:max-w-[56%] space-y-3 sm:space-y-4">
+                <div className="space-y-1.5 sm:space-y-2">
+                  <span className="inline-block text-[11px] font-black tracking-widest uppercase text-violet-600 dark:text-violet-400 bg-violet-100/80 dark:bg-violet-950/80 px-3 py-0.5 rounded-full">
+                    {currentHero.marca || currentHero.vendedor?.nombreTienda || t('tienda_oficial')}
                   </span>
-                  {currentHero.precioOferta && (
-                    <span className="text-sm line-through text-slate-400 font-bold">
-                      {formatCurrency(currentHero.precio)} COP
+                  
+                  <h1 className="text-xl sm:text-2xl lg:text-[34px] font-black text-slate-900 dark:text-white tracking-tight leading-tight font-sans line-clamp-2">
+                    {currentHero.titulo}
+                  </h1>
+                  
+                  {/* Precio destacado en píldora con Mayúscula Inicial */}
+                  <div className="pt-1 flex items-baseline gap-2">
+                    <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-950 text-white dark:bg-white dark:text-slate-950 font-black text-base sm:text-xl shadow-xs">
+                      {formatCurrency(currentHero.precioOferta || currentHero.precio)} COP
                     </span>
-                  )}
+                    {currentHero.precioOferta && (
+                      <span className="text-sm line-through text-slate-400 font-bold">
+                        {formatCurrency(currentHero.precio)} COP
+                      </span>
+                    )}
+                  </div>
                 </div>
+
+                {/* Descripción breve del producto real */}
+                <p className="text-xs sm:text-[13px] text-slate-600 dark:text-slate-400 font-medium leading-relaxed line-clamp-2">
+                  {currentHero.descripcion || t('modal_experience_desc')}
+                </p>
               </div>
 
-              {/* Descripción breve del producto real con Mayúscula Inicial */}
-              <p className="text-xs sm:text-[13px] text-slate-600 dark:text-slate-400 font-medium leading-relaxed max-w-xs sm:max-w-sm line-clamp-2">
-                {currentHero.descripcion || t('modal_experience_desc')}
-              </p>
-            </div>
+              {/* Imagen del Producto Real: contenida limpiamente para que NUNCA choque con el texto */}
+              <div className="w-full md:w-[42%] flex items-center justify-center relative min-h-[190px] sm:min-h-[220px]">
+                <div className="relative w-full max-w-[240px] sm:max-w-[280px] h-48 sm:h-64 flex items-center justify-center">
+                  <img
+                    key={currentHero.id}
+                    src={resolveProductImage(currentHero)}
+                    alt={currentHero.titulo}
+                    className="max-h-full max-w-full object-contain filter drop-shadow-[0_20px_25px_rgba(20,15,45,0.20)] group-hover:scale-105 transition-all duration-500 ease-out"
+                  />
 
-            {/* Imagen Flotante del Producto Real de la Base de Datos */}
-            <div className="absolute right-4 sm:right-12 top-1/2 -translate-y-1/2 w-52 sm:w-72 lg:w-84 h-52 sm:h-72 lg:h-84 flex items-center justify-center pointer-events-none z-10">
-              <div className="relative w-full h-full flex items-center justify-center">
-                
-                <img
-                  key={currentHero.id}
-                  src={resolveProductImage(currentHero)}
-                  alt={currentHero.titulo}
-                  className="w-full h-full object-contain filter drop-shadow-[0_25px_30px_rgba(20,15,45,0.20)] group-hover:scale-108 transition-all duration-500 ease-out"
-                />
-
-                {/* Badge lila redondeado con respaldo oficial */}
-                <div className="absolute -left-4 sm:-left-8 bottom-6 sm:bottom-10 bg-[#beb8ea]/90 dark:bg-violet-950/90 backdrop-blur-md border border-white/60 dark:border-violet-700 rounded-2xl p-2.5 sm:p-3 text-center shadow-md select-none">
-                  <div className="text-base sm:text-lg font-black text-slate-900 dark:text-white leading-none">
-                    100%
-                  </div>
-                  <div className="text-[9px] sm:text-[10px] font-semibold text-slate-700 dark:text-violet-200 leading-tight mt-0.5 max-w-[95px]">
-                    {t('garantia_oficial')}
+                  {/* Badge lila redondeado con respaldo oficial */}
+                  <div className="absolute left-0 bottom-2 bg-[#beb8ea]/90 dark:bg-violet-950/90 backdrop-blur-md border border-white/60 dark:border-violet-700 rounded-2xl p-2 sm:p-2.5 text-center shadow-md select-none">
+                    <div className="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-none">
+                      100%
+                    </div>
+                    <div className="text-[8.5px] sm:text-[9.5px] font-semibold text-slate-700 dark:text-violet-200 leading-tight mt-0.5 max-w-[80px]">
+                      {t('garantia_oficial')}
+                    </div>
                   </div>
                 </div>
-
               </div>
             </div>
 
             {/* Footer del Hero Card */}
-            <div className="relative z-10 pt-6 sm:pt-8 flex items-end justify-between">
+            <div className="relative z-10 pt-4 sm:pt-6 border-t border-violet-200/50 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 mt-1">
               
-              <div className="flex items-center gap-3">
-                <ChromeBlobSculpture className="w-11 h-11 sm:w-12 sm:h-12" />
-                <div className="text-xs font-bold text-slate-600 dark:text-slate-400">
-                  <span className="block text-slate-900 dark:text-white font-black">{t('del_barrio_a_tu_pantalla') || 'Del barrio a tu pantalla'}</span>
-                  <span className="text-[11px] text-emerald-600 font-semibold">{t('garantia_verificada')}</span>
+              <div className="flex items-center gap-2.5">
+                <ChromeBlobSculpture className="w-10 h-10 sm:w-12 sm:h-12 shrink-0" />
+                <div>
+                  <span 
+                    className="block text-violet-700 dark:text-violet-300 text-sm sm:text-base font-normal leading-none"
+                    style={{ fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif" }}
+                  >
+                    {t('del_barrio_a_tu_pantalla') || 'Del barrio a tu pantalla'}
+                  </span>
+                  <span className="text-[10.5px] text-emerald-600 font-semibold">{t('garantia_verificada')}</span>
                 </div>
               </div>
 
               {/* Botón negro píldora "Comprar ahora" */}
               <button
                 onClick={(e) => handleAddToCart(currentHero, e)}
-                className="bg-slate-950 dark:bg-white text-white dark:text-slate-950 hover:bg-emerald-600 dark:hover:bg-emerald-400 dark:hover:text-slate-950 px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm shadow-md hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-2"
+                className="bg-slate-950 dark:bg-white text-white dark:text-slate-950 hover:bg-emerald-600 dark:hover:bg-emerald-400 dark:hover:text-slate-950 px-5 sm:px-8 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm shadow-md hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-2"
               >
                 <span>{t('comprar_ahora')}</span>
                 <ArrowRight size={14} />
