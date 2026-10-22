@@ -747,27 +747,20 @@ export const PublicChatbot = () => {
         </div>
       )}
 
-      {/* Pestañita / Botón del Chatbot con M en blanco en estilo Mercatto */}
+      {/* Botón Circular Flotante del Chatbot con M en blanco en estilo Mercatto */}
       <button
         onClick={() => setAbierto(!abierto)}
-        className="pointer-events-auto group flex items-center gap-2.5 px-4 py-2 sm:px-4.5 sm:py-2.5 rounded-full bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-xl shadow-violet-600/35 hover:shadow-2xl hover:shadow-violet-600/50 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer border border-white/25 select-none"
-        aria-label={abierto ? "Minimizar chat" : "Abrir Asistente Mercatto"}
-        title="Mercatto Bot"
+        className="pointer-events-auto group relative w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-violet-600 via-indigo-600 to-purple-700 hover:from-violet-500 hover:to-purple-600 text-white shadow-xl shadow-violet-600/35 hover:shadow-2xl hover:shadow-violet-600/50 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center cursor-pointer border-2 border-white/30 select-none"
+        aria-label={abierto ? "Cerrar chat" : "Abrir asistente Mercatto"}
+        title="Mercatto"
       >
-        {/* M en blanco con estilo Mercatto */}
         <span 
-          className="text-white text-2xl font-normal leading-none drop-shadow-sm flex items-center justify-center -mt-0.5"
+          className="text-white text-2xl sm:text-3xl font-normal leading-none drop-shadow-sm select-none -mt-0.5"
           style={{ fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif" }}
         >
           M
         </span>
-        <span className="text-xs sm:text-sm font-bold tracking-tight text-white pr-0.5">
-          {abierto ? 'Minimizar' : 'Mercatto Bot'}
-        </span>
-        <span className="relative flex h-2 w-2 shrink-0">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-        </span>
+        <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-400 border-2 border-violet-700 rounded-full animate-pulse" />
       </button>
     </div>
   )
