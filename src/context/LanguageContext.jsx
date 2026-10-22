@@ -1,37 +1,36 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { translations } from '@/utils/translations'
-import { universalTranslator } from '@/utils/universalTranslator'
+import i18n from '@/i18n'
 
 const LanguageContext = createContext(null)
 
 export const LanguageProvider = ({ children }) => {
   const [idioma, setIdioma] = useState(() => {
-    return localStorage.getItem('mercatto_idioma') || 'es'
+    return (localStorage.getItem('mercatto_idioma') || 'es').toLowerCase()
   })
 
-  // Inicializar y sincronizar el motor universal de traducción con el DOM completo
   useEffect(() => {
     localStorage.setItem('mercatto_idioma', idioma)
     document.documentElement.lang = idioma
-    
-    // Notificar al traductor universal para que aplique la traducción en todas las páginas
-    universalTranslator.init(idioma)
-    universalTranslator.setLanguage(idioma)
+    if (i18n.language !== idioma) {
+      i18n.changeLanguage(idioma)
+    }
   }, [idioma])
 
   const cambiarIdioma = (nuevoIdioma) => {
     const lang = (nuevoIdioma || 'es').toLowerCase()
     setIdioma(lang)
-    universalTranslator.setLanguage(lang)
+    localStorage.setItem('mercatto_idioma', lang)
+    document.documentElement.lang = lang
+    i18n.changeLanguage(lang)
   }
 
-  const t = (clave) => {
-    const lang = translations[idioma] || translations.es
-    return lang[clave] || translations.es[clave] || clave
+  const t = (clave, params) => {
+    const translation = i18n.t(clave, params)
+    return translation || clave
   }
 
   return (
-    <LanguageContext.Provider value={{ idioma: idioma.toUpperCase(), cambiarIdioma, t }}>
+    <LanguageContext.Provider value={{ idioma: idioma.toUpperCase(), cambiarIdioma, t, i18n }}>
       {children}
     </LanguageContext.Provider>
   )

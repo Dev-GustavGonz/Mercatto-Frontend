@@ -1,6 +1,6 @@
-// main.jsx — Punto de entrada de React con providers
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import './i18n'
 import App from './App.jsx'
 import './index.css'
 

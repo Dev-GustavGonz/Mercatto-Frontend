@@ -2,7 +2,17 @@ export const translations = {
   es: {
     // Slogan y Marca
     eslogan: 'Del barrio a tu pantalla',
+    del_barrio_a_tu_pantalla: 'Del barrio a tu pantalla',
     colombia_marketplace: 'El Marketplace de Colombia',
+    garantia_oficial: 'Garantía oficial',
+    garantia_verificada: 'Garantía verificada',
+    tienda_oficial: 'Tienda oficial',
+    tienda_verificada: 'Tienda verificada',
+    comprar_ahora: 'Comprar ahora',
+    producto_destacado: 'Producto destacado',
+    novedad_oficial: 'Novedad oficial',
+    anadir: 'Añadir',
+    precio_oficial: 'Precio oficial',
     
     // Navbar y Layout
     catalogo: 'Catálogo',
@@ -187,7 +197,17 @@ export const translations = {
   en: {
     // Slogan & Brand
     eslogan: 'From the neighborhood to your screen',
+    del_barrio_a_tu_pantalla: 'From the neighborhood to your screen',
     colombia_marketplace: 'Colombia\'s Marketplace',
+    garantia_oficial: 'Official warranty',
+    garantia_verificada: 'Verified warranty',
+    tienda_oficial: 'Official store',
+    tienda_verificada: 'Verified store',
+    comprar_ahora: 'Shop now',
+    producto_destacado: 'Featured product',
+    novedad_oficial: 'Official arrival',
+    anadir: 'Add',
+    precio_oficial: 'Official price',
 
     // Navbar & Layout
     catalogo: 'Catalog',

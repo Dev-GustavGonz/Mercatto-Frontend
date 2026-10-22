@@ -306,7 +306,7 @@ export const Navbar = () => {
         <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
           
           {/* Selector de Idioma (Pastilla limpia sin borde duro) */}
-          <div className="relative hidden sm:block">
+          <div className="relative">
             <button 
               onClick={() => setDropdownLang(!dropdownLang)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100/85 hover:bg-slate-200/70 text-xs font-semibold text-slate-700 hover:text-slate-950 transition cursor-pointer"
@@ -591,6 +591,25 @@ export const Navbar = () => {
                 <Link to="/" onClick={() => setMenuMobile(false)} className="px-3 py-2 rounded-xl hover:bg-violet-50">Inicio</Link>
                 <Link to="/tiendas" onClick={() => setMenuMobile(false)} className="px-3 py-2 rounded-xl hover:bg-violet-50">Tiendas Oficiales</Link>
                 <Link to="/about" onClick={() => setMenuMobile(false)} className="px-3 py-2 rounded-xl hover:bg-violet-50">Nosotros</Link>
+                <div className="pt-2 mt-2 border-t border-slate-100 flex items-center justify-between px-1">
+                  <span className="text-xs font-semibold text-slate-500">Idioma:</span>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => { cambiarIdioma('es'); setMenuMobile(false); }}
+                      className={`px-3 py-1 rounded-full text-xs font-bold ${idioma === 'ES' ? 'bg-violet-600 text-white' : 'bg-slate-100 text-slate-700'}`}
+                    >
+                      🇨🇴 ES
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { cambiarIdioma('en'); setMenuMobile(false); }}
+                      className={`px-3 py-1 rounded-full text-xs font-bold ${idioma === 'EN' ? 'bg-violet-600 text-white' : 'bg-slate-100 text-slate-700'}`}
+                    >
+                      🇺🇸 EN
+                    </button>
+                  </div>
+                </div>
               </>
             )}
           </div>

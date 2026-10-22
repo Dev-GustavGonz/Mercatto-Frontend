@@ -264,15 +264,17 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], onAddTo
             <div className="relative z-10 pt-4 sm:pt-6 border-t border-violet-200/50 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 mt-1">
               
               <div className="flex items-center gap-2.5">
-                <ChromeBlobSculpture className="w-10 h-10 sm:w-12 sm:h-12 shrink-0" />
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-violet-100 dark:bg-violet-950/80 border border-violet-200/60 dark:border-violet-800 text-violet-700 dark:text-violet-300 flex items-center justify-center font-black text-xs shrink-0 shadow-xs">
+                  <ShieldCheck size={18} className="text-violet-600 dark:text-violet-400" />
+                </div>
                 <div>
-                  <span 
-                    className="block text-violet-700 dark:text-violet-300 text-sm sm:text-base font-normal leading-none"
-                    style={{ fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif" }}
-                  >
-                    {t('del_barrio_a_tu_pantalla') || 'Del barrio a tu pantalla'}
+                  <span className="block text-slate-900 dark:text-white font-bold text-xs sm:text-sm leading-tight">
+                    {currentHero.vendedor?.nombreTienda || currentHero.marca || t('tienda_oficial')}
                   </span>
-                  <span className="text-[10.5px] text-emerald-600 font-semibold">{t('garantia_verificada')}</span>
+                  <span className="text-[10.5px] text-emerald-600 font-semibold flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    {t('garantia_verificada')}
+                  </span>
                 </div>
               </div>
 
