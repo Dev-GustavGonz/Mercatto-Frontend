@@ -13,6 +13,24 @@ export const translations = {
     novedad_oficial: 'Novedad oficial',
     anadir: 'Añadir',
     precio_oficial: 'Precio oficial',
+
+    // Auth & Login
+    login_sub: 'Ingresa con tu correo y contraseña registrados',
+    correo_electronico: 'Correo Electrónico',
+    correo_placeholder: 'ejemplo@mercatto.com',
+    contrasena: 'Contraseña',
+    recordarme: 'Recordarme',
+    olvidaste_contrasena: '¿Olvidaste tu contraseña?',
+    ingresar_a_mercatto: 'Ingresar a Mercatto',
+    o_continua_con: 'o continúa con',
+    no_tienes_cuenta: '¿No tienes una cuenta aún?',
+    registrate_aqui: 'Regístrate aquí',
+
+    // Carrito Drawer
+    tu_carrito: 'Tu Carrito',
+    carrito_vacio: 'Tu carrito está vacío',
+    carrito_vacio_desc: 'Explora las novedades y agrega productos para iniciar tu compra.',
+    explorar_productos: 'Explorar Productos',
     
     // Navbar y Layout
     catalogo: 'Catálogo',
@@ -208,6 +226,24 @@ export const translations = {
     novedad_oficial: 'Official arrival',
     anadir: 'Add',
     precio_oficial: 'Official price',
+
+    // Auth & Login
+    login_sub: 'Enter your registered email and password',
+    correo_electronico: 'Email Address',
+    correo_placeholder: 'example@mercatto.com',
+    contrasena: 'Password',
+    recordarme: 'Remember me',
+    olvidaste_contrasena: 'Forgot your password?',
+    ingresar_a_mercatto: 'Sign In to Mercatto',
+    o_continua_con: 'or continue with',
+    no_tienes_cuenta: "Don't have an account yet?",
+    registrate_aqui: 'Sign up here',
+
+    // Carrito Drawer
+    tu_carrito: 'Your Cart',
+    carrito_vacio: 'Your cart is empty',
+    carrito_vacio_desc: 'Explore new arrivals and add products to start shopping.',
+    explorar_productos: 'Explore Products',
 
     // Navbar & Layout
     catalogo: 'Catalog',

@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart } from '@/hooks/useCart'
+import { useLanguage } from '@/hooks/useLanguage'
 import CartItem from './CartItem'
 import CartSummary from './CartSummary'
 import { X, ShoppingBag, ArrowRight } from 'lucide-react'
 
 export const CartDrawer = () => {
   const { items, drawerAbierto, setDrawerAbierto } = useCart()
+  const { t } = useLanguage()
 
   useEffect(() => {
     if (drawerAbierto) {
@@ -34,9 +36,9 @@ export const CartDrawer = () => {
           {/* Header */}
           <div className="p-4 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <ShoppingBag size={20} className="text-indigo-600" />
+              <ShoppingBag size={20} className="text-violet-600" />
               <h2 className="text-base font-bold text-slate-900 dark:text-white">
-                Tu Carrito ({items.length})
+                {t('tu_carrito')} ({items.length})
               </h2>
             </div>
             <button
@@ -54,16 +56,18 @@ export const CartDrawer = () => {
                 <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 mb-4">
                   <ShoppingBag size={32} />
                 </div>
-                <h4 className="text-sm font-bold text-slate-800 dark:text-white">Tu carrito está vacío</h4>
+                <h4 className="text-sm font-bold text-slate-800 dark:text-white">
+                  {t('carrito_vacio')}
+                </h4>
                 <p className="text-xs text-slate-500 max-w-xs mt-1 mb-6">
-                  Explora las novedades y agrega productos para iniciar tu compra.
+                  {t('carrito_vacio_desc')}
                 </p>
                 <Link
                   to="/catalogo"
                   onClick={() => setDrawerAbierto(false)}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold shadow hover:bg-indigo-700 transition"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-violet-600 text-white text-xs font-bold shadow hover:bg-violet-700 transition"
                 >
-                  <span>Explorar Productos</span>
+                  <span>{t('explorar_productos')}</span>
                   <ArrowRight size={14} />
                 </Link>
               </div>

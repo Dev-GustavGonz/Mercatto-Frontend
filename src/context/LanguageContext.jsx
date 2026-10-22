@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import i18n from '@/i18n'
+import { universalTranslator } from '@/utils/universalTranslator'
 
 const LanguageContext = createContext(null)
 
@@ -14,6 +15,8 @@ export const LanguageProvider = ({ children }) => {
     if (i18n.language !== idioma) {
       i18n.changeLanguage(idioma)
     }
+    universalTranslator.init(idioma)
+    universalTranslator.setLanguage(idioma)
   }, [idioma])
 
   const cambiarIdioma = (nuevoIdioma) => {
@@ -22,11 +25,12 @@ export const LanguageProvider = ({ children }) => {
     localStorage.setItem('mercatto_idioma', lang)
     document.documentElement.lang = lang
     i18n.changeLanguage(lang)
+    universalTranslator.setLanguage(lang)
   }
 
   const t = (clave, params) => {
-    const translation = i18n.t(clave, params)
-    return translation || clave
+    const translated = i18n.t(clave, params)
+    return translated || clave
   }
 
   return (

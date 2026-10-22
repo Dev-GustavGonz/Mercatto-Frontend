@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/useToast'
+import { useLanguage } from '@/hooks/useLanguage'
 import Input from '@/components/common/Input'
 import Button from '@/components/common/Button'
 import GoogleLoginButton from '../components/GoogleLoginButton'
@@ -16,6 +17,7 @@ export const Login = () => {
   const [loading, setLoading] = useState(false)
   const { login, loginGoogle } = useAuth()
   const { success, error } = useToast()
+  const { t } = useLanguage()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const redirectUrl = searchParams.get('redirect') || '/'
@@ -85,19 +87,19 @@ export const Login = () => {
             <MercattoLogo className="text-3xl sm:text-4xl" />
           </Link>
           <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-            Iniciar Sesión
+            {t('iniciar_sesion')}
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-            Ingresa con tu correo y contraseña registrados
+            {t('login_sub')}
           </p>
         </div>
 
         {/* Formulario de Login con validaciones */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
-            label="Correo Electrónico"
+            label={t('correo_electronico')}
             type="email"
-            placeholder="ejemplo@mercatto.com"
+            placeholder={t('correo_placeholder') || 'ejemplo@mercatto.com'}
             icon={Mail}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -106,7 +108,7 @@ export const Login = () => {
           />
 
           <Input
-            label="Contraseña"
+            label={t('contrasena')}
             type={showPassword ? 'text' : 'password'}
             placeholder="••••••••"
             icon={Lock}
@@ -134,14 +136,14 @@ export const Login = () => {
                 onChange={(e) => setRecordarme(e.target.checked)}
                 className="w-4 h-4 rounded border-slate-300 text-violet-600 focus:ring-violet-500 cursor-pointer"
               />
-              Recordarme
+              {t('recordarme')}
             </label>
 
             <Link 
               to="/recuperar-password" 
               className="text-xs font-semibold text-violet-600 dark:text-violet-400 hover:underline"
             >
-              ¿Olvidaste tu contraseña?
+              {t('olvidaste_contrasena')}
             </Link>
           </div>
 
@@ -149,26 +151,26 @@ export const Login = () => {
             type="submit" 
             variant="primary" 
             size="lg" 
-            className="w-full font-bold bg-violet-600 hover:bg-violet-700 text-white shadow-lg shadow-violet-600/25 mt-2" 
+            className="w-full font-bold bg-violet-600 hover:bg-violet-700 text-white shadow-lg shadow-violet-600/25 mt-2 cursor-pointer" 
             loading={loading}
           >
             <LogIn size={18} className="mr-2" />
-            <span>Ingresar a Mercatto</span>
+            <span>{t('ingresar_a_mercatto')}</span>
           </Button>
         </form>
 
         <div className="flex items-center gap-3">
           <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
-          <span className="text-xs text-slate-400 font-medium">o continúa con</span>
+          <span className="text-xs text-slate-400 font-medium">{t('o_continua_con')}</span>
           <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
         </div>
 
         <GoogleLoginButton onCredential={handleGoogle} texto="signin_with" />
 
         <div className="text-center pt-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
-          ¿No tienes una cuenta aún?{' '}
+          {t('no_tienes_cuenta')}{' '}
           <Link to="/registro" className="font-bold text-violet-600 dark:text-violet-400 hover:underline">
-            Regístrate aquí
+            {t('registrate_aqui')}
           </Link>
         </div>
 
