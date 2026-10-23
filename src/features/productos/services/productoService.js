@@ -11,6 +11,23 @@ export const productoService = {
     return res.data
   },
 
+  obtenerMasVendidos: async () => {
+    try {
+      const res = await api.get('/productos/mas-vendidos')
+      if (res.data && Array.isArray(res.data) && res.data.length > 0) {
+        return res.data
+      }
+    } catch {
+      // Fallback a ordenar por ventas en la base de datos
+    }
+    try {
+      const res = await api.get('/productos', { params: { orden: 'ventas', tamano: 12 } })
+      return res.data?.content || []
+    } catch {
+      return []
+    }
+  },
+
   obtenerNuevos: async () => {
     const res = await api.get('/productos/nuevos')
     return res.data

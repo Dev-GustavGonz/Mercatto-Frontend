@@ -25,7 +25,7 @@ import { resolveProductImage } from '@/utils/productUtils'
  * Showcase Bento 100% dinámico alimentado por los productos reales de la Base de Datos.
  * Sin fotos de modelos o elementos falsos. Cada tarjeta representa un producto real.
  */
-export const BentoGridHeroShowcase = ({ categorias = [], productos = [], onAddToCart }) => {
+export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVendidos = [], onAddToCart }) => {
   const navigate = useNavigate()
   const { agregarItem } = useCart()
   const { toggleFavoriteId, favoriteIds } = useFavorites()
@@ -131,16 +131,18 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], onAddTo
   // Tarjeta izquierda (reemplaza a "Nueva Colección"): Tercer producto real de la BD
   const productLeft = dbProducts[2] || dbProducts[0]
 
-  // 3 Tarjetas de "Más Vendidos" (inferior derecha): Productos reales 3, 4 y 5 de la BD
+  // Tarjetas de "Más Vendidos": ordenadas de mayor a menor por cantidad vendida (totalVentas) de la BD
   const bestSellersItems = useMemo(() => {
-    if (dbProducts.length >= 6) {
-      return dbProducts.slice(3, 6)
+    if (masVendidos && masVendidos.length > 0) {
+      const ordenados = [...masVendidos].sort((a, b) => (b.totalVentas || 0) - (a.totalVentas || 0));
+      return ordenados.slice(0, 3);
     }
-    if (dbProducts.length >= 3) {
-      return dbProducts.slice(0, 3)
+    if (dbProducts && dbProducts.length > 0) {
+      const ordenados = [...dbProducts].sort((a, b) => (b.totalVentas || 0) - (a.totalVentas || 0));
+      return ordenados.slice(0, 3);
     }
-    return dbProducts
-  }, [dbProducts])
+    return [];
+  }, [masVendidos, dbProducts])
 
   const handleAddToCart = (product, e) => {
     e.stopPropagation()

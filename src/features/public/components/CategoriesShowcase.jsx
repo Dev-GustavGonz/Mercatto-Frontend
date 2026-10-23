@@ -19,39 +19,58 @@ export const CategoriesShowcase = ({ categorias = [] }) => {
   const { t, idioma } = useLanguage()
   const [categoriaActiva, setCategoriaActiva] = useState(null)
 
-  // Imágenes de producto alusivas a cada categoría (assets locales + product shots limpios)
+  // Imágenes de producto alusivas a cada categoría (assets locales de alta fidelidad)
   const visualMeta = useMemo(() => ({
     // Tecnología → laptop local
-    1: { icono: Laptop,     imagen: '/images/bento/laptop.png',      badgeKey: 'badge_flagship',    nameKey: 'cat_tecnologia' },
+    1: { icono: Laptop,     imagen: '/images/bento/laptop.png',           badgeKey: 'badge_flagship',    nameKey: 'cat_tecnologia' },
     // Moda → zapatilla local
-    2: { icono: Shirt,      imagen: '/images/bento/sneaker.png',     badgeKey: 'badge_tendencia',   nameKey: 'cat_moda' },
-    // Hogar → product shot de silla / hogar sobre fondo blanco
-    3: { icono: Home,       imagen: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300&auto=format&fit=crop&q=80', badgeKey: 'badge_confort',     nameKey: 'cat_hogar' },
-    // Deportes → smartwatch local
-    4: { icono: Activity,   imagen: '/images/bento/smartwatch.png',  badgeKey: 'badge_pro_fitness', nameKey: 'cat_deportes' },
-    // Belleza → frasco de perfume product shot (fondo blanco)
-    5: { icono: Sparkles,   imagen: 'https://images.unsplash.com/photo-1541643600914-78b084683702?w=300&auto=format&fit=crop&q=80', badgeKey: 'badge_cuidado',    nameKey: 'cat_belleza' },
-    // Herramientas → taladro inalámbrico product shot
-    6: { icono: Wrench,     imagen: 'https://images.unsplash.com/photo-1581147036324-c17ac41dfa6c?w=300&auto=format&fit=crop&q=80', badgeKey: 'badge_taller',     nameKey: 'cat_herramientas' },
+    2: { icono: Shirt,      imagen: '/images/bento/sneaker.png',          badgeKey: 'badge_tendencia',   nameKey: 'cat_moda' },
+    // Hogar → sillón nórdico de diseño con iluminación de estudio limpia
+    3: { icono: Home,       imagen: '/images/categories/hogar.jpg',        badgeKey: 'badge_confort',     nameKey: 'cat_hogar' },
+    // Deportes → smartwatch de alta gama local
+    4: { icono: Activity,   imagen: '/images/bento/smartwatch.png',       badgeKey: 'badge_pro_fitness', nameKey: 'cat_deportes' },
+    // Belleza → frasco de cosmética / serum minimalista de lujo
+    5: { icono: Sparkles,   imagen: '/images/categories/belleza.jpg',      badgeKey: 'badge_cuidado',    nameKey: 'cat_belleza' },
+    // Herramientas → taladro inalámbrico moderno de precisión
+    6: { icono: Wrench,     imagen: '/images/categories/herramientas.jpg',  badgeKey: 'badge_taller',     nameKey: 'cat_herramientas' },
     // Smartphones (id 7) → smartphone local
-    7: { icono: Smartphone, imagen: '/images/bento/smartphone.png',  badgeKey: 'badge_flagship',    nameKey: 'cat_tecnologia' },
+    7: { icono: Smartphone, imagen: '/images/bento/smartphone.png',       badgeKey: 'badge_flagship',    nameKey: 'cat_tecnologia' },
     // Accesorios tech (id 8) → headphones local
-    8: { icono: Laptop,     imagen: '/images/bento/headphones.png',  badgeKey: 'badge_flagship',    nameKey: 'cat_tecnologia' },
+    8: { icono: Laptop,     imagen: '/images/bento/headphones.png',       badgeKey: 'badge_flagship',    nameKey: 'cat_tecnologia' },
     // Calzado (id 9) → sneaker local
-    9: { icono: Footprints, imagen: '/images/bento/sneaker.png',     badgeKey: 'badge_tendencia',   nameKey: 'cat_moda' },
-    // Cocina (id 10) → olla/utensilio product shot
-   10: { icono: Utensils,   imagen: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=300&auto=format&fit=crop&q=80', badgeKey: 'badge_confort',     nameKey: 'cat_hogar' }
+    9: { icono: Footprints, imagen: '/images/bento/sneaker.png',          badgeKey: 'badge_tendencia',   nameKey: 'cat_moda' },
+    // Cocina (id 10) → batería / utensilio de cocina profesional
+   10: { icono: Utensils,   imagen: '/images/categories/cocina.jpg',       badgeKey: 'badge_confort',     nameKey: 'cat_hogar' }
   }), [])
+
+  // Resolución inteligente de metadatos según id o nombre de categoría
+  const resolverMeta = (cat) => {
+    if (visualMeta[cat.id]) return visualMeta[cat.id]
+    const nombre = (cat.nombre || '').toLowerCase()
+    if (nombre.includes('tecno') || nombre.includes('elect')) return visualMeta[1]
+    if (nombre.includes('moda') || nombre.includes('ropa')) return visualMeta[2]
+    if (nombre.includes('hogar') || nombre.includes('mueble')) return visualMeta[3]
+    if (nombre.includes('deporte') || nombre.includes('fitness')) return visualMeta[4]
+    if (nombre.includes('belleza') || nombre.includes('cuidado')) return visualMeta[5]
+    if (nombre.includes('herramienta') || nombre.includes('industria')) return visualMeta[6]
+    if (nombre.includes('celular') || nombre.includes('phone') || nombre.includes('smart')) return visualMeta[7]
+    if (nombre.includes('cocina')) return visualMeta[10]
+    return { icono: Sparkles, imagen: '/images/bento/laptop.png', badgeKey: 'badge_oficial', nameKey: null }
+  }
 
   // Lista de categorías con textos traducidos y fallbacks limpios
   const listaCategorias = useMemo(() => {
     if (categorias && categorias.length > 0) {
       return categorias.map((cat) => {
-        const meta = visualMeta[cat.id] || { icono: Sparkles, imagen: '/images/bento/headphones.png', badgeKey: 'badge_oficial', nameKey: null }
+        const meta = resolverMeta(cat)
+        const imagenFinal = (cat.imagenUrl && cat.imagenUrl.trim() !== '' && !cat.imagenUrl.includes('photo-1541643600914')) 
+          ? cat.imagenUrl 
+          : meta.imagen
         return {
           id: cat.id,
           nombre: meta.nameKey ? t(meta.nameKey) : cat.nombre,
-          imagen: cat.imagenUrl || meta.imagen,
+          imagen: imagenFinal,
+          fallbackImagen: meta.imagen,
           icono: meta.icono,
           badge: t(meta.badgeKey)
         }
@@ -59,12 +78,12 @@ export const CategoriesShowcase = ({ categorias = [] }) => {
     }
 
     return [
-      { id: 1, nombre: t('cat_tecnologia'), imagen: visualMeta[1].imagen, icono: Laptop, badge: t(visualMeta[1].badgeKey) },
-      { id: 2, nombre: t('cat_moda'), imagen: visualMeta[2].imagen, icono: Shirt, badge: t(visualMeta[2].badgeKey) },
-      { id: 3, nombre: t('cat_hogar'), imagen: visualMeta[3].imagen, icono: Home, badge: t(visualMeta[3].badgeKey) },
-      { id: 4, nombre: t('cat_deportes'), imagen: visualMeta[4].imagen, icono: Activity, badge: t(visualMeta[4].badgeKey) },
-      { id: 5, nombre: t('cat_belleza'), imagen: visualMeta[5].imagen, icono: Sparkles, badge: t(visualMeta[5].badgeKey) },
-      { id: 6, nombre: t('cat_herramientas'), imagen: visualMeta[6].imagen, icono: Wrench, badge: t(visualMeta[6].badgeKey) }
+      { id: 1, nombre: t('cat_tecnologia'), imagen: visualMeta[1].imagen, fallbackImagen: visualMeta[1].imagen, icono: Laptop, badge: t(visualMeta[1].badgeKey) },
+      { id: 2, nombre: t('cat_moda'), imagen: visualMeta[2].imagen, fallbackImagen: visualMeta[2].imagen, icono: Shirt, badge: t(visualMeta[2].badgeKey) },
+      { id: 3, nombre: t('cat_hogar'), imagen: visualMeta[3].imagen, fallbackImagen: visualMeta[3].imagen, icono: Home, badge: t(visualMeta[3].badgeKey) },
+      { id: 4, nombre: t('cat_deportes'), imagen: visualMeta[4].imagen, fallbackImagen: visualMeta[4].imagen, icono: Activity, badge: t(visualMeta[4].badgeKey) },
+      { id: 5, nombre: t('cat_belleza'), imagen: visualMeta[5].imagen, fallbackImagen: visualMeta[5].imagen, icono: Sparkles, badge: t(visualMeta[5].badgeKey) },
+      { id: 6, nombre: t('cat_herramientas'), imagen: visualMeta[6].imagen, fallbackImagen: visualMeta[6].imagen, icono: Wrench, badge: t(visualMeta[6].badgeKey) }
     ]
   }, [categorias, visualMeta, t])
 
@@ -127,6 +146,10 @@ export const CategoriesShowcase = ({ categorias = [] }) => {
                 <img
                   src={cat.imagen}
                   alt={cat.nombre}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null
+                    e.currentTarget.src = cat.fallbackImagen || '/images/bento/laptop.png'
+                  }}
                   className="max-h-full max-w-full object-contain rounded-2xl filter drop-shadow-[0_10px_14px_rgba(0,0,0,0.12)] group-hover:scale-110 transition-transform duration-300"
                   loading="lazy"
                 />

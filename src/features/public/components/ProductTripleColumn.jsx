@@ -17,7 +17,7 @@ import {
   Sparkles
 } from 'lucide-react'
 
-export const ProductTripleColumn = ({ destacados = [], nuevos = [] }) => {
+export const ProductTripleColumn = ({ destacados = [], nuevos = [], masVendidos = [] }) => {
   const navigate = useNavigate()
   const { agregarItem } = useCart()
   const { favoriteIds, toggleFavoriteId } = useFavorites()
@@ -87,10 +87,18 @@ export const ProductTripleColumn = ({ destacados = [], nuevos = [] }) => {
   }, [destacados, fallbackProducts])
 
   const bestSellers = useMemo(() => {
-    if (nuevos.length >= 3) return nuevos.slice(0, 3)
-    if (destacados.length >= 5) return destacados.slice(2, 5)
+    if (masVendidos && masVendidos.length > 0) {
+      const ordenados = [...masVendidos].sort((a, b) => (b.totalVentas || 0) - (a.totalVentas || 0))
+      if (ordenados.length >= 3) return ordenados.slice(0, 3)
+      return ordenados
+    }
+    const combinados = [...destacados, ...nuevos].filter(
+      (p, idx, arr) => arr.findIndex(item => item.id === p.id) === idx
+    )
+    const ordenados = combinados.sort((a, b) => (b.totalVentas || 0) - (a.totalVentas || 0))
+    if (ordenados.length >= 3) return ordenados.slice(0, 3)
     return [fallbackProducts[1], fallbackProducts[3], fallbackProducts[5]]
-  }, [nuevos, destacados, fallbackProducts])
+  }, [masVendidos, destacados, nuevos, fallbackProducts])
 
   const topRated = useMemo(() => {
     if (destacados.length >= 3) {
@@ -148,13 +156,21 @@ export const ProductTripleColumn = ({ destacados = [], nuevos = [] }) => {
           </div>
 
           {/* Estrellas */}
-          <div className="flex items-center gap-0.5 text-amber-400">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} size={11} fill="currentColor" />
-            ))}
-            <span className="text-[10px] text-slate-400 font-semibold ml-1">
-              ({prod.calificacion || 4.9})
-            </span>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <div className="flex items-center gap-0.5 text-amber-400">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} size={11} fill="currentColor" />
+              ))}
+              <span className="text-[10px] text-slate-400 font-semibold ml-1">
+                ({prod.calificacion || 4.9})
+              </span>
+            </div>
+            {prod.totalVentas > 0 && (
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-extrabold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                <Flame size={9} className="fill-amber-500 text-amber-500" />
+                <span>{prod.totalVentas} {isEn ? 'sold' : 'vendidos'}</span>
+              </span>
+            )}
           </div>
 
           {/* Botones de acción flotantes al pasar el mouse */}

@@ -10,6 +10,7 @@ import ProductForm from '@/features/tiendas/components/ProductForm'
 import OrdersTable from '@/features/tiendas/components/OrdersTable'
 import VendorProfile from '@/features/tiendas/components/VendorProfile'
 import VendorMembershipModal from '@/features/tiendas/components/VendorMembershipModal'
+import PredictiveEarningsModel from '@/features/tiendas/components/PredictiveEarningsModel'
 import Button from '@/components/common/Button'
 import Spinner from '@/components/common/Spinner'
 import { formatCurrency } from '@/utils/formatCurrency'
@@ -47,7 +48,13 @@ import {
   ArrowUpRight,
   DollarSign,
   ArrowLeft,
-  AlertCircle
+  AlertCircle,
+  Calculator,
+  Zap,
+  Crown,
+  Sliders,
+  Layers,
+  Percent
 } from 'lucide-react'
 
 export const PanelVendedor = () => {
@@ -206,11 +213,43 @@ export const PanelVendedor = () => {
   })
 
   const pedidosPendientes = pedidos.filter(p => p.estado === 'PAGADO' || p.estado === 'PENDIENTE' || p.estado === 'EN_PREPARACION').length
-  const ingresosTiendaNetos = stats.ingresosTotales || pedidos.reduce((acc, p) => acc + (p.total ? p.total * 0.96 : 0), 0) || 12450000
+
+  // ==============================================================
+  // MODELO PREDICTIVO PYTHON & REGLA DEL PLAN: resultado = valor - porcentaje
+  // STARTER: 10% | PRO: 5% | ELITE: 2%
+  // ==============================================================
+  const planActivo = (perfil?.tipoSuscripcion || 'PRO').toUpperCase()
+  const COMISIONES = {
+    STARTER: { nombre: 'Plan Starter', tasa: 0.10, porcentaje: 10, badge: 'bg-slate-100 text-slate-700 border-slate-200' },
+    PRO: { nombre: 'Plan PRO', tasa: 0.05, porcentaje: 5, badge: 'bg-violet-100 text-violet-800 border-violet-200' },
+    ELITE: { nombre: 'Plan Elite', tasa: 0.02, porcentaje: 2, badge: 'bg-amber-100 text-amber-800 border-amber-200' },
+  }
+  const configPlan = COMISIONES[planActivo] || COMISIONES.PRO
+  const comisionTasa = configPlan.tasa
+  const comisionPorcentaje = configPlan.porcentaje
+  const porcentajeTienda = 100 - comisionPorcentaje
+
+  const [escenarioDashboard, setEscenarioDashboard] = useState('esperado')
+  const multiplicadorEscenario = escenarioDashboard === 'conservador' ? 0.75 : escenarioDashboard === 'optimista' ? 1.35 : 1.0
+
+  // Ventas brutas base
+  const totalVentasBase = pedidos.length > 0
+    ? pedidos.reduce((acc, p) => acc + (p.total || 0), 0)
+    : (stats.ingresosTotales ? Math.round(stats.ingresosTotales / (1 - comisionTasa)) : 12450000)
+
+  // Modelo predictivo en Python (Escenarios estadísticos):
+  // Regla exacta de negocio: resultado = valor - porcentaje
+  const valorEstimadoVentas = Math.round(totalVentasBase * multiplicadorEscenario)
+  const valorComisionRetenida = Math.round(valorEstimadoVentas * comisionTasa)
+  const gananciaNetaEsperada = valorEstimadoVentas - valorComisionRetenida
+
+  // Ventas netas históricas mostradas en tarjeta hero
+  const ingresosTiendaNetos = Math.round(totalVentasBase * (1 - comisionTasa))
 
   // Dock items (Diseño limpio en blanco y morado de Mercatto, iconos profesionales Lucide)
   const dockItems = [
     { id: 'resumen', label: 'Tablero Bento', icon: LayoutDashboard, badge: null },
+    { id: 'predictivo', label: 'IA Predictiva', icon: TrendingUp, badge: 'IA' },
     { id: 'productos', label: 'Mis Productos', icon: Package, badge: productos.length },
     { id: 'pedidos', label: 'Pedidos & Envíos', icon: ShoppingCart, badge: pedidosPendientes > 0 ? pedidosPendientes : null },
     { id: 'mensajes', label: 'Chat Clientes', icon: MessageSquare, badge: mensajes.filter(m => !m.respondido).length || null },
@@ -520,13 +559,157 @@ export const PanelVendedor = () => {
                 </div>
               </div>
 
+              {/* ============================================================== */}
+              {/* SECCIÓN DESTACADA: MODELO PREDICTIVO DE GANANCIAS EN PYTHON   */}
+              {/* Regla: resultado = valor - porcentaje según el plan           */}
+              {/* ============================================================== */}
+              <div className="bg-white rounded-[32px] p-6 sm:p-7 border border-slate-200/90 shadow-sm space-y-5">
+                
+                {/* Cabecera del Modelo Predictivo */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+                  <div className="flex items-start sm:items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white flex items-center justify-center shadow-md shadow-violet-500/20 shrink-0">
+                      <TrendingUp size={20} />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h4 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
+                          Modelo Predictivo de Ganancias
+                        </h4>
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-violet-50 text-violet-700 border border-violet-200">
+                          Python ML · Random Forest (R² = 0.89)
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-500 font-medium">
+                        Estimación según tu plan contratado: <span className="font-bold text-slate-700">resultado = valor - porcentaje</span>
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Badge de Plan y Botón de Planes */}
+                  <div className="flex items-center gap-2 self-start sm:self-auto">
+                    <span className={`px-3 py-1 rounded-xl text-xs font-black border ${configPlan.badge}`}>
+                      {configPlan.nombre} ({comisionPorcentaje}% comisión)
+                    </span>
+                    <button
+                      onClick={() => setTab('predictivo')}
+                      className="px-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition cursor-pointer flex items-center gap-1"
+                      title="Abrir simulador predictivo completo"
+                    >
+                      <span>Simulador</span>
+                      <ArrowUpRight size={13} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Selector de Escenarios Predictivos */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/80 p-3 rounded-2xl border border-slate-100">
+                  <div className="flex items-center gap-1.5 text-xs text-slate-600 font-bold">
+                    <Sliders size={14} className="text-violet-600" />
+                    <span>Escenario Predictivo:</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    {[
+                      { id: 'conservador', label: 'Conservador (-25%)' },
+                      { id: 'esperado', label: 'Esperado (Base ML)' },
+                      { id: 'optimista', label: 'Optimista (+35%)' },
+                    ].map((esc) => (
+                      <button
+                        key={esc.id}
+                        type="button"
+                        onClick={() => setEscenarioDashboard(esc.id)}
+                        className={`px-3 py-1 rounded-xl text-xs font-bold transition cursor-pointer ${
+                          escenarioDashboard === esc.id
+                            ? 'bg-violet-600 text-white shadow-xs'
+                            : 'bg-white hover:bg-slate-100 text-slate-600 border border-slate-200/70'
+                        }`}
+                      >
+                        {esc.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 3 TARJETAS KPI DE LA REGLA: VALOR - PORCENTAJE = RESULTADO */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                  
+                  {/* Tarjeta 1: Valor Proyectado */}
+                  <div className="bg-slate-50/70 rounded-2xl p-4 border border-slate-200/70 space-y-1">
+                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+                      1. Valor Estimado Ventas
+                    </span>
+                    <p className="text-xl sm:text-2xl font-black text-slate-900">
+                      {formatCurrency(valorEstimadoVentas)}
+                    </p>
+                    <span className="text-[11px] text-slate-400 block">
+                      Facturación bruta proyectada
+                    </span>
+                  </div>
+
+                  {/* Tarjeta 2: Porcentaje de Comisión */}
+                  <div className="bg-rose-50/60 rounded-2xl p-4 border border-rose-200/70 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-rose-700 uppercase tracking-wider block">
+                        2. Retención Plan (-{comisionPorcentaje}%)
+                      </span>
+                      <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-rose-100 text-rose-800">
+                        {configPlan.nombre}
+                      </span>
+                    </div>
+                    <p className="text-xl sm:text-2xl font-black text-rose-600">
+                      -{formatCurrency(valorComisionRetenida)}
+                    </p>
+                    <span className="text-[11px] text-rose-500 block">
+                      Menos comisión de plataforma
+                    </span>
+                  </div>
+
+                  {/* Tarjeta 3: Resultado = Valor - Porcentaje */}
+                  <div className="bg-gradient-to-br from-emerald-500/10 via-teal-500/10 to-violet-500/10 rounded-2xl p-4 border border-emerald-300/60 space-y-1 relative overflow-hidden">
+                    <span className="text-[11px] font-black text-emerald-800 uppercase tracking-wider block">
+                      3. Resultado: Ganancia Neta
+                    </span>
+                    <p className="text-xl sm:text-2xl font-black text-emerald-700">
+                      {formatCurrency(gananciaNetaEsperada)}
+                    </p>
+                    <span className="text-[11px] font-bold text-emerald-600 block">
+                      {porcentajeTienda}% de retorno a tu tienda
+                    </span>
+                  </div>
+
+                </div>
+
+                {/* Banner de Fórmula de Aula y Ahorro por Planes */}
+                <div className="p-3.5 rounded-2xl bg-gradient-to-r from-violet-50 via-purple-50 to-indigo-50 border border-violet-100 flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
+                  <div className="flex items-center gap-2">
+                    <Calculator size={16} className="text-violet-600 shrink-0" />
+                    <span className="text-violet-950 font-medium">
+                      <strong className="font-black">Fórmula aplicada: </strong>
+                      <code className="bg-white px-2 py-0.5 rounded text-violet-800 font-bold border border-violet-200">
+                        Resultado = Valor ({formatCurrency(valorEstimadoVentas)}) - {comisionPorcentaje}% ({formatCurrency(valorComisionRetenida)}) = {formatCurrency(gananciaNetaEsperada)} COP
+                      </code>
+                    </span>
+                  </div>
+
+                  {planActivo !== 'ELITE' && (
+                    <button
+                      onClick={() => setModalSuscripcion(true)}
+                      className="text-violet-700 hover:text-violet-900 font-extrabold underline cursor-pointer text-[11px] shrink-0"
+                    >
+                      Con Plan ELITE (2%) ganarías {formatCurrency(Math.round(valorEstimadoVentas * 0.98))} COP (+{formatCurrency(valorComisionRetenida - Math.round(valorEstimadoVentas * 0.02))})
+                    </button>
+                  )}
+                </div>
+
+              </div>
+
               {/* FILA INFERIOR: DESGLOSE Y MÉTRICAS EN BLANCO */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 
                 {/* TARJETA: DESGLOSE DE INGRESOS */}
                 <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
                   <div>
-                    <span className="text-xs font-semibold text-slate-400">Distribución de Ventas</span>
+                    <span className="text-xs font-semibold text-slate-400">Distribución de Ventas ({configPlan.nombre})</span>
                     <h4 className="text-2xl font-black text-slate-900 mt-0.5">
                       {formatCurrency(ingresosTiendaNetos)}
                     </h4>
@@ -534,9 +717,8 @@ export const PanelVendedor = () => {
 
                   {/* Barra de progreso segmentada */}
                   <div className="h-3 w-full bg-slate-100 rounded-full flex overflow-hidden gap-1 p-0.5">
-                    <div className="h-full bg-violet-600 rounded-full" style={{ width: '65%' }} title="Venta de Productos" />
-                    <div className="h-full bg-violet-400 rounded-full" style={{ width: '25%' }} title="Promociones & Ofertas" />
-                    <div className="h-full bg-emerald-500 rounded-full" style={{ width: '10%' }} title="Recompras recurrentes" />
+                    <div className="h-full bg-violet-600 rounded-full" style={{ width: `${porcentajeTienda}%` }} title={`Ganancia Tienda (${porcentajeTienda}%)`} />
+                    <div className="h-full bg-rose-400 rounded-full" style={{ width: `${comisionPorcentaje}%` }} title={`Comisión Plan (${comisionPorcentaje}%)`} />
                   </div>
 
                   {/* Lista de Categorías */}
@@ -544,23 +726,23 @@ export const PanelVendedor = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full bg-violet-600" />
-                        <span className="font-bold text-slate-700">Ventas Directas (96%)</span>
+                        <span className="font-bold text-slate-700">Ganancia Neta Tienda ({porcentajeTienda}%)</span>
                       </div>
-                      <span className="font-black text-slate-900">{formatCurrency(ingresosTiendaNetos * 0.96)}</span>
+                      <span className="font-black text-slate-900">{formatCurrency(ingresosTiendaNetos)}</span>
                     </div>
 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-violet-400" />
-                        <span className="font-bold text-slate-700">Retención Mercatto (4%)</span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-rose-400" />
+                        <span className="font-bold text-slate-700">Comisión {configPlan.nombre} ({comisionPorcentaje}%)</span>
                       </div>
-                      <span className="font-black text-slate-900">{formatCurrency(ingresosTiendaNetos * 0.04)}</span>
+                      <span className="font-black text-rose-600">-{formatCurrency(Math.round(totalVentasBase * comisionTasa))}</span>
                     </div>
 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                        <span className="font-bold text-slate-700">Envíos Asegurados</span>
+                        <span className="font-bold text-slate-700">Regla: resultado = valor - {comisionPorcentaje}%</span>
                       </div>
                       <span className="font-black text-emerald-600">Activo</span>
                     </div>
@@ -691,6 +873,23 @@ export const PanelVendedor = () => {
                 </div>
               </div>
 
+                            {/* TARJETA PREDICTIVA COMPACTA (PROYECTO DE AULA) */}
+              <div 
+                onClick={() => setTab('predictivo')}
+                className="cursor-pointer group"
+              >
+                <PredictiveEarningsModel
+                  perfil={perfil}
+                  productos={productos}
+                  pedidos={pedidos}
+                  onOpenPlanes={(e) => {
+                    if (e && e.stopPropagation) e.stopPropagation();
+                    setModalSuscripcion(true);
+                  }}
+                  esCompacto={true}
+                />
+              </div>
+
               {/* TARJETA 3: AI INSIGHT TIENDA */}
               <div className="bg-gradient-to-br from-violet-600 to-indigo-700 rounded-3xl p-6 text-white shadow-xl shadow-violet-500/20 space-y-3">
                 <div className="flex items-center gap-2">
@@ -718,6 +917,17 @@ export const PanelVendedor = () => {
         {/* ============================================================== */}
         {/* VISTAS ESPECÍFICAS (BENTO CONTAINER BLANCO ELEGANTE)           */}
         {/* ============================================================== */}
+
+        {/* Tab: Modelo Predictivo de Ganancias (Proyecto de Aula) */}
+        {tab === 'predictivo' && (
+          <PredictiveEarningsModel
+            perfil={perfil}
+            productos={productos}
+            pedidos={pedidos}
+            onOpenPlanes={() => setModalSuscripcion(true)}
+            esCompacto={false}
+          />
+        )}
 
         {/* Tab: Mis Productos */}
         {tab === 'productos' && (

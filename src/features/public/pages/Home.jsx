@@ -28,6 +28,7 @@ import {
 export const Home = () => {
   const [destacados, setDestacados] = useState([])
   const [nuevos, setNuevos] = useState([])
+  const [masVendidos, setMasVendidos] = useState([])
   const [tiendas, setTiendas] = useState([])
   const [categorias, setCategorias] = useState([])
   const [loading, setLoading] = useState(true)
@@ -86,9 +87,10 @@ export const Home = () => {
   useEffect(() => {
     const cargarDatos = async () => {
       try {
-        const [dest, nuev, tiendasData, catsData, allProdsData] = await Promise.all([
+        const [dest, nuev, masVend, tiendasData, catsData, allProdsData] = await Promise.all([
           productoService.obtenerDestacados().catch(() => []),
           productoService.obtenerNuevos().catch(() => []),
+          productoService.obtenerMasVendidos().catch(() => []),
           tiendaService.listarTiendas().catch(() => []),
           productoService.listarCategorias().catch(() => []),
           productoService.listar({ tamano: 30 }).catch(() => ({ content: [] }))
@@ -99,6 +101,12 @@ export const Home = () => {
         )
         setDestacados(combinados.length > 0 ? combinados : (dest || []))
         setNuevos(nuev && nuev.length > 0 ? nuev : listaGeneral.slice(0, 8))
+        
+        // Determinar más vendidos garantizando el criterio de cantidad de unidades vendidas (totalVentas)
+        const listaVendidos = (masVend && masVend.length > 0)
+          ? [...masVend].sort((a, b) => (b.totalVentas || 0) - (a.totalVentas || 0))
+          : [...combinados].sort((a, b) => (b.totalVentas || 0) - (a.totalVentas || 0))
+        setMasVendidos(listaVendidos)
         setTiendas(tiendasData || [])
         setCategorias(catsData || [])
       } finally {
@@ -124,7 +132,9 @@ export const Home = () => {
       <section className="w-full">
         <BentoGridHeroShowcase 
           categorias={categorias}
+          masVendidos={masVendidos}
           productos={destacados}
+
           onAddToCart={agregarItem} 
         />
       </section>
@@ -215,7 +225,8 @@ export const Home = () => {
           </div>
 
           <PromotionalBento 
-            productos={destacados} 
+            productos={destacados}
+ 
             onAddToCart={agregarItem} 
           />
         </section>
@@ -240,7 +251,8 @@ export const Home = () => {
         <section>
           <ProductTripleColumn 
             destacados={destacados} 
-            nuevos={nuevos} 
+            nuevos={nuevos}
+            masVendidos={masVendidos} 
           />
         </section>
 

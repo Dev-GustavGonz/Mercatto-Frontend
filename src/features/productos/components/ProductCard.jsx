@@ -107,9 +107,14 @@ export const ProductCard = ({ producto, onContactClick }) => {
 
       {/* Calificación y Tienda */}
       <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
-        <div className="flex items-center gap-1 font-bold text-slate-800 dark:text-slate-200 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded-md border border-amber-100 dark:border-amber-900/50">
+        <div className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded-md border border-amber-100 dark:border-amber-900/50">
           <Star size={12} className="text-amber-500 fill-amber-500" />
           <span>{producto.calificacion != null ? Number(producto.calificacion).toFixed(1) : '5.0'}</span>
+          {producto.totalVentas > 0 && (
+            <span className="text-[10px] text-amber-700 dark:text-amber-300 font-semibold pl-1 border-l border-amber-200 dark:border-amber-800">
+              {producto.totalVentas} {t('vendidos') || 'vendidos'}
+            </span>
+          )}
         </div>
 
         {producto.vendedor?.nombreTienda && (
