@@ -5,6 +5,7 @@ import VendorsTable from '@/features/admin/components/VendorsTable'
 import CategoryManager from '@/features/admin/components/CategoryManager'
 import CouponManager from '@/features/admin/components/CouponManager'
 import SupportTicketsManager from '@/features/admin/components/SupportTicketsManager'
+import AdminPredictiveModel from '@/features/admin/components/AdminPredictiveModel'
 import Spinner from '@/components/common/Spinner'
 import Modal from '@/components/common/Modal'
 import { useToast } from '@/hooks/useToast'
@@ -41,7 +42,10 @@ import {
   ShieldCheck,
   CheckCircle2,
   Clock,
-  AlertCircle
+  AlertCircle,
+  Trash2,
+  Zap,
+  Crown
 } from 'lucide-react'
 
 export const PanelAdmin = () => {
@@ -58,6 +62,26 @@ export const PanelAdmin = () => {
   const [filtroEstadoPedido, setFiltroEstadoPedido] = useState('TODOS')
   const [pedidoDetalleModal, setPedidoDetalleModal] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [usuarioAEliminar, setUsuarioAEliminar] = useState(null)
+  const [modalEliminarUsuario, setModalEliminarUsuario] = useState(false)
+  const [eliminandoUsuario, setEliminandoUsuario] = useState(false)
+
+  const handleConfirmarEliminarUsuario = async () => {
+    if (!usuarioAEliminar) return
+    setEliminandoUsuario(true)
+    try {
+      const res = await adminService.eliminarUsuario(usuarioAEliminar.id)
+      mostrarExito(res?.mensaje || `Usuario ${usuarioAEliminar.nombre} eliminado exitosamente`)
+      setModalEliminarUsuario(false)
+      setUsuarioAEliminar(null)
+      cargarDatos()
+    } catch (err) {
+      const msg = err.response?.data?.mensaje || 'No se pudo eliminar el usuario porque tiene registros asociados'
+      mostrarError(msg)
+    } finally {
+      setEliminandoUsuario(false)
+    }
+  }
 
   const { usuario, logout } = useAuth()
   const { error: mostrarError, success: mostrarExito } = useToast()
@@ -125,9 +149,47 @@ export const PanelAdmin = () => {
   }
 
   const tiendasPendientes = vendedores.filter((v) => v.estado === 'PENDIENTE').length
-  const totalVentasMercado = pedidos.filter(p => p.estado !== 'CANCELADO').reduce((acc, p) => acc + (p.total || 0), 0) || (stats.ingresosTotales || 48500000)
-  const comisionesTotalesAdmin = totalVentasMercado * 0.04
-  const totalNetoProveedores = totalVentasMercado * 0.96
+
+  // Helper de comisiones por plan: STARTER 10%, PRO 5%, ELITE 2%
+  const obtenerTasaPlan = (plan) => {
+    const p = (plan || 'STARTER').toUpperCase()
+    if (p === 'PRO') return 0.05
+    if (p === 'ELITE') return 0.02
+    return 0.10
+  }
+
+  const obtenerCuotaPlan = (plan) => {
+    const p = (plan || 'STARTER').toUpperCase()
+    if (p === 'PRO') return 49000
+    if (p === 'ELITE') return 99000
+    return 0
+  }
+
+  // Liquidaciones reales calculadas según el plan de cada tienda/empresa
+  const liquidacionesPorTienda = vendedores.map((v) => {
+    const plan = (v.tipoSuscripcion || 'STARTER').toUpperCase()
+    const tasa = obtenerTasaPlan(plan)
+    const cuota = obtenerCuotaPlan(plan)
+    const ventasBrutas = v.ventasBrutas != null ? v.ventasBrutas : 0
+    const comisionRetenida = v.comisionAdmin != null ? v.comisionAdmin : Math.round(ventasBrutas * tasa)
+    const netoALiquidar = v.pagoNetoVendedor != null ? v.pagoNetoVendedor : Math.round(ventasBrutas - comisionRetenida)
+
+    return {
+      ...v,
+      plan,
+      porcentajeComision: tasa * 100,
+      cuotaMensual: cuota,
+      ventasBrutas,
+      comisionRetenida,
+      netoALiquidar
+    }
+  })
+
+  const totalVentasMercado = liquidacionesPorTienda.reduce((acc, v) => acc + (v.ventasBrutas || 0), 0) || (stats.ingresosTotales || 48500000)
+  const totalComisionesVentasAdmin = liquidacionesPorTienda.reduce((acc, v) => acc + (v.comisionRetenida || 0), 0) || Math.round(totalVentasMercado * 0.065)
+  const totalSuscripcionesPlanes = liquidacionesPorTienda.reduce((acc, v) => acc + (v.cuotaMensual || 0), 0)
+  const gananciaTotalAdmin = totalComisionesVentasAdmin + totalSuscripcionesPlanes
+  const totalNetoProveedores = Math.max(0, totalVentasMercado - totalComisionesVentasAdmin)
 
   // Helper para identificar la tienda o proveedor de cada pedido en la auditoría del admin
   const obtenerTiendaPedido = (p) => {
@@ -140,10 +202,19 @@ export const PanelAdmin = () => {
     return 'Tienda Marketplace'
   }
 
+  const obtenerInfoPlanPedido = (p) => {
+    const nombre = obtenerTiendaPedido(p)
+    const tienda = vendedores.find(v => v.nombreTienda && v.nombreTienda.toLowerCase() === nombre.toLowerCase())
+    const plan = (tienda?.tipoSuscripcion || 'STARTER').toUpperCase()
+    const tasa = obtenerTasaPlan(plan)
+    return { plan, tasa, porcentaje: tasa * 100 }
+  }
+
   // Dock items (Sin emojis, iconos profesionales Lucide en blanco y morado)
   const dockItems = [
     { id: 'resumen', label: 'Tablero Bento', icon: LayoutDashboard, badge: null },
-    { id: 'finanzas', label: 'Finanzas & 4%', icon: DollarSign, badge: '4%' },
+    { id: 'finanzas', label: 'Liquidación & Comisiones', icon: DollarSign, badge: 'Planes' },
+    { id: 'predictivo', label: 'IA Predictiva Admin', icon: TrendingUp, badge: 'IA' },
     { id: 'pedidos', label: 'Auditoría Pedidos', icon: ShoppingCart, badge: pedidos.length },
     { id: 'vendedores', label: 'Tiendas & Proveedores', icon: Store, badge: tiendasPendientes > 0 ? tiendasPendientes : null },
     { id: 'categorias', label: 'Árbol Categorías', icon: Grid, badge: null },
@@ -276,7 +347,8 @@ export const PanelAdmin = () => {
               <div className="flex items-center gap-2.5">
                 <h1 className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight">
                   {tab === 'resumen' && 'Tablero General del Marketplace'}
-                  {tab === 'finanzas' && 'Liquidación & Comisiones (4%)'}
+                  {tab === 'finanzas' && 'Liquidación & Comisiones según Plan de Tienda'}
+                  {tab === 'predictivo' && 'Modelo Predictivo de Monetización (IA Admin)'}
                   {tab === 'pedidos' && 'Auditoría Global de Pedidos'}
                   {tab === 'vendedores' && 'Aprobación y Control de Tiendas'}
                   {tab === 'categorias' && 'Gestión de Árbol de Categorías'}
@@ -947,22 +1019,34 @@ export const PanelAdmin = () => {
                         <td className="p-4 text-right">
                           <div className="flex items-center justify-end gap-2">
                             {u.rol !== 'ADMIN' && (
-                              <button
-                                onClick={async () => {
-                                  try {
-                                    await adminService.cambiarEstadoUsuario(u.id, !u.activo)
-                                    mostrarExito(u.activo ? `Usuario ${u.nombre} suspendido` : `Usuario ${u.nombre} reactivado`)
-                                    cargarDatos()
-                                  } catch {
-                                    mostrarError('Error al modificar estado del usuario')
-                                  }
-                                }}
-                                className={`px-3 py-1 rounded-xl text-xs font-bold transition cursor-pointer ${
-                                  u.activo ? 'bg-rose-50 text-rose-600 hover:bg-rose-100' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
-                                }`}
-                              >
-                                {u.activo ? 'Suspender' : 'Reactivar'}
-                              </button>
+                              <>
+                                <button
+                                  onClick={async () => {
+                                    try {
+                                      await adminService.cambiarEstadoUsuario(u.id, !u.activo)
+                                      mostrarExito(u.activo ? `Usuario ${u.nombre} suspendido` : `Usuario ${u.nombre} reactivado`)
+                                      cargarDatos()
+                                    } catch {
+                                      mostrarError('Error al modificar estado del usuario')
+                                    }
+                                  }}
+                                  className={`px-3 py-1 rounded-xl text-xs font-bold transition cursor-pointer ${
+                                    u.activo ? 'bg-rose-50 text-rose-600 hover:bg-rose-100' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
+                                  }`}
+                                >
+                                  {u.activo ? 'Suspender' : 'Reactivar'}
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    setUsuarioAEliminar(u)
+                                    setModalEliminarUsuario(true)
+                                  }}
+                                  className="p-1.5 rounded-xl bg-slate-50 hover:bg-rose-50 text-slate-400 hover:text-rose-600 border border-slate-200 transition cursor-pointer"
+                                  title="Eliminar usuario (solo si no tiene pedidos ni actividad)"
+                                >
+                                  <Trash2 size={14} />
+                                </button>
+                              </>
                             )}
                           </div>
                         </td>
@@ -974,42 +1058,129 @@ export const PanelAdmin = () => {
           </div>
         )}
 
-        {/* Tab: Finanzas & 4% */}
+        {/* Tab: Liquidación & Comisiones por Plan */}
         {tab === 'finanzas' && (
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
-            <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-violet-600 to-indigo-700 text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-6 shadow-lg shadow-violet-500/15">
-              <div className="space-y-2">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 text-white font-bold text-xs border border-white/20">
+            <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-violet-950 text-white flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-lg shadow-violet-500/15">
+              <div className="space-y-2 max-w-2xl">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/20 text-violet-300 font-bold text-xs border border-violet-400/30">
                   <DollarSign size={14} />
-                  <span>Control Financiero & Comisiones Mercatto</span>
+                  <span>Liquidación & Comisiones según Plan de Empresa</span>
                 </span>
-                <h3 className="text-2xl font-black">Comisión 4% del Administrador</h3>
-                <p className="text-xs text-violet-100 max-w-xl leading-relaxed">
-                  Mercatto retiene automáticamente el <strong>4%</strong> como ganancia de la plataforma y el <strong>96%</strong> se reserva para liquidar a las tiendas.
+                <h3 className="text-2xl font-black">Monetización y Retención Mercatto</h3>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Las comisiones se retienen automáticamente por cada venta según el plan de la empresa:{' '}
+                  <strong className="text-white">Starter (10%)</strong>, <strong className="text-white">Pro (5%)</strong> y{' '}
+                  <strong className="text-white">Elite (2%)</strong>. Además, la plataforma percibe ingresos recurrentes mensuales por los planes suscritos{' '}
+                  <strong className="text-emerald-300">(Pro $49.000, Elite $99.000)</strong>.
                 </p>
               </div>
 
-              <div className="bg-white/10 p-5 rounded-2xl border border-white/20 text-right shrink-0">
-                <span className="text-xs font-bold text-violet-200 uppercase block">Ganancia Neta Admin (4%)</span>
-                <span className="text-3xl font-black text-emerald-300">{formatCurrency(comisionesTotalesAdmin)}</span>
+              <div className="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/20 text-right shrink-0 w-full lg:w-auto">
+                <span className="text-xs font-bold text-violet-200 uppercase block tracking-wider">Ganancia Neta Total Plataforma</span>
+                <span className="text-3xl font-black text-emerald-400">{formatCurrency(gananciaTotalAdmin)}</span>
+                <span className="text-[11px] text-slate-300 block mt-1 font-semibold">
+                  Comisiones {formatCurrency(totalComisionesVentasAdmin)} + Suscripciones {formatCurrency(totalSuscripcionesPlanes)}
+                </span>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80">
-                <span className="text-xs text-slate-400 font-semibold">Ventas Brutas Marketplace</span>
-                <p className="text-xl font-black text-slate-900 mt-1">{formatCurrency(totalVentasMercado)}</p>
+            {/* Tarjetas KPI de Finanzas */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
+                <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Ventas Brutas Totales</span>
+                <p className="text-xl font-black text-slate-900">{formatCurrency(totalVentasMercado)}</p>
+                <p className="text-[11px] text-slate-400">Facturación acumulada</p>
               </div>
-              <div className="p-5 rounded-2xl bg-emerald-50/60 border border-emerald-200">
-                <span className="text-xs text-emerald-700 font-semibold">Tus Ganancias (4%)</span>
-                <p className="text-xl font-black text-emerald-600 mt-1">{formatCurrency(comisionesTotalesAdmin)}</p>
+              <div className="p-5 rounded-2xl bg-violet-50/70 border border-violet-200 space-y-1">
+                <span className="text-xs text-violet-700 font-bold uppercase tracking-wider">Comisiones de Venta</span>
+                <p className="text-xl font-black text-violet-700">{formatCurrency(totalComisionesVentasAdmin)}</p>
+                <p className="text-[11px] text-violet-600 font-semibold">Starter 10% | Pro 5% | Elite 2%</p>
               </div>
-              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80">
-                <span className="text-xs text-slate-400 font-semibold">A Liquidar a Vendedores (96%)</span>
-                <p className="text-xl font-black text-violet-700 mt-1">{formatCurrency(totalNetoProveedores)}</p>
+              <div className="p-5 rounded-2xl bg-indigo-50/70 border border-indigo-200 space-y-1">
+                <span className="text-xs text-indigo-700 font-bold uppercase tracking-wider">Planes Mensuales (MRR)</span>
+                <p className="text-xl font-black text-indigo-700">{formatCurrency(totalSuscripcionesPlanes)}</p>
+                <p className="text-[11px] text-indigo-600 font-semibold">Pro ($49k) + Elite ($99k)</p>
+              </div>
+              <div className="p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-1">
+                <span className="text-xs text-emerald-700 font-bold uppercase tracking-wider">A Liquidar a Vendedores</span>
+                <p className="text-xl font-black text-emerald-700">{formatCurrency(totalNetoProveedores)}</p>
+                <p className="text-[11px] text-emerald-600 font-semibold">Ventas - Comisiones retenidas</p>
+              </div>
+            </div>
+
+            {/* Tabla Detallada de Liquidación por Empresa / Tienda */}
+            <div className="space-y-4 pt-4 border-t border-slate-100">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <div>
+                  <h4 className="text-sm font-black text-slate-900">Detalle de Liquidaciones y Retenciones por Tienda</h4>
+                  <p className="text-xs text-slate-500">Comisión aplicada y valor neto transferible según el plan suscrito</p>
+                </div>
+                <span className="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-xl">
+                  {liquidacionesPorTienda.length} tiendas registradas
+                </span>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-100">
+                    <tr>
+                      <th className="p-3.5">Tienda / Propietario</th>
+                      <th className="p-3.5">Plan Contratado</th>
+                      <th className="p-3.5">Cuota Mensual</th>
+                      <th className="p-3.5 text-right">Ventas Brutas</th>
+                      <th className="p-3.5 text-right">Retención Comisión</th>
+                      <th className="p-3.5 text-right">Neto a Liquidar</th>
+                      <th className="p-3.5">Datos Bancarios</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {liquidacionesPorTienda.map((v) => (
+                      <tr key={v.id} className="hover:bg-slate-50/70 transition">
+                        <td className="p-3.5">
+                          <p className="font-bold text-slate-900">{v.nombreTienda}</p>
+                          <p className="text-[11px] text-slate-400">{v.nombrePropietario || v.email}</p>
+                        </td>
+                        <td className="p-3.5">
+                          <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold border ${
+                            v.plan === 'ELITE'
+                              ? 'bg-amber-50 text-amber-800 border-amber-200'
+                              : v.plan === 'PRO'
+                              ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                              : 'bg-slate-100 text-slate-700 border-slate-200'
+                          }`}>
+                            <span>{v.plan}</span>
+                            <span className="font-black font-mono">({v.porcentajeComision}%)</span>
+                          </span>
+                        </td>
+                        <td className="p-3.5 text-slate-600 font-medium">
+                          {v.cuotaMensual > 0 ? `${formatCurrency(v.cuotaMensual)}/mes` : 'Gratis'}
+                        </td>
+                        <td className="p-3.5 text-right font-bold text-slate-900">
+                          {formatCurrency(v.ventasBrutas)}
+                        </td>
+                        <td className="p-3.5 text-right font-bold text-rose-600">
+                          -{formatCurrency(v.comisionRetenida)}
+                        </td>
+                        <td className="p-3.5 text-right font-black text-emerald-600">
+                          {formatCurrency(v.netoALiquidar)}
+                        </td>
+                        <td className="p-3.5 text-slate-500">
+                          <p className="font-semibold text-slate-700">{v.banco || 'Bancolombia'}</p>
+                          <p className="text-[10px] text-slate-400">{v.cuentaBancaria || 'No registrada'}</p>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
+        )}
+
+        {/* Tab: Modelo Predictivo de Monetización (IA Admin) */}
+        {tab === 'predictivo' && (
+          <AdminPredictiveModel vendedores={vendedores} pedidos={pedidos} />
         )}
 
         {/* Tab: Mensajes */}
@@ -1095,20 +1266,72 @@ export const PanelAdmin = () => {
               </div>
             )}
 
-            {/* Resumen Financiero y Comisión Mercatto */}
+            {/* Resumen Financiero y Comisión Mercatto según Plan */}
             <div className="pt-3 border-t border-slate-100 space-y-1.5">
-              <div className="flex justify-between text-xs text-slate-500">
-                <span>Comisión Mercatto Plataforma (4%):</span>
-                <span className="font-bold text-emerald-600">+{formatCurrency(pedidoDetalleModal.total * 0.04)}</span>
-              </div>
-              <div className="flex justify-between text-xs text-slate-500">
-                <span>Liquidación Neta para {obtenerTiendaPedido(pedidoDetalleModal)} (96%):</span>
-                <span className="font-bold text-violet-700">{formatCurrency(pedidoDetalleModal.total * 0.96)}</span>
-              </div>
+              {(() => {
+                const info = obtenerInfoPlanPedido(pedidoDetalleModal)
+                const comisionPedido = Math.round(pedidoDetalleModal.total * info.tasa)
+                const netoPedido = Math.round(pedidoDetalleModal.total - comisionPedido)
+                return (
+                  <>
+                    <div className="flex justify-between text-xs text-slate-500">
+                      <span>Comisión Mercatto ({info.plan} {info.porcentaje}%):</span>
+                      <span className="font-bold text-emerald-600">+{formatCurrency(comisionPedido)}</span>
+                    </div>
+                    <div className="flex justify-between text-xs text-slate-500">
+                      <span>Liquidación Neta para {obtenerTiendaPedido(pedidoDetalleModal)} ({100 - info.porcentaje}%):</span>
+                      <span className="font-bold text-violet-700">{formatCurrency(netoPedido)}</span>
+                    </div>
+                  </>
+                )
+              })()}
               <div className="pt-2 border-t border-slate-100 flex justify-between font-bold text-sm">
                 <span>Total Facturado:</span>
                 <span className="text-slate-900">{formatCurrency(pedidoDetalleModal.total)}</span>
               </div>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* MODAL DE CONFIRMACIÓN: BORRADO SEGURO DE USUARIO */}
+      {modalEliminarUsuario && usuarioAEliminar && (
+        <Modal
+          isOpen={modalEliminarUsuario}
+          onClose={() => !eliminandoUsuario && setModalEliminarUsuario(false)}
+          title="Confirmar Eliminación de Usuario"
+        >
+          <div className="space-y-4 text-xs">
+            <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 space-y-2">
+              <p className="font-bold flex items-center gap-1.5 text-amber-800">
+                <AlertCircle size={16} className="text-amber-600 shrink-0" />
+                <span>Control de Integridad y Dependencias</span>
+              </p>
+              <p className="leading-relaxed">
+                ¿Estás seguro de que deseas eliminar permanentemente a{' '}
+                <strong>{usuarioAEliminar.nombre}</strong> ({usuarioAEliminar.email})?
+              </p>
+              <p className="text-[11px] text-amber-700 leading-relaxed">
+                <strong>Regla de negocio:</strong> El sistema validará automáticamente que la cuenta <em>no tenga pedidos registrados</em> ni tiendas con productos o ventas asociadas. De existir registros vinculados, la eliminación será rechazada y se sugerirá la suspensión.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2">
+              <button
+                onClick={() => setModalEliminarUsuario(false)}
+                disabled={eliminandoUsuario}
+                className="px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold transition cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleConfirmarEliminarUsuario}
+                disabled={eliminandoUsuario}
+                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold transition cursor-pointer flex items-center gap-1.5 shadow-sm"
+              >
+                {eliminandoUsuario ? <Spinner size="xs" /> : <Trash2 size={14} />}
+                <span>{eliminandoUsuario ? 'Verificando y Eliminando...' : 'Sí, Eliminar Usuario'}</span>
+              </button>
             </div>
           </div>
         </Modal>

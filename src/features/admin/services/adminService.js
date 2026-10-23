@@ -31,6 +31,21 @@ export const adminService = {
     return res.data
   },
 
+  eliminarUsuario: async (id) => {
+    const res = await api.delete('/admin/usuarios/' + id)
+    return res.data
+  },
+
+  obtenerFinanzas: async () => {
+    const res = await api.get('/admin/finanzas')
+    return res.data
+  },
+
+  obtenerModeloPredictivoAdmin: async (params = {}) => {
+    const res = await api.get('/admin/modelo-predictivo', { params })
+    return res.data
+  },
+
   listarPedidos: async (params = {}) => {
     const res = await api.get('/admin/pedidos', { params })
     return res.data
