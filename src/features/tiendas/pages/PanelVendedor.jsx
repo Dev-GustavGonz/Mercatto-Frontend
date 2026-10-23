@@ -79,6 +79,7 @@ export const PanelVendedor = () => {
   const [msgSeleccionado, setMsgSeleccionado] = useState(null)
   const [modalSuscripcion, setModalSuscripcion] = useState(false)
   const [enviandoRespuesta, setEnviandoRespuesta] = useState(false)
+  const [escenarioDashboard, setEscenarioDashboard] = useState('esperado')
   const navigate = useNavigate()
 
   // Navegación segura entre pestañas (no borra modoCrear si nos movemos dentro de productos)
@@ -229,7 +230,6 @@ export const PanelVendedor = () => {
   const comisionPorcentaje = configPlan.porcentaje
   const porcentajeTienda = 100 - comisionPorcentaje
 
-  const [escenarioDashboard, setEscenarioDashboard] = useState('esperado')
   const multiplicadorEscenario = escenarioDashboard === 'conservador' ? 0.75 : escenarioDashboard === 'optimista' ? 1.35 : 1.0
 
   // Ventas brutas base

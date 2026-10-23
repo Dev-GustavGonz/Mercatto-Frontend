@@ -29,17 +29,19 @@ export const AuthProvider = ({ children }) => {
               email: me.email,
               rol: me.rol?.replace('ROLE_', ''),
             }))
-          } else {
+          } else if (me && !me.exito) {
             localStorage.removeItem('mercatto_token')
             localStorage.removeItem('mercatto_user')
             setToken(null)
             setUsuario(null)
           }
-        } catch {
-          localStorage.removeItem('mercatto_token')
-          localStorage.removeItem('mercatto_user')
-          setToken(null)
-          setUsuario(null)
+        } catch (err) {
+          if (err?.response?.status === 401 || err?.response?.status === 403) {
+            localStorage.removeItem('mercatto_token')
+            localStorage.removeItem('mercatto_user')
+            setToken(null)
+            setUsuario(null)
+          }
         }
       } else {
         // No hay access token (pestaña nueva / navegador reabierto): si el usuario
@@ -121,9 +123,10 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  const esComprador = usuario?.rol === 'COMPRADOR'
-  const esVendedor = usuario?.rol === 'VENDEDOR'
-  const esAdmin = usuario?.rol === 'ADMIN'
+  const rolNormalizado = (usuario?.rol || '').replace('ROLE_', '').toUpperCase()
+  const esComprador = rolNormalizado === 'COMPRADOR'
+  const esVendedor = rolNormalizado === 'VENDEDOR'
+  const esAdmin = rolNormalizado === 'ADMIN'
 
   const actualizarUsuario = (nuevosDatos) => {
     setUsuario((prev) => {
