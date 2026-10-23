@@ -11,6 +11,7 @@ import OrdersTable from '@/features/tiendas/components/OrdersTable'
 import VendorProfile from '@/features/tiendas/components/VendorProfile'
 import VendorMembershipModal from '@/features/tiendas/components/VendorMembershipModal'
 import PredictiveEarningsModel from '@/features/tiendas/components/PredictiveEarningsModel'
+import BentoSalesChart from '@/components/common/BentoSalesChart'
 import Button from '@/components/common/Button'
 import Spinner from '@/components/common/Spinner'
 import { formatCurrency } from '@/utils/formatCurrency'
@@ -467,97 +468,15 @@ export const PanelVendedor = () => {
             {/* COLUMNA IZQUIERDA BENTO (2 COLUMNAS) */}
             <div className="lg:col-span-2 space-y-5">
               
-              {/* TARJETA HERO: RENDIMIENTO DE TIENDA (GRADIENTE MORADO MERCATTO) */}
-              <div className="bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 text-white rounded-[32px] p-6 sm:p-8 shadow-xl shadow-violet-500/15 space-y-6 relative overflow-hidden">
-                {/* Header de la tarjeta */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <h3 className="text-sm font-semibold text-violet-100">Rendimiento de Mi Tienda</h3>
-                    <div className="flex items-baseline gap-3 mt-1">
-                      <span className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-                        {formatCurrency(ingresosTiendaNetos)}
-                      </span>
-                      <span className="text-xs font-bold text-emerald-300 bg-emerald-950/40 px-2.5 py-1 rounded-full border border-emerald-500/30">
-                        +24.5% este mes
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Selector de periodo temporal */}
-                  <div className="flex items-center gap-1 bg-white/10 p-1 rounded-full self-start sm:self-auto border border-white/15 text-xs font-bold">
-                    {['1D', '1S', '1M', '3M', '6M', '1A'].map((filtro) => (
-                      <button
-                        key={filtro}
-                        onClick={() => setTimeRange(filtro)}
-                        className={`px-3 py-1 rounded-full transition cursor-pointer ${
-                          timeRange === filtro
-                            ? 'bg-white text-slate-900 shadow-sm'
-                            : 'text-violet-200 hover:text-white'
-                        }`}
-                      >
-                        {filtro}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Gráfico Vectorial Spline & Barras */}
-                <div className="h-48 w-full relative pt-4 select-none">
-                  <svg className="w-full h-full overflow-visible" viewBox="0 0 600 160" preserveAspectRatio="none">
-                    <defs>
-                      <linearGradient id="vendorChartGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.3" />
-                        <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.0" />
-                      </linearGradient>
-                    </defs>
-
-                    {/* Barras de volumen inferiores */}
-                    {[
-                      { x: 30, h: 30, o: 0.3 }, { x: 60, h: 45, o: 0.4 }, { x: 90, h: 35, o: 0.3 },
-                      { x: 120, h: 55, o: 0.5 }, { x: 150, h: 70, o: 0.6 }, { x: 180, h: 40, o: 0.3 },
-                      { x: 210, h: 60, o: 0.5 }, { x: 240, h: 80, o: 0.6 }, { x: 270, h: 95, o: 0.7 },
-                      { x: 300, h: 65, o: 0.5 }, { x: 330, h: 50, o: 0.4 }, { x: 360, h: 75, o: 0.6 },
-                      { x: 390, h: 85, o: 0.7 }, { x: 420, h: 70, o: 0.5 }, { x: 450, h: 90, o: 0.7 },
-                      { x: 480, h: 60, o: 0.4 }, { x: 510, h: 100, o: 0.8 }, { x: 540, h: 80, o: 0.6 },
-                    ].map((bar, idx) => (
-                      <rect
-                        key={idx}
-                        x={bar.x}
-                        y={130 - bar.h}
-                        width="10"
-                        height={bar.h}
-                        rx="5"
-                        fill="#FFFFFF"
-                        opacity={bar.o}
-                      />
-                    ))}
-
-                    {/* Área sombreada bajo la curva */}
-                    <path
-                      d="M 20 110 Q 100 30, 180 90 T 340 30 T 480 70 T 570 30 L 570 150 L 20 150 Z"
-                      fill="url(#vendorChartGradient)"
-                    />
-
-                    {/* Línea de tendencia continua suave en blanco */}
-                    <path
-                      d="M 20 110 Q 100 30, 180 90 T 340 30 T 480 70 T 570 30"
-                      fill="none"
-                      stroke="#FFFFFF"
-                      strokeWidth="2.5"
-                    />
-                  </svg>
-
-                  {/* Etiquetas de fechas en la base */}
-                  <div className="flex justify-between text-[11px] text-violet-200 font-mono pt-2">
-                    <span>1 Sep</span>
-                    <span>7 Sep</span>
-                    <span>14 Sep</span>
-                    <span>21 Sep</span>
-                    <span>28 Sep</span>
-                    <span>Hoy</span>
-                  </div>
-                </div>
-              </div>
+              {/* TARJETA HERO: RENDIMIENTO DE TIENDA (DINÁMICA Y COHERENTE) */}
+              <BentoSalesChart
+                titulo="Rendimiento de Mi Tienda"
+                baseTotal={ingresosTiendaNetos}
+                pedidos={pedidos}
+                timeRange={timeRange}
+                onTimeRangeChange={setTimeRange}
+                gradientId="vendorStoreChartGrad"
+              />
 
               {/* ============================================================== */}
               {/* SECCIÓN DESTACADA: MODELO PREDICTIVO DE GANANCIAS EN PYTHON   */}

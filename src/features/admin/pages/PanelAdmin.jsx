@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useEffect, useState, useMemo } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { adminService } from '@/features/admin'
 import VendorsTable from '@/features/admin/components/VendorsTable'
 import CategoryManager from '@/features/admin/components/CategoryManager'
 import CouponManager from '@/features/admin/components/CouponManager'
 import SupportTicketsManager from '@/features/admin/components/SupportTicketsManager'
 import AdminPredictiveModel from '@/features/admin/components/AdminPredictiveModel'
+import BentoSalesChart from '@/components/common/BentoSalesChart'
 import Spinner from '@/components/common/Spinner'
 import Modal from '@/components/common/Modal'
 import { useToast } from '@/hooks/useToast'
@@ -49,7 +50,21 @@ import {
 } from 'lucide-react'
 
 export const PanelAdmin = () => {
-  const [tab, setTab] = useState('resumen')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const tabUrl = searchParams.get('tab')
+  const [tab, setTabState] = useState(tabUrl || 'resumen')
+
+  useEffect(() => {
+    if (tabUrl && tabUrl !== tab) {
+      setTabState(tabUrl)
+    }
+  }, [tabUrl])
+
+  const setTab = (nuevoTab) => {
+    setTabState(nuevoTab)
+    setSearchParams({ tab: nuevoTab })
+  }
+
   const [timeRange, setTimeRange] = useState('1M')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [stats, setStats] = useState({})
@@ -190,6 +205,7 @@ export const PanelAdmin = () => {
   const totalSuscripcionesPlanes = liquidacionesPorTienda.reduce((acc, v) => acc + (v.cuotaMensual || 0), 0)
   const gananciaTotalAdmin = totalComisionesVentasAdmin + totalSuscripcionesPlanes
   const totalNetoProveedores = Math.max(0, totalVentasMercado - totalComisionesVentasAdmin)
+  const comisionesTotalesAdmin = totalComisionesVentasAdmin
 
   // Helper para identificar la tienda o proveedor de cada pedido en la auditoría del admin
   const obtenerTiendaPedido = (p) => {
@@ -395,14 +411,14 @@ export const PanelAdmin = () => {
               <ExternalLink size={12} className="text-slate-400" />
             </Link>
 
-            {/* 3. Indicador Rápido de Comisión 4% */}
+            {/* 3. Indicador Rápido de Comisiones & Planes */}
             <button
               onClick={() => setTab('finanzas')}
               className="px-3.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold text-xs transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
-              title="Ver reporte financiero y comisión del 4%"
+              title="Ver liquidaciones y retenciones por plan"
             >
               <DollarSign size={14} className="text-emerald-600" />
-              <span>4% Mercatto</span>
+              <span>Comisiones Planes</span>
             </button>
 
             {/* 4. Sincronizar datos */}
@@ -435,145 +451,66 @@ export const PanelAdmin = () => {
             {/* COLUMNA IZQUIERDA BENTO (2 COLUMNAS) */}
             <div className="lg:col-span-2 space-y-5">
               
-              {/* TARJETA HERO: RENDIMIENTO MARKETPLACE (GRADIENTE MORADO MERCATTO) */}
-              <div className="bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 text-white rounded-[32px] p-6 sm:p-8 shadow-xl shadow-violet-500/15 space-y-6 relative overflow-hidden">
-                {/* Header de la tarjeta */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <h3 className="text-sm font-semibold text-violet-100">Rendimiento del Marketplace</h3>
-                    <div className="flex items-baseline gap-3 mt-1">
-                      <span className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-                        {formatCurrency(totalVentasMercado)}
-                      </span>
-                      <span className="text-xs font-bold text-emerald-300 bg-emerald-950/40 px-2.5 py-1 rounded-full border border-emerald-500/30">
-                        +16.8% este mes
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Selector de periodo temporal */}
-                  <div className="flex items-center gap-1 bg-white/10 p-1 rounded-full self-start sm:self-auto border border-white/15 text-xs font-bold">
-                    {['1D', '1S', '1M', '3M', '6M', '1A'].map((filtro) => (
-                      <button
-                        key={filtro}
-                        onClick={() => setTimeRange(filtro)}
-                        className={`px-3 py-1 rounded-full transition cursor-pointer ${
-                          timeRange === filtro
-                            ? 'bg-white text-slate-900 shadow-sm'
-                            : 'text-violet-200 hover:text-white'
-                        }`}
-                      >
-                        {filtro}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Gráfico Vectorial Spline & Barras */}
-                <div className="h-52 w-full relative pt-4 select-none">
-                  <svg className="w-full h-full overflow-visible" viewBox="0 0 600 180" preserveAspectRatio="none">
-                    <defs>
-                      <linearGradient id="adminChartGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.3" />
-                        <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.0" />
-                      </linearGradient>
-                    </defs>
-
-                    {/* Barras de volumen inferiores bicolores */}
-                    {[
-                      { x: 30, h: 35, o: 0.35 }, { x: 50, h: 48, o: 0.45 }, { x: 70, h: 60, o: 0.55 },
-                      { x: 90, h: 40, o: 0.35 }, { x: 110, h: 25, o: 0.25 }, { x: 130, h: 55, o: 0.5 },
-                      { x: 150, h: 70, o: 0.65 }, { x: 170, h: 45, o: 0.4 }, { x: 190, h: 30, o: 0.3 },
-                      { x: 210, h: 65, o: 0.6 }, { x: 230, h: 80, o: 0.7 }, { x: 250, h: 95, o: 0.8 },
-                      { x: 270, h: 40, o: 0.35 }, { x: 290, h: 75, o: 0.65 }, { x: 310, h: 85, o: 0.75 },
-                      { x: 330, h: 50, o: 0.45 }, { x: 350, h: 30, o: 0.3 }, { x: 370, h: 65, o: 0.55 },
-                      { x: 390, h: 100, o: 0.85 }, { x: 410, h: 85, o: 0.7 }, { x: 430, h: 45, o: 0.4 },
-                      { x: 450, h: 70, o: 0.6 }, { x: 470, h: 90, o: 0.75 }, { x: 490, h: 60, o: 0.5 },
-                      { x: 510, h: 40, o: 0.35 }, { x: 530, h: 75, o: 0.65 }, { x: 550, h: 110, o: 0.9 },
-                    ].map((bar, idx) => (
-                      <rect
-                        key={idx}
-                        x={bar.x}
-                        y={140 - bar.h}
-                        width="8"
-                        height={bar.h}
-                        rx="4"
-                        fill="#FFFFFF"
-                        opacity={bar.o}
-                      />
-                    ))}
-
-                    {/* Área sombreada bajo la curva */}
-                    <path
-                      d="M 20 120 Q 100 40, 180 110 T 340 30 T 480 90 T 580 40 L 580 160 L 20 160 Z"
-                      fill="url(#adminChartGradient)"
-                    />
-
-                    {/* Línea de tendencia continua suave en blanco */}
-                    <path
-                      d="M 20 120 Q 100 40, 180 110 T 340 30 T 480 90 T 580 40"
-                      fill="none"
-                      stroke="#FFFFFF"
-                      strokeWidth="2.5"
-                    />
-                  </svg>
-
-                  {/* Etiquetas de fechas en la base */}
-                  <div className="flex justify-between text-[11px] text-violet-200 font-mono pt-2">
-                    <span>1 Sep</span>
-                    <span>7 Sep</span>
-                    <span>14 Sep</span>
-                    <span>21 Sep</span>
-                    <span>28 Sep</span>
-                    <span>Hoy</span>
-                  </div>
-                </div>
-              </div>
+              {/* TARJETA HERO: RENDIMIENTO MARKETPLACE (DINÁMICA Y COHERENTE) */}
+              <BentoSalesChart
+                titulo="Rendimiento del Marketplace"
+                baseTotal={totalVentasMercado}
+                pedidos={pedidos}
+                timeRange={timeRange}
+                onTimeRangeChange={setTimeRange}
+                gradientId="adminMarketplaceChartGrad"
+              />
 
               {/* FILA INFERIOR: DESGLOSE Y MÉTRICAS BENTO */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 
-                {/* TARJETA: DESGLOSE DE INGRESOS */}
+                {/* TARJETA: DESGLOSE DE INGRESOS SEGÚN PLANES */}
                 <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
                   <div>
-                    <span className="text-xs font-semibold text-slate-400">Desglose de Comisiones (4%)</span>
+                    <span className="text-xs font-semibold text-slate-400">Ganancias de la Plataforma (Comisiones + Planes)</span>
                     <h4 className="text-2xl font-black text-slate-900 mt-0.5">
-                      {formatCurrency(comisionesTotalesAdmin)}
+                      {formatCurrency(gananciaTotalAdmin)}
                     </h4>
                   </div>
 
-                  {/* Barra de progreso segmentada */}
+                  {/* Barra de progreso segmentada proporcional */}
                   <div className="h-3 w-full bg-slate-100 rounded-full flex overflow-hidden gap-1 p-0.5">
-                    <div className="h-full bg-violet-600 rounded-full" style={{ width: '45%' }} title="Comisiones Marketplace" />
-                    <div className="h-full bg-violet-400 rounded-full" style={{ width: '30%' }} title="Suscripciones Pro" />
-                    <div className="h-full bg-emerald-500 rounded-full" style={{ width: '15%' }} title="Servicios de Envíos" />
-                    <div className="h-full bg-slate-300 rounded-full" style={{ width: '10%' }} title="Otros" />
+                    <div
+                      className="h-full bg-violet-600 rounded-full transition-all duration-500"
+                      style={{ width: `${gananciaTotalAdmin > 0 ? Math.max(15, Math.round((totalComisionesVentasAdmin / gananciaTotalAdmin) * 100)) : 70}%` }}
+                      title="Comisiones por Ventas según Plan"
+                    />
+                    <div
+                      className="h-full bg-indigo-500 rounded-full transition-all duration-500"
+                      style={{ width: `${gananciaTotalAdmin > 0 ? Math.max(15, Math.round((totalSuscripcionesPlanes / gananciaTotalAdmin) * 100)) : 30}%` }}
+                      title="Cuotas Mensuales de Suscripción"
+                    />
                   </div>
 
-                  {/* Lista de Categorías */}
+                  {/* Lista de Categorías de Monetización */}
                   <div className="space-y-2.5 pt-2 text-xs">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full bg-violet-600" />
-                        <span className="font-bold text-slate-700">Comisión 4% Ventas</span>
+                        <span className="font-bold text-slate-700">Comisiones Ventas (10%, 5%, 2%)</span>
                       </div>
-                      <span className="font-black text-slate-900">{formatCurrency(comisionesTotalesAdmin * 0.75)}</span>
+                      <span className="font-black text-slate-900">{formatCurrency(totalComisionesVentasAdmin)}</span>
                     </div>
 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-violet-400" />
-                        <span className="font-bold text-slate-700">Suscripciones Tiendas</span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
+                        <span className="font-bold text-slate-700">Planes Tiendas (MRR)</span>
                       </div>
-                      <span className="font-black text-slate-900">{formatCurrency(comisionesTotalesAdmin * 0.20)}</span>
+                      <span className="font-black text-slate-900">{formatCurrency(totalSuscripcionesPlanes)}</span>
                     </div>
 
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between border-t border-slate-100 pt-2">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                        <span className="font-bold text-slate-700">Comisiones de Envíos</span>
+                        <span className="font-bold text-slate-700">A Liquidar a Vendedores</span>
                       </div>
-                      <span className="font-black text-slate-900">{formatCurrency(comisionesTotalesAdmin * 0.05)}</span>
+                      <span className="font-black text-emerald-700">{formatCurrency(totalNetoProveedores)}</span>
                     </div>
                   </div>
                 </div>
@@ -793,8 +730,8 @@ export const PanelAdmin = () => {
                   <span className="text-base font-black text-slate-900">{pedidos.length}</span>
                 </div>
                 <div className="px-4 py-2 rounded-2xl bg-emerald-50 border border-emerald-100 text-right">
-                  <span className="text-[10px] text-emerald-700 uppercase font-bold block">Comisión 4% Admin</span>
-                  <span className="text-base font-black text-emerald-600">{formatCurrency(comisionesTotalesAdmin)}</span>
+                  <span className="text-[10px] text-emerald-700 uppercase font-bold block">Comisión por Planes</span>
+                  <span className="text-base font-black text-emerald-600">{formatCurrency(totalComisionesVentasAdmin)}</span>
                 </div>
               </div>
             </div>
@@ -836,7 +773,7 @@ export const PanelAdmin = () => {
                     <th className="p-4">Tienda / Vendedor</th>
                     <th className="p-4">Comprador</th>
                     <th className="p-4">Total</th>
-                    <th className="p-4 text-emerald-600">Comisión (4%)</th>
+                    <th className="p-4 text-emerald-600">Comisión según Plan</th>
                     <th className="p-4">Estado Tienda</th>
                     <th className="p-4">Guía / Despacho</th>
                     <th className="p-4">Fecha</th>
@@ -874,7 +811,10 @@ export const PanelAdmin = () => {
                         </td>
                         <td className="p-4 font-black text-slate-900">{formatCurrency(p.total)}</td>
                         <td className="p-4 font-black text-emerald-600">
-                          +{formatCurrency(p.total * 0.04)}
+                          +{formatCurrency(p.total * obtenerInfoPlanPedido(p).tasa)}
+                          <span className="block text-[10px] font-bold text-slate-400">
+                            ({obtenerInfoPlanPedido(p).porcentaje}% {obtenerInfoPlanPedido(p).plan})
+                          </span>
                         </td>
                         <td className="p-4">
                           <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
