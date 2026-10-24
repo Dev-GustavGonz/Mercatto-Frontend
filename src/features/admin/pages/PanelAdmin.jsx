@@ -999,26 +999,26 @@ export const PanelAdmin = () => {
         {/* Tab: Liquidación & Comisiones por Plan */}
         {tab === 'finanzas' && (
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
-            <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-violet-950 text-white flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-lg shadow-violet-500/15">
-              <div className="space-y-2 max-w-2xl">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/20 text-violet-300 font-bold text-xs border border-violet-400/30">
-                  <DollarSign size={14} />
+            <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 text-white flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-xl shadow-violet-500/20 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute -bottom-10 -left-10 w-80 h-80 bg-purple-400/20 rounded-full blur-3xl pointer-events-none" />
+
+              <div className="relative z-10 space-y-2 max-w-2xl">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-white font-bold text-xs border border-white/30 backdrop-blur-sm shadow-xs">
+                  <DollarSign size={14} className="text-amber-300" />
                   <span>Liquidación & Comisiones según Plan de Empresa</span>
                 </span>
-                <h3 className="text-2xl font-black">Monetización y Retención Mercatto</h3>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  Las comisiones se retienen automáticamente por cada venta según el plan de la empresa:{' '}
-                  <strong className="text-white">Starter (10%)</strong>, <strong className="text-white">Pro (5%)</strong> y{' '}
-                  <strong className="text-white">Elite (2%)</strong>. Además, la plataforma percibe ingresos recurrentes mensuales por los planes suscritos{' '}
-                  <strong className="text-emerald-300">(Pro $49.000, Elite $99.000)</strong>.
+                <h3 className="text-2xl sm:text-3xl font-black text-white">Monetización y Retención Mercatto</h3>
+                <p className="text-xs sm:text-sm text-violet-100 leading-relaxed font-medium">
+                  Supervisión y control financiero de la plataforma: retención automática de comisiones por venta y consolidación de ingresos por membresías activas de tiendas.
                 </p>
               </div>
 
-              <div className="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/20 text-right shrink-0 w-full lg:w-auto">
-                <span className="text-xs font-bold text-violet-200 uppercase block tracking-wider">Ganancia Neta Total Plataforma</span>
-                <span className="text-3xl font-black text-emerald-400">{formatCurrency(gananciaTotalAdmin)}</span>
-                <span className="text-[11px] text-slate-300 block mt-1 font-semibold">
-                  Comisiones {formatCurrency(totalComisionesVentasAdmin)} + Suscripciones {formatCurrency(totalSuscripcionesPlanes)}
+              <div className="relative z-10 bg-black/15 backdrop-blur-md p-5 rounded-2xl border border-white/20 text-right shrink-0 w-full lg:w-auto shadow-xs">
+                <span className="text-xs font-bold text-violet-100 uppercase block tracking-wider">Ganancia Neta Total Plataforma</span>
+                <span className="text-3xl font-black text-white">{formatCurrency(gananciaTotalAdmin)}</span>
+                <span className="text-[11px] text-violet-200 block mt-1 font-semibold">
+                  Ingresos consolidados por comisiones y membresías
                 </span>
               </div>
             </div>
@@ -1033,17 +1033,17 @@ export const PanelAdmin = () => {
               <div className="p-5 rounded-2xl bg-violet-50/70 border border-violet-200 space-y-1">
                 <span className="text-xs text-violet-700 font-bold uppercase tracking-wider">Comisiones de Venta</span>
                 <p className="text-xl font-black text-violet-700">{formatCurrency(totalComisionesVentasAdmin)}</p>
-                <p className="text-[11px] text-violet-600 font-semibold">Starter 10% | Pro 5% | Elite 2%</p>
+                <p className="text-[11px] text-violet-600 font-semibold">Retención según planes vigentes</p>
               </div>
               <div className="p-5 rounded-2xl bg-indigo-50/70 border border-indigo-200 space-y-1">
                 <span className="text-xs text-indigo-700 font-bold uppercase tracking-wider">Planes Mensuales (MRR)</span>
                 <p className="text-xl font-black text-indigo-700">{formatCurrency(totalSuscripcionesPlanes)}</p>
-                <p className="text-[11px] text-indigo-600 font-semibold">Pro ($49k) + Elite ($99k)</p>
+                <p className="text-[11px] text-indigo-600 font-semibold">Suscripciones de tiendas activas</p>
               </div>
               <div className="p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-1">
                 <span className="text-xs text-emerald-700 font-bold uppercase tracking-wider">A Liquidar a Vendedores</span>
                 <p className="text-xl font-black text-emerald-700">{formatCurrency(totalNetoProveedores)}</p>
-                <p className="text-[11px] text-emerald-600 font-semibold">Ventas - Comisiones retenidas</p>
+                <p className="text-[11px] text-emerald-600 font-semibold">Total neto transferible a tiendas</p>
               </div>
             </div>
 

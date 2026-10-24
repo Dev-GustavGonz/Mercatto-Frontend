@@ -96,7 +96,7 @@ export const PromotionalBento = ({ productos = [], onAddToCart }) => {
           </div>
 
           <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-tight tracking-tight">
-            {t('oferta_del_mes')} <span className="text-emerald-600 dark:text-emerald-400">Pro</span>
+            {t('oferta_del_mes')} <span className="text-emerald-600 dark:text-emerald-400">Especial</span>
           </h3>
 
           {/* Reloj Digital Funcional (DD : HH : MM : SS) */}
@@ -168,15 +168,7 @@ export const PromotionalBento = ({ productos = [], onAddToCart }) => {
           </div>
 
           <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-tight tracking-tight truncate">
-            {pNovedad?.titulo ? (
-              <>
-                <span className="text-violet-600 dark:text-violet-400">Pro</span> {pNovedad.titulo}
-              </>
-            ) : (
-              <>
-                {t('audio_pro_titulo')}
-              </>
-            )}
+            {pNovedad?.titulo || t('audio_pro_titulo')}
           </h3>
 
           <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold">
@@ -229,7 +221,7 @@ export const PromotionalBento = ({ productos = [], onAddToCart }) => {
 
           <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-tight tracking-tight truncate">
             {pTemporada?.marca || t('equipamiento_pro')}{' '}
-            <span className="text-sky-600 dark:text-sky-400">Pro</span>
+            <span className="text-sky-600 dark:text-sky-400">Oficial</span>
           </h3>
 
           <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold truncate">

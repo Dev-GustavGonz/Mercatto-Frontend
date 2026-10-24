@@ -242,7 +242,7 @@ export const Home = () => {
         {/* 5. NUESTROS PRODUCTOS DESTACADOS PRO                      */}
         {/* ========================================================= */}
         <section>
-          <FeaturedShowcase productos={destacados} />
+          <FeaturedShowcase productos={destacados} tiendas={tiendas} />
         </section>
 
         {/* ========================================================= */}
@@ -299,26 +299,27 @@ export const Home = () => {
               className="flex gap-5 overflow-x-auto pb-4 pt-1 scrollbar-none -mr-4 sm:-mr-6 lg:-mr-8 pr-12 sm:pr-16"
             >
               {tiendasMostradas.map((tItem, idx) => {
-                const coverImg = tItem.bannerUrl || coverDefaults[idx % coverDefaults.length]
+                const coverImg = tItem.portadaUrl || tItem.bannerUrl || coverDefaults[idx % coverDefaults.length]
                 return (
                   <div
                     key={tItem.id}
                     onClick={() => navigate(`/tienda/${tItem.id}`)}
-                    className="w-64 sm:w-72 shrink-0 bg-white dark:bg-slate-900 rounded-[28px] sm:rounded-[30px] border border-slate-200/90 dark:border-slate-800 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col justify-between cursor-pointer group select-none"
+                    className="w-72 sm:w-80 shrink-0 bg-white dark:bg-slate-900 rounded-[28px] sm:rounded-[30px] border border-slate-200/90 dark:border-slate-800 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col justify-between cursor-pointer group select-none"
                   >
-                    <div className="h-28 w-full relative overflow-hidden bg-slate-950">
+                    {/* Banner de la tienda amplio y 100% visible */}
+                    <div className="h-36 sm:h-40 w-full relative overflow-hidden bg-slate-100 dark:bg-slate-800">
                       <img
                         src={coverImg}
                         alt={tItem.nombreTienda}
-                        className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500 opacity-90"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
                     </div>
 
                     <div className="p-4 pt-0 relative flex-1 flex flex-col justify-between">
                       <div className="flex items-end justify-between -mt-7 mb-2">
                         <div className="relative">
-                          <div className="w-14 h-14 rounded-2xl border-3 border-white dark:border-slate-900 shadow-md overflow-hidden bg-slate-900 shrink-0">
+                          <div className="w-14 h-14 rounded-2xl border-2 border-white dark:border-slate-900 shadow-md overflow-hidden bg-slate-900 shrink-0">
                             {tItem.logoUrl ? (
                               <img src={tItem.logoUrl} alt={tItem.nombreTienda} className="w-full h-full object-cover" />
                             ) : (

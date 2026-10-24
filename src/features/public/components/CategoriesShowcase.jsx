@@ -19,28 +19,28 @@ export const CategoriesShowcase = ({ categorias = [] }) => {
   const { t, idioma } = useLanguage()
   const [categoriaActiva, setCategoriaActiva] = useState(null)
 
-  // Imágenes de producto alusivas a cada categoría (assets locales de alta fidelidad)
+  // Imágenes de productos reales de alta fidelidad alusivas a cada categoría
   const visualMeta = useMemo(() => ({
-    // Tecnología → laptop local
-    1: { icono: Laptop,     imagen: '/images/bento/laptop.png',           badgeKey: 'badge_flagship',    nameKey: 'cat_tecnologia' },
-    // Moda → zapatilla local
-    2: { icono: Shirt,      imagen: '/images/bento/sneaker.png',          badgeKey: 'badge_tendencia',   nameKey: 'cat_moda' },
-    // Hogar → sillón nórdico de diseño con iluminación de estudio limpia
-    3: { icono: Home,       imagen: '/images/categories/hogar.jpg',        badgeKey: 'badge_confort',     nameKey: 'cat_hogar' },
-    // Deportes → smartwatch de alta gama local
-    4: { icono: Activity,   imagen: '/images/bento/smartwatch.png',       badgeKey: 'badge_pro_fitness', nameKey: 'cat_deportes' },
-    // Belleza → frasco de cosmética / serum minimalista de lujo
-    5: { icono: Sparkles,   imagen: '/images/categories/belleza.jpg',      badgeKey: 'badge_cuidado',    nameKey: 'cat_belleza' },
-    // Herramientas → taladro inalámbrico moderno de precisión
-    6: { icono: Wrench,     imagen: '/images/categories/herramientas.jpg',  badgeKey: 'badge_taller',     nameKey: 'cat_herramientas' },
-    // Smartphones (id 7) → smartphone local
-    7: { icono: Smartphone, imagen: '/images/bento/smartphone.png',       badgeKey: 'badge_flagship',    nameKey: 'cat_tecnologia' },
-    // Accesorios tech (id 8) → headphones local
-    8: { icono: Laptop,     imagen: '/images/bento/headphones.png',       badgeKey: 'badge_flagship',    nameKey: 'cat_tecnologia' },
-    // Calzado (id 9) → sneaker local
-    9: { icono: Footprints, imagen: '/images/bento/sneaker.png',          badgeKey: 'badge_tendencia',   nameKey: 'cat_moda' },
-    // Cocina (id 10) → batería / utensilio de cocina profesional
-   10: { icono: Utensils,   imagen: '/images/categories/cocina.jpg',       badgeKey: 'badge_confort',     nameKey: 'cat_hogar' }
+    // Tecnología → MacBook Pro Studio
+    1: { icono: Laptop,     imagen: '/images/bento/laptop.png',                                                            badgeKey: 'badge_flagship',    nameKey: 'cat_tecnologia', badgeDefault: 'MacBook & PC' },
+    // Moda → Sneaker urbano Nike
+    2: { icono: Shirt,      imagen: '/images/bento/sneaker.png',                                                           badgeKey: 'badge_tendencia',   nameKey: 'cat_moda',       badgeDefault: 'Streetwear' },
+    // Hogar → Sofá de diseño nórdico
+    3: { icono: Home,       imagen: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&auto=format&fit=crop&q=80', badgeKey: 'badge_confort',     nameKey: 'cat_hogar',      badgeDefault: 'Muebles & Deco' },
+    // Deportes → Smartwatch Apple Watch Ultra Fitness
+    4: { icono: Activity,   imagen: '/images/bento/smartwatch.png',                                                        badgeKey: 'badge_pro_fitness', nameKey: 'cat_deportes',   badgeDefault: 'Fitness & Gym' },
+    // Belleza → Perfume de alta gama & Skincare
+    5: { icono: Sparkles,   imagen: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&auto=format&fit=crop&q=80', badgeKey: 'badge_cuidado',    nameKey: 'cat_belleza',    badgeDefault: 'Cosmética & Spa' },
+    // Herramientas → Taladro inalámbrico moderno de precisión
+    6: { icono: Wrench,     imagen: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=600&auto=format&fit=crop&q=80', badgeKey: 'badge_taller',     nameKey: 'cat_herramientas', badgeDefault: 'Taller Industrial' },
+    // Smartphones (id 7) → iPhone 15 Pro
+    7: { icono: Smartphone, imagen: '/images/bento/smartphone.png',                                                        badgeKey: 'badge_flagship',    nameKey: 'cat_tecnologia', badgeDefault: 'Smartphones' },
+    // Accesorios tech (id 8) → Sony WH-1000XM5 Studio Headphones
+    8: { icono: Laptop,     imagen: '/images/bento/headphones.png',                                                        badgeKey: 'badge_flagship',    nameKey: 'cat_tecnologia', badgeDefault: 'Audio Hi-Res' },
+    // Calzado (id 9) → Sneaker local
+    9: { icono: Footprints, imagen: '/images/bento/sneaker.png',                                                           badgeKey: 'badge_tendencia',   nameKey: 'cat_moda',       badgeDefault: 'Calzado Pro' },
+    // Cocina (id 10) → Sartenes y menaje chef
+   10: { icono: Utensils,   imagen: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&auto=format&fit=crop&q=80', badgeKey: 'badge_confort',     nameKey: 'cat_hogar',      badgeDefault: 'Menaje Chef' }
   }), [])
 
   // Resolución inteligente de metadatos según id o nombre de categoría
@@ -141,8 +141,8 @@ export const CategoriesShowcase = ({ categorias = [] }) => {
                 </span>
               </div>
 
-              {/* Imagen Aislada de Producto de la Categoría */}
-              <div className="relative w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center p-1">
+              {/* Imagen de Producto Real de la Categoría */}
+              <div className="relative w-full h-24 sm:h-28 rounded-2xl bg-slate-50/80 dark:bg-slate-800/60 flex items-center justify-center p-2 group-hover:bg-violet-50/50 dark:group-hover:bg-violet-950/20 transition-colors overflow-hidden">
                 <img
                   src={cat.imagen}
                   alt={cat.nombre}
@@ -150,7 +150,7 @@ export const CategoriesShowcase = ({ categorias = [] }) => {
                     e.currentTarget.onerror = null
                     e.currentTarget.src = cat.fallbackImagen || '/images/bento/laptop.png'
                   }}
-                  className="max-h-full max-w-full object-contain rounded-2xl filter drop-shadow-[0_10px_14px_rgba(0,0,0,0.12)] group-hover:scale-110 transition-transform duration-300"
+                  className="max-h-full max-w-full object-contain filter drop-shadow-[0_8px_14px_rgba(0,0,0,0.12)] group-hover:scale-110 transition-transform duration-300"
                   loading="lazy"
                 />
               </div>

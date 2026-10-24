@@ -16,7 +16,7 @@ import {
   ShieldCheck
 } from 'lucide-react'
 
-export const FeaturedShowcase = ({ productos = [] }) => {
+export const FeaturedShowcase = ({ productos = [], tiendas = [] }) => {
   const navigate = useNavigate()
   const { agregarItem } = useCart()
   const { favoriteIds, toggleFavoriteId } = useFavorites()
@@ -25,7 +25,7 @@ export const FeaturedShowcase = ({ productos = [] }) => {
 
   const isEn = idioma === 'EN'
 
-  // Fallbacks de alta fidelidad multi-producto para que NUNCA quede vacío el grid
+  // Fallbacks de alta fidelidad con membresía ELITE para garantizar un grid consistente
   const fallbackFeatured = useMemo(() => [
     {
       id: 201,
@@ -35,7 +35,7 @@ export const FeaturedShowcase = ({ productos = [] }) => {
       precioOferta: 1399000,
       calificacion: 4.9,
       imagenUrl: '/images/bento/headphones.png',
-      vendedor: { nombreTienda: isEn ? 'Official Sony Store' : 'Tienda Oficial Sony' }
+      vendedor: { nombreTienda: isEn ? 'Official Sony Elite' : 'Tienda Oficial Sony', plan: 'ELITE' }
     },
     {
       id: 202,
@@ -45,7 +45,7 @@ export const FeaturedShowcase = ({ productos = [] }) => {
       precioOferta: 4299000,
       calificacion: 5.0,
       imagenUrl: '/images/bento/smartphone.png',
-      vendedor: { nombreTienda: isEn ? 'Apple Flagship Partner' : 'Distribuidor Apple Oficial' }
+      vendedor: { nombreTienda: isEn ? 'Apple Flagship Elite' : 'Distribuidor Apple Oficial', plan: 'ELITE' }
     },
     {
       id: 203,
@@ -55,7 +55,7 @@ export const FeaturedShowcase = ({ productos = [] }) => {
       precioOferta: 3199000,
       calificacion: 4.8,
       imagenUrl: '/images/bento/smartwatch.png',
-      vendedor: { nombreTienda: isEn ? 'Apple Premium Partner' : 'Apple Premium Partner' }
+      vendedor: { nombreTienda: isEn ? 'Apple Premium Elite' : 'Apple Premium Partner', plan: 'ELITE' }
     },
     {
       id: 205,
@@ -65,31 +65,61 @@ export const FeaturedShowcase = ({ productos = [] }) => {
       precioOferta: 3499000,
       calificacion: 4.9,
       imagenUrl: '/images/bento/camera.png',
-      vendedor: { nombreTienda: isEn ? 'Official Canon Store' : 'Tienda Oficial Canon' }
+      vendedor: { nombreTienda: isEn ? 'Official Canon Elite' : 'Tienda Oficial Canon', plan: 'ELITE' }
     }
   ], [isEn])
 
-  // Tomamos los productos de la base de datos si existen; si no, usamos los fallbacks
-  const items = useMemo(() => {
-    if (productos && productos.length >= 4) {
-      return productos.slice(0, 4)
+  // Identificar IDs de empresas con membresía ELITE
+  const eliteStoreIds = useMemo(() => {
+    const ids = new Set()
+    if (Array.isArray(tiendas)) {
+      tiendas.forEach((t) => {
+        const plan = (t.tipoSuscripcion || t.plan || '').toUpperCase()
+        if (plan === 'ELITE') {
+          if (t.id) ids.add(t.id)
+          if (t.usuarioId) ids.add(t.usuarioId)
+        }
+      })
     }
-    if (productos && productos.length > 0) {
-      return [...productos, ...fallbackFeatured.slice(productos.length, 4)]
+    return ids
+  }, [tiendas])
+
+  // Filtrar exclusivamente productos de empresas que tengan un plan ELITE
+  const productosElite = useMemo(() => {
+    if (!productos || productos.length === 0) return []
+    return productos.filter((p) => {
+      const planDirecto = (p.vendedor?.plan || p.vendedor?.tipoSuscripcion || p.plan || '').toUpperCase()
+      if (planDirecto === 'ELITE') return true
+
+      const vId = p.vendedor?.id || p.vendedorId
+      const uId = p.vendedor?.usuarioId
+      if (vId && eliteStoreIds.has(vId)) return true
+      if (uId && eliteStoreIds.has(uId)) return true
+      return false
+    })
+  }, [productos, eliteStoreIds])
+
+  // Tomamos los productos de empresas Elite verificadas; si faltan, completamos con los fallbacks Elite
+  const items = useMemo(() => {
+    if (productosElite.length >= 4) {
+      return productosElite.slice(0, 4)
+    }
+    if (productosElite.length > 0) {
+      return [...productosElite, ...fallbackFeatured.slice(productosElite.length, 4)]
     }
     return fallbackFeatured
-  }, [productos, fallbackFeatured])
+  }, [productosElite, fallbackFeatured])
 
   return (
     <section className="space-y-6">
       
-      {/* Encabezado con Tipografía de Alto Impacto y Mayúscula Inicial */}
+      {/* Encabezado con Tipografía de Alto Impacto */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div className="space-y-1.5">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             {t('productos_destacados_pro')}{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-emerald-500">
-              Pro
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-500 to-violet-600">
+              Tiendas Elite
             </span>
           </h2>
         </div>
@@ -165,15 +195,10 @@ export const FeaturedShowcase = ({ productos = [] }) => {
               >
                 {/* Botón flotante superior: Favoritos & Vista */}
                 <div className="w-full flex items-center justify-between pb-2">
-                  {tieneOferta ? (
-                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-[10px] font-extrabold uppercase tracking-wider">
-                      {t('oferta_pro_badge')}
-                    </span>
-                  ) : (
-                    <span className="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] font-extrabold uppercase tracking-wider">
-                      {prod.marca || t('tienda_oficial_badge')}
-                    </span>
-                  )}
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1">
+                    <Sparkles size={10} className="text-amber-500 fill-amber-500" />
+                    <span>{t('oferta_pro_badge')}</span>
+                  </span>
 
                   <div className="flex items-center gap-1.5">
                     <button
