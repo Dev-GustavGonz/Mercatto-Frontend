@@ -355,43 +355,41 @@ export const PanelAdmin = () => {
       <main className="flex-1 space-y-5 min-w-0">
         
         {/* BARRA SUPERIOR (HEADER ROL SUPER ADMIN CON HERRAMIENTAS REALES) */}
-        <div className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/80 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+        <div className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/80 shadow-xs flex flex-col xl:flex-row xl:items-center justify-between gap-4">
           
           {/* Título de Pestaña Activa + Badge de Super Admin */}
-          <div className="flex items-center gap-3">
-            <div>
-              <div className="flex items-center gap-2.5">
-                <h1 className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight">
-                  {tab === 'resumen' && 'Tablero General del Marketplace'}
-                  {tab === 'finanzas' && 'Liquidación & Comisiones según Plan de Tienda'}
-                  {tab === 'predictivo' && 'Modelo Predictivo de Monetización (IA Admin)'}
-                  {tab === 'pedidos' && 'Auditoría Global de Pedidos'}
-                  {tab === 'vendedores' && 'Aprobación y Control de Tiendas'}
-                  {tab === 'categorias' && 'Gestión de Árbol de Categorías'}
-                  {tab === 'cupones' && 'Campañas de Descuento & Promociones'}
-                  {tab === 'usuarios' && 'Directorio de Usuarios y Roles'}
-                  {tab === 'soporte' && 'Tickets y Asistencia al Cliente'}
-                  {tab === 'mensajes' && 'Supervisión de Mensajería'}
-                </h1>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-50 text-violet-700 border border-violet-100 text-xs font-black">
-                  <ShieldCheck size={14} className="text-violet-600" />
-                  <span>Super Admin</span>
-                </span>
-              </div>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Panel central de administración y auditoría de Mercatto
-              </p>
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <h1 className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight">
+                {tab === 'resumen' && 'Tablero General del Marketplace'}
+                {tab === 'finanzas' && 'Liquidación & Comisiones según Plan de Tienda'}
+                {tab === 'predictivo' && 'Modelo Predictivo de Monetización'}
+                {tab === 'pedidos' && 'Auditoría Global de Pedidos'}
+                {tab === 'vendedores' && 'Aprobación y Control de Tiendas'}
+                {tab === 'categorias' && 'Gestión de Árbol de Categorías'}
+                {tab === 'cupones' && 'Campañas de Descuento & Promociones'}
+                {tab === 'usuarios' && 'Directorio de Usuarios y Roles'}
+                {tab === 'soporte' && 'Tickets y Asistencia al Cliente'}
+                {tab === 'mensajes' && 'Supervisión de Mensajería'}
+              </h1>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-50 text-violet-700 border border-violet-100 text-xs font-black shrink-0">
+                <ShieldCheck size={14} className="text-violet-600" />
+                <span>Super Admin</span>
+              </span>
             </div>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Panel central de administración y auditoría de Mercatto
+            </p>
           </div>
 
-          {/* Opciones Específicas del Rol Administrador */}
-          <div className="flex items-center flex-wrap gap-2.5 self-end md:self-auto">
+          {/* Opciones Específicas del Rol Administrador Bien Distribuidas */}
+          <div className="flex items-center gap-2.5 shrink-0 flex-wrap sm:flex-nowrap justify-between sm:justify-end w-full xl:w-auto">
             
             {/* 1. Alerta de Tiendas Pendientes (con clic directo) */}
             {tiendasPendientes > 0 && (
               <button
                 onClick={() => setTab('vendedores')}
-                className="px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-bold text-xs transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                className="px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-bold text-xs transition flex items-center gap-1.5 cursor-pointer shadow-2xs whitespace-nowrap"
                 title="Ver tiendas esperando aprobación"
               >
                 <AlertCircle size={14} className="text-amber-600" />
@@ -403,18 +401,18 @@ export const PanelAdmin = () => {
             <Link
               to="/catalogo"
               target="_blank"
-              className="px-3.5 py-2 rounded-xl border border-slate-200 hover:border-violet-300 hover:text-violet-700 hover:bg-violet-50 text-slate-700 font-bold text-xs transition flex items-center gap-1.5 shadow-2xs"
+              className="px-3 sm:px-3.5 py-2 rounded-xl border border-slate-200 hover:border-violet-300 hover:text-violet-700 hover:bg-violet-50 text-slate-700 font-bold text-xs transition flex items-center gap-1.5 shadow-2xs whitespace-nowrap"
               title="Inspeccionar tienda pública en una pestaña nueva"
             >
               <ShoppingBag size={14} className="text-violet-600" />
-              <span className="hidden sm:inline">Ver Catálogo</span>
+              <span>Ver Catálogo</span>
               <ExternalLink size={12} className="text-slate-400" />
             </Link>
 
             {/* 3. Indicador Rápido de Comisiones & Planes */}
             <button
               onClick={() => setTab('finanzas')}
-              className="px-3.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold text-xs transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+              className="px-3 sm:px-3.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold text-xs transition flex items-center gap-1.5 cursor-pointer shadow-2xs whitespace-nowrap"
               title="Ver liquidaciones y retenciones por plan"
             >
               <DollarSign size={14} className="text-emerald-600" />
@@ -424,18 +422,18 @@ export const PanelAdmin = () => {
             {/* 4. Sincronizar datos */}
             <button
               onClick={cargarDatos}
-              className="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 transition cursor-pointer"
+              className="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 transition cursor-pointer shrink-0"
               title="Actualizar datos del sistema"
             >
               <RefreshCw size={15} />
             </button>
 
             {/* 5. Perfil Admin */}
-            <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
-              <div className="w-8 h-8 rounded-full bg-violet-600 text-white flex items-center justify-center font-black text-xs shadow-xs">
+            <div className="flex items-center gap-2 pl-2 sm:pl-3 border-l border-slate-200 shrink-0">
+              <div className="w-8 h-8 rounded-full bg-violet-600 text-white flex items-center justify-center font-black text-xs shadow-xs shrink-0">
                 {usuario?.nombre?.charAt(0) || 'A'}
               </div>
-              <span className="text-xs font-bold text-slate-800 hidden lg:inline">
+              <span className="text-xs font-bold text-slate-800 whitespace-nowrap">
                 {usuario?.nombre || 'Administrador'}
               </span>
             </div>

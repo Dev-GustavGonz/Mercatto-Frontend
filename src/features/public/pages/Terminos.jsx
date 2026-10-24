@@ -71,7 +71,7 @@ export const Terminos = () => {
             <span className="text-violet-600 font-bold">6.</span> Atención al Cliente y Solución de Controversias
           </h2>
           <p>
-            Para consultas o reclamos, los usuarios pueden comunicarse con el equipo de soporte a través de <strong>soporte@mercatto.com</strong>, el chat con inteligencia artificial integrado en la plataforma o mediante nuestra línea directa de WhatsApp oficial.
+            Para consultas o reclamos, los usuarios pueden comunicarse con el equipo de soporte a través de <strong>realmercatto@gmail.com</strong>, el chat con inteligencia artificial integrado en la plataforma o mediante nuestra línea directa de WhatsApp oficial.
           </p>
         </section>
       </div>

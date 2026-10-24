@@ -96,8 +96,11 @@ export const Footer = () => {
           <div>
             <h4 className="text-sm font-bold text-white mb-4">{t('contacto')}</h4>
             <ul className="space-y-3 text-sm">
-              <li><span className="text-slate-400">soporte@mercatto.com</span></li>
-              <li><span className="text-slate-400">+57 (323) 388-2717</span></li>
+              <li>
+                <a href="mailto:realmercatto@gmail.com" className="text-slate-400 hover:text-violet-400 transition-colors">
+                  realmercatto@gmail.com
+                </a>
+              </li>
               <li><span className="text-slate-400">{isEn ? 'Mon - Sat: 8am - 6pm' : 'Lunes a Sábado: 8am - 6pm'}</span></li>
             </ul>
           </div>

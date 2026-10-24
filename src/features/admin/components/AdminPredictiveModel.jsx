@@ -191,37 +191,33 @@ export const AdminPredictiveModel = ({ vendedores = [], pedidos = [] }) => {
       {/* ============================================================== */}
       {/* 1. HERO BANNER: MODELO PREDICTIVO PARA EL ADMINISTRADOR        */}
       {/* ============================================================== */}
-      <div className="p-6 sm:p-8 rounded-[32px] bg-gradient-to-r from-slate-900 via-indigo-950 to-violet-950 text-white shadow-xl shadow-indigo-950/20 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-10 -left-10 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="p-6 sm:p-8 rounded-[32px] bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 text-white shadow-xl shadow-violet-500/20 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-10 -left-10 w-80 h-80 bg-purple-400/20 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div className="space-y-3 max-w-2xl">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/20 text-violet-300 font-bold text-xs border border-violet-400/30">
-                <Sparkles size={14} className="text-violet-300" />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-white font-bold text-xs border border-white/30 backdrop-blur-sm shadow-xs">
+                <Sparkles size={14} className="text-amber-300" />
                 <span>Modelo Predictivo de Monetización Mercatto</span>
               </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[11px] font-bold border border-emerald-400/30">
-                IA & Regla de Negocio
+              <span className="px-2.5 py-0.5 rounded-full bg-emerald-400/20 text-emerald-100 text-[11px] font-bold border border-emerald-300/30">
+                IA & Rendimiento
               </span>
             </div>
 
-            <h2 className="text-2xl sm:text-3xl font-black tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
               Proyección Financiera del Administrador
             </h2>
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-              La ganancia de la plataforma proviene de dos fuentes: el{' '}
-              <strong className="text-white">porcentaje de comisión por venta</strong> según el plan de cada empresa{' '}
-              <span className="text-violet-300">(Starter 10%, Pro 5%, Elite 2%)</span> más las{' '}
-              <strong className="text-white">suscripciones mensuales fijas</strong> que pagan los vendedores{' '}
-              <span className="text-emerald-300">(Pro $49.000, Elite $99.000)</span>.
+            <p className="text-xs sm:text-sm text-violet-100 leading-relaxed font-medium">
+              Supervisión estratégica del rendimiento financiero global de la plataforma, estimando los ingresos generados por comisiones de ventas y suscripciones de tiendas en Mercatto.
             </p>
           </div>
 
           {/* Selector de Escenarios Predictivos */}
-          <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/15 w-full lg:w-auto shrink-0 space-y-2">
-            <span className="text-[11px] font-bold text-slate-300 uppercase block tracking-wider flex items-center gap-1">
+          <div className="bg-black/15 backdrop-blur-md p-4 rounded-2xl border border-white/20 w-full lg:w-auto shrink-0 space-y-2 shadow-xs">
+            <span className="text-[11px] font-bold text-violet-100 uppercase block tracking-wider flex items-center gap-1">
               <Sliders size={13} />
               <span>Escenario de Inferencia</span>
             </span>
@@ -236,8 +232,8 @@ export const AdminPredictiveModel = ({ vendedores = [], pedidos = [] }) => {
                   onClick={() => setEscenario(esc.id)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                     escenario === esc.id
-                      ? 'bg-violet-600 text-white shadow-md'
-                      : 'bg-white/10 text-slate-300 hover:bg-white/20 hover:text-white'
+                      ? 'bg-white text-violet-800 shadow-md font-black'
+                      : 'bg-white/10 text-white hover:bg-white/20 hover:text-white'
                   }`}
                 >
                   {esc.label}
@@ -279,7 +275,7 @@ export const AdminPredictiveModel = ({ vendedores = [], pedidos = [] }) => {
           <div>
             <p className="text-2xl font-black text-violet-700">{formatCurrency(totalComisionesVentas)}</p>
             <p className="text-[11px] text-slate-500 mt-1">
-              Retención según planes (10%, 5%, 2%)
+              Retención según planes de tiendas
             </p>
           </div>
         </div>
@@ -456,12 +452,12 @@ export const AdminPredictiveModel = ({ vendedores = [], pedidos = [] }) => {
           <div className="flex items-center gap-2 text-slate-600 font-medium">
             <ShieldCheck size={16} className="text-emerald-600" />
             <span>
-              Total de fondos brutos a liquidar a las tiendas:{' '}
+              Total de fondos netos a liquidar a las tiendas:{' '}
               <strong className="text-slate-900">{formatCurrency(totalALiquidarTiendas)}</strong>
             </span>
           </div>
-          <span className="text-slate-400 font-mono text-[11px]">
-            [Ventas Brutas {formatCurrency(gmvTotalMarketplace)} - Comisiones {formatCurrency(totalComisionesVentas)}]
+          <span className="text-slate-400 text-[11px]">
+            Balance después de comisiones retenidas
           </span>
         </div>
       </div>
