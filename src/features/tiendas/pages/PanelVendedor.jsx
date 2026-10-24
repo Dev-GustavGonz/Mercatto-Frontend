@@ -500,7 +500,7 @@ export const PanelVendedor = () => {
                         </span>
                       </div>
                       <p className="text-xs text-slate-500 font-medium">
-                        Estimación según tu plan contratado: <span className="font-bold text-slate-700">resultado = valor - porcentaje</span>
+                        Proyección inteligente de rendimiento comercial e ingresos para tu tienda.
                       </p>
                     </div>
                   </div>
@@ -583,10 +583,10 @@ export const PanelVendedor = () => {
                     </span>
                   </div>
 
-                  {/* Tarjeta 3: Resultado = Valor - Porcentaje */}
+                  {/* Tarjeta 3: Ganancia Neta Proyectada */}
                   <div className="bg-gradient-to-br from-emerald-500/10 via-teal-500/10 to-violet-500/10 rounded-2xl p-4 border border-emerald-300/60 space-y-1 relative overflow-hidden">
                     <span className="text-[11px] font-black text-emerald-800 uppercase tracking-wider block">
-                      3. Resultado: Ganancia Neta
+                      3. Ganancia Neta Tienda
                     </span>
                     <p className="text-xl sm:text-2xl font-black text-emerald-700">
                       {formatCurrency(gananciaNetaEsperada)}
@@ -598,15 +598,15 @@ export const PanelVendedor = () => {
 
                 </div>
 
-                {/* Banner de Fórmula de Aula y Ahorro por Planes */}
+                {/* Banner de Proyección y Ahorro por Planes */}
                 <div className="p-3.5 rounded-2xl bg-gradient-to-r from-violet-50 via-purple-50 to-indigo-50 border border-violet-100 flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
                   <div className="flex items-center gap-2">
-                    <Calculator size={16} className="text-violet-600 shrink-0" />
+                    <Sparkles size={16} className="text-violet-600 shrink-0" />
                     <span className="text-violet-950 font-medium">
-                      <strong className="font-black">Fórmula aplicada: </strong>
-                      <code className="bg-white px-2 py-0.5 rounded text-violet-800 font-bold border border-violet-200">
-                        Resultado = Valor ({formatCurrency(valorEstimadoVentas)}) - {comisionPorcentaje}% ({formatCurrency(valorComisionRetenida)}) = {formatCurrency(gananciaNetaEsperada)} COP
-                      </code>
+                      <strong className="font-black">Estimación Neta: </strong>
+                      <span className="bg-white px-2.5 py-0.5 rounded text-violet-800 font-bold border border-violet-200">
+                        {formatCurrency(gananciaNetaEsperada)} COP para tu tienda
+                      </span>
                     </span>
                   </div>
 
@@ -615,7 +615,7 @@ export const PanelVendedor = () => {
                       onClick={() => setModalSuscripcion(true)}
                       className="text-violet-700 hover:text-violet-900 font-extrabold underline cursor-pointer text-[11px] shrink-0"
                     >
-                      Con Plan ELITE (2%) ganarías {formatCurrency(Math.round(valorEstimadoVentas * 0.98))} COP (+{formatCurrency(valorComisionRetenida - Math.round(valorEstimadoVentas * 0.02))})
+                      Con Plan ELITE ganarías hasta {formatCurrency(Math.round(valorEstimadoVentas * 0.98))} COP (+{formatCurrency(valorComisionRetenida - Math.round(valorEstimadoVentas * 0.02))})
                     </button>
                   )}
                 </div>
@@ -661,9 +661,9 @@ export const PanelVendedor = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                        <span className="font-bold text-slate-700">Regla: resultado = valor - {comisionPorcentaje}%</span>
+                        <span className="font-bold text-slate-700">Plan contratado</span>
                       </div>
-                      <span className="font-black text-emerald-600">Activo</span>
+                      <span className="font-black text-emerald-600">{configPlan.nombre}</span>
                     </div>
                   </div>
                 </div>

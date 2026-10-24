@@ -135,7 +135,7 @@ export const PredictiveEarningsModel = ({
         </div>
 
         <div className="p-2.5 bg-violet-50/70 rounded-xl border border-violet-100 text-[11px] text-violet-900 flex items-center justify-between">
-          <span className="font-semibold">Fórmula: resultado = valor - porcentaje</span>
+          <span className="font-semibold text-slate-600">Estimación de ingresos netos para tu tienda</span>
           {onOpenPlanes && (
             <button
               onClick={onOpenPlanes}
@@ -156,15 +156,15 @@ export const PredictiveEarningsModel = ({
       {/* ============================================================== */}
       {/* 1. HEADER HERO DEL MODELO PREDICTIVO (PROYECTO DE AULA)        */}
       {/* ============================================================== */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-[32px] p-6 sm:p-8 shadow-xl relative overflow-hidden space-y-4">
+      <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 text-white rounded-[32px] p-6 sm:p-8 shadow-xl shadow-violet-500/20 relative overflow-hidden space-y-4">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/20 text-violet-300 text-xs font-bold border border-violet-500/30">
-                <Sparkles size={13} />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-white text-xs font-bold border border-white/30 backdrop-blur-sm shadow-xs">
+                <Sparkles size={13} className="text-amber-300" />
                 <span>Modelo Predictivo en Python · Proyecto de Aula</span>
               </span>
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-[11px] font-bold border border-emerald-500/30">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-400/20 text-emerald-100 text-[11px] font-bold border border-emerald-300/30">
                 <ShieldCheck size={12} />
                 <span>Plan Actual: {COMISIONES_PLAN[planActualKey]?.nombre} ({COMISIONES_PLAN[planActualKey]?.porcentaje}% comisión)</span>
               </span>
@@ -174,16 +174,15 @@ export const PredictiveEarningsModel = ({
               Estimación de Ganancias para tu Tienda
             </h2>
 
-            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
-              Calcula con precisión de Machine Learning cuánto esperas facturar este mes deduciendo automáticamente
-              el porcentaje de comisión de tu plan contratado: <code className="bg-white/10 px-2 py-0.5 rounded text-emerald-300 font-mono text-xs font-bold">resultado = valor - porcentaje</code>.
+            <p className="text-xs sm:text-sm text-violet-100 max-w-2xl leading-relaxed">
+              Calcula con precisión de Machine Learning cuánto esperas facturar este mes de forma neta según la actividad y volumen proyectado de tu tienda.
             </p>
           </div>
 
           {onOpenPlanes && (
             <button
               onClick={onOpenPlanes}
-              className="self-start md:self-auto px-5 py-2.5 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white text-xs font-bold shadow-lg shadow-violet-500/30 transition-all flex items-center gap-2 cursor-pointer shrink-0 active:scale-95"
+              className="self-start md:self-auto px-5 py-2.5 rounded-2xl bg-white hover:bg-violet-50 text-violet-700 text-xs font-bold shadow-lg shadow-black/10 transition-all flex items-center gap-2 cursor-pointer shrink-0 active:scale-95"
             >
               <Crown size={15} />
               <span>Cambiar o Mejorar Plan</span>
@@ -191,17 +190,18 @@ export const PredictiveEarningsModel = ({
           )}
         </div>
 
-        {/* Banner de Fórmula de Cálculo */}
-        <div className="relative z-10 pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-2 text-violet-200">
-            <Calculator size={15} className="text-violet-400" />
-            <span className="font-mono">
-              Ganancia Neta = {formatCurrency(valorTotalVentas)} - ({formatCurrency(valorTotalVentas)} × {planInfo.porcentaje}%) = <strong className="text-emerald-300 font-bold">{formatCurrency(gananciaNetaEsperada)} COP</strong>
+        {/* Resumen de Inferencia Predictiva */}
+        <div className="relative z-10 pt-3 border-t border-white/20 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2 text-white">
+            <Sparkles size={15} className="text-amber-300" />
+            <span>
+              Ganancia Neta Proyectada:{' '}
+              <strong className="text-emerald-300 font-bold">{formatCurrency(gananciaNetaEsperada)} COP</strong>
             </span>
           </div>
 
-          <span className="text-[11px] text-slate-400">
-            Basado en Random Forest Regressor (R² = 0.8887)
+          <span className="text-[11px] text-violet-200">
+            Inferencia predictiva basada en Machine Learning
           </span>
         </div>
       </div>
@@ -371,7 +371,7 @@ export const PredictiveEarningsModel = ({
                 <span className="text-xl font-black text-emerald-300 mt-1 block">
                   {formatCurrency(gananciaNetaEsperada)}
                 </span>
-                <span className="text-[10px] text-emerald-200 mt-0.5 block">resultado = valor - porcentaje</span>
+                <span className="text-[10px] text-emerald-200 mt-0.5 block">Total libre proyectado</span>
               </div>
 
             </div>
