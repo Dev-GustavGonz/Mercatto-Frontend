@@ -42,40 +42,9 @@ export const Home = () => {
 
   const isEn = idioma === 'EN'
 
-  const fallbackTiendas = [
-    {
-      id: 1,
-      nombreTienda: isEn ? 'Sony Store Colombia' : 'Tienda Sony Colombia',
-      ciudad: 'Bogotá, D.C.',
-      bannerUrl: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=600&auto=format&fit=crop&q=80',
-      logoUrl: null
-    },
-    {
-      id: 2,
-      nombreTienda: isEn ? 'Apple Flagship Partner' : 'Distribuidor Apple Oficial',
-      ciudad: 'Medellín, Antioquia',
-      bannerUrl: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80',
-      logoUrl: null
-    },
-    {
-      id: 3,
-      nombreTienda: isEn ? 'Adidas Originals Colombia' : 'Adidas Originals Colombia',
-      ciudad: 'Cali, Valle del Cauca',
-      bannerUrl: 'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=600&auto=format&fit=crop&q=80',
-      logoUrl: null
-    },
-    {
-      id: 4,
-      nombreTienda: isEn ? 'Canon Official Studio' : 'Canon Studio Colombia',
-      ciudad: 'Barranquilla, Atlántico',
-      bannerUrl: 'https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=600&auto=format&fit=crop&q=80',
-      logoUrl: null
-    }
-  ]
+  const tiendasMostradas = tiendas
 
-  const tiendasMostradas = tiendas.length > 0 ? tiendas : fallbackTiendas
-
-  // Portadas por defecto para las tiendas oficiales
+  // Portadas por defecto para las tiendas oficiales que no hayan subido portada
   const coverDefaults = [
     'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&auto=format&fit=crop&q=80',
     'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=600&auto=format&fit=crop&q=80',
@@ -122,6 +91,26 @@ export const Home = () => {
       const offset = direccion === 'left' ? -320 : 320
       tiendasScrollRef.current.scrollBy({ left: offset, behavior: 'smooth' })
     }
+  }
+
+  // Pantalla de carga hasta que respondan los artículos reales de la base de datos
+  if (loading) {
+    return (
+      <div className="min-h-screen w-full flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 p-6 space-y-5">
+        <div className="relative flex items-center justify-center">
+          <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-violet-600 via-purple-600 to-indigo-600 animate-spin flex items-center justify-center shadow-xl shadow-violet-500/30">
+            <div className="w-11 h-11 rounded-2xl bg-white dark:bg-slate-950" />
+          </div>
+          <Sparkles size={24} className="text-violet-600 absolute animate-pulse" />
+        </div>
+        <div className="text-center space-y-1.5">
+          <h3 className="text-lg font-black text-slate-800 dark:text-white">Cargando Mercatto...</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+            Sincronizando artículos y tiendas desde la base de datos
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (

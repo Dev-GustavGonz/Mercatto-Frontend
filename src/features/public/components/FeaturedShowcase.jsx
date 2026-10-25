@@ -25,50 +25,6 @@ export const FeaturedShowcase = ({ productos = [], tiendas = [] }) => {
 
   const isEn = idioma === 'EN'
 
-  // Fallbacks de alta fidelidad con membresía ELITE para garantizar un grid consistente
-  const fallbackFeatured = useMemo(() => [
-    {
-      id: 201,
-      titulo: isEn ? 'Sony WH-1000XM5 Studio Wireless' : 'Sony WH-1000XM5 Audífonos Inalámbricos',
-      marca: 'Sony',
-      precio: 1699000,
-      precioOferta: 1399000,
-      calificacion: 4.9,
-      imagenUrl: '/images/bento/headphones.png',
-      vendedor: { nombreTienda: isEn ? 'Official Sony Elite' : 'Tienda Oficial Sony', plan: 'ELITE' }
-    },
-    {
-      id: 202,
-      titulo: isEn ? 'iPhone 15 Pro Max Natural Titanium' : 'iPhone 15 Pro Max Titanio Natural',
-      marca: 'Apple',
-      precio: 4899000,
-      precioOferta: 4299000,
-      calificacion: 5.0,
-      imagenUrl: '/images/bento/smartphone.png',
-      vendedor: { nombreTienda: isEn ? 'Apple Flagship Elite' : 'Distribuidor Apple Oficial', plan: 'ELITE' }
-    },
-    {
-      id: 203,
-      titulo: isEn ? 'Apple Watch Ultra 2 Titanium 49mm' : 'Apple Watch Ultra 2 Titanio 49mm',
-      marca: 'Apple',
-      precio: 3699000,
-      precioOferta: 3199000,
-      calificacion: 4.8,
-      imagenUrl: '/images/bento/smartwatch.png',
-      vendedor: { nombreTienda: isEn ? 'Apple Premium Elite' : 'Apple Premium Partner', plan: 'ELITE' }
-    },
-    {
-      id: 205,
-      titulo: isEn ? 'Canon EOS R50 4K Creator Kit' : 'Canon EOS R50 Kit Creador 4K',
-      marca: 'Canon',
-      precio: 3999000,
-      precioOferta: 3499000,
-      calificacion: 4.9,
-      imagenUrl: '/images/bento/camera.png',
-      vendedor: { nombreTienda: isEn ? 'Official Canon Elite' : 'Tienda Oficial Canon', plan: 'ELITE' }
-    }
-  ], [isEn])
-
   // Identificar IDs de empresas con membresía ELITE
   const eliteStoreIds = useMemo(() => {
     const ids = new Set()
@@ -84,7 +40,7 @@ export const FeaturedShowcase = ({ productos = [], tiendas = [] }) => {
     return ids
   }, [tiendas])
 
-  // Filtrar exclusivamente productos de empresas que tengan un plan ELITE
+  // Filtrar exclusivamente productos reales de empresas que tengan un plan ELITE
   const productosElite = useMemo(() => {
     if (!productos || productos.length === 0) return []
     return productos.filter((p) => {
@@ -99,16 +55,14 @@ export const FeaturedShowcase = ({ productos = [], tiendas = [] }) => {
     })
   }, [productos, eliteStoreIds])
 
-  // Tomamos los productos de empresas Elite verificadas; si faltan, completamos con los fallbacks Elite
+  // Tomamos únicamente los productos reales de empresas Elite de la base de datos (sin elementos estáticos)
   const items = useMemo(() => {
-    if (productosElite.length >= 4) {
-      return productosElite.slice(0, 4)
-    }
-    if (productosElite.length > 0) {
-      return [...productosElite, ...fallbackFeatured.slice(productosElite.length, 4)]
-    }
-    return fallbackFeatured
-  }, [productosElite, fallbackFeatured])
+    return productosElite.slice(0, 4)
+  }, [productosElite])
+
+  if (!items || items.length === 0) {
+    return null
+  }
 
   return (
     <section className="space-y-6">

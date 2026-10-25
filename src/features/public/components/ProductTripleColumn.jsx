@@ -26,88 +26,37 @@ export const ProductTripleColumn = ({ destacados = [], nuevos = [], masVendidos 
 
   const isEn = idioma === 'EN'
 
-  // Catálogo base de respaldo multi-producto para garantizar que las 3 columnas nunca estén vacías
-  const fallbackProducts = useMemo(() => [
-    {
-      id: 201,
-      titulo: isEn ? 'Sony WH-1000XM5 Studio Wireless' : 'Sony WH-1000XM5 Audífonos Inalámbricos',
-      precio: 1699000,
-      precioOferta: 1399000,
-      calificacion: 4.9,
-      imagenUrl: '/images/bento/headphones.png'
-    },
-    {
-      id: 202,
-      titulo: isEn ? 'iPhone 15 Pro Max Natural Titanium' : 'iPhone 15 Pro Max Titanio Natural',
-      precio: 4899000,
-      precioOferta: 4299000,
-      calificacion: 5.0,
-      imagenUrl: '/images/bento/smartphone.png'
-    },
-    {
-      id: 203,
-      titulo: isEn ? 'Apple Watch Ultra 2 Titanium 49mm' : 'Apple Watch Ultra 2 Titanio 49mm',
-      precio: 3699000,
-      precioOferta: 3199000,
-      calificacion: 4.8,
-      imagenUrl: '/images/bento/smartwatch.png'
-    },
-    {
-      id: 204,
-      titulo: isEn ? 'Adidas Ultraboost 21 Primeblue' : 'Adidas Ultraboost 21 Primeblue',
-      precio: 689000,
-      precioOferta: 589000,
-      calificacion: 4.9,
-      imagenUrl: '/images/bento/sneaker.png'
-    },
-    {
-      id: 205,
-      titulo: isEn ? 'Canon EOS R50 4K Creator Kit' : 'Canon EOS R50 Kit Creador 4K',
-      precio: 3999000,
-      precioOferta: 3499000,
-      calificacion: 4.9,
-      imagenUrl: '/images/bento/camera.png'
-    },
-    {
-      id: 206,
-      titulo: isEn ? 'MacBook Air M3 Liquid Retina 15"' : 'MacBook Air M3 Liquid Retina 15"',
-      precio: 6299000,
-      precioOferta: 5499000,
-      calificacion: 5.0,
-      imagenUrl: '/images/bento/laptop.png'
-    }
-  ], [isEn])
-
-  // Separación dinámica en 3 listas con fallbacks multi-producto
+  // Separación dinámica en 3 listas a partir de productos reales de la base de datos
   const hotDeals = useMemo(() => {
+    if (!destacados || destacados.length === 0) return []
     const ofertasReales = destacados.filter(p => p.precioOferta && p.precioOferta < p.precio)
-    if (ofertasReales.length >= 3) return ofertasReales.slice(0, 3)
-    if (destacados.length >= 3) return destacados.slice(0, 3)
-    return [fallbackProducts[0], fallbackProducts[2], fallbackProducts[4]]
-  }, [destacados, fallbackProducts])
+    if (ofertasReales.length > 0) return ofertasReales.slice(0, 3)
+    return destacados.slice(0, 3)
+  }, [destacados])
 
   const bestSellers = useMemo(() => {
     if (masVendidos && masVendidos.length > 0) {
       const ordenados = [...masVendidos].sort((a, b) => (b.totalVentas || 0) - (a.totalVentas || 0))
-      if (ordenados.length >= 3) return ordenados.slice(0, 3)
-      return ordenados
+      return ordenados.slice(0, 3)
     }
-    const combinados = [...destacados, ...nuevos].filter(
+    const combinados = [...(destacados || []), ...(nuevos || [])].filter(
       (p, idx, arr) => arr.findIndex(item => item.id === p.id) === idx
     )
+    if (combinados.length === 0) return []
     const ordenados = combinados.sort((a, b) => (b.totalVentas || 0) - (a.totalVentas || 0))
-    if (ordenados.length >= 3) return ordenados.slice(0, 3)
-    return [fallbackProducts[1], fallbackProducts[3], fallbackProducts[5]]
-  }, [masVendidos, destacados, nuevos, fallbackProducts])
+    return ordenados.slice(0, 3)
+  }, [masVendidos, destacados, nuevos])
 
   const topRated = useMemo(() => {
-    if (destacados.length >= 3) {
-      return [...destacados]
-        .sort((a, b) => (b.calificacion || 0) - (a.calificacion || 0))
-        .slice(0, 3)
-    }
-    return [fallbackProducts[2], fallbackProducts[0], fallbackProducts[5]]
-  }, [destacados, fallbackProducts])
+    if (!destacados || destacados.length === 0) return []
+    return [...destacados]
+      .sort((a, b) => (b.calificacion || 0) - (a.calificacion || 0))
+      .slice(0, 3)
+  }, [destacados])
+
+  if (hotDeals.length === 0 && bestSellers.length === 0 && topRated.length === 0) {
+    return null
+  }
 
   // Renderizador de cada fila compacta de producto Bento
   const renderItemCard = (prod) => {

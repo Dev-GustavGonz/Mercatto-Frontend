@@ -58,7 +58,7 @@ export const CategoriesShowcase = ({ categorias = [] }) => {
     return { icono: Sparkles, imagen: '/images/bento/laptop.png', badgeKey: 'badge_oficial', nameKey: null }
   }
 
-  // Lista de categorías con textos traducidos y fallbacks limpios
+  // Lista de categorías con textos traducidos vinculadas exclusivamente a la base de datos
   const listaCategorias = useMemo(() => {
     if (categorias && categorias.length > 0) {
       return categorias.map((cat) => {
@@ -76,16 +76,12 @@ export const CategoriesShowcase = ({ categorias = [] }) => {
         }
       })
     }
-
-    return [
-      { id: 1, nombre: t('cat_tecnologia'), imagen: visualMeta[1].imagen, fallbackImagen: visualMeta[1].imagen, icono: Laptop, badge: t(visualMeta[1].badgeKey) },
-      { id: 2, nombre: t('cat_moda'), imagen: visualMeta[2].imagen, fallbackImagen: visualMeta[2].imagen, icono: Shirt, badge: t(visualMeta[2].badgeKey) },
-      { id: 3, nombre: t('cat_hogar'), imagen: visualMeta[3].imagen, fallbackImagen: visualMeta[3].imagen, icono: Home, badge: t(visualMeta[3].badgeKey) },
-      { id: 4, nombre: t('cat_deportes'), imagen: visualMeta[4].imagen, fallbackImagen: visualMeta[4].imagen, icono: Activity, badge: t(visualMeta[4].badgeKey) },
-      { id: 5, nombre: t('cat_belleza'), imagen: visualMeta[5].imagen, fallbackImagen: visualMeta[5].imagen, icono: Sparkles, badge: t(visualMeta[5].badgeKey) },
-      { id: 6, nombre: t('cat_herramientas'), imagen: visualMeta[6].imagen, fallbackImagen: visualMeta[6].imagen, icono: Wrench, badge: t(visualMeta[6].badgeKey) }
-    ]
+    return []
   }, [categorias, visualMeta, t])
+
+  if (!listaCategorias || listaCategorias.length === 0) {
+    return null
+  }
 
   const handleSelect = (cat) => {
     setCategoriaActiva(cat.id)

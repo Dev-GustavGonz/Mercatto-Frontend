@@ -39,87 +39,10 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
   // Índice del producto activo en el Hero Card central
   const [activeHeroIdx, setActiveHeroIdx] = useState(0)
 
-  // Normalización de productos reales de la BD
+  // Normalización de productos reales de la BD exclusivamente
   const dbProducts = useMemo(() => {
-    if (!productos || productos.length === 0) {
-      // Fallback seguro si la base de datos está cargando
-      return [
-        {
-          id: 101,
-          titulo: 'Nevera No Frost',
-          precio: 1500000,
-          precioOferta: 1400000,
-          marca: 'Mabe',
-          descripcion: isEn 
-            ? 'High-efficiency cooling technology with multi-airflow and official warranty.' 
-            : 'Tecnología de refrigeración de alta eficiencia con flujo multi-aire y garantía oficial.',
-          categoria: { nombre: isEn ? 'Appliances' : 'Electrodomésticos' },
-          imagenes: [{ url: 'https://images.unsplash.com/photo-1584992236310-6edddc08acff?w=600&auto=format&fit=crop&q=80', principal: true }]
-        },
-        {
-          id: 102,
-          titulo: 'Ventilador Turbo Silence',
-          precio: 150000,
-          precioOferta: 140000,
-          marca: 'Samurai',
-          descripcion: isEn 
-            ? 'Maximum airflow power with ultra-quiet acoustic engineering.' 
-            : 'Máxima potencia de flujo de aire con ingeniería acústica ultra silenciosa.',
-          categoria: { nombre: isEn ? 'Home & Kitchen' : 'Hogar y Cocina' },
-          imagenes: [{ url: 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=600&auto=format&fit=crop&q=80', principal: true }]
-        },
-        {
-          id: 201,
-          titulo: 'Sony WH-1000XM5 Studio',
-          precio: 1699000,
-          precioOferta: 1399000,
-          marca: 'Sony',
-          descripcion: isEn 
-            ? 'High-fidelity audio with dual noise-cancelling processor.' 
-            : 'Audio de alta fidelidad con doble procesador de cancelación de ruido.',
-          categoria: { nombre: isEn ? 'Technology & Electronics' : 'Tecnología y Electrónica' },
-          imagenes: [{ url: '/images/bento/headphones.png', principal: true }]
-        },
-        {
-          id: 202,
-          titulo: 'iPhone 15 Pro Titanium',
-          precio: 4899000,
-          precioOferta: 4299000,
-          marca: 'Apple',
-          descripcion: isEn 
-            ? 'Titanium aerospace design with A17 Pro chip.' 
-            : 'Diseño aeroespacial en titanio con chip A17 Pro de alto rendimiento.',
-          categoria: { nombre: isEn ? 'Smartphones' : 'Smartphones' },
-          imagenes: [{ url: '/images/bento/smartphone.png', principal: true }]
-        },
-        {
-          id: 203,
-          titulo: 'Apple Watch Ultra 2',
-          precio: 3699000,
-          precioOferta: 3199000,
-          marca: 'Apple',
-          descripcion: isEn 
-            ? 'Extreme sports smartwatch with precision biometric sensors.' 
-            : 'Reloj inteligente para deportes extremos con sensores biométricos de precisión.',
-          categoria: { nombre: isEn ? 'Sports & Fitness' : 'Deportes y Fitness' },
-          imagenes: [{ url: '/images/bento/smartwatch.png', principal: true }]
-        },
-        {
-          id: 205,
-          titulo: 'Canon EOS R50 4K',
-          precio: 3999000,
-          precioOferta: 3499000,
-          marca: 'Canon',
-          descripcion: isEn 
-            ? 'Compact 4K mirrorless creator camera with ultra-fast autofocus.' 
-            : 'Cámara creadora mirrorless 4K compacta con enfoque automático ultra rápido.',
-          categoria: { nombre: isEn ? 'Technology & Electronics' : 'Tecnología y Electrónica' },
-          imagenes: [{ url: '/images/bento/camera.png', principal: true }]
-        }
-      ]
-    }
-    return productos
-  }, [productos, isEn])
+    return Array.isArray(productos) ? productos : []
+  }, [productos])
 
   // Distribución de productos reales en los bloques del Bento
   const heroItems = dbProducts.slice(0, 5)
@@ -128,8 +51,13 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
   // Tarjeta superior derecha: Segundo producto real de la BD
   const productTopRight = dbProducts[1] || dbProducts[0]
 
-  // Tarjeta izquierda (reemplaza a "Nueva Colección"): Tercer producto real de la BD
+  // Tarjeta izquierda: Tercer producto real de la BD
   const productLeft = dbProducts[2] || dbProducts[0]
+
+  // Si no hay productos en la base de datos, no renderizar elementos estáticos
+  if (!currentHero) {
+    return null
+  }
 
   // Tarjetas de "Más Vendidos": ordenadas de mayor a menor por cantidad vendida (totalVentas) de la BD
   const bestSellersItems = useMemo(() => {
