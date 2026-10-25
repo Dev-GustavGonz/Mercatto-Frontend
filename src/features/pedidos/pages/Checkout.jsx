@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCart } from '@/hooks/useCart'
 import { useAuth } from '@/hooks/useAuth'
@@ -22,6 +22,9 @@ export const Checkout = () => {
 
   const STORAGE_KEY_CHECKOUT = 'mercatto_checkout_draft'
 
+  // Evitar envíos duplicados concurrentes
+  const procesandoRef = useRef(false)
+
   // Recuperar borrador previo si existe
   const draftPrevio = (() => {
     try {
@@ -38,8 +41,8 @@ export const Checkout = () => {
     telefono: draftPrevio.direccion?.telefono || '',
     direccion: draftPrevio.direccion?.direccion || '',
     barrio: draftPrevio.direccion?.barrio || '',
-    ciudad: draftPrevio.direccion?.ciudad || 'Medellín',
-    departamento: draftPrevio.direccion?.departamento || 'Antioquia',
+    ciudad: 'Cartagena de Indias',
+    departamento: 'Bolívar',
     notasEntrega: draftPrevio.direccion?.notasEntrega || '',
   })
   const [metodoPago, setMetodoPago] = useState(draftPrevio.metodoPago || 'WOMPI')
@@ -74,6 +77,8 @@ export const Checkout = () => {
         ...prev,
         nombreCompleto: prev.nombreCompleto || usuario.nombre || '',
         telefono: prev.telefono || usuario.telefono || '',
+        ciudad: 'Cartagena de Indias',
+        departamento: 'Bolívar',
       }))
     }
   }, [autenticado, usuario])
@@ -90,7 +95,9 @@ export const Checkout = () => {
   const handleProcesarCompra = async (e) => {
     e.preventDefault()
 
-    // 1. Validaciones estrictas
+    if (procesandoRef.current || loading) return
+
+    // 1. Validaciones
     if (!autenticado) {
       if (!emailInvitado.trim()) {
         toastError(idioma === 'EN' ? 'Please enter your email to receive invoice and tracking.' : 'Por favor ingresa tu correo electrónico para enviarte la factura y confirmación.')
@@ -115,20 +122,16 @@ export const Checkout = () => {
     }
 
     if (!direccion.direccion.trim() || direccion.direccion.trim().length < 5) {
-      toastError(idioma === 'EN' ? 'Full street address required' : 'Por favor ingresa una dirección de entrega completa (calle, carrera, número, interior/apto).')
+      toastError(idioma === 'EN' ? 'Full street address required' : 'Por favor ingresa una dirección de entrega completa en Cartagena.')
       return
     }
 
-    if (!direccion.ciudad.trim()) {
-      toastError(idioma === 'EN' ? 'Destination city required' : 'Por favor especifica la ciudad de destino en Colombia.')
+    if (!direccion.barrio.trim()) {
+      toastError(idioma === 'EN' ? 'Please specify your neighborhood in Cartagena' : 'Por favor indica la ubicación de tu barrio en Cartagena de Indias.')
       return
     }
 
-    if (!direccion.departamento.trim()) {
-      toastError(idioma === 'EN' ? 'Department required' : 'Por favor selecciona el departamento de entrega.')
-      return
-    }
-
+    procesandoRef.current = true
     setLoading(true)
 
     try {
@@ -138,21 +141,23 @@ export const Checkout = () => {
         cantidad: i.cantidad,
       }))
 
+      const payloadDireccion = {
+        nombre: direccion.nombreCompleto.trim(),
+        telefono: telLimpio,
+        direccion: direccion.direccion.trim(),
+        barrio: direccion.barrio.trim(),
+        ciudad: 'Cartagena de Indias',
+        departamento: 'Bolívar',
+        pais: 'Colombia',
+        notas: direccion.notasEntrega.trim(),
+      }
+
       let pedidoRes
 
       if (autenticado) {
         pedidoRes = await pedidoService.crear({
           items: itemsPayload,
-          direccionEntrega: {
-            nombre: direccion.nombreCompleto.trim(),
-            telefono: telLimpio,
-            direccion: direccion.direccion.trim(),
-            barrio: direccion.barrio.trim() || 'Principal',
-            ciudad: direccion.ciudad.trim(),
-            departamento: direccion.departamento.trim(),
-            pais: 'Colombia',
-            notas: direccion.notasEntrega.trim(),
-          },
+          direccionEntrega: payloadDireccion,
           metodoPago,
           codigoCupon: cupon?.codigo || null,
         })
@@ -162,16 +167,7 @@ export const Checkout = () => {
           nombre: direccion.nombreCompleto.trim(),
           telefono: telLimpio,
           items: itemsPayload,
-          direccionEntrega: {
-            nombre: direccion.nombreCompleto.trim(),
-            telefono: telLimpio,
-            direccion: direccion.direccion.trim(),
-            barrio: direccion.barrio.trim() || 'Principal',
-            ciudad: direccion.ciudad.trim(),
-            departamento: direccion.departamento.trim(),
-            pais: 'Colombia',
-            notas: direccion.notasEntrega.trim(),
-          },
+          direccionEntrega: payloadDireccion,
           metodoPago,
           codigoCupon: cupon?.codigo || null,
         })
@@ -183,22 +179,60 @@ export const Checkout = () => {
         email: autenticado ? usuario?.email : emailInvitado.trim(),
       }
 
-      let pagoRes
-      if (autenticado) {
-        pagoRes = await pagoService.iniciar(pagoPayload)
-      } else {
-        pagoRes = await pagoService.iniciarInvitado(pagoPayload)
-      }
+      const pagoRes = autenticado
+        ? await pagoService.iniciar(pagoPayload)
+        : await pagoService.iniciarInvitado(pagoPayload)
 
-      if (metodoPago === 'WOMPI') {
+      // Métodos integrados con Wompi Bancolombia (Tarjetas, PSE, Nequi)
+      if (metodoPago === 'WOMPI' || metodoPago === 'PSE' || metodoPago === 'NEQUI') {
         const checkoutUrl = pagoRes.urlCheckout || pagoRes.checkoutUrl || pagoRes.data?.urlCheckout
-        if (checkoutUrl) {
-          limpiarBorradorCheckout()
-          window.location.href = checkoutUrl
+        
+        limpiarCarrito()
+        limpiarBorradorCheckout()
+
+        if (window.WidgetCheckout && pagoRes.publicKey && pagoRes.signatureIntegrity) {
+          const checkout = new window.WidgetCheckout({
+            currency: 'COP',
+            amountInCents: pagoRes.amountInCents,
+            reference: pagoRes.reference,
+            publicKey: pagoRes.publicKey,
+            signature: { integrity: pagoRes.signatureIntegrity },
+            redirectUrl: window.location.origin + '/pago/exitoso?ref=' + pagoRes.reference,
+            customerData: {
+              email: pagoRes.customerEmail || (autenticado ? usuario?.email : emailInvitado.trim()),
+              fullName: pagoRes.customerFullName || direccion.nombreCompleto.trim(),
+              phoneNumber: pagoRes.customerPhoneNumber || telLimpio,
+              phoneNumberPrefix: '+57',
+            }
+          })
+
+          checkout.open(async (result) => {
+            const transaction = result?.transaction
+            if (transaction?.status === 'APPROVED') {
+              try {
+                if (autenticado) {
+                  await pagoService.confirmarPago(pedidoRes.id, transaction.id)
+                } else {
+                  await pagoService.confirmarPagoInvitado(pedidoRes.id, transaction.id)
+                }
+              } catch (e) {
+                console.warn('Error confirmando pago:', e)
+              }
+              navigate('/pago/exitoso?ref=' + pagoRes.reference)
+            } else if (transaction && (transaction.status === 'DECLINED' || transaction.status === 'ERROR')) {
+              navigate('/pago/cancelado?ref=' + pagoRes.reference)
+            }
+          })
           return
         }
+
+        // Redirección directa a la pasarela Wompi web si no está disponible el Widget modal
+        const urlDestino = checkoutUrl || `https://checkout.wompi.co/p/?public-key=${pagoRes.publicKey}&currency=COP&amount-in-cents=${pagoRes.amountInCents}&reference=${pagoRes.reference}&signature:integrity=${pagoRes.signatureIntegrity}&redirect-url=${encodeURIComponent(window.location.origin + '/pago/exitoso?ref=' + pagoRes.reference)}`
+        window.location.href = urlDestino
+        return
       }
 
+      // Contra Entrega en efectivo
       limpiarCarrito()
       limpiarBorradorCheckout()
       setPedidoCreado({ ...pedidoRes, metodoPago, total })
@@ -206,6 +240,7 @@ export const Checkout = () => {
       toastError(err.response?.data?.message || err.response?.data?.mensaje || (idioma === 'EN' ? 'Error processing purchase' : 'Error al procesar la compra'))
     } finally {
       setLoading(false)
+      procesandoRef.current = false
     }
   }
 
@@ -266,19 +301,19 @@ export const Checkout = () => {
             </div>
           )}
 
-          {/* Step 1: Address */}
+          {/* Step 1: Address (Cartagena de Indias) */}
           <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
             <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800 font-bold text-slate-800 dark:text-white text-sm">
-              <MapPin size={18} className="text-indigo-600" />
+              <MapPin size={18} className="text-violet-600" />
               <span>1. {t('direccion_entrega')}</span>
             </div>
             <AddressForm direccion={direccion} onChange={setDireccion} />
           </div>
 
-          {/* Step 2: Payment method */}
+          {/* Step 2: Payment method (Wompi Escrow) */}
           <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
             <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800 font-bold text-slate-800 dark:text-white text-sm">
-              <CreditCard size={18} className="text-indigo-600" />
+              <CreditCard size={18} className="text-violet-600" />
               <span>2. {t('metodo_pago')}</span>
             </div>
             <PaymentForm metodoSeleccionado={metodoPago} onSelectMetodo={setMetodoPago} />
@@ -291,6 +326,7 @@ export const Checkout = () => {
             size="lg"
             className="w-full text-base font-extrabold shadow-xl cursor-pointer"
             loading={loading}
+            disabled={loading}
           >
             <ShieldCheck size={20} className="mr-2" />
             <span>{t('confirmar_pedido')}</span>

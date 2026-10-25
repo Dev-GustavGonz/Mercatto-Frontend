@@ -1,6 +1,16 @@
 import api from '@/utils/api'
 
 export const pedidoService = {
+  crear: async (datos) => {
+    const res = await api.post('/pedidos', datos)
+    return res.data
+  },
+
+  crearInvitado: async (datos) => {
+    const res = await api.post('/pedidos/invitado', datos)
+    return res.data
+  },
+
   crearPedido: async (datos) => {
     const res = await api.post('/pedidos', datos)
     return res.data
