@@ -5,6 +5,7 @@ import { tiendaService } from '@/features/tiendas/services/tiendaService'
 import { useCart } from '@/hooks/useCart'
 import { useFavorites } from '@/hooks/useFavorites'
 import { useLanguage } from '@/hooks/useLanguage'
+import Spinner from '@/components/common/Spinner'
 
 // Componentes del diseño Showcase Bento 2026
 import BentoGridHeroShowcase from '../components/BentoGridHeroShowcase'
@@ -96,19 +97,11 @@ export const Home = () => {
   // Pantalla de carga hasta que respondan los artículos reales de la base de datos
   if (loading) {
     return (
-      <div className="min-h-screen w-full flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 p-6 space-y-5">
-        <div className="relative flex items-center justify-center">
-          <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-violet-600 via-purple-600 to-indigo-600 animate-spin flex items-center justify-center shadow-xl shadow-violet-500/30">
-            <div className="w-11 h-11 rounded-2xl bg-white dark:bg-slate-950" />
-          </div>
-          <Sparkles size={24} className="text-violet-600 absolute animate-pulse" />
-        </div>
-        <div className="text-center space-y-1.5">
-          <h3 className="text-lg font-black text-slate-800 dark:text-white">Cargando Mercatto...</h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-            Sincronizando artículos y tiendas desde la base de datos
-          </p>
-        </div>
+      <div className="min-h-[65vh] w-full flex flex-col items-center justify-center p-6 space-y-2">
+        <Spinner size="lg" className="py-2" />
+        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
+          Sincronizando artículos y tiendas
+        </p>
       </div>
     )
   }
