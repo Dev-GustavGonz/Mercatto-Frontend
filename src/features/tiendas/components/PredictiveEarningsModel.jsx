@@ -20,7 +20,7 @@ import { formatCurrency } from '@/utils/formatCurrency'
 
 const COMISIONES_PLAN = {
   STARTER: { nombre: 'Plan Starter', porcentaje: 10, tasa: 0.10, icono: Sparkles, color: 'text-slate-600', bg: 'bg-slate-100' },
-  PRO: { nombre: 'Plan Profesional', porcentaje: 5, tasa: 0.05, icono: Zap, color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-950/40' },
+  PRO: { nombre: 'Plan Profesional', porcentaje: 5, tasa: 0.05, icono: Zap, color: 'text-indigo-600', bg: 'bg-indigo-50 dark:bg-indigo-950/40' },
   ELITE: { nombre: 'Plan Elite Premium', porcentaje: 2, tasa: 0.02, icono: Crown, color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-950/40' }
 }
 
@@ -76,7 +76,7 @@ export const PredictiveEarningsModel = ({
   const comprasEfectivas = Math.max(1, Math.round(comprasEstimadasInput * factorEscenario))
   const valorTotalVentas = Math.round(comprasEfectivas * ticketPromedio)
 
-  // Etapa 2: Regla de negocio: resultado = valor - porcentaje
+  // Etapa 2: Regla de negocio del proyecto de aula: resultado = valor - porcentaje
   const planInfo = COMISIONES_PLAN[planSimulado] || COMISIONES_PLAN.STARTER
   const comisionRetenida = Math.round(valorTotalVentas * planInfo.tasa)
   const gananciaNetaEsperada = valorTotalVentas - comisionRetenida // resultado = valor - porcentaje
@@ -106,12 +106,12 @@ export const PredictiveEarningsModel = ({
       <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center">
               <Sparkles size={16} />
             </div>
             <div>
               <h4 className="text-sm font-black text-slate-900">Modelo Predictivo de Ganancias</h4>
-              <p className="text-[11px] text-slate-400">Proyección estadística ({planInfo.nombre})</p>
+              <p className="text-[11px] text-slate-400">Proyección estadística en Python ({planInfo.nombre})</p>
             </div>
           </div>
           <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
@@ -120,7 +120,7 @@ export const PredictiveEarningsModel = ({
         </div>
 
         {/* Resumen Principal */}
-        <div className="p-4 rounded-2xl bg-gradient-to-br from-slate-900 via-slate-850 to-[#081e18] text-white space-y-3 border border-slate-800">
+        <div className="p-4 rounded-2xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white space-y-3">
           <div className="flex items-baseline justify-between">
             <span className="text-xs text-slate-300">Ganancia Neta Esperada:</span>
             <span className="text-xl sm:text-2xl font-black text-emerald-300">
@@ -134,12 +134,12 @@ export const PredictiveEarningsModel = ({
           </div>
         </div>
 
-        <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-[11px] text-slate-700 flex items-center justify-between">
+        <div className="p-2.5 bg-violet-50/70 rounded-xl border border-violet-100 text-[11px] text-violet-900 flex items-center justify-between">
           <span className="font-semibold text-slate-600">Estimación de ingresos netos para tu tienda</span>
           {onOpenPlanes && (
             <button
               onClick={onOpenPlanes}
-              className="font-bold text-emerald-700 hover:text-emerald-800 hover:underline cursor-pointer flex items-center gap-1"
+              className="font-bold text-violet-700 hover:text-violet-800 hover:underline cursor-pointer flex items-center gap-1"
             >
               <span>Mejorar Plan</span>
               <ArrowRight size={11} />
@@ -154,17 +154,17 @@ export const PredictiveEarningsModel = ({
     <div className="space-y-6">
       
       {/* ============================================================== */}
-      {/* 1. HEADER HERO DEL MODELO PREDICTIVO (ESTILO ELEGANTE MERCATTO)*/}
+      {/* 1. HEADER HERO DEL MODELO PREDICTIVO (PROYECTO DE AULA)        */}
       {/* ============================================================== */}
-      <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-[#07241c] text-white border border-slate-800 rounded-[32px] p-6 sm:p-8 shadow-xl relative overflow-hidden space-y-4">
+      <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 text-white rounded-[32px] p-6 sm:p-8 shadow-xl shadow-violet-500/20 relative overflow-hidden space-y-4">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-slate-200 text-xs font-bold border border-white/10 backdrop-blur-sm shadow-xs">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-white text-xs font-bold border border-white/30 backdrop-blur-sm shadow-xs">
                 <Sparkles size={13} className="text-amber-300" />
-                <span>Modelo Predictivo de Monetización Mercatto</span>
+                <span>Modelo Predictivo en Python · Proyecto de Aula</span>
               </span>
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 text-[11px] font-bold border border-emerald-500/20">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-400/20 text-emerald-100 text-[11px] font-bold border border-emerald-300/30">
                 <ShieldCheck size={12} />
                 <span>Plan Actual: {COMISIONES_PLAN[planActualKey]?.nombre} ({COMISIONES_PLAN[planActualKey]?.porcentaje}% comisión)</span>
               </span>
@@ -174,33 +174,33 @@ export const PredictiveEarningsModel = ({
               Estimación de Ganancias para tu Tienda
             </h2>
 
-            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
-              Calcula con precisión cuánto esperas facturar este mes de forma neta según la actividad, ticket promedio y volumen proyectado de tu tienda.
+            <p className="text-xs sm:text-sm text-violet-100 max-w-2xl leading-relaxed">
+              Calcula con precisión de Machine Learning cuánto esperas facturar este mes de forma neta según la actividad y volumen proyectado de tu tienda.
             </p>
           </div>
 
           {onOpenPlanes && (
             <button
               onClick={onOpenPlanes}
-              className="self-start md:self-auto px-5 py-2.5 rounded-2xl bg-white hover:bg-slate-100 text-slate-900 text-xs font-bold shadow-lg transition-all flex items-center gap-2 cursor-pointer shrink-0 active:scale-95"
+              className="self-start md:self-auto px-5 py-2.5 rounded-2xl bg-white hover:bg-violet-50 text-violet-700 text-xs font-bold shadow-lg shadow-black/10 transition-all flex items-center gap-2 cursor-pointer shrink-0 active:scale-95"
             >
-              <Crown size={15} className="text-amber-500" />
+              <Crown size={15} />
               <span>Cambiar o Mejorar Plan</span>
             </button>
           )}
         </div>
 
         {/* Resumen de Inferencia Predictiva */}
-        <div className="relative z-10 pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div className="relative z-10 pt-3 border-t border-white/20 flex flex-wrap items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2 text-white">
             <Sparkles size={15} className="text-amber-300" />
             <span>
               Ganancia Neta Proyectada:{' '}
-              <strong className="text-emerald-400 font-bold">{formatCurrency(gananciaNetaEsperada)} COP</strong>
+              <strong className="text-emerald-300 font-bold">{formatCurrency(gananciaNetaEsperada)} COP</strong>
             </span>
           </div>
 
-          <span className="text-[11px] text-slate-400">
+          <span className="text-[11px] text-violet-200">
             Inferencia predictiva basada en Machine Learning
           </span>
         </div>
@@ -215,7 +215,7 @@ export const PredictiveEarningsModel = ({
         <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-5">
           <div className="flex items-center justify-between pb-2 border-b border-slate-100">
             <div className="flex items-center gap-2">
-              <Sliders size={18} className="text-emerald-700" />
+              <Sliders size={18} className="text-violet-600" />
               <h3 className="text-sm font-black text-slate-900">Variables Predictoras</h3>
             </div>
             <span className="text-[11px] font-bold text-slate-400">Simulador en Vivo</span>
@@ -238,13 +238,13 @@ export const PredictiveEarningsModel = ({
                     onClick={() => setPlanSimulado(pKey)}
                     className={`p-2.5 rounded-2xl border text-center transition cursor-pointer flex flex-col items-center justify-center gap-1 ${
                       esActivo
-                        ? 'border-emerald-700 bg-emerald-50/80 text-emerald-950 shadow-sm ring-1 ring-emerald-700/30'
+                        ? 'border-violet-600 bg-violet-50 text-violet-900 shadow-sm ring-1 ring-violet-600/30'
                         : 'border-slate-200 hover:border-slate-300 text-slate-600 hover:bg-slate-50'
                     }`}
                   >
-                    <Icono size={15} className={esActivo ? 'text-emerald-700' : 'text-slate-400'} />
+                    <Icono size={15} className={esActivo ? 'text-violet-600' : 'text-slate-400'} />
                     <span className="text-[11px] font-extrabold">{pKey}</span>
-                    <span className="text-[10px] font-bold text-emerald-700">{p.porcentaje}% com.</span>
+                    <span className="text-[10px] font-bold text-emerald-600">{p.porcentaje}% com.</span>
                   </button>
                 )
               })}
@@ -255,7 +255,7 @@ export const PredictiveEarningsModel = ({
           <div className="space-y-2">
             <div className="flex justify-between items-center text-xs">
               <span className="font-bold text-slate-700">Compras Mensuales:</span>
-              <span className="font-black text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-lg border border-emerald-200">
+              <span className="font-black text-violet-700 bg-violet-50 px-2 py-0.5 rounded-lg border border-violet-100">
                 {comprasEfectivas} pedidos
               </span>
             </div>
@@ -265,7 +265,7 @@ export const PredictiveEarningsModel = ({
               max="150"
               value={comprasEstimadasInput}
               onChange={(e) => setComprasEstimadasInput(Number(e.target.value))}
-              className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-emerald-600"
+              className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-violet-600"
             />
             <div className="flex justify-between text-[10px] text-slate-400 font-mono">
               <span>1</span>
@@ -278,7 +278,7 @@ export const PredictiveEarningsModel = ({
           <div className="space-y-2">
             <div className="flex justify-between items-center text-xs">
               <span className="font-bold text-slate-700">Ticket Promedio por Pedido:</span>
-              <span className="font-black text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-lg border border-emerald-200">
+              <span className="font-black text-violet-700 bg-violet-50 px-2 py-0.5 rounded-lg border border-violet-100">
                 {formatCurrency(ticketPromedio)}
               </span>
             </div>
@@ -289,7 +289,7 @@ export const PredictiveEarningsModel = ({
               step="10000"
               value={ticketPromedio}
               onChange={(e) => setTicketPromedio(Number(e.target.value))}
-              className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-emerald-600"
+              className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-violet-600"
             />
             <div className="flex justify-between text-[10px] text-slate-400 font-mono">
               <span>$20.000</span>
@@ -314,7 +314,7 @@ export const PredictiveEarningsModel = ({
                   onClick={() => setEscenario(esc.id)}
                   className={`py-1.5 px-2 rounded-xl text-[11px] font-bold transition cursor-pointer ${
                     escenario === esc.id
-                      ? 'bg-white text-slate-900 shadow-xs font-black'
+                      ? 'bg-white text-violet-700 shadow-xs'
                       : 'text-slate-500 hover:text-slate-800'
                   }`}
                 >
@@ -330,14 +330,14 @@ export const PredictiveEarningsModel = ({
         <div className="lg:col-span-2 space-y-5">
           
           {/* Card Principal con el Resultado Destacado */}
-          <div className="bg-gradient-to-br from-[#062019] via-[#092c22] to-slate-900 text-white rounded-3xl p-6 sm:p-7 shadow-lg border border-emerald-900/40 space-y-5">
+          <div className="bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 text-white rounded-3xl p-6 sm:p-7 shadow-lg space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <span className="text-xs font-semibold text-emerald-300 uppercase tracking-wider">
+                <span className="text-xs font-semibold text-violet-200 uppercase tracking-wider">
                   Resultado del Modelo Predictivo
                 </span>
                 <h3 className="text-3xl sm:text-4xl font-black text-white mt-1">
-                  {formatCurrency(gananciaNetaEsperada)} <span className="text-lg font-bold text-emerald-400">COP Netos</span>
+                  {formatCurrency(gananciaNetaEsperada)} <span className="text-lg font-bold text-emerald-300">COP Netos</span>
                 </h3>
               </div>
 
@@ -350,28 +350,28 @@ export const PredictiveEarningsModel = ({
             {/* Desglose visual: Valor - Porcentaje = Ganancia */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
               
-              <div className="bg-slate-900/60 rounded-2xl p-4 backdrop-blur-sm border border-slate-700/60">
-                <span className="text-[11px] font-bold text-slate-300 block">1. Valor Ventas Estimadas</span>
+              <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-sm border border-white/10">
+                <span className="text-[11px] font-bold text-violet-200 block">1. Valor Ventas Estimadas</span>
                 <span className="text-xl font-black text-white mt-1 block">
                   {formatCurrency(valorTotalVentas)}
                 </span>
-                <span className="text-[10px] text-slate-400 mt-0.5 block">{comprasEfectivas} compras proyectadas</span>
+                <span className="text-[10px] text-slate-300 mt-0.5 block">{comprasEfectivas} compras proyectadas</span>
               </div>
 
-              <div className="bg-rose-950/40 rounded-2xl p-4 backdrop-blur-sm border border-rose-800/40">
-                <span className="text-[11px] font-bold text-rose-200 block">2. Comisión Mercatto ({planInfo.porcentaje}%)</span>
+              <div className="bg-rose-500/20 rounded-2xl p-4 backdrop-blur-sm border border-rose-300/30">
+                <span className="text-[11px] font-bold text-rose-200 block">2. Comisión ({planInfo.porcentaje}%)</span>
                 <span className="text-xl font-black text-rose-300 mt-1 block">
                   -{formatCurrency(comisionRetenida)}
                 </span>
-                <span className="text-[10px] text-rose-200/80 mt-0.5 block">Retención según {planInfo.nombre}</span>
+                <span className="text-[10px] text-rose-200 mt-0.5 block">Retención según {planInfo.nombre}</span>
               </div>
 
-              <div className="bg-emerald-950/50 rounded-2xl p-4 backdrop-blur-sm border border-emerald-700/40">
+              <div className="bg-emerald-500/20 rounded-2xl p-4 backdrop-blur-sm border border-emerald-300/30">
                 <span className="text-[11px] font-bold text-emerald-200 block">3. Ganancia Neta Tienda</span>
                 <span className="text-xl font-black text-emerald-300 mt-1 block">
                   {formatCurrency(gananciaNetaEsperada)}
                 </span>
-                <span className="text-[10px] text-emerald-200/80 mt-0.5 block">Total libre proyectado</span>
+                <span className="text-[10px] text-emerald-200 mt-0.5 block">Total libre proyectado</span>
               </div>
 
             </div>
@@ -394,7 +394,7 @@ export const PredictiveEarningsModel = ({
               {onOpenPlanes && (
                 <button
                   onClick={onOpenPlanes}
-                  className="hidden sm:inline-flex items-center gap-1 text-xs font-bold text-emerald-700 hover:text-emerald-800 hover:underline cursor-pointer"
+                  className="hidden sm:inline-flex items-center gap-1 text-xs font-bold text-violet-600 hover:underline cursor-pointer"
                 >
                   <span>Ver Todos los Planes</span>
                   <ArrowUpRight size={13} />
@@ -412,7 +412,7 @@ export const PredictiveEarningsModel = ({
                     onClick={() => setPlanSimulado(p.key)}
                     className={`rounded-2xl p-4 border transition-all cursor-pointer relative flex flex-col justify-between ${
                       esElSeleccionado
-                        ? 'border-emerald-600 ring-2 ring-emerald-600/20 bg-emerald-50/40 shadow-sm'
+                        ? 'border-violet-600 ring-2 ring-violet-600/20 bg-violet-50/30 shadow-md'
                         : 'border-slate-200 hover:border-slate-300 bg-white'
                     }`}
                   >
@@ -431,7 +431,7 @@ export const PredictiveEarningsModel = ({
                       </div>
                       
                       <div className="pt-2">
-                        <span className="text-[10px] font-semibold text-slate-400 block">Comisión Mercatto:</span>
+                        <span className="text-[10px] font-semibold text-slate-400 block">Comisión del plan:</span>
                         <span className="text-xs font-bold text-slate-700">
                           {p.porcentaje}% (-{formatCurrency(p.comision)})
                         </span>
@@ -447,7 +447,7 @@ export const PredictiveEarningsModel = ({
                       </span>
 
                       {p.ahorro > 0 && (
-                        <span className="inline-block text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                        <span className="inline-block text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
                           +{formatCurrency(p.ahorro)} más que Starter
                         </span>
                       )}

@@ -251,7 +251,7 @@ export const PanelVendedor = () => {
 
   // Dock items (Diseño limpio en blanco y morado de Mercatto, iconos profesionales Lucide)
   const dockItems = [
-    { id: 'resumen', label: 'Tablero Bento', icon: LayoutDashboard, badge: null },
+    { id: 'resumen', label: 'General', icon: LayoutDashboard, badge: null },
     { id: 'predictivo', label: 'IA Predictiva', icon: TrendingUp, badge: 'IA' },
     { id: 'productos', label: 'Mis Productos', icon: Package, badge: productos.length },
     { id: 'pedidos', label: 'Pedidos & Envíos', icon: ShoppingCart, badge: pedidosPendientes > 0 ? pedidosPendientes : null },

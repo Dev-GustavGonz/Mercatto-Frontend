@@ -78,7 +78,7 @@ export const VendorsTable = ({ vendedores = [], onActualizado }) => {
           <thead className="bg-slate-50 dark:bg-slate-800/60 text-slate-500 font-bold border-b border-slate-200 dark:border-slate-700">
             <tr>
               <th className="p-3.5">Tienda / Propietario</th>
-              <th className="p-3.5">NIT / Cédula</th>
+              <th className="p-3.5">NIT</th>
               <th className="p-3.5 text-right">Ventas Brutas</th>
               <th className="p-3.5 text-right text-emerald-600 dark:text-emerald-400">Comisión Mercatto</th>
               <th className="p-3.5">Ciudad</th>
@@ -208,7 +208,7 @@ export const VendorsTable = ({ vendedores = [], onActualizado }) => {
 
             <div className="p-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl space-y-1">
               <span className="text-[10px] uppercase font-bold text-slate-400 block">Identificación Fiscal</span>
-              <p className="font-bold font-mono text-slate-800 dark:text-slate-200">{vendedorSeleccionado.nitCedula || 'Sin NIT/Cédula'}</p>
+              <p className="font-bold font-mono text-slate-800 dark:text-slate-200">{vendedorSeleccionado.nitCedula || 'Sin NIT'}</p>
               <p className="text-slate-500">{vendedorSeleccionado.razonSocial || 'Persona Natural'}</p>
             </div>
 

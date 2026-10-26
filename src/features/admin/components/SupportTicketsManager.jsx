@@ -343,7 +343,7 @@ export const SupportTicketsManager = () => {
                   className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl font-bold text-xs shadow transition cursor-pointer flex items-center gap-1.5"
                 >
                   <Send size={13} />
-                  <span>{enviandoRespuesta ? 'Enviando...' : 'Enviar Respuesta por Email'}</span>
+                  <span>{enviandoRespuesta ? 'Enviando...' : 'Enviar respuesta por Gmail'}</span>
                 </button>
               </div>
             </form>
