@@ -358,7 +358,7 @@ export const Checkout = () => {
         </div>
       </form>
 
-      {/* Modal de Pago Seguro Wompi Sandbox */}
+      {/* Modal de Pasarela Oficial Wompi */}
       <WompiPaymentModal
         isOpen={mostrarModalWompi}
         onClose={() => setMostrarModalWompi(false)}
