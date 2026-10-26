@@ -46,6 +46,11 @@ export const pedidoService = {
     return res.data
   },
 
+  cancelarPedido: async (id) => {
+    const res = await api.post(`/pedidos/${id}/cancelar`)
+    return res.data
+  },
+
   validarCupon: async (codigo, subtotal) => {
     const res = await api.post('/cupones/validar', { codigo, subtotal })
     return res.data

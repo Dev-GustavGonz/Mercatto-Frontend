@@ -6,20 +6,43 @@ import { ESTADOS_PEDIDO } from '@/utils/constants'
 import Spinner from '@/components/common/Spinner'
 import EmptyState from '@/components/common/EmptyState'
 import { useLanguage } from '@/hooks/useLanguage'
-import { Package, Truck, Calendar } from 'lucide-react'
+import { useToast } from '@/hooks/useToast'
+import { Package, Truck, Calendar, XCircle } from 'lucide-react'
 
 export const MisPedidos = () => {
   const [pedidos, setPedidos] = useState([])
   const [loading, setLoading] = useState(true)
+  const [cancelandoId, setCancelandoId] = useState(null)
   const { t, idioma } = useLanguage()
+  const { success, error } = useToast()
 
-  useEffect(() => {
+  const cargarPedidos = () => {
     pedidoService
       .misPedidos()
       .then((data) => setPedidos(data.content || []))
       .catch(() => setPedidos([]))
       .finally(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    cargarPedidos()
   }, [])
+
+  const handleCancelar = async (pedido) => {
+    if (!window.confirm(`¿Estás seguro de que deseas cancelar el pedido ${pedido.codigo}? Se devolverá el stock y se cancelará el cargo.`)) {
+      return
+    }
+    setCancelandoId(pedido.id)
+    try {
+      await pedidoService.cancelarPedido(pedido.id)
+      success(`Pedido ${pedido.codigo} cancelado correctamente.`)
+      cargarPedidos()
+    } catch (err) {
+      error(err.response?.data?.mensaje || 'Error al cancelar el pedido')
+    } finally {
+      setCancelandoId(null)
+    }
+  }
 
   if (loading) {
     return <Spinner size="lg" className="py-24" />
@@ -116,9 +139,21 @@ export const MisPedidos = () => {
                 </div>
               )}
 
-              {/* Footer Total */}
-              <div className="flex justify-between items-center pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
-                <span className="text-slate-500">{t('metodo_pago')}: <strong className="text-slate-700 dark:text-slate-300">{p.metodoPago || 'WOMPI'}</strong></span>
+              {/* Footer Total & Acciones */}
+              <div className="flex flex-wrap justify-between items-center gap-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
+                <div className="flex items-center gap-3">
+                  <span className="text-slate-500">{t('metodo_pago')}: <strong className="text-slate-700 dark:text-slate-300">{p.metodoPago || 'WOMPI'}</strong></span>
+                  {(p.estado === 'PENDIENTE' || p.estado === 'PAGADO') && (
+                    <button
+                      onClick={() => handleCancelar(p)}
+                      disabled={cancelandoId === p.id}
+                      className="px-2.5 py-1 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 font-bold text-[11px] inline-flex items-center gap-1 transition cursor-pointer"
+                    >
+                      <XCircle size={12} />
+                      <span>{cancelandoId === p.id ? 'Cancelando...' : (idioma === 'EN' ? 'Cancel Order' : 'Cancelar Pedido')}</span>
+                    </button>
+                  )}
+                </div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-slate-500">{idioma === 'EN' ? 'Total paid:' : 'Total pagado:'}</span>
                   <span className="text-base font-black text-indigo-600 dark:text-indigo-400">{formatCurrency(p.total)}</span>

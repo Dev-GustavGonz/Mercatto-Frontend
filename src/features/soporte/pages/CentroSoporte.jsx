@@ -195,37 +195,25 @@ export const CentroSoporte = ({ vistaEmbebida = false }) => {
     <div className={vistaEmbebida ? "w-full" : "max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 font-sans"}>
       
       {/* Encabezado Principal */}
-      <div className="bg-gradient-to-r from-violet-900 via-indigo-900 to-slate-900 rounded-3xl p-6 sm:p-10 text-white shadow-xl relative overflow-hidden mb-8">
-        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-72 h-72 bg-violet-500/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xs relative overflow-hidden mb-8">
         <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-xs font-bold text-violet-200 border border-white/10">
-              <Headphones size={14} className="text-emerald-400" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+              <Headphones size={14} className="text-violet-600 dark:text-violet-400" />
               <span>Atención Oficial Mercatto</span>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-white">
+            <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
               Centro de Ayuda & Soporte
             </h1>
-            <p className="text-slate-300 text-sm sm:text-base max-w-2xl leading-relaxed">
+            <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base max-w-2xl leading-relaxed">
               ¿Tienes alguna duda con una compra, envío, tienda o la plataforma? Radica un ticket oficial y nuestro equipo administrativo te atenderá con prioridad.
             </p>
           </div>
 
           <div className="flex flex-wrap sm:flex-nowrap gap-3 shrink-0">
             <a
-              href={`https://wa.me/${WHATSAPP_SOPORTE}?text=${MENSAJE_WHATSAPP}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm flex items-center gap-2 transition shadow-lg shadow-emerald-900/30 hover:scale-105"
-            >
-              <Phone size={16} />
-              <span>WhatsApp Directo</span>
-            </a>
-            <a
               href="mailto:realmercatto@gmail.com"
-              className="px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-bold text-xs sm:text-sm flex items-center gap-2 transition border border-white/15"
+              className="px-5 py-3 rounded-2xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs sm:text-sm flex items-center gap-2 transition shadow-md shadow-violet-600/20"
             >
               <Mail size={16} />
               <span>realmercatto@gmail.com</span>

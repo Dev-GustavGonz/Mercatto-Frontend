@@ -156,25 +156,25 @@ export const PredictiveEarningsModel = ({
       {/* ============================================================== */}
       {/* 1. HEADER HERO DEL MODELO PREDICTIVO (PROYECTO DE AULA)        */}
       {/* ============================================================== */}
-      <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 text-white rounded-[32px] p-6 sm:p-8 shadow-xl shadow-violet-500/20 relative overflow-hidden space-y-4">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xs relative overflow-hidden space-y-4">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-white text-xs font-bold border border-white/30 backdrop-blur-sm shadow-xs">
-                <Sparkles size={13} className="text-amber-300" />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold border border-slate-200 dark:border-slate-700 shadow-xs">
+                <Sparkles size={13} className="text-violet-600 dark:text-violet-400" />
                 <span>Modelo Predictivo en Python · Proyecto de Aula</span>
               </span>
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-400/20 text-emerald-100 text-[11px] font-bold border border-emerald-300/30">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300 text-[11px] font-bold border border-emerald-200 dark:border-emerald-800/60">
                 <ShieldCheck size={12} />
                 <span>Plan Actual: {COMISIONES_PLAN[planActualKey]?.nombre} ({COMISIONES_PLAN[planActualKey]?.porcentaje}% comisión)</span>
               </span>
             </div>
 
-            <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+            <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
               Estimación de Ganancias para tu Tienda
             </h2>
 
-            <p className="text-xs sm:text-sm text-violet-100 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed">
               Calcula con precisión de Machine Learning cuánto esperas facturar este mes de forma neta según la actividad y volumen proyectado de tu tienda.
             </p>
           </div>
@@ -182,7 +182,7 @@ export const PredictiveEarningsModel = ({
           {onOpenPlanes && (
             <button
               onClick={onOpenPlanes}
-              className="self-start md:self-auto px-5 py-2.5 rounded-2xl bg-white hover:bg-violet-50 text-violet-700 text-xs font-bold shadow-lg shadow-black/10 transition-all flex items-center gap-2 cursor-pointer shrink-0 active:scale-95"
+              className="self-start md:self-auto px-5 py-2.5 rounded-2xl bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold shadow-md shadow-violet-600/20 transition-all flex items-center gap-2 cursor-pointer shrink-0 active:scale-95"
             >
               <Crown size={15} />
               <span>Cambiar o Mejorar Plan</span>
@@ -191,16 +191,16 @@ export const PredictiveEarningsModel = ({
         </div>
 
         {/* Resumen de Inferencia Predictiva */}
-        <div className="relative z-10 pt-3 border-t border-white/20 flex flex-wrap items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-2 text-white">
-            <Sparkles size={15} className="text-amber-300" />
+        <div className="relative z-10 pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+            <Sparkles size={15} className="text-violet-600 dark:text-violet-400" />
             <span>
               Ganancia Neta Proyectada:{' '}
-              <strong className="text-emerald-300 font-bold">{formatCurrency(gananciaNetaEsperada)} COP</strong>
+              <strong className="text-emerald-600 dark:text-emerald-400 font-bold">{formatCurrency(gananciaNetaEsperada)} COP</strong>
             </span>
           </div>
 
-          <span className="text-[11px] text-violet-200">
+          <span className="text-[11px] text-slate-400 dark:text-slate-500">
             Inferencia predictiva basada en Machine Learning
           </span>
         </div>
@@ -330,19 +330,19 @@ export const PredictiveEarningsModel = ({
         <div className="lg:col-span-2 space-y-5">
           
           {/* Card Principal con el Resultado Destacado */}
-          <div className="bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 text-white rounded-3xl p-6 sm:p-7 shadow-lg space-y-5">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-7 shadow-xs space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <span className="text-xs font-semibold text-violet-200 uppercase tracking-wider">
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   Resultado del Modelo Predictivo
                 </span>
-                <h3 className="text-3xl sm:text-4xl font-black text-white mt-1">
-                  {formatCurrency(gananciaNetaEsperada)} <span className="text-lg font-bold text-emerald-300">COP Netos</span>
+                <h3 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mt-1">
+                  {formatCurrency(gananciaNetaEsperada)} <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">COP Netos</span>
                 </h3>
               </div>
 
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-white/10 backdrop-blur-sm text-xs font-bold border border-white/20 self-start sm:self-auto">
-                <CheckCircle2 size={14} className="text-emerald-400" />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300 text-xs font-bold border border-emerald-200 dark:border-emerald-800/60 self-start sm:self-auto">
+                <CheckCircle2 size={14} className="text-emerald-500" />
                 <span>{planInfo.nombre} ({planInfo.porcentaje}% com.)</span>
               </span>
             </div>
@@ -350,28 +350,28 @@ export const PredictiveEarningsModel = ({
             {/* Desglose visual: Valor - Porcentaje = Ganancia */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
               
-              <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-sm border border-white/10">
-                <span className="text-[11px] font-bold text-violet-200 block">1. Valor Ventas Estimadas</span>
-                <span className="text-xl font-black text-white mt-1 block">
+              <div className="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 border border-slate-200 dark:border-slate-700">
+                <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 block">1. Valor Ventas Estimadas</span>
+                <span className="text-xl font-black text-slate-900 dark:text-white mt-1 block">
                   {formatCurrency(valorTotalVentas)}
                 </span>
-                <span className="text-[10px] text-slate-300 mt-0.5 block">{comprasEfectivas} compras proyectadas</span>
+                <span className="text-[10px] text-slate-400 mt-0.5 block">{comprasEfectivas} compras proyectadas</span>
               </div>
 
-              <div className="bg-rose-500/20 rounded-2xl p-4 backdrop-blur-sm border border-rose-300/30">
-                <span className="text-[11px] font-bold text-rose-200 block">2. Comisión ({planInfo.porcentaje}%)</span>
-                <span className="text-xl font-black text-rose-300 mt-1 block">
+              <div className="bg-rose-50/60 dark:bg-rose-950/30 rounded-2xl p-4 border border-rose-200 dark:border-rose-900/40">
+                <span className="text-[11px] font-bold text-rose-700 dark:text-rose-300 block">2. Comisión ({planInfo.porcentaje}%)</span>
+                <span className="text-xl font-black text-rose-600 dark:text-rose-400 mt-1 block">
                   -{formatCurrency(comisionRetenida)}
                 </span>
-                <span className="text-[10px] text-rose-200 mt-0.5 block">Retención según {planInfo.nombre}</span>
+                <span className="text-[10px] text-rose-500 mt-0.5 block">Retención según {planInfo.nombre}</span>
               </div>
 
-              <div className="bg-emerald-500/20 rounded-2xl p-4 backdrop-blur-sm border border-emerald-300/30">
-                <span className="text-[11px] font-bold text-emerald-200 block">3. Ganancia Neta Tienda</span>
-                <span className="text-xl font-black text-emerald-300 mt-1 block">
+              <div className="bg-emerald-50/60 dark:bg-emerald-950/30 rounded-2xl p-4 border border-emerald-200 dark:border-emerald-900/40">
+                <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-300 block">3. Ganancia Neta Tienda</span>
+                <span className="text-xl font-black text-emerald-600 dark:text-emerald-400 mt-1 block">
                   {formatCurrency(gananciaNetaEsperada)}
                 </span>
-                <span className="text-[10px] text-emerald-200 mt-0.5 block">Total libre proyectado</span>
+                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 mt-0.5 block">Total libre proyectado</span>
               </div>
 
             </div>
