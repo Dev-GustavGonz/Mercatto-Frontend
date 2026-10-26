@@ -172,7 +172,7 @@ export const Navbar = () => {
                       <Link
                         to="/tiendas"
                         onClick={() => setDropdownShop(false)}
-                        className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50/80 text-xs font-bold text-slate-800 hover:text-emerald-700 transition"
+                        className="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50/80 text-xs font-bold text-slate-800 hover:text-emerald-700 transition"
                       >
                         <Store size={15} className="text-violet-600" />
                         <span>{t('tiendas_oficiales')}</span>
@@ -368,6 +368,15 @@ export const Navbar = () => {
             </Link>
           )}
 
+          {/* Acceso a Centro de Ayuda & Soporte */}
+          <Link
+            to="/soporte"
+            className="w-9 h-9 rounded-full hover:bg-slate-100 text-slate-700 hover:text-violet-600 transition hidden sm:flex items-center justify-center cursor-pointer"
+            title="Centro de Soporte & Ayuda"
+          >
+            <Headphones size={19} />
+          </Link>
+
           {/* Menú de Usuario / Avatar según el Rol */}
           {autenticado ? (
             <div className="relative">
@@ -490,6 +499,14 @@ export const Navbar = () => {
                         <Settings size={15} />
                         <span>Datos de Mi Tienda</span>
                       </Link>
+                      <Link
+                        to="/soporte"
+                        onClick={() => setDropdownUser(false)}
+                        className="flex items-center gap-2.5 px-4 py-2 text-slate-600 hover:bg-violet-50 hover:text-violet-700"
+                      >
+                        <Headphones size={15} />
+                        <span>Soporte Técnico Mercatto</span>
+                      </Link>
                     </div>
                   )}
 
@@ -527,6 +544,14 @@ export const Navbar = () => {
                       >
                         <MessageSquare size={15} />
                         <span>Mensajes con Tiendas</span>
+                      </Link>
+                      <Link
+                        to="/soporte"
+                        onClick={() => setDropdownUser(false)}
+                        className="flex items-center gap-2.5 px-4 py-2 text-slate-700 hover:bg-violet-50 hover:text-violet-700"
+                      >
+                        <Headphones size={15} />
+                        <span>Centro de Ayuda & Soporte</span>
                       </Link>
                     </div>
                   )}
@@ -585,6 +610,15 @@ export const Navbar = () => {
                 Panel Vendedor
               </Link>
             )}
+
+            <Link 
+              to="/soporte" 
+              onClick={() => setMenuMobile(false)} 
+              className="px-3 py-2 rounded-xl hover:bg-violet-50 flex items-center gap-2 text-violet-700 font-bold"
+            >
+              <Headphones size={16} />
+              <span>Centro de Ayuda & Soporte</span>
+            </Link>
 
             {!esAdminOVendedor && (
               <>

@@ -191,34 +191,34 @@ export const AdminPredictiveModel = ({ vendedores = [], pedidos = [] }) => {
       {/* ============================================================== */}
       {/* 1. HERO BANNER: MODELO PREDICTIVO PARA EL ADMINISTRADOR        */}
       {/* ============================================================== */}
-      <div className="p-6 sm:p-8 rounded-[32px] bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 text-white shadow-xl shadow-violet-500/20 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-10 -left-10 w-80 h-80 bg-purple-400/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="p-6 sm:p-8 rounded-[32px] bg-gradient-to-r from-slate-950 via-slate-900 to-[#07241c] text-white border border-slate-800 shadow-xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-10 -left-10 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div className="space-y-3 max-w-2xl">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-white font-bold text-xs border border-white/30 backdrop-blur-sm shadow-xs">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-slate-200 font-bold text-xs border border-white/10 backdrop-blur-sm shadow-xs">
                 <Sparkles size={14} className="text-amber-300" />
                 <span>Modelo Predictivo de Monetización Mercatto</span>
               </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-emerald-400/20 text-emerald-100 text-[11px] font-bold border border-emerald-300/30">
+              <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[11px] font-bold border border-emerald-500/30">
                 IA & Rendimiento
               </span>
             </div>
 
             <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
-              Proyección Financiera del Administrador
+              Proyección Financiera de Mercatto
             </h2>
-            <p className="text-xs sm:text-sm text-violet-100 leading-relaxed font-medium">
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
               Supervisión estratégica del rendimiento financiero global de la plataforma, estimando los ingresos generados por comisiones de ventas y suscripciones de tiendas en Mercatto.
             </p>
           </div>
 
           {/* Selector de Escenarios Predictivos */}
-          <div className="bg-black/15 backdrop-blur-md p-4 rounded-2xl border border-white/20 w-full lg:w-auto shrink-0 space-y-2 shadow-xs">
-            <span className="text-[11px] font-bold text-violet-100 uppercase block tracking-wider flex items-center gap-1">
-              <Sliders size={13} />
+          <div className="bg-black/30 backdrop-blur-md p-4 rounded-2xl border border-white/10 w-full lg:w-auto shrink-0 space-y-2 shadow-xs">
+            <span className="text-[11px] font-bold text-slate-300 uppercase block tracking-wider flex items-center gap-1">
+              <Sliders size={13} className="text-emerald-400" />
               <span>Escenario de Inferencia</span>
             </span>
             <div className="flex items-center gap-1.5">
@@ -232,7 +232,7 @@ export const AdminPredictiveModel = ({ vendedores = [], pedidos = [] }) => {
                   onClick={() => setEscenario(esc.id)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                     escenario === esc.id
-                      ? 'bg-white text-violet-800 shadow-md font-black'
+                      ? 'bg-white text-slate-900 shadow-md font-black'
                       : 'bg-white/10 text-white hover:bg-white/20 hover:text-white'
                   }`}
                 >
@@ -296,10 +296,10 @@ export const AdminPredictiveModel = ({ vendedores = [], pedidos = [] }) => {
           </div>
         </div>
 
-        {/* KPI 4: GANANCIA NETA TOTAL ADMINISTRADOR */}
-        <div className="bg-gradient-to-br from-emerald-500 to-teal-700 text-white rounded-3xl p-5 shadow-md shadow-emerald-500/20 space-y-3">
+        {/* KPI 4: GANANCIAS DE MERCATTO */}
+        <div className="bg-gradient-to-br from-emerald-600 to-teal-800 text-white rounded-3xl p-5 shadow-md shadow-emerald-500/20 space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black uppercase tracking-wider text-emerald-100">Ganancia Neta Admin</span>
+            <span className="text-xs font-black uppercase tracking-wider text-emerald-100">Ganancias de Mercatto</span>
             <div className="w-8 h-8 rounded-xl bg-white/20 text-white flex items-center justify-center">
               <DollarSign size={18} />
             </div>
@@ -366,7 +366,7 @@ export const AdminPredictiveModel = ({ vendedores = [], pedidos = [] }) => {
                 <span className="font-bold text-slate-400">$0</span>
               </div>
               <div className="flex justify-between pt-2 border-t border-slate-200 font-black text-slate-900">
-                <span>Ganancia Admin:</span>
+                <span>Ganancias de Mercatto:</span>
                 <span className="text-emerald-600 font-black">{formatCurrency(comisionStarter)}</span>
               </div>
             </div>
@@ -403,7 +403,7 @@ export const AdminPredictiveModel = ({ vendedores = [], pedidos = [] }) => {
                 <span className="font-bold text-indigo-700">+{formatCurrency(suscripcionesPro)}</span>
               </div>
               <div className="flex justify-between pt-2 border-t border-indigo-200 font-black text-slate-900">
-                <span>Ganancia Admin:</span>
+                <span>Ganancias de Mercatto:</span>
                 <span className="text-emerald-600 font-black">{formatCurrency(comisionPro + suscripcionesPro)}</span>
               </div>
             </div>
@@ -440,7 +440,7 @@ export const AdminPredictiveModel = ({ vendedores = [], pedidos = [] }) => {
                 <span className="font-bold text-amber-700">+{formatCurrency(suscripcionesElite)}</span>
               </div>
               <div className="flex justify-between pt-2 border-t border-amber-200 font-black text-slate-900">
-                <span>Ganancia Admin:</span>
+                <span>Ganancias de Mercatto:</span>
                 <span className="text-emerald-600 font-black">{formatCurrency(comisionElite + suscripcionesElite)}</span>
               </div>
             </div>

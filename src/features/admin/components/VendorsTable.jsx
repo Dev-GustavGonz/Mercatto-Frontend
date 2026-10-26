@@ -80,7 +80,7 @@ export const VendorsTable = ({ vendedores = [], onActualizado }) => {
               <th className="p-3.5">Tienda / Propietario</th>
               <th className="p-3.5">NIT / Cédula</th>
               <th className="p-3.5 text-right">Ventas Brutas</th>
-              <th className="p-3.5 text-right text-emerald-600 dark:text-emerald-400">Comisión Admin (4%)</th>
+              <th className="p-3.5 text-right text-emerald-600 dark:text-emerald-400">Comisión Mercatto</th>
               <th className="p-3.5">Ciudad</th>
               <th className="p-3.5">Estado</th>
               <th className="p-3.5 text-right">Acciones de Aprobación</th>
@@ -91,7 +91,7 @@ export const VendorsTable = ({ vendedores = [], onActualizado }) => {
               const esPendiente = v.estado === 'PENDIENTE'
               const esAprobado = v.estado === 'APROBADO'
               const ventasBrutas = v.ventasBrutas || (v.ingresosTotales ? v.ingresosTotales / 0.96 : 0)
-              const comision = v.comisionAdmin || (ventasBrutas * 0.04)
+              const comision = v.comisionMercatto || v.comisionAdmin || (v.comisionRetenida != null ? v.comisionRetenida : (ventasBrutas * 0.10))
 
               return (
                 <tr key={v.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition">
@@ -243,13 +243,13 @@ export const VendorsTable = ({ vendedores = [], onActualizado }) => {
                 </span>
               </div>
               <div>
-                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold block">Tu Ganancia (4%):</span>
+                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold block">Ganancias de Mercatto:</span>
                 <span className="font-black text-emerald-600 dark:text-emerald-400 text-xs">
-                  +{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(vendedorSeleccionado.comisionAdmin || ((vendedorSeleccionado.ventasBrutas || (vendedorSeleccionado.ingresosTotales ? vendedorSeleccionado.ingresosTotales / 0.96 : 0)) * 0.04))}
+                  +{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(vendedorSeleccionado.comisionMercatto || vendedorSeleccionado.comisionAdmin || vendedorSeleccionado.comisionRetenida || ((vendedorSeleccionado.ventasBrutas || (vendedorSeleccionado.ingresosTotales ? vendedorSeleccionado.ingresosTotales / 0.96 : 0)) * 0.10))}
                 </span>
               </div>
               <div>
-                <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold block">Neto para la Tienda (96%):</span>
+                <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold block">Neto para la Tienda:</span>
                 <span className="font-black text-indigo-600 dark:text-indigo-400 text-xs">
                   {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(vendedorSeleccionado.pagoNetoVendedor || ((vendedorSeleccionado.ventasBrutas || (vendedorSeleccionado.ingresosTotales ? vendedorSeleccionado.ingresosTotales / 0.96 : 0)) * 0.96))}
                 </span>

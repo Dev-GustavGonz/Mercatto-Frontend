@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/useToast'
 import { direccionService } from '@/features/usuario'
 import { usuarioService } from '@/features/usuario'
 import Button from '@/components/common/Button'
 import Input from '@/components/common/Input'
-import { User, MapPin, Plus, Trash2, Edit2, Shield, Camera, X, Check } from 'lucide-react'
+import { User, MapPin, Plus, Trash2, Edit2, Shield, Camera, X, Check, Headphones } from 'lucide-react'
 
 export const Perfil = () => {
   const { usuario, actualizarUsuario } = useAuth()
@@ -218,6 +219,16 @@ export const Perfil = () => {
 
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 space-y-4">
             <h3 className="font-bold text-slate-800 border-b border-slate-100 pb-2">Opciones de Cuenta</h3>
+            <Link
+              to="/soporte"
+              className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-violet-700 bg-violet-50/70 hover:bg-violet-100/70 rounded-xl font-bold transition-colors"
+            >
+              <span className="flex items-center gap-2">
+                <Headphones size={16} />
+                <span>Centro de Soporte & Tickets</span>
+              </span>
+              <span>→</span>
+            </Link>
             <button className="w-full text-left px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer" onClick={() => setModalPassword(true)}>
               Cambiar Contraseña
             </button>

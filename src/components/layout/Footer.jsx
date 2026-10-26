@@ -51,15 +51,15 @@ export const Footer = () => {
                 <p className="text-xs text-slate-400">{isEn ? 'Direct store resolution' : 'Soporte directo con vendedores'}</p>
               </div>
             </div>
-            <div className="flex items-center gap-4 bg-slate-800/40 p-4 rounded-2xl border border-slate-700/50 hover:border-slate-600 transition-colors">
-              <div className="bg-red-500/10 text-mercatto-accent p-3 rounded-full shrink-0">
+            <Link to="/soporte" className="flex items-center gap-4 bg-slate-800/40 p-4 rounded-2xl border border-slate-700/50 hover:border-violet-500/50 hover:bg-slate-800/70 transition-colors group">
+              <div className="bg-red-500/10 text-mercatto-accent group-hover:scale-110 p-3 rounded-full shrink-0 transition-transform">
                 <Headphones size={24} />
               </div>
               <div>
-                <h4 className="text-sm font-bold text-white">{t('atencion_cliente')}</h4>
+                <h4 className="text-sm font-bold text-white group-hover:text-violet-400 transition-colors">{t('atencion_cliente')}</h4>
                 <p className="text-xs text-slate-400">{isEn ? 'Official WhatsApp & tickets' : 'Habla directo con soporte'}</p>
               </div>
-            </div>
+            </Link>
           </div>
         </div>
       </div>
@@ -96,6 +96,12 @@ export const Footer = () => {
           <div>
             <h4 className="text-sm font-bold text-white mb-4">{t('contacto')}</h4>
             <ul className="space-y-3 text-sm">
+              <li>
+                <Link to="/soporte" className="text-violet-400 font-semibold hover:text-white transition-colors flex items-center gap-1.5">
+                  <Headphones size={15} />
+                  <span>{isEn ? 'Submit Support Ticket' : 'Crear Ticket de Soporte'}</span>
+                </Link>
+              </li>
               <li>
                 <a href="mailto:realmercatto@gmail.com" className="text-slate-400 hover:text-violet-400 transition-colors">
                   realmercatto@gmail.com

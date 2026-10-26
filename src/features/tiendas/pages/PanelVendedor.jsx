@@ -17,6 +17,7 @@ import Spinner from '@/components/common/Spinner'
 import { formatCurrency } from '@/utils/formatCurrency'
 import { getMediaUrl } from '@/utils/constants'
 import MercattoLogo from '@/components/common/MercattoLogo'
+import { CentroSoporte } from '@/features/soporte'
 import {
   LayoutDashboard,
   Store,
@@ -53,6 +54,7 @@ import {
   Calculator,
   Zap,
   Crown,
+  Headphones,
   Sliders,
   Layers,
   Percent
@@ -255,6 +257,7 @@ export const PanelVendedor = () => {
     { id: 'pedidos', label: 'Pedidos & Envíos', icon: ShoppingCart, badge: pedidosPendientes > 0 ? pedidosPendientes : null },
     { id: 'mensajes', label: 'Chat Clientes', icon: MessageSquare, badge: mensajes.filter(m => !m.respondido).length || null },
     { id: 'perfil', label: 'Mi Tienda & Perfil', icon: Store, badge: null },
+    { id: 'soporte', label: 'Tickets & Soporte', icon: Headphones, badge: null },
   ]
 
   const logoDefault = 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=150&auto=format&fit=crop&q=80'
@@ -1135,6 +1138,13 @@ export const PanelVendedor = () => {
         {tab === 'perfil' && (
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs">
             <VendorProfile perfil={perfil} onActualizado={() => cargarTodo(true)} />
+          </div>
+        )}
+
+        {/* Tab: Tickets y Soporte Mercatto */}
+        {tab === 'soporte' && (
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs">
+            <CentroSoporte vistaEmbebida={true} />
           </div>
         )}
 

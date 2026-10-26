@@ -22,7 +22,7 @@ import { DirectorioTiendas, VitrinaTienda, PanelVendedor } from './features/tien
 import { PanelAdmin } from './features/admin'
 import { Perfil } from './features/usuario'
 import { Mensajes } from './features/mensajes'
-import { PublicChatbot } from './features/soporte'
+import { PublicChatbot, CentroSoporte } from './features/soporte'
 import ScrollToTop from './components/common/ScrollToTop'
 
 // Protected Route Wrapper for Vendor
@@ -100,6 +100,7 @@ const AppLayout = () => {
           <Route path="/producto/:id" element={<DetalleProducto />} />
           <Route path="/carrito" element={<Carrito />} />
           <Route path="/rastreo" element={<RastreoPedido />} />
+          <Route path="/soporte" element={<CentroSoporte />} />
           <Route path="/terminos" element={<Terminos />} />
           <Route path="/privacidad" element={<Privacidad />} />
           <Route path="/login" element={<Login />} />

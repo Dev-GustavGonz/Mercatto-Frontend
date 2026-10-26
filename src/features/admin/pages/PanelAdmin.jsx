@@ -298,8 +298,8 @@ export const PanelAdmin = () => {
                   }}
                   className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200 cursor-pointer ${
                     activo
-                      ? 'bg-violet-600 text-white shadow-md shadow-violet-500/25 scale-105'
-                      : 'text-slate-500 hover:text-violet-700 hover:bg-violet-50'
+                      ? 'bg-emerald-600 text-white shadow-md shadow-emerald-500/25 scale-105'
+                      : 'text-slate-500 hover:text-emerald-700 hover:bg-emerald-50'
                   }`}
                   title={item.label}
                 >
@@ -308,7 +308,7 @@ export const PanelAdmin = () => {
 
                 {/* Badge indicador discreto */}
                 {item.badge && (
-                  <span className="absolute top-1 right-2 w-2.5 h-2.5 rounded-full bg-violet-600 border-2 border-white" />
+                  <span className="absolute top-1 right-2 w-2.5 h-2.5 rounded-full bg-emerald-600 border-2 border-white" />
                 )}
 
                 {/* Tooltip flotante al pasar el cursor */}
@@ -325,7 +325,7 @@ export const PanelAdmin = () => {
           <Link
             to="/catalogo"
             target="_blank"
-            className="w-11 h-11 rounded-2xl text-slate-400 hover:text-violet-700 hover:bg-violet-50 flex items-center justify-center transition-all"
+            className="w-11 h-11 rounded-2xl text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 flex items-center justify-center transition-all"
             title="Inspeccionar Catálogo Público"
           >
             <ShoppingBag size={18} />
@@ -333,7 +333,7 @@ export const PanelAdmin = () => {
 
           <button
             onClick={cargarDatos}
-            className="w-11 h-11 rounded-2xl text-slate-400 hover:text-violet-700 hover:bg-violet-50 flex items-center justify-center transition-all cursor-pointer"
+            className="w-11 h-11 rounded-2xl text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 flex items-center justify-center transition-all cursor-pointer"
             title="Sincronizar datos"
           >
             <RefreshCw size={18} />
@@ -372,7 +372,7 @@ export const PanelAdmin = () => {
                 {tab === 'soporte' && 'Tickets y Asistencia al Cliente'}
                 {tab === 'mensajes' && 'Supervisión de Mensajería'}
               </h1>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-50 text-violet-700 border border-violet-100 text-xs font-black shrink-0">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100 text-xs font-black shrink-0">
                 <ShieldCheck size={14} className="text-violet-600" />
                 <span>Super Admin</span>
               </span>
@@ -401,7 +401,7 @@ export const PanelAdmin = () => {
             <Link
               to="/catalogo"
               target="_blank"
-              className="px-3 sm:px-3.5 py-2 rounded-xl border border-slate-200 hover:border-violet-300 hover:text-violet-700 hover:bg-violet-50 text-slate-700 font-bold text-xs transition flex items-center gap-1.5 shadow-2xs whitespace-nowrap"
+              className="px-3 sm:px-3.5 py-2 rounded-xl border border-slate-200 hover:border-violet-300 hover:text-emerald-700 hover:bg-emerald-50 text-slate-700 font-bold text-xs transition flex items-center gap-1.5 shadow-2xs whitespace-nowrap"
               title="Inspeccionar tienda pública en una pestaña nueva"
             >
               <ShoppingBag size={14} className="text-violet-600" />
@@ -430,7 +430,7 @@ export const PanelAdmin = () => {
 
             {/* 5. Perfil Admin */}
             <div className="flex items-center gap-2 pl-2 sm:pl-3 border-l border-slate-200 shrink-0">
-              <div className="w-8 h-8 rounded-full bg-violet-600 text-white flex items-center justify-center font-black text-xs shadow-xs shrink-0">
+              <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-black text-xs shadow-xs shrink-0">
                 {usuario?.nombre?.charAt(0) || 'A'}
               </div>
               <span className="text-xs font-bold text-slate-800 whitespace-nowrap">
@@ -465,7 +465,7 @@ export const PanelAdmin = () => {
                 {/* TARJETA: DESGLOSE DE INGRESOS SEGÚN PLANES */}
                 <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
                   <div>
-                    <span className="text-xs font-semibold text-slate-400">Ganancias de la Plataforma (Comisiones + Planes)</span>
+                    <span className="text-xs font-semibold text-slate-400">Ganancias de Mercatto (Comisiones + Planes)</span>
                     <h4 className="text-2xl font-black text-slate-900 mt-0.5">
                       {formatCurrency(gananciaTotalAdmin)}
                     </h4>
@@ -474,7 +474,7 @@ export const PanelAdmin = () => {
                   {/* Barra de progreso segmentada proporcional */}
                   <div className="h-3 w-full bg-slate-100 rounded-full flex overflow-hidden gap-1 p-0.5">
                     <div
-                      className="h-full bg-violet-600 rounded-full transition-all duration-500"
+                      className="h-full bg-emerald-600 rounded-full transition-all duration-500"
                       style={{ width: `${gananciaTotalAdmin > 0 ? Math.max(15, Math.round((totalComisionesVentasAdmin / gananciaTotalAdmin) * 100)) : 70}%` }}
                       title="Comisiones por Ventas según Plan"
                     />
@@ -489,7 +489,7 @@ export const PanelAdmin = () => {
                   <div className="space-y-2.5 pt-2 text-xs">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-violet-600" />
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-600" />
                         <span className="font-bold text-slate-700">Comisiones Ventas (10%, 5%, 2%)</span>
                       </div>
                       <span className="font-black text-slate-900">{formatCurrency(totalComisionesVentasAdmin)}</span>
@@ -678,9 +678,9 @@ export const PanelAdmin = () => {
               </div>
 
               {/* TARJETA 3: AI INSIGHT (VIOLETA VIBRANTE) */}
-              <div className="bg-gradient-to-br from-violet-600 to-indigo-700 rounded-3xl p-6 text-white shadow-xl shadow-violet-500/20 space-y-3">
+              <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-[#07241c] rounded-3xl p-6 text-white shadow-xl shadow-emerald-950/20 border border-emerald-900/40 space-y-3">
                 <div className="flex items-center gap-2">
-                  <Sparkles size={18} className="text-violet-200" />
+                  <Sparkles size={18} className="text-emerald-400" />
                   <h4 className="font-black text-sm tracking-wide">Mercatto AI Insight</h4>
                 </div>
                 <p className="text-xs text-violet-100 leading-relaxed font-medium">
@@ -999,7 +999,7 @@ export const PanelAdmin = () => {
         {/* Tab: Liquidación & Comisiones por Plan */}
         {tab === 'finanzas' && (
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
-            <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 text-white flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-xl shadow-violet-500/20 relative overflow-hidden">
+            <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-slate-950 via-slate-900 to-[#07241c] text-white flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-xl shadow-emerald-950/20 border border-emerald-900/40 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
               <div className="absolute -bottom-10 -left-10 w-80 h-80 bg-purple-400/20 rounded-full blur-3xl pointer-events-none" />
 
@@ -1015,9 +1015,9 @@ export const PanelAdmin = () => {
               </div>
 
               <div className="relative z-10 bg-black/15 backdrop-blur-md p-5 rounded-2xl border border-white/20 text-right shrink-0 w-full lg:w-auto shadow-xs">
-                <span className="text-xs font-bold text-violet-100 uppercase block tracking-wider">Ganancia Neta Total Plataforma</span>
+                <span className="text-xs font-bold text-emerald-300 uppercase block tracking-wider">Ganancias de Mercatto</span>
                 <span className="text-3xl font-black text-white">{formatCurrency(gananciaTotalAdmin)}</span>
-                <span className="text-[11px] text-violet-200 block mt-1 font-semibold">
+                <span className="text-[11px] text-emerald-200/80 block mt-1 font-semibold">
                   Ingresos consolidados por comisiones y membresías
                 </span>
               </div>
@@ -1030,10 +1030,10 @@ export const PanelAdmin = () => {
                 <p className="text-xl font-black text-slate-900">{formatCurrency(totalVentasMercado)}</p>
                 <p className="text-[11px] text-slate-400">Facturación acumulada</p>
               </div>
-              <div className="p-5 rounded-2xl bg-violet-50/70 border border-violet-200 space-y-1">
-                <span className="text-xs text-violet-700 font-bold uppercase tracking-wider">Comisiones de Venta</span>
-                <p className="text-xl font-black text-violet-700">{formatCurrency(totalComisionesVentasAdmin)}</p>
-                <p className="text-[11px] text-violet-600 font-semibold">Retención según planes vigentes</p>
+              <div className="p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-1">
+                <span className="text-xs text-emerald-700 font-bold uppercase tracking-wider">Comisión Mercatto</span>
+                <p className="text-xl font-black text-emerald-700">{formatCurrency(totalComisionesVentasAdmin)}</p>
+                <p className="text-[11px] text-emerald-600 font-semibold">Retención según planes vigentes</p>
               </div>
               <div className="p-5 rounded-2xl bg-indigo-50/70 border border-indigo-200 space-y-1">
                 <span className="text-xs text-indigo-700 font-bold uppercase tracking-wider">Planes Mensuales (MRR)</span>
@@ -1124,12 +1124,12 @@ export const PanelAdmin = () => {
         {/* Tab: Mensajes */}
         {tab === 'mensajes' && (
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
-            <div className="p-6 rounded-3xl bg-gradient-to-r from-violet-600 to-indigo-700 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-lg shadow-violet-500/15">
+            <div className="p-6 rounded-3xl bg-gradient-to-r from-slate-950 via-slate-900 to-[#07241c] border border-slate-800 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-lg shadow-black/20">
               <div>
                 <h3 className="text-lg font-black">Centro de Supervisión de Mensajería</h3>
-                <p className="text-xs text-violet-100 mt-1">Supervisa chats entre compradores y vendedores para asegurar transacciones seguras.</p>
+                <p className="text-xs text-slate-300 mt-1">Supervisa chats entre compradores y vendedores para asegurar transacciones seguras.</p>
               </div>
-              <Link to="/mensajes" target="_blank" className="px-5 py-2.5 rounded-xl bg-white text-violet-700 hover:bg-violet-50 font-bold text-xs flex items-center gap-2 shadow-sm">
+              <Link to="/mensajes" target="_blank" className="px-5 py-2.5 rounded-xl bg-white text-slate-900 hover:bg-emerald-50 font-bold text-xs flex items-center gap-2 shadow-sm">
                 <span>Abrir Chat Completo</span>
                 <ExternalLink size={14} />
               </Link>

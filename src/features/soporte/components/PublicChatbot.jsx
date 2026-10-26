@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { useLanguage } from '@/hooks/useLanguage'
 import api from '@/utils/api'
@@ -91,7 +91,8 @@ const RESPUESTAS_BASE = {
 }
 
 export const PublicChatbot = () => {
-  const { autenticado } = useAuth()
+  const { autenticado, usuario } = useAuth()
+  const location = useLocation()
   const { t, idioma } = useLanguage()
   const isEn = idioma === 'EN'
   const [abierto, setAbierto] = useState(false)
@@ -117,10 +118,28 @@ export const PublicChatbot = () => {
     mensaje: ''
   })
 
+  // Sincronizar datos si el usuario está autenticado
+  useEffect(() => {
+    if (usuario) {
+      setFormTicket((prev) => ({
+        ...prev,
+        nombre: usuario.nombre || prev.nombre,
+        email: usuario.email || prev.email,
+        telefono: usuario.telefono || prev.telefono
+      }))
+    }
+  }, [usuario])
+
   const mensajesContainerRef = useRef(null)
 
-  // Solo se muestra a visitantes no logueados en el Home
-  if (autenticado) return null
+
+  // En paneles administrativos o de tienda, el usuario ya cuenta con su propio dock
+  const esRutaPanel =
+    location.pathname.startsWith('/admin') ||
+    location.pathname.startsWith('/panel-vendedor') ||
+    location.pathname.startsWith('/vendedor')
+
+  if (esRutaPanel) return null
 
   // Scroll suave contenido únicamente dentro del contenedor del chat
   const scrollAlFinal = () => {
@@ -441,12 +460,12 @@ export const PublicChatbot = () => {
               {isEn ? 'Flat commission: 4% per sale' : 'Comisión fija única: 4% por venta'}
             </span>
             <Link
-              to="/registro"
+              to="/soporte"
               onClick={() => setAbierto(false)}
-              className="font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 flex items-center gap-1 text-[11px]"
+              className="font-bold text-violet-600 dark:text-violet-400 hover:text-violet-700 flex items-center gap-1 text-[11px]"
             >
-              <span>{isEn ? 'Sell for free' : 'Vende gratis'}</span>
-              <ExternalLink size={10} />
+              <Headphones size={11} />
+              <span>{isEn ? 'Support Center' : 'Centro de Soporte'}</span>
             </Link>
           </div>
 
