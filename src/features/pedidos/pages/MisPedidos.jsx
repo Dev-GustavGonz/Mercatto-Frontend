@@ -7,12 +7,14 @@ import Spinner from '@/components/common/Spinner'
 import EmptyState from '@/components/common/EmptyState'
 import { useLanguage } from '@/hooks/useLanguage'
 import { useToast } from '@/hooks/useToast'
-import { Package, Truck, Calendar, XCircle } from 'lucide-react'
+import { Package, Truck, Calendar, XCircle, CreditCard } from 'lucide-react'
+import WompiPaymentModal from '../components/WompiPaymentModal'
 
 export const MisPedidos = () => {
   const [pedidos, setPedidos] = useState([])
   const [loading, setLoading] = useState(true)
   const [cancelandoId, setCancelandoId] = useState(null)
+  const [pedidoParaPagar, setPedidoParaPagar] = useState(null)
   const { t, idioma } = useLanguage()
   const { success, error } = useToast()
 
@@ -141,13 +143,24 @@ export const MisPedidos = () => {
 
               {/* Footer Total & Acciones */}
               <div className="flex flex-wrap justify-between items-center gap-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center flex-wrap gap-2">
                   <span className="text-slate-500">{t('metodo_pago')}: <strong className="text-slate-700 dark:text-slate-300">{p.metodoPago || 'WOMPI'}</strong></span>
+                  
+                  {p.estado === 'PENDIENTE' && (
+                    <button
+                      onClick={() => setPedidoParaPagar(p)}
+                      className="px-3 py-1.5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-extrabold text-[11px] inline-flex items-center gap-1.5 transition shadow-xs cursor-pointer"
+                    >
+                      <CreditCard size={13} />
+                      <span>{idioma === 'EN' ? 'Pay Now with Card / Wompi' : 'Pagar Ahora (Tarjeta / Wompi)'}</span>
+                    </button>
+                  )}
+
                   {(p.estado === 'PENDIENTE' || p.estado === 'PAGADO') && (
                     <button
                       onClick={() => handleCancelar(p)}
                       disabled={cancelandoId === p.id}
-                      className="px-2.5 py-1 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 font-bold text-[11px] inline-flex items-center gap-1 transition cursor-pointer"
+                      className="px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 font-bold text-[11px] inline-flex items-center gap-1 transition cursor-pointer"
                     >
                       <XCircle size={12} />
                       <span>{cancelandoId === p.id ? 'Cancelando...' : (idioma === 'EN' ? 'Cancel Order' : 'Cancelar Pedido')}</span>
@@ -155,7 +168,11 @@ export const MisPedidos = () => {
                   )}
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-slate-500">{idioma === 'EN' ? 'Total paid:' : 'Total pagado:'}</span>
+                  <span className="text-slate-500">
+                    {p.estado === 'PENDIENTE'
+                      ? (idioma === 'EN' ? 'Total to pay:' : 'Total a pagar:')
+                      : (idioma === 'EN' ? 'Total paid:' : 'Total pagado:')}
+                  </span>
                   <span className="text-base font-black text-indigo-600 dark:text-indigo-400">{formatCurrency(p.total)}</span>
                 </div>
               </div>
@@ -163,6 +180,22 @@ export const MisPedidos = () => {
           )
         })}
       </div>
+
+      {/* Modal de Pago Wompi para Pedidos Pendientes */}
+      <WompiPaymentModal
+        isOpen={!!pedidoParaPagar}
+        onClose={() => setPedidoParaPagar(null)}
+        pedido={pedidoParaPagar}
+        metodoInicial={pedidoParaPagar?.metodoPago || 'WOMPI'}
+        onPagoCompletado={() => {
+          setPedidoParaPagar(null)
+          cargarPedidos()
+        }}
+        onCancelarPedido={() => {
+          setPedidoParaPagar(null)
+          cargarPedidos()
+        }}
+      />
     </div>
   )
 }

@@ -8,6 +8,7 @@ import AddressForm from '../components/AddressForm'
 import PaymentForm from '../components/PaymentForm'
 import CartSummary from '../components/CartSummary'
 import OrderSuccess from '../components/OrderSuccess'
+import WompiPaymentModal from '../components/WompiPaymentModal'
 import Button from '@/components/common/Button'
 import pedidoService from '../services/pedidoService'
 import pagoService from '../services/pagoService'
@@ -48,6 +49,8 @@ export const Checkout = () => {
   const [metodoPago, setMetodoPago] = useState(draftPrevio.metodoPago || 'WOMPI')
   const [loading, setLoading] = useState(false)
   const [pedidoCreado, setPedidoCreado] = useState(null)
+  const [pedidoParaWompi, setPedidoParaWompi] = useState(null)
+  const [mostrarModalWompi, setMostrarModalWompi] = useState(false)
 
   // Guardar en tiempo real cualquier cambio en el borrador (tanto para invitado como registrado)
   React.useEffect(() => {
@@ -185,50 +188,66 @@ export const Checkout = () => {
 
       // Métodos integrados con Wompi Bancolombia (Tarjetas, PSE, Nequi)
       if (metodoPago === 'WOMPI' || metodoPago === 'PSE' || metodoPago === 'NEQUI') {
-        const checkoutUrl = pagoRes.urlCheckout || pagoRes.checkoutUrl || pagoRes.data?.urlCheckout
-        
-        limpiarCarrito()
-        limpiarBorradorCheckout()
+        const esSimulado =
+          pagoRes.esSandboxSimulado ||
+          !pagoRes.publicKey ||
+          pagoRes.publicKey.includes('Q5yDA9xoKdePzhSGeVe9KvxXQKIO5Ade')
 
-        if (window.WidgetCheckout && pagoRes.publicKey && pagoRes.signatureIntegrity) {
-          const checkout = new window.WidgetCheckout({
-            currency: 'COP',
-            amountInCents: pagoRes.amountInCents,
-            reference: pagoRes.reference,
-            publicKey: pagoRes.publicKey,
-            signature: { integrity: pagoRes.signatureIntegrity },
-            redirectUrl: window.location.origin + '/pago/exitoso?ref=' + pagoRes.reference,
-            customerData: {
-              email: pagoRes.customerEmail || (autenticado ? usuario?.email : emailInvitado.trim()),
-              fullName: pagoRes.customerFullName || direccion.nombreCompleto.trim(),
-              phoneNumber: pagoRes.customerPhoneNumber || telLimpio,
-              phoneNumberPrefix: '+57',
-            }
-          })
-
-          checkout.open(async (result) => {
-            const transaction = result?.transaction
-            if (transaction?.status === 'APPROVED') {
-              try {
-                if (autenticado) {
-                  await pagoService.confirmarPago(pedidoRes.id, transaction.id)
-                } else {
-                  await pagoService.confirmarPagoInvitado(pedidoRes.id, transaction.id)
-                }
-              } catch (e) {
-                console.warn('Error confirmando pago:', e)
-              }
-              navigate('/pago/exitoso?ref=' + pagoRes.reference)
-            } else if (transaction && (transaction.status === 'DECLINED' || transaction.status === 'ERROR')) {
-              navigate('/pago/cancelado?ref=' + pagoRes.reference)
-            }
-          })
+        // Si estamos en entorno de desarrollo / sandbox o si las llaves son de prueba de Wompi
+        if (esSimulado) {
+          setPedidoParaWompi({ ...pedidoRes, total })
+          setMostrarModalWompi(true)
           return
         }
 
-        // Redirección directa a la pasarela Wompi web si no está disponible el Widget modal
-        const urlDestino = checkoutUrl || `https://checkout.wompi.co/p/?public-key=${pagoRes.publicKey}&currency=COP&amount-in-cents=${pagoRes.amountInCents}&reference=${pagoRes.reference}&signature:integrity=${pagoRes.signatureIntegrity}&redirect-url=${encodeURIComponent(window.location.origin + '/pago/exitoso?ref=' + pagoRes.reference)}`
-        window.location.href = urlDestino
+        if (window.WidgetCheckout && pagoRes.publicKey && pagoRes.signatureIntegrity) {
+          try {
+            const checkout = new window.WidgetCheckout({
+              currency: 'COP',
+              amountInCents: pagoRes.amountInCents,
+              reference: pagoRes.reference,
+              publicKey: pagoRes.publicKey,
+              signature: { integrity: pagoRes.signatureIntegrity },
+              redirectUrl: window.location.origin + '/pago/exitoso?ref=' + pagoRes.reference,
+              customerData: {
+                email: pagoRes.customerEmail || (autenticado ? usuario?.email : emailInvitado.trim()),
+                fullName: pagoRes.customerFullName || direccion.nombreCompleto.trim(),
+                phoneNumber: pagoRes.customerPhoneNumber || telLimpio,
+                phoneNumberPrefix: '+57',
+              }
+            })
+
+            checkout.open(async (result) => {
+              const transaction = result?.transaction
+              if (transaction?.status === 'APPROVED') {
+                try {
+                  if (autenticado) {
+                    await pagoService.confirmarPago(pedidoRes.id, transaction.id)
+                  } else {
+                    await pagoService.confirmarPagoInvitado(pedidoRes.id, transaction.id)
+                  }
+                } catch (e) {
+                  console.warn('Error confirmando pago:', e)
+                }
+                limpiarCarrito()
+                limpiarBorradorCheckout()
+                navigate('/pago/exitoso?ref=' + pagoRes.reference)
+              } else if (transaction && (transaction.status === 'DECLINED' || transaction.status === 'ERROR')) {
+                navigate('/pago/cancelado?ref=' + pagoRes.reference)
+              }
+            })
+            return
+          } catch (widgetErr) {
+            console.warn('Error en widget Wompi, activando pasarela interactiva Mercatto:', widgetErr)
+            setPedidoParaWompi({ ...pedidoRes, total })
+            setMostrarModalWompi(true)
+            return
+          }
+        }
+
+        // Si no está disponible el widget CDN, abrir modal integrado
+        setPedidoParaWompi({ ...pedidoRes, total })
+        setMostrarModalWompi(true)
         return
       }
 
@@ -338,6 +357,25 @@ export const Checkout = () => {
           <CartSummary showCheckoutBtn={false} />
         </div>
       </form>
+
+      {/* Modal de Pago Seguro Wompi Sandbox */}
+      <WompiPaymentModal
+        isOpen={mostrarModalWompi}
+        onClose={() => setMostrarModalWompi(false)}
+        pedido={pedidoParaWompi}
+        metodoInicial={metodoPago}
+        esInvitado={!autenticado}
+        onPagoCompletado={(refTx) => {
+          limpiarCarrito()
+          limpiarBorradorCheckout()
+          setMostrarModalWompi(false)
+          navigate('/pago/exitoso?ref=' + refTx)
+        }}
+        onCancelarPedido={() => {
+          setMostrarModalWompi(false)
+          setPedidoParaWompi(null)
+        }}
+      />
     </div>
   )
 }
