@@ -62,7 +62,7 @@ export const VendorsTable = ({ vendedores = [], onActualizado }) => {
               onClick={() => setFiltroEstado(est)}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                 filtroEstado === est
-                  ? 'bg-rose-600 text-white shadow-sm'
+                  ? 'bg-violet-600 hover:bg-violet-700 text-white shadow-sm'
                   : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-50'
               }`}
             >

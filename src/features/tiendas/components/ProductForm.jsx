@@ -7,17 +7,33 @@ import { Plus, Trash2, Upload } from 'lucide-react'
 
 export const ProductForm = ({ productoInicial = null, onGuardado, onCancelar }) => {
   const [titulo, setTitulo] = useState(productoInicial?.titulo || '')
-  const [categoriaId, setCategoriaId] = useState(productoInicial?.categoria?.id || '')
+  const [categoriaId, setCategoriaId] = useState(
+    productoInicial?.categoria?.id || productoInicial?.categoriaId || ''
+  )
   const [descripcion, setDescripcion] = useState(productoInicial?.descripcion || '')
   const [precio, setPrecio] = useState(productoInicial?.precio || '')
   const [precioOferta, setPrecioOferta] = useState(productoInicial?.precioOferta || '')
-  const [stock, setStock] = useState(productoInicial?.stock || 10)
+  const [stock, setStock] = useState(productoInicial?.stock ?? 10)
   const [marca, setMarca] = useState(productoInicial?.marca || '')
   const [estado, setEstado] = useState(productoInicial?.estado || 'NUEVO')
   const [destacado, setDestacado] = useState(productoInicial?.destacado || false)
-  const [imagenes, setImagenes] = useState(productoInicial?.imagenes?.map(i => i.url) || [''])
+  const [imagenes, setImagenes] = useState(() => {
+    if (productoInicial?.imagenes && productoInicial.imagenes.length > 0) {
+      return productoInicial.imagenes.map(i => typeof i === 'string' ? i : i.url).filter(Boolean)
+    }
+    if (productoInicial?.imagenUrl) {
+      return [productoInicial.imagenUrl]
+    }
+    return ['']
+  })
   const [variantes, setVariantes] = useState(
-    productoInicial?.variantes || []
+    productoInicial?.variantes?.map(v => ({
+      id: v.id || null,
+      nombre: v.nombre || '',
+      precio: v.precio ?? '',
+      stock: v.stock ?? 0,
+      sku: v.sku || '',
+    })) || []
   )
   const [categorias, setCategorias] = useState([])
   const [loading, setLoading] = useState(false)
@@ -150,10 +166,12 @@ export const ProductForm = ({ productoInicial = null, onGuardado, onCancelar }) 
         principal: i === 0,
         ordenVisual: i,
       })),
-      variantes: variantes.filter(v => v.nombre.trim()).map(v => ({
-        nombre: v.nombre,
-        precio: Number(v.precio) || Number(precio),
+      variantes: variantes.filter(v => v.nombre && v.nombre.trim()).map(v => ({
+        id: v.id || null,
+        nombre: v.nombre.trim(),
+        precio: Number(v.precio) || Number(precioNum),
         stock: Number(v.stock) || 0,
+        sku: v.sku || null,
       })),
     }
 
@@ -167,7 +185,8 @@ export const ProductForm = ({ productoInicial = null, onGuardado, onCancelar }) 
       }
       if (onGuardado) onGuardado()
     } catch (err) {
-      error(err.response?.data?.mensaje || 'Error al guardar el producto')
+      const msg = err.response?.data?.mensaje || err.response?.data?.message || err.message || 'Error al guardar el producto'
+      error(msg)
     } finally {
       setLoading(false)
     }

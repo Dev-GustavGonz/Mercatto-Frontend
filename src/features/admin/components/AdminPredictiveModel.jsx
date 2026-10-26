@@ -191,33 +191,30 @@ export const AdminPredictiveModel = ({ vendedores = [], pedidos = [] }) => {
       {/* ============================================================== */}
       {/* 1. HERO BANNER: MODELO PREDICTIVO PARA EL ADMINISTRADOR        */}
       {/* ============================================================== */}
-      <div className="p-6 sm:p-8 rounded-[32px] bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 text-white shadow-xl shadow-violet-500/20 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-10 -left-10 w-80 h-80 bg-purple-400/20 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+      <div className="p-6 sm:p-8 rounded-[32px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div className="space-y-3 max-w-2xl">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-white font-bold text-xs border border-white/30 backdrop-blur-sm shadow-xs">
-                <Sparkles size={14} className="text-amber-300" />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-50 dark:bg-violet-950/50 text-violet-700 dark:text-violet-300 font-bold text-xs border border-violet-200 dark:border-violet-800">
+                <Sparkles size={14} className="text-violet-600 dark:text-violet-400" />
                 <span>Modelo Predictivo de Monetización Mercatto</span>
               </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-emerald-400/20 text-emerald-100 text-[11px] font-bold border border-emerald-300/30">
+              <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 text-[11px] font-bold border border-emerald-200 dark:border-emerald-800">
                 IA & Rendimiento
               </span>
             </div>
 
-            <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+            <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
               Proyección Financiera de Mercatto
             </h2>
-            <p className="text-xs sm:text-sm text-violet-100 leading-relaxed font-medium">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
               Supervisión estratégica del rendimiento financiero global de la plataforma, estimando los ingresos generados por comisiones de ventas y suscripciones de tiendas en Mercatto.
             </p>
           </div>
 
           {/* Selector de Escenarios Predictivos */}
-          <div className="bg-black/15 backdrop-blur-md p-4 rounded-2xl border border-white/20 w-full lg:w-auto shrink-0 space-y-2 shadow-xs">
-            <span className="text-[11px] font-bold text-violet-100 uppercase block tracking-wider flex items-center gap-1">
+          <div className="bg-slate-50 dark:bg-slate-800/80 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 w-full lg:w-auto shrink-0 space-y-2 shadow-xs">
+            <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase block tracking-wider flex items-center gap-1">
               <Sliders size={13} />
               <span>Escenario de Inferencia</span>
             </span>
@@ -232,8 +229,8 @@ export const AdminPredictiveModel = ({ vendedores = [], pedidos = [] }) => {
                   onClick={() => setEscenario(esc.id)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                     escenario === esc.id
-                      ? 'bg-white text-violet-800 shadow-md font-black'
-                      : 'bg-white/10 text-white hover:bg-white/20 hover:text-white'
+                      ? 'bg-violet-600 text-white shadow-sm font-bold'
+                      : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100'
                   }`}
                 >
                   {esc.label}

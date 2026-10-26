@@ -108,27 +108,27 @@ export const SupportTicketsManager = () => {
 
   return (
     <div className="space-y-6">
-      {/* Encabezado */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl text-white shadow-xl border border-indigo-900/40">
+      {/* Encabezado sin fondo de color */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
         <div className="space-y-1">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-semibold">
-            <Headphones size={13} />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-50 dark:bg-violet-950/50 text-violet-700 dark:text-violet-300 text-xs font-semibold border border-violet-200 dark:border-violet-800">
+            <Headphones size={13} className="text-violet-600 dark:text-violet-400" />
             <span>Mesa de Ayuda & Atención al Cliente</span>
           </div>
-          <h3 className="text-xl font-black">Tickets de Soporte de Visitantes</h3>
-          <p className="text-xs text-slate-300 max-w-xl">
+          <h3 className="text-xl font-black text-slate-900 dark:text-white">Tickets de Soporte de Visitantes</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xl">
             Gestiona y responde las consultas dejadas por usuarios y visitantes en el Asistente del Home. Cada respuesta se envía automáticamente al correo del interesado.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="px-4 py-3 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 text-center">
-            <span className="block text-2xl font-black text-amber-400">{pendientesCount}</span>
-            <span className="text-[10px] text-slate-300 uppercase tracking-wider font-semibold">Pendientes</span>
+          <div className="px-4 py-3 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700 text-center min-w-[90px]">
+            <span className="block text-2xl font-black text-amber-500">{pendientesCount}</span>
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-bold">Pendientes</span>
           </div>
-          <div className="px-4 py-3 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 text-center">
-            <span className="block text-2xl font-black text-white">{tickets.length}</span>
-            <span className="text-[10px] text-slate-300 uppercase tracking-wider font-semibold">Total Tickets</span>
+          <div className="px-4 py-3 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700 text-center min-w-[90px]">
+            <span className="block text-2xl font-black text-slate-900 dark:text-white">{tickets.length}</span>
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-bold">Total Tickets</span>
           </div>
         </div>
       </div>

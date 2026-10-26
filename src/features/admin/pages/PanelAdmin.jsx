@@ -998,26 +998,23 @@ export const PanelAdmin = () => {
 
         {/* Tab: Liquidación & Comisiones por Plan */}
         {tab === 'finanzas' && (
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
-            <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 text-white flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-xl shadow-violet-500/20 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute -bottom-10 -left-10 w-80 h-80 bg-purple-400/20 rounded-full blur-3xl pointer-events-none" />
-
-              <div className="relative z-10 space-y-2 max-w-2xl">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-white font-bold text-xs border border-white/30 backdrop-blur-sm shadow-xs">
-                  <DollarSign size={14} className="text-amber-300" />
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-xs space-y-6">
+            <div className="p-6 sm:p-8 rounded-3xl bg-slate-50/80 dark:bg-slate-800/60 border border-slate-200/90 dark:border-slate-700/80 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-xs">
+              <div className="space-y-2 max-w-2xl">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-50 dark:bg-violet-950/50 text-violet-700 dark:text-violet-300 font-bold text-xs border border-violet-200 dark:border-violet-800">
+                  <DollarSign size={14} className="text-violet-600 dark:text-violet-400" />
                   <span>Liquidación & Comisiones según Plan de Empresa</span>
                 </span>
-                <h3 className="text-2xl sm:text-3xl font-black text-white">Monetización y Retención Mercatto</h3>
-                <p className="text-xs sm:text-sm text-violet-100 leading-relaxed font-medium">
-                  Supervisión y control financiero de la plataforma: retención automática de comisiones por venta y consolidación de ingresos por membresías activas de tiendas.
+                <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Monetización y Retención Mercatto</h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+                  Supervisión y control financiero de la plataforma: retención de comisiones por venta y desembolso automático a las tiendas tras la entrega del pedido.
                 </p>
               </div>
 
-              <div className="relative z-10 bg-black/15 backdrop-blur-md p-5 rounded-2xl border border-white/20 text-right shrink-0 w-full lg:w-auto shadow-xs">
-                <span className="text-xs font-bold text-violet-100 uppercase block tracking-wider">Ganancias de Mercatto</span>
-                <span className="text-3xl font-black text-white">{formatCurrency(gananciaTotalAdmin)}</span>
-                <span className="text-[11px] text-violet-200 block mt-1 font-semibold">
+              <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-right shrink-0 w-full lg:w-auto shadow-xs">
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase block tracking-wider">Ganancias de Mercatto</span>
+                <span className="text-3xl font-black text-slate-900 dark:text-white">{formatCurrency(gananciaTotalAdmin)}</span>
+                <span className="text-[11px] text-slate-500 dark:text-slate-400 block mt-1 font-semibold">
                   Ingresos consolidados por comisiones y membresías
                 </span>
               </div>
@@ -1025,25 +1022,25 @@ export const PanelAdmin = () => {
 
             {/* Tarjetas KPI de Finanzas */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
-                <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Ventas Brutas Totales</span>
-                <p className="text-xl font-black text-slate-900">{formatCurrency(totalVentasMercado)}</p>
+              <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 space-y-1">
+                <span className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">Ventas Brutas Totales</span>
+                <p className="text-xl font-black text-slate-900 dark:text-white">{formatCurrency(totalVentasMercado)}</p>
                 <p className="text-[11px] text-slate-400">Facturación acumulada</p>
               </div>
-              <div className="p-5 rounded-2xl bg-violet-50/70 border border-violet-200 space-y-1">
-                <span className="text-xs text-violet-700 font-bold uppercase tracking-wider">Comisiones de Venta</span>
-                <p className="text-xl font-black text-violet-700">{formatCurrency(totalComisionesVentasAdmin)}</p>
-                <p className="text-[11px] text-violet-600 font-semibold">Retención según planes vigentes</p>
+              <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 space-y-1">
+                <span className="text-xs text-violet-700 dark:text-violet-400 font-bold uppercase tracking-wider">Comisiones de Venta</span>
+                <p className="text-xl font-black text-violet-700 dark:text-violet-400">{formatCurrency(totalComisionesVentasAdmin)}</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Retención según planes vigentes</p>
               </div>
-              <div className="p-5 rounded-2xl bg-indigo-50/70 border border-indigo-200 space-y-1">
-                <span className="text-xs text-indigo-700 font-bold uppercase tracking-wider">Planes Mensuales (MRR)</span>
-                <p className="text-xl font-black text-indigo-700">{formatCurrency(totalSuscripcionesPlanes)}</p>
-                <p className="text-[11px] text-indigo-600 font-semibold">Suscripciones de tiendas activas</p>
+              <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 space-y-1">
+                <span className="text-xs text-indigo-700 dark:text-indigo-400 font-bold uppercase tracking-wider">Planes Mensuales (MRR)</span>
+                <p className="text-xl font-black text-indigo-700 dark:text-indigo-400">{formatCurrency(totalSuscripcionesPlanes)}</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Suscripciones de tiendas activas</p>
               </div>
-              <div className="p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-1">
-                <span className="text-xs text-emerald-700 font-bold uppercase tracking-wider">A Liquidar a Vendedores</span>
-                <p className="text-xl font-black text-emerald-700">{formatCurrency(totalNetoProveedores)}</p>
-                <p className="text-[11px] text-emerald-600 font-semibold">Total neto transferible a tiendas</p>
+              <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 space-y-1">
+                <span className="text-xs text-emerald-700 dark:text-emerald-400 font-bold uppercase tracking-wider">Liquidado Automático a Tiendas</span>
+                <p className="text-xl font-black text-emerald-700 dark:text-emerald-400">{formatCurrency(totalNetoProveedores)}</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Desembolso automático al marcar entregado</p>
               </div>
             </div>
 

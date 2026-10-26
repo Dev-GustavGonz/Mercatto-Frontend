@@ -879,6 +879,7 @@ export const PanelVendedor = () => {
 
                 {/* Formulario conectado con el backend */}
                 <ProductForm
+                  key={productoEditar?.id || 'nuevo'}
                   productoInicial={productoEditar}
                   onGuardado={() => {
                     handleCancelarForm()
