@@ -37,7 +37,7 @@ export const Catalogo = () => {
           precioMin,
           precioMax,
           soloElite: soloElite ? true : undefined,
-          tamano: 12,
+          tamano: 24,
         })
         let items = data.content || []
         if (soloElite) {
