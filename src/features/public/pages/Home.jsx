@@ -207,7 +207,7 @@ export const Home = () => {
             <div className="space-y-1">
               
               <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                {t('ofertas_mes_titulo')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-violet-600">{t('destacados_pro')}</span>
+                {t('ofertas_mes_titulo')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600">{t('destacados_pro')}</span>
               </h2>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold">
@@ -259,7 +259,7 @@ export const Home = () => {
                   <span>{t('todos_los_productos') || 'Catálogo de Artículos'}</span>
                 </span>
                 <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                  Todos los <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-emerald-500">Productos</span>
+                  Todos los <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600">Productos</span>
                 </h2>
                 <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                   Explora todos los artículos disponibles de vendedores oficiales en Colombia
@@ -295,7 +295,7 @@ export const Home = () => {
                   <span>{t('proveedores_certificados')}</span>
                 </span>
                 <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                  {t('tiendas_oficiales_titulo')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-emerald-500">{t('tiendas_oficiales_sub')}</span>
+                  {t('tiendas_oficiales_titulo')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600">{t('tiendas_oficiales_sub')}</span>
                 </h2>
                 <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                   {t('tiendas_desc')}
@@ -350,7 +350,7 @@ export const Home = () => {
                             {tItem.logoUrl ? (
                               <img src={tItem.logoUrl} alt={tItem.nombreTienda} className="w-full h-full object-cover" />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center font-black text-white text-sm bg-gradient-to-br from-violet-600 to-emerald-600">
+                              <div className="w-full h-full flex items-center justify-center font-black text-white text-sm bg-gradient-to-br from-violet-600 to-indigo-600">
                                 {tItem.nombreTienda?.charAt(0) || 'T'}
                               </div>
                             )}

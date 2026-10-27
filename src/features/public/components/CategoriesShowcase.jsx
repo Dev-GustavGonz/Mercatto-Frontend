@@ -96,7 +96,7 @@ export const CategoriesShowcase = ({ categorias = [] }) => {
         <div className="space-y-1.5">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             {t('explora_por_categorias')}{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-emerald-500">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600">
               Mercatto
             </span>
           </h2>

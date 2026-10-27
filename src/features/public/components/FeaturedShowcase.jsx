@@ -42,7 +42,7 @@ export const FeaturedShowcase = ({ productos = [], tiendas = [] }) => {
         <div className="space-y-1.5">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             {t('productos_destacados_pro')}{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-indigo-600 to-emerald-500">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600">
               Mercatto
             </span>
           </h2>
@@ -153,7 +153,7 @@ export const FeaturedShowcase = ({ productos = [], tiendas = [] }) => {
                 {/* Imagen del Producto */}
                 <div 
                   onClick={() => navigate(`/producto/${prod.id}`)}
-                  className="relative w-full h-40 sm:h-44 rounded-2xl bg-[#f8f8fc] dark:bg-slate-800/40 flex items-center justify-center p-3 cursor-pointer select-none overflow-hidden"
+                  className="relative w-full h-40 sm:h-44 rounded-2xl bg-[#f8f8fc] dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 flex items-center justify-center p-3 cursor-pointer select-none overflow-hidden"
                 >
                   <img
                     src={resolveProductImage(prod)}

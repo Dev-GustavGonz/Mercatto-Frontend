@@ -180,22 +180,22 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
 
               {/* Imagen del Producto Real: contenida limpiamente para que NUNCA choque con el texto */}
               <div className="w-full md:w-[42%] flex items-center justify-center relative min-h-[190px] sm:min-h-[220px]">
-                <div className="relative w-full max-w-[240px] sm:max-w-[280px] h-48 sm:h-64 flex items-center justify-center">
+                <div className="relative w-full max-w-[240px] sm:max-w-[280px] h-48 sm:h-64 flex items-center justify-center bg-white/95 dark:bg-slate-900/90 rounded-[28px] p-4 border border-violet-200/80 dark:border-violet-800/80 shadow-md shadow-violet-900/5 overflow-hidden">
                   <img
                     key={currentHero.id}
                     src={resolveProductImage(currentHero)}
                     alt={currentHero.titulo}
-                    className="max-h-full max-w-full object-contain filter drop-shadow-[0_20px_25px_rgba(20,15,45,0.20)] group-hover:scale-105 transition-all duration-500 ease-out"
+                    className="max-h-full max-w-full object-contain rounded-2xl filter drop-shadow-sm group-hover:scale-105 transition-all duration-500 ease-out"
                   />
+                </div>
 
-                  {/* Badge lila redondeado con respaldo oficial */}
-                  <div className="absolute left-0 bottom-2 bg-[#beb8ea]/90 dark:bg-violet-950/90 backdrop-blur-md border border-white/60 dark:border-violet-700 rounded-2xl p-2 sm:p-2.5 text-center shadow-md select-none">
-                    <div className="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-none">
-                      100%
-                    </div>
-                    <div className="text-[8.5px] sm:text-[9.5px] font-semibold text-slate-700 dark:text-violet-200 leading-tight mt-0.5 max-w-[80px]">
-                      {t('garantia_oficial')}
-                    </div>
+                {/* Badge lila redondeado con respaldo oficial */}
+                <div className="absolute left-0 sm:-left-2 bottom-1 sm:bottom-2 bg-[#beb8ea] dark:bg-violet-950/95 backdrop-blur-md border border-white/80 dark:border-violet-700 rounded-2xl p-2 sm:p-2.5 text-center shadow-lg select-none z-20">
+                  <div className="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-none">
+                    100%
+                  </div>
+                  <div className="text-[8.5px] sm:text-[9.5px] font-semibold text-slate-700 dark:text-violet-200 leading-tight mt-0.5 max-w-[80px]">
+                    {t('garantia_oficial')}
                   </div>
                 </div>
               </div>
@@ -259,11 +259,11 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
             </div>
 
             {/* Imagen centrada del producto real */}
-            <div className="relative w-full h-48 sm:h-56 flex items-center justify-center p-2 my-auto">
+            <div className="relative w-full h-48 sm:h-56 flex items-center justify-center p-3 my-auto bg-slate-50/80 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
               <img
                 src={resolveProductImage(productTopRight)}
                 alt={productTopRight.titulo}
-                className="max-h-full max-w-full object-contain filter drop-shadow-[0_16px_20px_rgba(0,0,0,0.12)] group-hover:scale-108 transition-transform duration-500"
+                className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-500"
               />
             </div>
 
@@ -342,11 +342,11 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
             </div>
 
             {/* Imagen del producto real */}
-            <div className="relative w-full h-56 sm:h-64 flex items-center justify-center p-2 my-auto">
+            <div className="relative w-full h-56 sm:h-64 flex items-center justify-center p-3 my-auto bg-slate-50/80 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
               <img
                 src={resolveProductImage(productLeft)}
                 alt={productLeft.titulo}
-                className="max-h-full max-w-full object-contain filter drop-shadow-[0_16px_20px_rgba(0,0,0,0.12)] group-hover:scale-108 transition-transform duration-500"
+                className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-500"
               />
             </div>
 
@@ -396,7 +396,14 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
               {/* Banner "SIEMPRE ÚNICO CON LOS MEJORES MATERIALES" */}
               <div className="md:col-span-8 bg-white dark:bg-slate-900 rounded-[28px] sm:rounded-[30px] p-5 sm:p-6 shadow-xs border border-slate-200/80 dark:border-slate-800 relative overflow-hidden flex items-center justify-between min-h-[150px] sm:h-[155px]">
                 
-                <svg className="absolute -right-6 -bottom-6 w-80 h-80 text-slate-100 dark:text-slate-800/40 pointer-events-none" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth="1">
+                <svg 
+                  className="absolute -right-6 -bottom-6 w-80 h-80 text-violet-300/80 dark:text-violet-600/50 pointer-events-none" 
+                  viewBox="0 0 200 200" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                >
                   <path d="M0,100 C40,40 100,160 200,80" />
                   <path d="M0,120 C50,60 110,180 200,100" />
                   <path d="M0,140 C60,80 120,200 200,120" />
@@ -483,11 +490,11 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
                       </div>
 
                       {/* Imagen del producto de la base de datos */}
-                      <div className="relative h-44 sm:h-48 w-full flex items-center justify-center my-1">
+                      <div className="relative h-44 sm:h-48 w-full flex items-center justify-center my-1 bg-slate-50/80 dark:bg-slate-800/50 rounded-2xl p-3 border border-slate-100 dark:border-slate-800 overflow-hidden">
                         <img
                           src={img}
                           alt={prod.titulo}
-                          className="max-h-full max-w-full object-contain filter drop-shadow-[0_16px_16px_rgba(0,0,0,0.13)] group-hover:scale-108 transition-transform duration-300"
+                          className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-300"
                         />
                       </div>
 

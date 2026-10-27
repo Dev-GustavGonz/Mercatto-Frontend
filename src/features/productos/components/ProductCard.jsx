@@ -73,7 +73,7 @@ export const ProductCard = ({ producto, onContactClick }) => {
   return (
     <div 
       onClick={() => navigate(`/producto/${producto.id}`)}
-      className="group bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-3 sm:p-4 transition-all duration-300 flex flex-col relative min-h-[360px] sm:h-[390px] border border-slate-100 dark:border-slate-800 hover:border-violet-200 hover:shadow-xl hover:shadow-violet-500/10 hover:-translate-y-1.5 cursor-pointer select-none"
+      className="group bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-3 sm:p-4 transition-all duration-300 flex flex-col relative min-h-[360px] sm:h-[390px] border border-slate-200/90 dark:border-slate-800 hover:border-violet-300 dark:hover:border-violet-700 shadow-xs hover:shadow-lg hover:shadow-violet-500/10 hover:-translate-y-1.5 cursor-pointer select-none"
     >
       {/* Insignias superiores flotantes */}
       <div className="absolute top-3 left-3 z-10 flex flex-col gap-1 items-start max-w-[70%]">
@@ -104,11 +104,11 @@ export const ProductCard = ({ producto, onContactClick }) => {
       </button>
 
       {/* Contenedor de Imagen con fondo suave */}
-      <div className="relative h-36 sm:h-44 w-full flex items-center justify-center rounded-xl sm:rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 p-2 sm:p-3 mt-4 overflow-hidden group-hover:bg-violet-50/30 transition-colors">
+      <div className="relative h-36 sm:h-44 w-full flex items-center justify-center rounded-xl sm:rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800/80 p-2.5 sm:p-3 mt-4 overflow-hidden group-hover:bg-violet-50/30 group-hover:border-violet-200 transition-all">
         <img
           src={imagenPrincipal}
           alt={producto.titulo}
-          className="max-h-full max-w-full object-contain group-hover:scale-108 transition-transform duration-500 drop-shadow-sm"
+          className="max-h-full max-w-full object-contain rounded-xl group-hover:scale-108 transition-transform duration-500 drop-shadow-sm"
           loading="lazy"
         />
       </div>
