@@ -25,41 +25,10 @@ export const FeaturedShowcase = ({ productos = [], tiendas = [] }) => {
 
   const isEn = idioma === 'EN'
 
-  // Identificar IDs de empresas con membresía ELITE
-  const eliteStoreIds = useMemo(() => {
-    const ids = new Set()
-    if (Array.isArray(tiendas)) {
-      tiendas.forEach((t) => {
-        const plan = (t.tipoSuscripcion || t.plan || '').toUpperCase()
-        if (plan === 'ELITE') {
-          if (t.id) ids.add(t.id)
-          if (t.usuarioId) ids.add(t.usuarioId)
-        }
-      })
-    }
-    return ids
-  }, [tiendas])
-
-  // Filtrar productos de tiendas ELITE, o fallback a los productos destacados disponibles
-  const productosElite = useMemo(() => {
-    if (!productos || productos.length === 0) return []
-    const elite = productos.filter((p) => {
-      const planDirecto = (p.vendedor?.plan || p.vendedor?.tipoSuscripcion || p.plan || '').toUpperCase()
-      if (planDirecto === 'ELITE') return true
-
-      const vId = p.vendedor?.id || p.vendedorId
-      const uId = p.vendedor?.usuarioId
-      if (vId && eliteStoreIds.has(vId)) return true
-      if (uId && eliteStoreIds.has(uId)) return true
-      return false
-    })
-    return elite.length > 0 ? elite : productos
-  }, [productos, eliteStoreIds])
-
-  // Tomamos únicamente los productos reales de la base de datos
+  // Mostramos todos los productos destacados de la base de datos sin restricciones
   const items = useMemo(() => {
-    return productosElite.slice(0, 4)
-  }, [productosElite])
+    return Array.isArray(productos) ? productos.slice(0, 4) : []
+  }, [productos])
 
   if (!items || items.length === 0) {
     return null
@@ -73,8 +42,8 @@ export const FeaturedShowcase = ({ productos = [], tiendas = [] }) => {
         <div className="space-y-1.5">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             {t('productos_destacados_pro')}{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-500 to-violet-600">
-              Tiendas Elite
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-indigo-600 to-emerald-500">
+              Mercatto
             </span>
           </h2>
         </div>

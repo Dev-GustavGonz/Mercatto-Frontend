@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { productoService, ModalContactoVendedor } from '@/features/productos'
+import { productoService, ModalContactoVendedor, ProductGrid } from '@/features/productos'
 import { tiendaService } from '@/features/tiendas/services/tiendaService'
 import { useCart } from '@/hooks/useCart'
 import { useFavorites } from '@/hooks/useFavorites'
@@ -24,7 +24,8 @@ import {
   Flame,
   CheckCircle2,
   Sparkles,
-  Star
+  Star,
+  ArrowRight
 } from 'lucide-react'
 
 export const Home = () => {
@@ -247,7 +248,43 @@ export const Home = () => {
         </section>
 
         {/* ========================================================= */}
-        {/* 7. SECCIÓN TIENDAS OFICIALES VERIFICADAS EN COLOMBIA      */}
+        {/* 7. TODOS LOS PRODUCTOS DISPONIBLES EN MERCATTO            */}
+        {/* ========================================================= */}
+        {destacados.length > 0 && (
+          <section className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-slate-200/80 dark:border-slate-800 pb-4">
+              <div className="space-y-1">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-100 dark:bg-violet-950/80 text-[11px] font-extrabold tracking-widest uppercase text-violet-700 dark:text-violet-300">
+                  <Sparkles size={12} />
+                  <span>{t('todos_los_productos') || 'Catálogo de Artículos'}</span>
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                  Todos los <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-emerald-500">Productos</span>
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                  Explora todos los artículos disponibles de vendedores oficiales en Colombia
+                </p>
+              </div>
+
+              <button
+                onClick={() => navigate('/catalogo')}
+                className="self-start sm:self-auto inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-950 dark:bg-white text-white dark:text-slate-950 hover:bg-violet-600 dark:hover:bg-violet-500 hover:text-white dark:hover:text-white font-bold text-xs uppercase tracking-wider transition shadow-sm cursor-pointer"
+              >
+                <span>{t('ver_todo_catalogo')}</span>
+                <ArrowRight size={14} />
+              </button>
+            </div>
+
+            <ProductGrid 
+              productos={destacados} 
+              loading={false}
+              onContactClick={(prod) => setProductoContacto(prod)}
+            />
+          </section>
+        )}
+
+        {/* ========================================================= */}
+        {/* 8. SECCIÓN TIENDAS OFICIALES VERIFICADAS EN COLOMBIA      */}
         {/* ========================================================= */}
         {tiendasMostradas.length > 0 && (
           <section className="space-y-5">
