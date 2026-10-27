@@ -274,7 +274,7 @@ export const Navbar = () => {
             {esVendedor && (
               <Link 
                 to="/panel-vendedor" 
-                className="px-4 py-1.5 rounded-full bg-[#051f18] text-emerald-300 hover:bg-emerald-700 hover:text-white transition flex items-center gap-1.5 shadow-xs text-xs font-extrabold ml-1"
+                className="px-4 py-1.5 rounded-full bg-violet-600 hover:bg-violet-700 text-white transition flex items-center gap-1.5 shadow-xs text-xs font-bold ml-1"
                 title="Ir a mi panel de vendedor"
               >
                 <Store size={14} />
@@ -286,7 +286,7 @@ export const Navbar = () => {
             {esAdmin && (
               <Link 
                 to="/admin" 
-                className="px-4 py-1.5 rounded-full bg-[#051f18] text-emerald-300 hover:bg-emerald-700 hover:text-white transition flex items-center gap-1.5 shadow-xs text-xs font-extrabold ml-1"
+                className="px-4 py-1.5 rounded-full bg-violet-600 hover:bg-violet-700 text-white transition flex items-center gap-1.5 shadow-xs text-xs font-bold ml-1"
                 title="Ir al panel central de administración"
               >
                 <Shield size={14} />
@@ -345,7 +345,7 @@ export const Navbar = () => {
             >
               <ShoppingBag size={19} />
               {totalItems > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-[#051f18] text-emerald-300 text-[10px] font-black w-4.5 h-4.5 min-w-[18px] min-h-[18px] rounded-full flex items-center justify-center border border-white leading-none select-none">
+                <span className="absolute -top-0.5 -right-0.5 bg-violet-600 text-white text-[10px] font-black w-4.5 h-4.5 min-w-[18px] min-h-[18px] rounded-full flex items-center justify-center border border-white leading-none select-none">
                   {totalItems}
                 </span>
               )}
@@ -383,7 +383,7 @@ export const Navbar = () => {
               <button
                 onClick={() => setDropdownUser(!dropdownUser)}
                 className={`w-9 h-9 rounded-full text-white flex items-center justify-center font-black text-xs shadow-xs border border-slate-200 hover:scale-105 transition cursor-pointer ${
-                  esAdmin ? 'bg-violet-700' : esVendedor ? 'bg-[#051f18] text-emerald-300' : 'bg-[#051f18] text-emerald-300'
+                  esAdmin ? 'bg-violet-700' : esVendedor ? 'bg-violet-600' : 'bg-slate-900'
                 }`}
                 title="Opciones de cuenta"
               >

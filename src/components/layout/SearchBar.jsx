@@ -62,7 +62,7 @@ export const SearchBar = ({ className = '', placeholder = 'Buscar productos...' 
     <div ref={wrapperRef} className={`relative w-full ${className}`}>
       <form 
         onSubmit={handleSearch} 
-        className="flex items-center w-full bg-slate-100/85 hover:bg-slate-100 focus-within:bg-white border border-slate-200/75 focus-within:border-emerald-600/40 focus-within:ring-4 focus-within:ring-emerald-500/10 rounded-full p-1 transition-all duration-200"
+        className="flex items-center w-full bg-slate-100/85 hover:bg-slate-100 focus-within:bg-white border border-slate-200/75 focus-within:border-violet-600/40 focus-within:ring-4 focus-within:ring-violet-500/10 rounded-full p-1 transition-all duration-200"
       >
         <input
           type="text"
@@ -74,7 +74,7 @@ export const SearchBar = ({ className = '', placeholder = 'Buscar productos...' 
         />
         <button 
           type="submit" 
-          className="w-8 h-8 rounded-full bg-[#051f18] hover:bg-emerald-600 text-emerald-300 hover:text-white flex items-center justify-center shrink-0 transition-all duration-200 cursor-pointer shadow-xs"
+          className="w-8 h-8 rounded-full bg-violet-600 hover:bg-violet-700 text-white flex items-center justify-center shrink-0 transition-all duration-200 cursor-pointer shadow-xs"
           title="Buscar"
         >
           {cargando ? <Loader2 size={15} className="animate-spin" /> : <Search size={15} />}

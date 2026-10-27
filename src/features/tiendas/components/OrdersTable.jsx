@@ -81,7 +81,8 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
   }
 
   // Filtrado de pedidos
-  const pedidosFiltrados = pedidos.filter((p) => {
+  const safePedidos = Array.isArray(pedidos) ? pedidos : []
+  const pedidosFiltrados = safePedidos.filter((p) => {
     const coincideEstado =
       filtroEstado === 'TODOS' ||
       (filtroEstado === 'PENDIENTES' && (p.estado === 'PAGADO' || p.estado === 'PENDIENTE' || p.estado === 'EN_PREPARACION')) ||

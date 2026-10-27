@@ -123,10 +123,18 @@ export const PanelVendedor = () => {
         mensajeService.obtenerContactos().catch(() => []),
       ])
       setStats(st || {})
-      setPerfil(pf)
-      setProductos(pds?.content || [])
-      setPedidos(ords?.content || [])
-      setMensajes(Array.isArray(msgs) ? msgs : (msgs?.content || []))
+      setPerfil(pf || {
+        nombreTienda: usuario?.nombre || 'Mi Tienda Oficial',
+        tipoSuscripcion: 'PRO',
+        calificacion: 5.0,
+        ciudad: 'Cartagena',
+      })
+      const listaProds = Array.isArray(pds?.content) ? pds.content : (Array.isArray(pds) ? pds : [])
+      const listaOrds = Array.isArray(ords?.content) ? ords.content : (Array.isArray(ords) ? ords : [])
+      const listaMsgs = Array.isArray(msgs) ? msgs : (Array.isArray(msgs?.content) ? msgs.content : [])
+      setProductos(listaProds)
+      setPedidos(listaOrds)
+      setMensajes(listaMsgs)
     } catch (err) {
       console.error('Error al cargar panel de vendedor:', err)
       error('Error al sincronizar datos del panel')
@@ -205,8 +213,12 @@ export const PanelVendedor = () => {
     )
   }
 
+  const safeProductos = Array.isArray(productos) ? productos : []
+  const safePedidos = Array.isArray(pedidos) ? pedidos : []
+  const safeMensajes = Array.isArray(mensajes) ? mensajes : []
+
   // Filtrado de productos del vendedor
-  const productosFiltrados = productos.filter((p) => {
+  const productosFiltrados = safeProductos.filter((p) => {
     if (!busquedaProducto.trim()) return true
     const q = busquedaProducto.toLowerCase()
     return (
@@ -216,7 +228,7 @@ export const PanelVendedor = () => {
     )
   })
 
-  const pedidosPendientes = pedidos.filter(p => p.estado === 'PAGADO' || p.estado === 'PENDIENTE' || p.estado === 'EN_PREPARACION').length
+  const pedidosPendientes = safePedidos.filter(p => p.estado === 'PAGADO' || p.estado === 'PENDIENTE' || p.estado === 'EN_PREPARACION').length
 
   // ==============================================================
   // MODELO PREDICTIVO PYTHON & REGLA DEL PLAN: resultado = valor - porcentaje
@@ -228,7 +240,7 @@ export const PanelVendedor = () => {
     PRO: { nombre: 'Plan PRO', tasa: 0.05, porcentaje: 5, badge: 'bg-violet-100 text-violet-800 border-violet-200' },
     ELITE: { nombre: 'Plan Elite', tasa: 0.02, porcentaje: 2, badge: 'bg-amber-100 text-amber-800 border-amber-200' },
   }
-  const configPlan = COMISIONES[planActivo] || COMISIONES.PRO
+  const configPlan = COMISIONES[planActivo] || COMISIONES.PRO || COMISIONES.STARTER
   const comisionTasa = configPlan.tasa
   const comisionPorcentaje = configPlan.porcentaje
   const porcentajeTienda = 100 - comisionPorcentaje
@@ -236,9 +248,9 @@ export const PanelVendedor = () => {
   const multiplicadorEscenario = escenarioDashboard === 'conservador' ? 0.75 : escenarioDashboard === 'optimista' ? 1.35 : 1.0
 
   // Ventas brutas base
-  const totalVentasBase = pedidos.length > 0
-    ? pedidos.reduce((acc, p) => acc + (p.total || 0), 0)
-    : (stats.ingresosTotales ? Math.round(stats.ingresosTotales / (1 - comisionTasa)) : 12450000)
+  const totalVentasBase = safePedidos.length > 0
+    ? safePedidos.reduce((acc, p) => acc + (p.total || 0), 0)
+    : (stats?.ingresosTotales ? Math.round(stats.ingresosTotales / (1 - comisionTasa)) : 12450000)
 
   // Modelo predictivo en Python (Escenarios estadísticos):
   // Regla exacta de negocio: resultado = valor - porcentaje
@@ -253,9 +265,9 @@ export const PanelVendedor = () => {
   const dockItems = [
     { id: 'resumen', label: 'General', icon: LayoutDashboard, badge: null },
     { id: 'predictivo', label: 'IA Predictiva', icon: TrendingUp, badge: 'IA' },
-    { id: 'productos', label: 'Mis Productos', icon: Package, badge: productos.length },
+    { id: 'productos', label: 'Mis Productos', icon: Package, badge: safeProductos.length },
     { id: 'pedidos', label: 'Pedidos & Envíos', icon: ShoppingCart, badge: pedidosPendientes > 0 ? pedidosPendientes : null },
-    { id: 'mensajes', label: 'Chat Clientes', icon: MessageSquare, badge: mensajes.filter(m => !m.respondido).length || null },
+    { id: 'mensajes', label: 'Chat Clientes', icon: MessageSquare, badge: safeMensajes.filter(m => !m.respondido).length || null },
     { id: 'perfil', label: 'Mi Tienda & Perfil', icon: Store, badge: null },
     { id: 'soporte', label: 'Tickets & Soporte', icon: Headphones, badge: null },
   ]

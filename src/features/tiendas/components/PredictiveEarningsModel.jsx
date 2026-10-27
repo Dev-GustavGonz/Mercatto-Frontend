@@ -36,21 +36,23 @@ export const PredictiveEarningsModel = ({
   const [escenario, setEscenario] = useState('esperado') // 'conservador' | 'esperado' | 'optimista'
 
   // Variables predictoras base basadas en la tienda real
-  const totalProds = productos.length || 3
-  const totalPeds = pedidos.length || 2
+  const safeProductos = Array.isArray(productos) ? productos : []
+  const safePedidos = Array.isArray(pedidos) ? pedidos : []
+  const totalProds = safeProductos.length || 3
+  const totalPeds = safePedidos.length || 2
 
   // Ticket promedio calculado a partir de pedidos o catálogo
   const ticketInicial = useMemo(() => {
-    if (pedidos.length > 0) {
-      const sum = pedidos.reduce((acc, p) => acc + (p.total || 0), 0)
-      return Math.round(sum / pedidos.length)
+    if (safePedidos.length > 0) {
+      const sum = safePedidos.reduce((acc, p) => acc + (p.total || 0), 0)
+      return Math.round(sum / safePedidos.length)
     }
-    if (productos.length > 0) {
-      const sum = productos.reduce((acc, p) => acc + (p.precioOferta || p.precio || 0), 0)
-      return Math.round(sum / productos.length)
+    if (safeProductos.length > 0) {
+      const sum = safeProductos.reduce((acc, p) => acc + (p.precioOferta || p.precio || 0), 0)
+      return Math.round(sum / safeProductos.length)
     }
     return 120000
-  }, [pedidos, productos])
+  }, [safePedidos, safeProductos])
 
   const [ticketPromedio, setTicketPromedio] = useState(ticketInicial)
   const [comprasEstimadasInput, setComprasEstimadasInput] = useState(Math.max(10, totalProds * 3 + totalPeds * 2))
@@ -120,17 +122,17 @@ export const PredictiveEarningsModel = ({
         </div>
 
         {/* Resumen Principal */}
-        <div className="p-4 rounded-2xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white space-y-3">
+        <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 space-y-3">
           <div className="flex items-baseline justify-between">
-            <span className="text-xs text-slate-300">Ganancia Neta Esperada:</span>
-            <span className="text-xl sm:text-2xl font-black text-emerald-300">
+            <span className="text-xs text-slate-500 font-medium">Ganancia Neta Esperada:</span>
+            <span className="text-xl sm:text-2xl font-black text-emerald-600">
               {formatCurrency(gananciaNetaEsperada)}
             </span>
           </div>
 
-          <div className="flex items-center justify-between text-[11px] text-slate-300 pt-2 border-t border-white/10">
+          <div className="flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-200">
             <span>Ventas: {formatCurrency(valorTotalVentas)}</span>
-            <span className="text-rose-300 font-semibold">-{formatCurrency(comisionRetenida)} ({planInfo.porcentaje}%)</span>
+            <span className="text-rose-600 font-bold">-{formatCurrency(comisionRetenida)} ({planInfo.porcentaje}%)</span>
           </div>
         </div>
 
