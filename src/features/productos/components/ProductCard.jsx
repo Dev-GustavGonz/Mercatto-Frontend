@@ -73,30 +73,38 @@ export const ProductCard = ({ producto, onContactClick }) => {
   return (
     <div 
       onClick={() => navigate(`/producto/${producto.id}`)}
-      className="group bg-white dark:bg-slate-900 rounded-3xl p-4 transition-all duration-300 flex flex-col relative h-[390px] border border-slate-100 dark:border-slate-800 hover:border-violet-200 hover:shadow-xl hover:shadow-violet-500/10 hover:-translate-y-1.5 cursor-pointer select-none"
+      className="group bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-3 sm:p-4 transition-all duration-300 flex flex-col relative min-h-[360px] sm:h-[390px] border border-slate-100 dark:border-slate-800 hover:border-violet-200 hover:shadow-xl hover:shadow-violet-500/10 hover:-translate-y-1.5 cursor-pointer select-none"
     >
-      {/* Insignia de descuento real */}
-      {tieneDescuentoReal && (
-        <div className="absolute top-4 left-4 z-10 bg-rose-500 text-white text-[11px] font-black px-2.5 py-1 rounded-full shadow-md flex items-center gap-0.5">
-          <Zap size={11} className="fill-white" />
-          <span>-{porcentajeDescuento}%</span>
-        </div>
-      )}
+      {/* Insignias superiores flotantes */}
+      <div className="absolute top-3 left-3 z-10 flex flex-col gap-1 items-start max-w-[70%]">
+        {(producto.vendedor?.tipoSuscripcion === 'ELITE' || producto.vendedor?.plan === 'ELITE') && (
+          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-[9.5px] sm:text-[10px] font-black px-2 py-0.5 rounded-full shadow-md tracking-wider">
+            <span>👑</span>
+            <span>Élite</span>
+          </span>
+        )}
+        {tieneDescuentoReal && (
+          <div className="bg-rose-500 text-white text-[9.5px] sm:text-[10px] font-black px-2 py-0.5 rounded-full shadow-md flex items-center gap-0.5">
+            <Zap size={10} className="fill-white" />
+            <span>-{porcentajeDescuento}%</span>
+          </div>
+        )}
+      </div>
 
       {/* Botón de favoritos con efecto pop */}
       <button
         onClick={handleToggleFavorito}
-        className="absolute top-4 right-4 z-10 p-2.5 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-md shadow-sm border border-slate-100 dark:border-slate-700 text-slate-400 hover:text-rose-500 hover:scale-115 active:scale-95 transition-all cursor-pointer"
+        className="absolute top-3 right-3 z-10 p-2 sm:p-2.5 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-md shadow-sm border border-slate-100 dark:border-slate-700 text-slate-400 hover:text-rose-500 hover:scale-115 active:scale-95 transition-all cursor-pointer"
         title={t('guardar_favoritos')}
       >
         <Heart 
-          size={16} 
+          size={15} 
           className={esFavorito ? 'text-rose-500 fill-rose-500' : 'transition-colors'} 
         />
       </button>
 
       {/* Contenedor de Imagen con fondo suave */}
-      <div className="relative h-44 w-full flex items-center justify-center rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 p-3 mt-4 overflow-hidden group-hover:bg-violet-50/30 transition-colors">
+      <div className="relative h-36 sm:h-44 w-full flex items-center justify-center rounded-xl sm:rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 p-2 sm:p-3 mt-4 overflow-hidden group-hover:bg-violet-50/30 transition-colors">
         <img
           src={imagenPrincipal}
           alt={producto.titulo}
@@ -106,41 +114,29 @@ export const ProductCard = ({ producto, onContactClick }) => {
       </div>
 
       {/* Calificación y Tienda */}
-      <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
-        <div className="flex items-center gap-1 font-bold text-slate-800 dark:text-slate-200 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded-md border border-amber-100 dark:border-amber-900/50">
-          <Star size={12} className="text-amber-500 fill-amber-500" />
-          <span>{producto.calificacion != null ? Number(producto.calificacion).toFixed(1) : '5.0'}</span>
+      <div className="mt-2.5 sm:mt-3 flex items-center justify-between gap-1 text-xs text-slate-500">
+        <div className="flex items-center gap-1 font-bold text-slate-800 dark:text-slate-200 bg-amber-50 dark:bg-amber-950/40 px-1.5 sm:px-2 py-0.5 rounded-md border border-amber-100 dark:border-amber-900/50 shrink-0">
+          <Star size={11} className="text-amber-500 fill-amber-500 shrink-0" />
+          <span className="text-[11px] sm:text-xs">{producto.calificacion != null && Number(producto.calificacion) > 0 ? Number(producto.calificacion).toFixed(1) : '5.0'}</span>
           {producto.totalResenas > 0 && (
-            <span className="text-[10px] text-slate-400 font-semibold">
+            <span className="text-[9.5px] sm:text-[10px] text-slate-400 font-semibold">
               ({producto.totalResenas})
-            </span>
-          )}
-          {producto.totalVentas > 0 && (
-            <span className="text-[10px] text-amber-700 dark:text-amber-300 font-semibold pl-1 border-l border-amber-200 dark:border-amber-800">
-              {producto.totalVentas} {t('vendidos') || 'vendidos'}
             </span>
           )}
         </div>
 
         {producto.vendedor?.nombreTienda && (
-          <div className="flex items-center gap-1 max-w-[150px]">
-            {(producto.vendedor?.tipoSuscripcion === 'ELITE' || producto.vendedor?.plan === 'ELITE') && (
-              <span className="px-1.5 py-0.2 rounded-full bg-gradient-to-r from-amber-500/20 to-violet-500/20 text-amber-700 dark:text-amber-300 border border-amber-400/40 text-[9px] font-black uppercase shrink-0" title="Tienda Plan Élite">
-                👑 Élite
-              </span>
-            )}
-            <span 
-              onClick={(e) => {
-                e.stopPropagation()
-                navigate(`/tienda/${producto.vendedor.id || producto.vendedor.usuarioId}`)
-              }}
-              className="inline-flex items-center gap-1 font-medium text-slate-500 dark:text-slate-400 hover:text-violet-600 transition truncate"
-              title={`${t('tienda_oficial')}: ${producto.vendedor.nombreTienda}`}
-            >
-              <Store size={12} className="shrink-0 text-violet-500" />
-              <span className="truncate">{producto.vendedor.nombreTienda}</span>
-            </span>
-          </div>
+          <span 
+            onClick={(e) => {
+              e.stopPropagation()
+              navigate(`/tienda/${producto.vendedor.id || producto.vendedor.usuarioId}`)
+            }}
+            className="inline-flex items-center gap-1 text-[10.5px] sm:text-[11px] font-medium text-slate-500 dark:text-slate-400 hover:text-violet-600 transition truncate max-w-[95px] sm:max-w-[140px]"
+            title={`${t('tienda_oficial')}: ${producto.vendedor.nombreTienda}`}
+          >
+            <Store size={11} className="shrink-0 text-violet-500" />
+            <span className="truncate">{producto.vendedor.nombreTienda}</span>
+          </span>
         )}
       </div>
 

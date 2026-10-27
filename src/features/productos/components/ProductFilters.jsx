@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { productoService } from '@/features/productos'
 import { tiendaService } from '@/features/tiendas'
 import Button from '@/components/common/Button'
-import { Filter, RotateCcw, Tag, Layers } from 'lucide-react'
+import { Filter, RotateCcw, Tag, Layers, ChevronDown, ChevronUp } from 'lucide-react'
 import { useLanguage } from '@/hooks/useLanguage'
 
 export const ProductFilters = ({
@@ -23,6 +23,7 @@ export const ProductFilters = ({
   const [precioMin, setPrecioMin] = useState(priceRange.min || '')
   const [precioMax, setPrecioMax] = useState(priceRange.max || '')
   const { t } = useLanguage()
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   useEffect(() => {
     productoService.listarCategorias().then((data) => setCategorias(data || [])).catch(() => {})
@@ -34,27 +35,54 @@ export const ProductFilters = ({
     onPriceChange({ min: precioMin ? Number(precioMin) : null, max: precioMax ? Number(precioMax) : null })
   }
 
+  const filtrosActivosCount = (selectedCategory ? 1 : 0) + (selectedMarca ? 1 : 0) + (soloElite ? 1 : 0) + (precioMin || precioMax ? 1 : 0)
+
   return (
-    <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-6">
+    <div className="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+      {/* Header con botón expandible en vista móvil */}
       <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-        <div className="flex items-center gap-2 font-bold text-slate-800 dark:text-white text-sm">
+        <button 
+          onClick={() => setMobileOpen(!mobileOpen)}
+          className="flex items-center gap-2 font-bold text-slate-800 dark:text-white text-sm cursor-pointer lg:cursor-default"
+        >
           <Filter size={16} className="text-indigo-600" />
           <span>{t('filtros_dinamicos')}</span>
-        </div>
-        <button
-          onClick={() => {
-            setPrecioMin('')
-            setPrecioMax('')
-            if (onSoloEliteChange) onSoloEliteChange(false)
-            onReset()
-          }}
-          className="text-xs text-slate-400 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
-        >
-          <RotateCcw size={12} />
-          <span>{t('limpiar')}</span>
+          {filtrosActivosCount > 0 && (
+            <span className="px-2 py-0.5 rounded-full bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-300 text-[10px] font-black">
+              {filtrosActivosCount}
+            </span>
+          )}
+          <span className="lg:hidden text-slate-400 ml-1">
+            {mobileOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </span>
         </button>
+
+        <div className="flex items-center gap-2">
+          {filtrosActivosCount > 0 && (
+            <button
+              onClick={() => {
+                setPrecioMin('')
+                setPrecioMax('')
+                if (onSoloEliteChange) onSoloEliteChange(false)
+                onReset()
+              }}
+              className="text-xs text-slate-400 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
+            >
+              <RotateCcw size={12} />
+              <span>{t('limpiar')}</span>
+            </button>
+          )}
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="lg:hidden text-xs font-bold text-violet-600 dark:text-violet-400"
+          >
+            {mobileOpen ? 'Ocultar' : 'Filtrar'}
+          </button>
+        </div>
       </div>
 
+      {/* Contenido de filtros: siempre visible en desktop, colapsable en móvil */}
+      <div className={`${mobileOpen ? 'block' : 'hidden lg:block'} space-y-6 pt-4`}>
       {/* Filtro Exclusivo Plan Élite */}
       <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-violet-500/10 border border-amber-400/40 dark:border-amber-500/20 shadow-xs">
         <label className="flex items-center justify-between cursor-pointer select-none">
@@ -202,6 +230,7 @@ export const ProductFilters = ({
             {t('aplicar')}
           </Button>
         </form>
+      </div>
       </div>
     </div>
   )

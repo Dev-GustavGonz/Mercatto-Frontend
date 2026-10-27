@@ -40,10 +40,10 @@ export const FeaturedShowcase = ({ productos = [], tiendas = [] }) => {
     return ids
   }, [tiendas])
 
-  // Filtrar exclusivamente productos reales de empresas que tengan un plan ELITE
+  // Filtrar productos de tiendas ELITE, o fallback a los productos destacados disponibles
   const productosElite = useMemo(() => {
     if (!productos || productos.length === 0) return []
-    return productos.filter((p) => {
+    const elite = productos.filter((p) => {
       const planDirecto = (p.vendedor?.plan || p.vendedor?.tipoSuscripcion || p.plan || '').toUpperCase()
       if (planDirecto === 'ELITE') return true
 
@@ -53,9 +53,10 @@ export const FeaturedShowcase = ({ productos = [], tiendas = [] }) => {
       if (uId && eliteStoreIds.has(uId)) return true
       return false
     })
+    return elite.length > 0 ? elite : productos
   }, [productos, eliteStoreIds])
 
-  // Tomamos únicamente los productos reales de empresas Elite de la base de datos (sin elementos estáticos)
+  // Tomamos únicamente los productos reales de la base de datos
   const items = useMemo(() => {
     return productosElite.slice(0, 4)
   }, [productosElite])
@@ -234,7 +235,7 @@ export const FeaturedShowcase = ({ productos = [], tiendas = [] }) => {
                         </span>
                       </div>
                       <span className="text-[11px] text-slate-400 font-medium">
-                        ({prod.totalResenas || 0} reseñas)
+                        ({prod.totalResenas || 0})
                       </span>
                     </div>
 

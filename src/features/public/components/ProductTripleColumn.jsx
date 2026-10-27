@@ -27,32 +27,34 @@ export const ProductTripleColumn = ({ destacados = [], nuevos = [], masVendidos 
   const isEn = idioma === 'EN'
 
   // Separación dinámica en 3 listas a partir de productos reales de la base de datos
+  // Pool unificado de productos para evitar columnas vacías
+  const poolProductos = useMemo(() => {
+    const todos = [...(destacados || []), ...(nuevos || []), ...(masVendidos || [])];
+    return todos.filter((p, idx, arr) => p && p.id && arr.findIndex(item => item.id === p.id) === idx);
+  }, [destacados, nuevos, masVendidos]);
+
   const hotDeals = useMemo(() => {
-    if (!destacados || destacados.length === 0) return []
-    const ofertasReales = destacados.filter(p => p.precioOferta && p.precioOferta < p.precio)
-    if (ofertasReales.length > 0) return ofertasReales.slice(0, 3)
-    return destacados.slice(0, 3)
-  }, [destacados])
+    if (poolProductos.length === 0) return [];
+    const ofertasReales = poolProductos.filter(p => p.precioOferta && p.precioOferta < p.precio);
+    if (ofertasReales.length > 0) return ofertasReales.slice(0, 3);
+    return poolProductos.slice(0, 3);
+  }, [poolProductos]);
 
   const bestSellers = useMemo(() => {
     if (masVendidos && masVendidos.length > 0) {
-      const ordenados = [...masVendidos].sort((a, b) => (b.totalVentas || 0) - (a.totalVentas || 0))
-      return ordenados.slice(0, 3)
+      const ordenados = [...masVendidos].sort((a, b) => (b.totalVentas || 0) - (a.totalVentas || 0));
+      return ordenados.slice(0, 3);
     }
-    const combinados = [...(destacados || []), ...(nuevos || [])].filter(
-      (p, idx, arr) => arr.findIndex(item => item.id === p.id) === idx
-    )
-    if (combinados.length === 0) return []
-    const ordenados = combinados.sort((a, b) => (b.totalVentas || 0) - (a.totalVentas || 0))
-    return ordenados.slice(0, 3)
-  }, [masVendidos, destacados, nuevos])
+    if (poolProductos.length === 0) return [];
+    const ordenados = [...poolProductos].sort((a, b) => (b.totalVentas || 0) - (a.totalVentas || 0));
+    return ordenados.slice(0, 3);
+  }, [masVendidos, poolProductos]);
 
   const topRated = useMemo(() => {
-    if (!destacados || destacados.length === 0) return []
-    return [...destacados]
-      .sort((a, b) => (b.calificacion || 0) - (a.calificacion || 0))
-      .slice(0, 3)
-  }, [destacados])
+    if (poolProductos.length === 0) return [];
+    const ordenados = [...poolProductos].sort((a, b) => (b.calificacion || 5.0) - (a.calificacion || 5.0));
+    return ordenados.slice(0, 3);
+  }, [poolProductos]);
 
   if (hotDeals.length === 0 && bestSellers.length === 0 && topRated.length === 0) {
     return null

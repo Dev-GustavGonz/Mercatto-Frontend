@@ -35,13 +35,12 @@ export const PromotionalBento = ({ productos = [], onAddToCart }) => {
     return () => clearInterval(timer)
   }, [])
 
-  // Productos dinámicos desde props exclusivamente de la base de datos
+  // Productos dinámicos desde props con fallback para mantener la cuadrícula completa
   const pOferta = productos[0]
-  const pNovedad = productos[1]
-  const pTemporada = productos[2]
+  const pNovedad = productos[1] || productos[0]
+  const pTemporada = productos[2] || productos[1] || productos[0]
 
-  // Si no hay productos en la base de datos para esta sección, no mostrar elementos estáticos
-  if (!pOferta && !pNovedad && !pTemporada) {
+  if (!pOferta) {
     return null
   }
 

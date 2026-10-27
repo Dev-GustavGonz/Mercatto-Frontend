@@ -39,10 +39,12 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
   // Índice del producto activo en el Hero Card central
   const [activeHeroIdx, setActiveHeroIdx] = useState(0)
 
-  // Normalización de productos reales de la BD exclusivamente
+  // Normalización de productos reales de la BD exclusivamente con fallback resiliente
   const dbProducts = useMemo(() => {
-    return Array.isArray(productos) ? productos : []
-  }, [productos])
+    if (Array.isArray(productos) && productos.length > 0) return productos;
+    if (Array.isArray(masVendidos) && masVendidos.length > 0) return masVendidos;
+    return [];
+  }, [productos, masVendidos])
 
   // Distribución de productos reales en los bloques del Bento
   const heroItems = dbProducts.slice(0, 5)
@@ -107,7 +109,7 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
           {/* 1.1 HERO CARD PRINCIPAL (PRODUCTO REAL DE LA BD) */}
           <div 
             onClick={() => navigate(`/producto/${currentHero.id}`)}
-            className="lg:col-span-8 bg-[#f2f0fb] dark:bg-slate-900 rounded-[32px] sm:rounded-[36px] p-6 sm:p-9 sm:pb-8 relative overflow-hidden flex flex-col justify-between shadow-xs border border-violet-100/60 dark:border-slate-800 min-h-[420px] sm:min-h-[440px] cursor-pointer group"
+            className="lg:col-span-8 bg-[#f2f0fb] dark:bg-slate-900 rounded-[28px] sm:rounded-[36px] p-4 sm:p-8 relative overflow-hidden flex flex-col justify-between shadow-xs border border-violet-100/60 dark:border-slate-800 min-h-[380px] sm:min-h-[440px] cursor-pointer group"
           >
             {/* Círculo difuminado de fondo que acoge al producto */}
             <div className="absolute top-[48%] right-[16%] -translate-y-1/2 w-64 h-64 sm:w-80 sm:h-80 rounded-full bg-[#ded9f5]/70 dark:bg-violet-950/40 blur-2xl pointer-events-none transition-all duration-700 group-hover:scale-115" />
@@ -115,7 +117,7 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
             {/* Selector de productos reales de la base de datos */}
             <div 
               onClick={(e) => e.stopPropagation()} 
-              className="flex flex-wrap items-center gap-1.5 sm:gap-2 z-20 mb-2"
+              className="flex flex-nowrap overflow-x-auto scrollbar-none sm:flex-wrap items-center gap-1.5 sm:gap-2 z-20 mb-2 max-w-full pb-1"
             >
               <span className="text-[10px] font-black uppercase tracking-widest text-violet-700/70 dark:text-violet-400 mr-1 select-none">
                 {t('hero_categories_label')}
@@ -200,17 +202,17 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
             </div>
 
             {/* Footer del Hero Card */}
-            <div className="relative z-10 pt-4 sm:pt-6 border-t border-violet-200/50 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 mt-1">
+            <div className="relative z-10 pt-3 sm:pt-6 border-t border-violet-200/50 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mt-1">
               
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-violet-100 dark:bg-violet-950/80 border border-violet-200/60 dark:border-violet-800 text-violet-700 dark:text-violet-300 flex items-center justify-center font-black text-xs shrink-0 shadow-xs">
-                  <ShieldCheck size={18} className="text-violet-600 dark:text-violet-400" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-violet-100 dark:bg-violet-950/80 border border-violet-200/60 dark:border-violet-800 text-violet-700 dark:text-violet-300 flex items-center justify-center font-black text-xs shrink-0 shadow-xs">
+                  <ShieldCheck size={16} className="text-violet-600 dark:text-violet-400" />
                 </div>
-                <div>
-                  <span className="block text-slate-900 dark:text-white font-bold text-xs sm:text-sm leading-tight">
+                <div className="min-w-0">
+                  <span className="block text-slate-900 dark:text-white font-bold text-xs sm:text-sm leading-tight truncate">
                     {currentHero.vendedor?.nombreTienda || currentHero.marca || t('tienda_oficial')}
                   </span>
-                  <span className="text-[10.5px] text-emerald-600 font-semibold flex items-center gap-1">
+                  <span className="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                     {t('garantia_verificada')}
                   </span>
@@ -220,7 +222,7 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
               {/* Botón negro píldora "Comprar ahora" */}
               <button
                 onClick={(e) => handleAddToCart(currentHero, e)}
-                className="bg-slate-950 dark:bg-white text-white dark:text-slate-950 hover:bg-emerald-600 dark:hover:bg-emerald-400 dark:hover:text-slate-950 px-5 sm:px-8 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm shadow-md hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-2"
+                className="w-full sm:w-auto justify-center bg-slate-950 dark:bg-white text-white dark:text-slate-950 hover:bg-emerald-600 dark:hover:bg-emerald-400 dark:hover:text-slate-950 px-5 sm:px-8 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm shadow-md hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-2"
               >
                 <span>{t('comprar_ahora')}</span>
                 <ArrowRight size={14} />

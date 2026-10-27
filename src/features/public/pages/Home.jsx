@@ -64,22 +64,29 @@ export const Home = () => {
           productoService.obtenerMasVendidos().catch(() => []),
           tiendaService.listarTiendas().catch(() => []),
           productoService.listarCategorias().catch(() => []),
-          productoService.listar({ tamano: 30 }).catch(() => ({ content: [] }))
+          productoService.listar({ tamano: 50 }).catch(() => ({ content: [] }))
         ])
         const listaGeneral = allProdsData?.content || []
-        const combinados = [...(dest || []), ...listaGeneral].filter(
-          (p, idx, arr) => arr.findIndex(item => item.id === p.id) === idx
-        )
-        setDestacados(combinados.length > 0 ? combinados : (dest || []))
-        setNuevos(nuev && nuev.length > 0 ? nuev : listaGeneral.slice(0, 8))
         
-        // Determinar más vendidos garantizando el criterio de cantidad de unidades vendidas (totalVentas)
+        // Pool unificado de todos los productos disponibles garantizando que ningún producto se pierda
+        const poolCompleto = [
+          ...(Array.isArray(dest) ? dest : []),
+          ...(Array.isArray(listaGeneral) ? listaGeneral : []),
+          ...(Array.isArray(masVend) ? masVend : []),
+          ...(Array.isArray(nuev) ? nuev : [])
+        ].filter((p, idx, arr) => p && p.id && arr.findIndex(item => item.id === p.id) === idx)
+
+        setDestacados(poolCompleto)
+        setNuevos(nuev && nuev.length > 0 ? nuev : poolCompleto.slice(0, 8))
+        
         const listaVendidos = (masVend && masVend.length > 0)
           ? [...masVend].sort((a, b) => (b.totalVentas || 0) - (a.totalVentas || 0))
-          : [...combinados].sort((a, b) => (b.totalVentas || 0) - (a.totalVentas || 0))
+          : [...poolCompleto].sort((a, b) => (b.totalVentas || 0) - (a.totalVentas || 0))
         setMasVendidos(listaVendidos)
         setTiendas(tiendasData || [])
         setCategorias(catsData || [])
+      } catch (err) {
+        console.error('Error cargando datos del home:', err)
       } finally {
         setLoading(false)
       }
@@ -122,14 +129,14 @@ export const Home = () => {
         />
       </section>
 
-      <div className="container max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-10 space-y-10 sm:space-y-14">
+      <div className="container max-w-[1520px] mx-auto px-3 sm:px-6 lg:px-8 pt-5 sm:pt-10 space-y-8 sm:space-y-14">
 
         {/* ========================================================= */}
         {/* 2. BARRA FLOTANTE DELGADA DE CONFIANZA (TEMPRANA / ARRIBA)*/}
         {/* ========================================================= */}
         <section aria-label="Garantías y respaldo oficial de Mercatto">
-          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-3xl px-5 py-3.5 sm:px-7 sm:py-4 shadow-md shadow-slate-200/60 dark:shadow-black/40 border border-slate-200/90 dark:border-slate-800">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-3 sm:px-7 sm:py-4 shadow-md shadow-slate-200/60 dark:shadow-black/40 border border-slate-200/90 dark:border-slate-800">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-6">
               
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-emerald-500/15 border border-emerald-500/25 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
