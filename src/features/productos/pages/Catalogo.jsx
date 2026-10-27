@@ -22,6 +22,7 @@ export const Catalogo = () => {
   const pagina = Number(searchParams.get('pagina') || 0)
   const precioMin = searchParams.get('precioMin') ? Number(searchParams.get('precioMin')) : null
   const precioMax = searchParams.get('precioMax') ? Number(searchParams.get('precioMax')) : null
+  const soloElite = searchParams.get('soloElite') === 'true'
 
   useEffect(() => {
     const fetchProductos = async () => {
@@ -35,9 +36,14 @@ export const Catalogo = () => {
           pagina,
           precioMin,
           precioMax,
+          soloElite: soloElite ? true : undefined,
           tamano: 12,
         })
-        setProductos(data.content || [])
+        let items = data.content || []
+        if (soloElite) {
+          items = items.filter(p => (p.vendedor?.tipoSuscripcion || p.vendedor?.plan || '').toUpperCase() === 'ELITE')
+        }
+        setProductos(items)
         setTotalPages(data.totalPages || 0)
       } catch {
         setProductos([])
@@ -46,7 +52,7 @@ export const Catalogo = () => {
       }
     }
     fetchProductos()
-  }, [categoriaId, marca, termino, orden, pagina, precioMin, precioMax])
+  }, [categoriaId, marca, termino, orden, pagina, precioMin, precioMax, soloElite])
 
   const handleCategoryChange = (catId) => {
     const next = new URLSearchParams(searchParams)
@@ -80,6 +86,17 @@ export const Catalogo = () => {
     setSearchParams(next)
   }
 
+  const handleSoloEliteChange = (checked) => {
+    const next = new URLSearchParams(searchParams)
+    if (checked) {
+      next.set('soloElite', 'true')
+    } else {
+      next.delete('soloElite')
+    }
+    next.set('pagina', '0')
+    setSearchParams(next)
+  }
+
   const handleOrdenChange = (newOrden) => {
     const next = new URLSearchParams(searchParams)
     next.set('orden', newOrden)
@@ -107,6 +124,21 @@ export const Catalogo = () => {
         <p className="text-xs text-slate-500 mt-1">{t('explora_productos_publicados')}</p>
       </div>
 
+      {soloElite && (
+        <div className="flex items-center justify-between gap-3 p-3.5 bg-gradient-to-r from-amber-500/15 via-amber-500/5 to-violet-500/10 border border-amber-400/40 rounded-2xl animate-in fade-in">
+          <div className="flex items-center gap-2 text-xs sm:text-sm font-black text-amber-800 dark:text-amber-200">
+            <span className="text-base">👑</span>
+            <span>Filtro Exclusivo Activado: Mostrando productos de Tiendas con Plan Élite</span>
+          </div>
+          <button
+            onClick={() => handleSoloEliteChange(false)}
+            className="text-xs font-bold text-amber-900 dark:text-amber-100 bg-white/90 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-slate-700 px-3 py-1.5 rounded-xl border border-amber-300 dark:border-amber-700 transition cursor-pointer shadow-xs"
+          >
+            Quitar filtro
+          </button>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
         {/* Filters Sidebar */}
         <div className="lg:col-span-1">
@@ -119,6 +151,8 @@ export const Catalogo = () => {
             onPriceChange={handlePriceChange}
             orden={orden}
             onOrdenChange={handleOrdenChange}
+            soloElite={soloElite}
+            onSoloEliteChange={handleSoloEliteChange}
             onReset={handleReset}
           />
         </div>

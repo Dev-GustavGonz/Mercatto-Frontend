@@ -132,6 +132,16 @@ export const PublicChatbot = () => {
 
   const mensajesContainerRef = useRef(null)
 
+  // Generar o recuperar sessionId persistente para la conversación
+  const [sessionId] = useState(() => {
+    let sid = sessionStorage.getItem('mercatto_chat_sid')
+    if (!sid) {
+      sid = 'session_' + Math.random().toString(36).substring(2, 11)
+      sessionStorage.setItem('mercatto_chat_sid', sid)
+    }
+    return sid
+  })
+
 
   // En paneles administrativos o de tienda, el usuario ya cuenta con su propio dock
   const esRutaPanel =
@@ -139,7 +149,7 @@ export const PublicChatbot = () => {
     location.pathname.startsWith('/panel-vendedor') ||
     location.pathname.startsWith('/vendedor')
 
-  if (esRutaPanel) return null
+  
 
   // Scroll suave contenido únicamente dentro del contenedor del chat
   const scrollAlFinal = () => {
@@ -205,16 +215,6 @@ export const PublicChatbot = () => {
       setVistaActual('chat')
     }, 600)
   }
-
-  // Generar o recuperar sessionId persistente para la conversación
-  const [sessionId] = useState(() => {
-    let sid = sessionStorage.getItem('mercatto_chat_sid')
-    if (!sid) {
-      sid = 'session_' + Math.random().toString(36).substring(2, 11)
-      sessionStorage.setItem('mercatto_chat_sid', sid)
-    }
-    return sid
-  })
 
   const handleEnviarMensaje = async (e, textoDirecto = null) => {
     if (e && e.preventDefault) e.preventDefault()
@@ -394,6 +394,8 @@ export const PublicChatbot = () => {
       return parte
     })
   }
+
+  if (esRutaPanel) return null
 
   return (
     <div className="fixed bottom-4 right-4 sm:bottom-5 sm:right-5 z-50 flex flex-col items-end pointer-events-none font-sans">

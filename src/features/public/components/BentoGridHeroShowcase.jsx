@@ -148,16 +148,25 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
                     {currentHero.titulo}
                   </h1>
                   
-                  {/* Precio destacado en píldora con Mayúscula Inicial */}
-                  <div className="pt-1 flex items-baseline gap-2">
-                    <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-950 text-white dark:bg-white dark:text-slate-950 font-black text-base sm:text-xl shadow-xs">
-                      {formatCurrency(currentHero.precioOferta || currentHero.precio)} COP
-                    </span>
-                    {currentHero.precioOferta && (
-                      <span className="text-sm line-through text-slate-400 font-bold">
-                        {formatCurrency(currentHero.precio)} COP
+                  {/* Precio y Reseñas destacadas */}
+                  <div className="pt-1 flex flex-wrap items-center gap-3">
+                    <div className="flex items-baseline gap-2">
+                      <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-950 text-white dark:bg-white dark:text-slate-950 font-black text-base sm:text-xl shadow-xs">
+                        {formatCurrency(currentHero.precioOferta || currentHero.precio)} COP
                       </span>
-                    )}
+                      {currentHero.precioOferta && (
+                        <span className="text-sm line-through text-slate-400 font-bold">
+                          {formatCurrency(currentHero.precio)} COP
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 dark:bg-amber-400/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 font-black text-xs">
+                      <Star size={13} className="fill-amber-400 text-amber-400" />
+                      <span>{Number(currentHero.calificacion || 5.0).toFixed(1)}</span>
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold">
+                        ({currentHero.totalResenas || 0} {currentHero.totalResenas === 1 ? 'reseña' : 'reseñas'})
+                      </span>
+                    </div>
                   </div>
                 </div>
 
@@ -265,6 +274,15 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
               <h3 className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white truncate group-hover:text-violet-600 transition-colors">
                 {productTopRight.titulo}
               </h3>
+              <div className="flex items-center gap-1.5 text-xs">
+                <div className="flex items-center gap-1 text-amber-500 font-bold">
+                  <Star size={12} className="fill-amber-400 text-amber-400" />
+                  <span>{Number(productTopRight.calificacion || 5.0).toFixed(1)}</span>
+                </div>
+                <span className="text-[11px] text-slate-400 font-medium">
+                  ({productTopRight.totalResenas || 0} {productTopRight.totalResenas === 1 ? 'reseña' : 'reseñas'})
+                </span>
+              </div>
 
               <div className="flex items-center justify-between pt-1">
                 <span className="font-black text-sm sm:text-base text-slate-900 dark:text-white">
@@ -310,6 +328,15 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
               <p className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold truncate">
                 {productLeft.categoria?.nombre || productLeft.marca || t('tienda_oficial')}
               </p>
+              <div className="flex items-center gap-1.5 text-xs pt-0.5">
+                <div className="flex items-center gap-1 text-amber-500 font-bold">
+                  <Star size={12} className="fill-amber-400 text-amber-400" />
+                  <span>{Number(productLeft.calificacion || 5.0).toFixed(1)}</span>
+                </div>
+                <span className="text-[11px] text-slate-400 font-medium">
+                  ({productLeft.totalResenas || 0} {productLeft.totalResenas === 1 ? 'reseña' : 'reseñas'})
+                </span>
+              </div>
             </div>
 
             {/* Imagen del producto real */}
@@ -468,6 +495,11 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
                           <p className="font-extrabold text-sm text-slate-900 dark:text-white truncate">
                             {prod.titulo}
                           </p>
+                          <div className="flex items-center gap-1 text-[11px] text-amber-500 font-bold mt-0.5">
+                            <Star size={11} className="fill-amber-400 text-amber-400" />
+                            <span>{Number(prod.calificacion || 5.0).toFixed(1)}</span>
+                            <span className="text-[10px] text-slate-400 font-normal">({prod.totalResenas || 0} {prod.totalResenas === 1 ? 'reseña' : 'reseñas'})</span>
+                          </div>
                           <p className="text-sm sm:text-base font-extrabold text-[#8572e4] dark:text-violet-400 mt-0.5">
                             {formatCurrency(prod.precioOferta || prod.precio)} COP
                           </p>

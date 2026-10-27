@@ -104,14 +104,15 @@ export const ProductTripleColumn = ({ destacados = [], nuevos = [], masVendidos 
             )}
           </div>
 
-          {/* Estrellas */}
+          {/* Estrellas y Reseñas */}
           <div className="flex items-center gap-1.5 flex-wrap">
-            <div className="flex items-center gap-0.5 text-amber-400">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} size={11} fill="currentColor" />
-              ))}
-              <span className="text-[10px] text-slate-400 font-semibold ml-1">
-                ({prod.calificacion || 4.9})
+            <div className="flex items-center gap-1 text-amber-500">
+              <Star size={12} className="fill-amber-400 text-amber-400" />
+              <span className="text-[11px] font-black text-slate-800 dark:text-slate-200">
+                {Number(prod.calificacion || 5.0).toFixed(1)}
+              </span>
+              <span className="text-[10px] text-slate-400 font-semibold ml-0.5">
+                ({prod.totalResenas || 0} {prod.totalResenas === 1 ? 'reseña' : 'reseñas'})
               </span>
             </div>
             {prod.totalVentas > 0 && (

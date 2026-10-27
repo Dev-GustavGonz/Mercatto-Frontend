@@ -107,9 +107,14 @@ export const ProductCard = ({ producto, onContactClick }) => {
 
       {/* Calificación y Tienda */}
       <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
-        <div className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded-md border border-amber-100 dark:border-amber-900/50">
+        <div className="flex items-center gap-1 font-bold text-slate-800 dark:text-slate-200 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded-md border border-amber-100 dark:border-amber-900/50">
           <Star size={12} className="text-amber-500 fill-amber-500" />
           <span>{producto.calificacion != null ? Number(producto.calificacion).toFixed(1) : '5.0'}</span>
+          {producto.totalResenas > 0 && (
+            <span className="text-[10px] text-slate-400 font-semibold">
+              ({producto.totalResenas})
+            </span>
+          )}
           {producto.totalVentas > 0 && (
             <span className="text-[10px] text-amber-700 dark:text-amber-300 font-semibold pl-1 border-l border-amber-200 dark:border-amber-800">
               {producto.totalVentas} {t('vendidos') || 'vendidos'}
@@ -118,17 +123,24 @@ export const ProductCard = ({ producto, onContactClick }) => {
         </div>
 
         {producto.vendedor?.nombreTienda && (
-          <span 
-            onClick={(e) => {
-              e.stopPropagation()
-              navigate(`/tienda/${producto.vendedor.id || producto.vendedor.usuarioId}`)
-            }}
-            className="inline-flex items-center gap-1 font-medium text-slate-500 dark:text-slate-400 hover:text-violet-600 transition truncate max-w-[140px]"
-            title={`${t('tienda_oficial')}: ${producto.vendedor.nombreTienda}`}
-          >
-            <Store size={12} className="shrink-0 text-violet-500" />
-            <span className="truncate">{producto.vendedor.nombreTienda}</span>
-          </span>
+          <div className="flex items-center gap-1 max-w-[150px]">
+            {(producto.vendedor?.tipoSuscripcion === 'ELITE' || producto.vendedor?.plan === 'ELITE') && (
+              <span className="px-1.5 py-0.2 rounded-full bg-gradient-to-r from-amber-500/20 to-violet-500/20 text-amber-700 dark:text-amber-300 border border-amber-400/40 text-[9px] font-black uppercase shrink-0" title="Tienda Plan Élite">
+                👑 Élite
+              </span>
+            )}
+            <span 
+              onClick={(e) => {
+                e.stopPropagation()
+                navigate(`/tienda/${producto.vendedor.id || producto.vendedor.usuarioId}`)
+              }}
+              className="inline-flex items-center gap-1 font-medium text-slate-500 dark:text-slate-400 hover:text-violet-600 transition truncate"
+              title={`${t('tienda_oficial')}: ${producto.vendedor.nombreTienda}`}
+            >
+              <Store size={12} className="shrink-0 text-violet-500" />
+              <span className="truncate">{producto.vendedor.nombreTienda}</span>
+            </span>
+          </div>
         )}
       </div>
 

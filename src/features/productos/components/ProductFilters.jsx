@@ -14,6 +14,8 @@ export const ProductFilters = ({
   onPriceChange,
   orden,
   onOrdenChange,
+  soloElite = false,
+  onSoloEliteChange,
   onReset,
 }) => {
   const [categorias, setCategorias] = useState([])
@@ -43,6 +45,7 @@ export const ProductFilters = ({
           onClick={() => {
             setPrecioMin('')
             setPrecioMax('')
+            if (onSoloEliteChange) onSoloEliteChange(false)
             onReset()
           }}
           className="text-xs text-slate-400 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
@@ -50,6 +53,31 @@ export const ProductFilters = ({
           <RotateCcw size={12} />
           <span>{t('limpiar')}</span>
         </button>
+      </div>
+
+      {/* Filtro Exclusivo Plan Élite */}
+      <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-violet-500/10 border border-amber-400/40 dark:border-amber-500/20 shadow-xs">
+        <label className="flex items-center justify-between cursor-pointer select-none">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-base shadow-xs shrink-0">
+              👑
+            </div>
+            <div>
+              <span className="block text-xs font-black text-slate-900 dark:text-white leading-tight">
+                Tiendas Plan Élite
+              </span>
+              <span className="block text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                Solo tiendas VIP verificadas
+              </span>
+            </div>
+          </div>
+          <input
+            type="checkbox"
+            checked={Boolean(soloElite)}
+            onChange={(e) => onSoloEliteChange && onSoloEliteChange(e.target.checked)}
+            className="w-4 h-4 accent-amber-500 rounded cursor-pointer"
+          />
+        </label>
       </div>
 
       {/* Ordenamiento */}

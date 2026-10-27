@@ -23,7 +23,8 @@ import {
   ChevronRight,
   Flame,
   CheckCircle2,
-  Sparkles
+  Sparkles,
+  Star
 } from 'lucide-react'
 
 export const Home = () => {
@@ -333,9 +334,14 @@ export const Home = () => {
                           </h3>
                           <BadgeCheck size={14} className="text-emerald-500 shrink-0" />
                         </div>
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium">
-                          {tItem.ciudad || 'Colombia'} • {t('tienda_verificada')}
-                        </p>
+                        <div className="flex items-center justify-between gap-1 text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-medium">
+                          <span className="truncate">{tItem.ciudad || 'Colombia'} • {t('tienda_verificada')}</span>
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold shrink-0">
+                            <Star size={11} className="fill-amber-400 text-amber-400" />
+                            <span>{Number(tItem.calificacion || 5.0).toFixed(1)}</span>
+                            {tItem.totalResenas > 0 && <span className="text-[10px] text-slate-400">({tItem.totalResenas})</span>}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>

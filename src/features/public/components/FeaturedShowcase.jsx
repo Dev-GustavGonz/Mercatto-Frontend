@@ -226,10 +226,16 @@ export const FeaturedShowcase = ({ productos = [], tiendas = [] }) => {
 
                   {/* Estrellas de Calificación & Botón Carrito */}
                   <div className="flex items-center justify-between pt-1">
-                    <div className="flex items-center gap-0.5 text-amber-400">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} size={13} fill="currentColor" />
-                      ))}
+                    <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1 text-amber-500">
+                        <Star size={13} className="fill-amber-400 text-amber-400" />
+                        <span className="text-xs font-black text-slate-800 dark:text-slate-200">
+                          {Number(prod.calificacion || 5.0).toFixed(1)}
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-slate-400 font-medium">
+                        ({prod.totalResenas || 0} reseñas)
+                      </span>
                     </div>
 
                     <button

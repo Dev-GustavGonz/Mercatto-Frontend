@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { formatCurrency } from '@/utils/formatCurrency'
-import { ArrowRight, Clock, ShieldCheck, Sparkles, Flame, Zap } from 'lucide-react'
+import { ArrowRight, Clock, ShieldCheck, Sparkles, Flame, Zap, Star } from 'lucide-react'
 import { useLanguage } from '@/hooks/useLanguage'
 import { resolveProductImage } from '@/utils/productUtils'
 
@@ -121,9 +121,18 @@ export const PromotionalBento = ({ productos = [], onAddToCart }) => {
             />
           </div>
 
-          {/* Nombre del Producto en la base */}
-          <div className="relative z-10 px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 text-center text-xs text-slate-800 dark:text-slate-200 font-bold truncate">
-            {pOferta?.titulo}
+          {/* Nombre del Producto y Reseñas */}
+          <div className="relative z-10 space-y-1.5">
+            <div className="px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 text-center text-xs text-slate-800 dark:text-slate-200 font-bold truncate">
+              {pOferta?.titulo}
+            </div>
+            <div className="flex items-center justify-center gap-1.5 text-xs text-slate-500">
+              <span className="flex items-center gap-1 text-amber-500 font-black">
+                <Star size={12} className="fill-amber-400 text-amber-400" />
+                <span>{Number(pOferta?.calificacion || 5.0).toFixed(1)}</span>
+              </span>
+              <span className="text-[11px] text-slate-400">({pOferta?.totalResenas || 0} reseñas)</span>
+            </div>
           </div>
         </div>
       )}
@@ -175,8 +184,17 @@ export const PromotionalBento = ({ productos = [], onAddToCart }) => {
             />
           </div>
 
-          <div className="relative z-10 px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 text-center text-xs text-slate-800 dark:text-slate-200 font-bold truncate">
-            {pNovedad?.marca ? `${t('distribuidor_oficial')} ${pNovedad.marca}` : (pNovedad?.vendedor?.nombreTienda || t('garantia_oficial_colombia'))}
+          <div className="relative z-10 space-y-1.5">
+            <div className="px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 text-center text-xs text-slate-800 dark:text-slate-200 font-bold truncate">
+              {pNovedad?.marca ? `${t('distribuidor_oficial')} ${pNovedad.marca}` : (pNovedad?.vendedor?.nombreTienda || t('garantia_oficial_colombia'))}
+            </div>
+            <div className="flex items-center justify-center gap-1.5 text-xs text-slate-500">
+              <span className="flex items-center gap-1 text-amber-500 font-black">
+                <Star size={12} className="fill-amber-400 text-amber-400" />
+                <span>{Number(pNovedad?.calificacion || 5.0).toFixed(1)}</span>
+              </span>
+              <span className="text-[11px] text-slate-400">({pNovedad?.totalResenas || 0} reseñas)</span>
+            </div>
           </div>
         </div>
       )}
@@ -226,8 +244,17 @@ export const PromotionalBento = ({ productos = [], onAddToCart }) => {
             />
           </div>
 
-          <div className="relative z-10 px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 text-center text-xs text-slate-800 dark:text-slate-200 font-bold truncate">
-            {pTemporada?.titulo || t('calzado_deportes_accesorios')}
+          <div className="relative z-10 space-y-1.5">
+            <div className="px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 text-center text-xs text-slate-800 dark:text-slate-200 font-bold truncate">
+              {pTemporada?.titulo || t('calzado_deportes_accesorios')}
+            </div>
+            <div className="flex items-center justify-center gap-1.5 text-xs text-slate-500">
+              <span className="flex items-center gap-1 text-amber-500 font-black">
+                <Star size={12} className="fill-amber-400 text-amber-400" />
+                <span>{Number(pTemporada?.calificacion || 5.0).toFixed(1)}</span>
+              </span>
+              <span className="text-[11px] text-slate-400">({pTemporada?.totalResenas || 0} reseñas)</span>
+            </div>
           </div>
         </div>
       )}
