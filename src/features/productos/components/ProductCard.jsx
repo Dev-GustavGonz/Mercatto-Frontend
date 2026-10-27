@@ -151,36 +151,36 @@ export const ProductCard = ({ producto, onContactClick }) => {
       </div>
 
       {/* Precios y Botones de Acción */}
-      <div className="mt-auto pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-        <div>
-          <div className="text-lg font-black text-slate-900 dark:text-white tracking-tight">
+      <div className="mt-auto pt-2.5 sm:pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-1">
+        <div className="min-w-0 flex-1">
+          <div className="text-sm sm:text-base lg:text-lg font-black text-slate-900 dark:text-white tracking-tight truncate">
             {formatCurrency(precioFinal)}
           </div>
           {tieneDescuentoReal && (
-            <div className="text-xs text-slate-400 line-through">
+            <div className="text-[10px] sm:text-xs text-slate-400 line-through truncate">
               {formatCurrency(producto.precio)}
             </div>
           )}
         </div>
 
         {/* Botones de Contacto y Compra */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           {onContactClick && (
             <button
               onClick={handleContactarDirecto}
-              className="p-2.5 rounded-full bg-slate-50 dark:bg-slate-800 hover:bg-violet-50 dark:hover:bg-violet-950/50 text-slate-600 dark:text-slate-300 hover:text-violet-600 border border-slate-200 dark:border-slate-700 transition-all hover:scale-105"
+              className="p-2 sm:p-2.5 rounded-full bg-slate-50 dark:bg-slate-800 hover:bg-violet-50 dark:hover:bg-violet-950/50 text-slate-600 dark:text-slate-300 hover:text-violet-600 border border-slate-200 dark:border-slate-700 transition-all hover:scale-105"
               title={t('preguntar_vendedor')}
             >
-              <MessageSquare size={15} />
+              <MessageSquare size={14} className="sm:w-[15px] sm:h-[15px]" />
             </button>
           )}
 
           <button
             onClick={handleAddToCart}
-            className="p-2.5 rounded-full bg-slate-900 dark:bg-slate-100 dark:text-slate-900 group-hover:bg-violet-600 dark:group-hover:bg-violet-600 dark:group-hover:text-white text-white shadow-md hover:shadow-violet-500/25 transition-all hover:scale-110 active:scale-95"
+            className="p-2 sm:p-2.5 rounded-full bg-slate-900 dark:bg-slate-100 dark:text-slate-900 group-hover:bg-violet-600 dark:group-hover:bg-violet-600 dark:group-hover:text-white text-white shadow-md hover:shadow-violet-500/25 transition-all hover:scale-110 active:scale-95"
             title={t('anadir')}
           >
-            <ShoppingCart size={16} />
+            <ShoppingCart size={15} className="sm:w-[16px] sm:h-[16px]" />
           </button>
         </div>
       </div>

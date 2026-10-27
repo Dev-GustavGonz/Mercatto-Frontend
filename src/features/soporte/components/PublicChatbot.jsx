@@ -398,7 +398,7 @@ export const PublicChatbot = () => {
   if (esRutaPanel) return null
 
   return (
-    <div className="fixed bottom-4 right-4 sm:bottom-5 sm:right-5 z-50 flex flex-col items-end pointer-events-none font-sans">
+    <div className="fixed bottom-3 right-3 sm:bottom-5 sm:right-5 z-40 flex flex-col items-end pointer-events-none font-sans">
       {/* Ventana de Atención Flotante (Se coloca ARRIBA de la pestañita) */}
       {abierto && (
         <div className="pointer-events-auto mb-2.5 w-[calc(100vw-24px)] sm:w-[400px] h-[520px] max-h-[calc(100dvh-85px)] sm:max-h-[calc(100vh-95px)] bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-200 backdrop-blur-sm">
@@ -774,17 +774,17 @@ export const PublicChatbot = () => {
       {/* Botón Circular Flotante del Chatbot con M en blanco en estilo Mercatto */}
       <button
         onClick={() => setAbierto(!abierto)}
-        className="pointer-events-auto group relative w-16 h-16 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-violet-600 via-indigo-600 to-purple-700 hover:from-violet-500 hover:to-purple-600 text-white shadow-xl shadow-violet-600/35 hover:shadow-2xl hover:shadow-violet-600/50 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center cursor-pointer border-2 border-white/30 select-none"
+        className="pointer-events-auto group relative w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-violet-600 via-indigo-600 to-purple-700 hover:from-violet-500 hover:to-purple-600 text-white shadow-xl shadow-violet-600/35 hover:shadow-2xl hover:shadow-violet-600/50 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center cursor-pointer border-2 border-white/30 select-none"
         aria-label={abierto ? "Cerrar chat" : "Abrir asistente Mercatto"}
         title="Mercatto"
       >
         <span 
-          className="text-white text-3xl sm:text-2xl font-normal leading-none drop-shadow-sm select-none -mt-0.5"
+          className="text-white text-2xl sm:text-2xl font-normal leading-none drop-shadow-sm select-none -mt-0.5"
           style={{ fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif" }}
         >
           M
         </span>
-        <span className="absolute top-0.5 right-0.5 sm:-top-0.5 sm:-right-0.5 w-4 h-4 sm:w-3.5 sm:h-3.5 bg-emerald-400 border-2 border-violet-700 rounded-full animate-pulse" />
+        <span className="absolute top-0 right-0 sm:-top-0.5 sm:-right-0.5 w-3.5 h-3.5 sm:w-3.5 sm:h-3.5 bg-emerald-400 border-2 border-violet-700 rounded-full animate-pulse" />
       </button>
     </div>
   )

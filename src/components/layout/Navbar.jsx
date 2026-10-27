@@ -130,7 +130,7 @@ export const Navbar = () => {
             className="flex items-center shrink-0 transition-transform"
             title="Ir al inicio de Mercatto"
           >
-            <MercattoLogo />
+            <MercattoLogo sloganClassName="hidden sm:block" />
           </Link>
 
           <span className="hidden lg:block h-5 w-px bg-slate-200/80" />
@@ -255,20 +255,28 @@ export const Navbar = () => {
             </div>
 
             {/* 2. Opciones SOLO para Compradores / Usuarios Generales */}
-            {!esAdminOVendedor && (
-              <>
-                <Link 
-                  to="/tiendas" 
-                  className={`px-3.5 py-1.5 rounded-full transition-all ${
-                    location.pathname.startsWith('/tienda')
-                      ? 'text-emerald-800 bg-emerald-50/90 font-bold'
-                      : 'hover:text-slate-950 hover:bg-slate-100/80'
-                  }`}
-                >
-                  {t('tiendas_oficiales')}
-                </Link>
-              </>
-            )}
+            {/* 2. Opciones de Exploración Oficial */}
+            <Link 
+              to="/tiendas" 
+              className={`px-3.5 py-1.5 rounded-full transition-all ${
+                location.pathname.startsWith('/tienda')
+                  ? 'text-emerald-800 bg-emerald-50/90 font-bold'
+                  : 'hover:text-slate-950 hover:bg-slate-100/80'
+              }`}
+            >
+              {t('tiendas_oficiales')}
+            </Link>
+
+            <Link 
+              to="/about" 
+              className={`px-3.5 py-1.5 rounded-full transition-all ${
+                location.pathname === '/about'
+                  ? 'text-emerald-800 bg-emerald-50/90 font-bold'
+                  : 'hover:text-slate-950 hover:bg-slate-100/80'
+              }`}
+            >
+              {t('nosotros')}
+            </Link>
 
             {/* 3. Botón de acceso exclusivo para VENDEDOR */}
             {esVendedor && (
@@ -303,7 +311,7 @@ export const Navbar = () => {
         </div>
 
         {/* ACCIONES Y BOTONES DERECHA */}
-        <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           
           {/* Selector de Idioma (Pastilla limpia sin borde duro) */}
           <div className="relative">
@@ -590,62 +598,183 @@ export const Navbar = () => {
 
       </div>
 
-      {/* Menú Móvil desplegable adaptado al Rol */}
+      {/* Overlay Backdrop para cerrar menú al pulsar fuera */}
       {menuMobile && (
-        <div className="lg:hidden w-full bg-white px-4 sm:px-6 py-4 space-y-3 pointer-events-auto">
-          <SearchBar placeholder="Buscar en catálogo..." />
-          <div className="flex flex-col gap-1 font-bold text-sm text-slate-700">
-            <Link to="/catalogo" onClick={() => setMenuMobile(false)} className="px-3 py-2 rounded-xl hover:bg-violet-50">
-              Catálogo Completo
+        <div 
+          className="fixed inset-0 top-[60px] bg-slate-950/40 backdrop-blur-xs z-40 lg:hidden transition-opacity duration-200"
+          onClick={() => setMenuMobile(false)}
+        />
+      )}
+
+      {/* Menú Móvil desplegable adaptado al Rol - Flotante elegante */}
+      {menuMobile && (
+        <div className="lg:hidden absolute top-full left-0 w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-2xl px-4 sm:px-6 py-4 space-y-3.5 max-h-[calc(100vh-65px)] overflow-y-auto z-50 animate-in fade-in slide-in-from-top-2 duration-200 pointer-events-auto">
+          {/* Buscador de catálogo dentro del menú móvil */}
+          <SearchBar 
+            placeholder={t('buscar_placeholder')} 
+            onSearchSubmit={() => setMenuMobile(false)} 
+          />
+
+          {/* Enlaces Principales de Navegación */}
+          <div className="flex flex-col gap-1 font-semibold text-sm text-slate-700 dark:text-slate-200">
+            <Link 
+              to="/" 
+              onClick={() => setMenuMobile(false)} 
+              className={`px-3.5 py-2.5 rounded-xl hover:bg-violet-50 dark:hover:bg-violet-950/40 flex items-center gap-2.5 transition ${location.pathname === '/' ? 'bg-violet-50 dark:bg-violet-950/50 text-violet-700 font-bold' : ''}`}
+            >
+              <HomeIcon size={17} className="text-violet-600" />
+              <span>{t('inicio') || 'Inicio'}</span>
             </Link>
 
+            <Link 
+              to="/catalogo" 
+              onClick={() => setMenuMobile(false)} 
+              className={`px-3.5 py-2.5 rounded-xl hover:bg-violet-50 dark:hover:bg-violet-950/40 flex items-center gap-2.5 transition ${location.pathname.startsWith('/catalogo') ? 'bg-violet-50 dark:bg-violet-950/50 text-violet-700 font-bold' : ''}`}
+            >
+              <ShoppingBag size={17} className="text-emerald-600" />
+              <span>{t('todo_catalogo') || 'Catálogo Completo'}</span>
+            </Link>
+
+            <Link 
+              to="/tiendas" 
+              onClick={() => setMenuMobile(false)} 
+              className={`px-3.5 py-2.5 rounded-xl hover:bg-violet-50 dark:hover:bg-violet-950/40 flex items-center gap-2.5 transition ${location.pathname.startsWith('/tienda') ? 'bg-violet-50 dark:bg-violet-950/50 text-violet-700 font-bold' : ''}`}
+            >
+              <Store size={17} className="text-violet-600" />
+              <span>{t('tiendas_oficiales')}</span>
+            </Link>
+
+            <Link 
+              to="/about" 
+              onClick={() => setMenuMobile(false)} 
+              className={`px-3.5 py-2.5 rounded-xl hover:bg-violet-50 dark:hover:bg-violet-950/40 flex items-center gap-2.5 transition ${location.pathname === '/about' ? 'bg-violet-50 dark:bg-violet-950/50 text-violet-700 font-bold' : ''}`}
+            >
+              <Info size={17} className="text-sky-600" />
+              <span>{t('nosotros')}</span>
+            </Link>
+
+            {/* Accesos a paneles según rol */}
             {esAdmin && (
-              <Link to="/admin" onClick={() => setMenuMobile(false)} className="px-3 py-2 rounded-xl bg-violet-50 text-violet-700">
-                Panel Administrador
+              <Link 
+                to="/admin" 
+                onClick={() => setMenuMobile(false)} 
+                className="px-3.5 py-2.5 rounded-xl bg-violet-600 text-white font-bold flex items-center gap-2.5 shadow-sm"
+              >
+                <Shield size={17} />
+                <span>{t('panel_admin')}</span>
               </Link>
             )}
 
             {esVendedor && (
-              <Link to="/panel-vendedor" onClick={() => setMenuMobile(false)} className="px-3 py-2 rounded-xl bg-violet-50 text-violet-700">
-                Panel Vendedor
+              <Link 
+                to="/panel-vendedor" 
+                onClick={() => setMenuMobile(false)} 
+                className="px-3.5 py-2.5 rounded-xl bg-violet-600 text-white font-bold flex items-center gap-2.5 shadow-sm"
+              >
+                <Store size={17} />
+                <span>{t('panel_vendedor')}</span>
               </Link>
             )}
 
             <Link 
               to="/soporte" 
               onClick={() => setMenuMobile(false)} 
-              className="px-3 py-2 rounded-xl hover:bg-violet-50 flex items-center gap-2 text-violet-700 font-bold"
+              className="px-3.5 py-2.5 rounded-xl hover:bg-violet-50 dark:hover:bg-violet-950/40 flex items-center gap-2.5 text-violet-700 dark:text-violet-300 font-bold transition"
             >
-              <Headphones size={16} />
+              <Headphones size={17} />
               <span>Centro de Ayuda & Soporte</span>
             </Link>
+          </div>
 
-            {!esAdminOVendedor && (
+          {/* Sección de Usuario / Cuenta */}
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-1">
+            {autenticado ? (
               <>
-                <Link to="/" onClick={() => setMenuMobile(false)} className="px-3 py-2 rounded-xl hover:bg-violet-50">Inicio</Link>
-                <Link to="/tiendas" onClick={() => setMenuMobile(false)} className="px-3 py-2 rounded-xl hover:bg-violet-50">Tiendas Oficiales</Link>
-                <Link to="/about" onClick={() => setMenuMobile(false)} className="px-3 py-2 rounded-xl hover:bg-violet-50">Nosotros</Link>
-                <div className="pt-2 mt-2 border-t border-slate-100 flex items-center justify-between px-1">
-                  <span className="text-xs font-semibold text-slate-500">Idioma:</span>
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      type="button"
-                      onClick={() => { cambiarIdioma('es'); setMenuMobile(false); }}
-                      className={`px-3 py-1 rounded-full text-xs font-bold ${idioma === 'ES' ? 'bg-violet-600 text-white' : 'bg-slate-100 text-slate-700'}`}
-                    >
-                      🇨🇴 ES
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => { cambiarIdioma('en'); setMenuMobile(false); }}
-                      className={`px-3 py-1 rounded-full text-xs font-bold ${idioma === 'EN' ? 'bg-violet-600 text-white' : 'bg-slate-100 text-slate-700'}`}
-                    >
-                      🇺🇸 EN
-                    </button>
+                <div className="px-3.5 py-2 bg-slate-50 dark:bg-slate-800/60 rounded-xl mb-1 flex items-center justify-between">
+                  <div className="min-w-0">
+                    <p className="text-xs font-black text-slate-800 dark:text-white truncate">{usuario?.nombre || 'Mi Cuenta'}</p>
+                    <p className="text-[10px] text-slate-400 truncate">{usuario?.email}</p>
                   </div>
+                  <span className="text-[10px] font-bold px-2 py-0.5 bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-300 rounded-full">
+                    {rolFormateado}
+                  </span>
                 </div>
+                <Link 
+                  to="/perfil" 
+                  onClick={() => setMenuMobile(false)} 
+                  className="px-3.5 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300"
+                >
+                  <User size={15} />
+                  <span>{t('mi_perfil')}</span>
+                </Link>
+                {!esAdminOVendedor && (
+                  <>
+                    <Link 
+                      to="/mis-pedidos" 
+                      onClick={() => setMenuMobile(false)} 
+                      className="px-3.5 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300"
+                    >
+                      <Package size={15} />
+                      <span>{t('mis_pedidos')}</span>
+                    </Link>
+                    <Link 
+                      to="/favoritos" 
+                      onClick={() => setMenuMobile(false)} 
+                      className="px-3.5 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300"
+                    >
+                      <Heart size={15} className="text-rose-500" />
+                      <span>{t('favoritos')}</span>
+                    </Link>
+                  </>
+                )}
+                <button
+                  type="button"
+                  onClick={() => { setMenuMobile(false); handleLogout(); }}
+                  className="w-full px-3.5 py-2 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center gap-2.5 text-xs font-bold text-rose-600 transition cursor-pointer"
+                >
+                  <LogOut size={15} />
+                  <span>{t('cerrar_sesion')}</span>
+                </button>
               </>
+            ) : (
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <Link
+                  to="/login"
+                  onClick={() => setMenuMobile(false)}
+                  className="px-3 py-2 text-center text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white hover:bg-slate-50 transition"
+                >
+                  {t('iniciar_sesion')}
+                </Link>
+                <Link
+                  to="/registro"
+                  onClick={() => setMenuMobile(false)}
+                  className="px-3 py-2 text-center text-xs font-bold rounded-xl bg-violet-600 hover:bg-violet-700 text-white shadow-xs transition"
+                >
+                  {t('registrarse')}
+                </Link>
+              </div>
             )}
+          </div>
+
+          {/* Selector de Idioma en Móvil */}
+          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between px-1">
+            <span className="text-xs font-semibold text-slate-500">{t('idioma') || 'Idioma'}:</span>
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => { cambiarIdioma('es'); setMenuMobile(false); }}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer ${idioma === 'ES' ? 'bg-violet-600 text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'}`}
+              >
+                🇨🇴 ES
+              </button>
+              <button
+                type="button"
+                onClick={() => { cambiarIdioma('en'); setMenuMobile(false); }}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer ${idioma === 'EN' ? 'bg-violet-600 text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'}`}
+              >
+                🇺🇸 EN
+              </button>
+            </div>
           </div>
         </div>
       )}
