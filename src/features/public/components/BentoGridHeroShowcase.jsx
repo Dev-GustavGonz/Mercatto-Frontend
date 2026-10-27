@@ -259,7 +259,7 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
             </div>
 
             {/* Imagen centrada del producto real */}
-            <div className="relative w-full h-48 sm:h-56 flex items-center justify-center p-3 my-auto bg-slate-50/80 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
+            <div className="relative w-full h-48 sm:h-56 flex items-center justify-center p-3 my-auto bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 shadow-xs dark:border-slate-800 overflow-hidden">
               <img
                 src={resolveProductImage(productTopRight)}
                 alt={productTopRight.titulo}
@@ -342,7 +342,7 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
             </div>
 
             {/* Imagen del producto real */}
-            <div className="relative w-full h-56 sm:h-64 flex items-center justify-center p-3 my-auto bg-slate-50/80 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
+            <div className="relative w-full h-56 sm:h-64 flex items-center justify-center p-3 my-auto bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 shadow-xs dark:border-slate-800 overflow-hidden">
               <img
                 src={resolveProductImage(productLeft)}
                 alt={productLeft.titulo}

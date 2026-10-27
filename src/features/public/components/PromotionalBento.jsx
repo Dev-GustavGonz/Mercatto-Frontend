@@ -112,12 +112,14 @@ export const PromotionalBento = ({ productos = [], onAddToCart }) => {
           </div>
 
           {/* Imagen Flotante del Producto */}
-          <div className="relative z-10 w-full h-40 flex items-center justify-center pt-3">
-            <img
-              src={imgOferta}
-              alt={pOferta?.titulo || t('oferta_del_mes')}
-              className="max-h-36 w-auto object-contain filter drop-shadow-[0_16px_20px_rgba(0,0,0,0.12)] group-hover:scale-110 group-hover:-rotate-2 transition-transform duration-500"
-            />
+          <div className="relative z-10 w-full h-44 flex items-center justify-center p-2 pt-3">
+            <div className="w-full h-full max-w-[240px] bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200/90 dark:border-slate-700 p-2.5 shadow-xs flex items-center justify-center overflow-hidden">
+              <img
+                src={imgOferta}
+                alt={pOferta?.titulo || t('oferta_del_mes')}
+                className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-500"
+              />
+            </div>
           </div>
 
           {/* Nombre del Producto y Reseñas */}
@@ -175,12 +177,14 @@ export const PromotionalBento = ({ productos = [], onAddToCart }) => {
           </div>
 
           {/* Imagen Flotante */}
-          <div className="relative z-10 w-full h-40 flex items-center justify-center pt-3">
-            <img
-              src={imgNovedad}
-              alt={pNovedad?.titulo || t('audio_pro_titulo')}
-              className="max-h-36 w-auto object-contain filter drop-shadow-[0_16px_20px_rgba(0,0,0,0.12)] group-hover:scale-110 group-hover:rotate-2 transition-transform duration-500"
-            />
+          <div className="relative z-10 w-full h-44 flex items-center justify-center p-2 pt-3">
+            <div className="w-full h-full max-w-[240px] bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200/90 dark:border-slate-700 p-2.5 shadow-xs flex items-center justify-center overflow-hidden">
+              <img
+                src={imgNovedad}
+                alt={pNovedad?.titulo || t('audio_pro_titulo')}
+                className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-500"
+              />
+            </div>
           </div>
 
           <div className="relative z-10 space-y-1.5">
@@ -235,12 +239,14 @@ export const PromotionalBento = ({ productos = [], onAddToCart }) => {
           </div>
 
           {/* Imagen del Producto */}
-          <div className="relative z-10 w-full h-40 flex items-center justify-center pt-3">
-            <img
-              src={imgTemporada}
-              alt={pTemporada?.titulo || t('equipamiento_pro')}
-              className="max-h-36 w-auto object-contain filter drop-shadow-[0_16px_20px_rgba(0,0,0,0.12)] group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500"
-            />
+          <div className="relative z-10 w-full h-44 flex items-center justify-center p-2 pt-3">
+            <div className="w-full h-full max-w-[240px] bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200/90 dark:border-slate-700 p-2.5 shadow-xs flex items-center justify-center overflow-hidden">
+              <img
+                src={imgTemporada}
+                alt={pTemporada?.titulo || t('equipamiento_pro')}
+                className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-500"
+              />
+            </div>
           </div>
 
           <div className="relative z-10 space-y-1.5">

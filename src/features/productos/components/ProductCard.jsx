@@ -104,7 +104,7 @@ export const ProductCard = ({ producto, onContactClick }) => {
       </button>
 
       {/* Contenedor de Imagen con fondo suave */}
-      <div className="relative h-36 sm:h-44 w-full flex items-center justify-center rounded-xl sm:rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800/80 p-2.5 sm:p-3 mt-4 overflow-hidden group-hover:bg-violet-50/30 group-hover:border-violet-200 transition-all">
+      <div className="relative h-36 sm:h-44 w-full flex items-center justify-center rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 p-2.5 sm:p-3 mt-4 overflow-hidden group-hover:border-violet-300 dark:group-hover:border-violet-600 shadow-xs transition-all">
         <img
           src={imagenPrincipal}
           alt={producto.titulo}

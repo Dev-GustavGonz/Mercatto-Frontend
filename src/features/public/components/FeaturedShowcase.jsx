@@ -73,8 +73,8 @@ export const FeaturedShowcase = ({ productos = [], tiendas = [] }) => {
           <div className="absolute inset-0 bg-gradient-to-t from-[#0a0817] via-[#100d24]/85 to-transparent" />
 
           <div className="relative z-10">
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-extrabold tracking-widest uppercase text-emerald-300 bg-emerald-950/80 px-3 py-1 rounded-full border border-emerald-400/30 backdrop-blur-md">
-              <Sparkles size={11} className="text-emerald-400" />
+            <span className="inline-flex items-center gap-1.5 text-[10px] font-extrabold tracking-widest uppercase text-violet-300 bg-violet-950/80 px-3 py-1 rounded-full border border-violet-400/30 backdrop-blur-md">
+              <Sparkles size={11} className="text-violet-400" />
               <span>{t('especial_rendimiento')}</span>
             </span>
           </div>
@@ -88,7 +88,7 @@ export const FeaturedShowcase = ({ productos = [], tiendas = [] }) => {
             </p>
 
             <div className="pt-2">
-              <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-bold text-xs uppercase tracking-wider shadow-md group-hover:scale-105 transition-all">
+              <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-bold shadow-md shadow-violet-600/30 text-xs uppercase tracking-wider shadow-md group-hover:scale-105 transition-all">
                 <span>{t('comprar_ahora')}</span>
                 <ArrowRight size={14} className="stroke-[2.5]" />
               </span>
@@ -153,12 +153,12 @@ export const FeaturedShowcase = ({ productos = [], tiendas = [] }) => {
                 {/* Imagen del Producto */}
                 <div 
                   onClick={() => navigate(`/producto/${prod.id}`)}
-                  className="relative w-full h-40 sm:h-44 rounded-2xl bg-[#f8f8fc] dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 flex items-center justify-center p-3 cursor-pointer select-none overflow-hidden"
+                  className="relative w-full h-44 sm:h-48 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-700/80 shadow-xs flex items-center justify-center p-3 cursor-pointer select-none overflow-hidden group-hover:border-violet-300 dark:group-hover:border-violet-700 transition-all"
                 >
                   <img
                     src={resolveProductImage(prod)}
                     alt={prod.titulo}
-                    className="max-h-full max-w-full object-contain filter drop-shadow-[0_12px_15px_rgba(0,0,0,0.10)] group-hover:scale-108 transition-transform duration-300"
+                    className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-300"
                     loading="lazy"
                   />
                 </div>
