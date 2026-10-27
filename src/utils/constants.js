@@ -2,7 +2,7 @@ export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:80
 export const SERVER_URL = API_BASE_URL.replace(/\/api\/?$/, '')
 
 export const getMediaUrl = (url, fallback) => {
-  if (!url) return fallback || ''
+  if (!url || typeof url !== 'string') return fallback || ''
   if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
     return url
   }

@@ -88,7 +88,8 @@ export const BentoSalesChart = ({
     }
 
     // Volumen monetario del período seleccionado
-    const totalPeriodo = Math.max(100000, Math.round(baseTotal * factorEscala))
+    const totalSeguro = Number(baseTotal) && !isNaN(Number(baseTotal)) && Number(baseTotal) > 0 ? Number(baseTotal) : 48500000
+    const totalPeriodo = Math.max(100000, Math.round(totalSeguro * factorEscala))
 
     // Asignación de valores proporcionales a cada hito temporal
     const numPuntos = etiquetas.length

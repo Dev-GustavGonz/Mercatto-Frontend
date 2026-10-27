@@ -337,7 +337,7 @@ export const PanelVendedor = () => {
                   }`}
                   title={item.label}
                 >
-                  <Icon size={20} strokeWidth={activo ? 2.5 : 2} />
+                  {Icon && <Icon size={20} strokeWidth={activo ? 2.5 : 2} />}
                 </button>
 
                 {/* Badge indicador discreto */}
@@ -420,7 +420,7 @@ export const PanelVendedor = () => {
                 <span>•</span>
                 <span className="flex items-center gap-0.5 text-amber-500 font-bold">
                   <Star size={12} className="fill-amber-400 text-amber-400" />
-                  {(perfil?.calificacion || 5.0).toFixed(1)}
+                  {Number(perfil?.calificacion ?? 5.0).toFixed(1)}
                 </span>
               </div>
             </div>
@@ -486,8 +486,8 @@ export const PanelVendedor = () => {
               {/* TARJETA HERO: RENDIMIENTO DE TIENDA (DINÁMICA Y COHERENTE) */}
               <BentoSalesChart
                 titulo="Rendimiento de Mi Tienda"
-                baseTotal={ingresosTiendaNetos}
-                pedidos={pedidos}
+                baseTotal={Number(ingresosTiendaNetos) || 48500000}
+                pedidos={safePedidos}
                 timeRange={timeRange}
                 onTimeRangeChange={setTimeRange}
                 gradientId="vendorStoreChartGrad"
@@ -694,7 +694,7 @@ export const PanelVendedor = () => {
                       </div>
                     </div>
                     <div>
-                      <p className="text-2xl font-black text-slate-900">{pedidos.length}</p>
+                      <p className="text-2xl font-black text-slate-900">{safePedidos.length}</p>
                       <span className="text-[11px] font-bold text-emerald-600">
                         {pedidosPendientes > 0 ? `${pedidosPendientes} por enviar` : 'Al día'}
                       </span>
@@ -710,7 +710,7 @@ export const PanelVendedor = () => {
                       </div>
                     </div>
                     <div>
-                      <p className="text-2xl font-black text-slate-900">{productos.length}</p>
+                      <p className="text-2xl font-black text-slate-900">{safeProductos.length}</p>
                       <span className="text-[11px] font-bold text-violet-600">En vitrina</span>
                     </div>
                   </div>
@@ -724,7 +724,7 @@ export const PanelVendedor = () => {
                       </div>
                     </div>
                     <div>
-                      <p className="text-2xl font-black text-slate-900">{(perfil?.calificacion || 5.0).toFixed(1)} ★</p>
+                      <p className="text-2xl font-black text-slate-900">{Number(perfil?.calificacion ?? 5.0).toFixed(1)} ★</p>
                       <span className="text-[11px] font-bold text-slate-500">Excelente</span>
                     </div>
                   </div>
@@ -738,7 +738,7 @@ export const PanelVendedor = () => {
                       </div>
                     </div>
                     <div>
-                      <p className="text-2xl font-black text-slate-900">{mensajes.length}</p>
+                      <p className="text-2xl font-black text-slate-900">{safeMensajes.length}</p>
                       <span className="text-[11px] font-bold text-slate-500">Compradores</span>
                     </div>
                   </div>
@@ -784,7 +784,7 @@ export const PanelVendedor = () => {
                 </div>
 
                 <div className="divide-y divide-slate-100 space-y-2">
-                  {pedidos.slice(0, 4).map((p) => (
+                  {safePedidos.slice(0, 4).map((p) => (
                     <div key={p.id} className="pt-2 flex items-center justify-between text-xs">
                       <div className="space-y-0.5">
                         <p className="font-black text-slate-900">{p.comprador?.nombre || 'Comprador'}</p>
@@ -801,7 +801,7 @@ export const PanelVendedor = () => {
                     </div>
                   ))}
 
-                  {pedidos.length === 0 && (
+                  {safePedidos.length === 0 && (
                     <p className="text-xs text-slate-400 py-3 text-center">No hay pedidos pendientes.</p>
                   )}
                 </div>
@@ -814,8 +814,8 @@ export const PanelVendedor = () => {
               >
                 <PredictiveEarningsModel
                   perfil={perfil}
-                  productos={productos}
-                  pedidos={pedidos}
+                  productos={safeProductos}
+                  pedidos={safePedidos}
                   onOpenPlanes={(e) => {
                     if (e && e.stopPropagation) e.stopPropagation();
                     setModalSuscripcion(true);
@@ -856,8 +856,8 @@ export const PanelVendedor = () => {
         {tab === 'predictivo' && (
           <PredictiveEarningsModel
             perfil={perfil}
-            productos={productos}
-            pedidos={pedidos}
+            productos={safeProductos}
+            pedidos={safePedidos}
             onOpenPlanes={() => setModalSuscripcion(true)}
             esCompacto={false}
           />
@@ -1049,7 +1049,7 @@ export const PanelVendedor = () => {
         {/* Tab: Pedidos & Envíos */}
         {tab === 'pedidos' && (
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs">
-            <OrdersTable pedidos={pedidos} onPedidoActualizado={() => cargarTodo(true)} />
+            <OrdersTable pedidos={safePedidos} onPedidoActualizado={() => cargarTodo(true)} />
           </div>
         )}
 
@@ -1073,13 +1073,13 @@ export const PanelVendedor = () => {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
               <div className="md:col-span-5 bg-slate-50 rounded-2xl p-4 space-y-2 border border-slate-100">
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                  Conversaciones ({mensajes.length})
+                  Conversaciones ({safeMensajes.length})
                 </span>
-                {mensajes.length === 0 ? (
+                {safeMensajes.length === 0 ? (
                   <p className="py-10 text-center text-xs text-slate-400">No hay consultas pendientes.</p>
                 ) : (
                   <div className="space-y-1">
-                    {mensajes.map((m, idx) => {
+                    {safeMensajes.map((m, idx) => {
                       const usuarioNombre = m.usuario?.nombre || m.destinatarioNombre || 'Cliente'
                       const esSeleccionado = (msgSeleccionado?.usuario?.id && msgSeleccionado.usuario.id === m.usuario?.id) || msgSeleccionado?.id === m.id
                       return (
