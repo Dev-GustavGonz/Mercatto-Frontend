@@ -116,7 +116,7 @@ export const Home = () => {
   }
 
   return (
-    <div className="min-h-screen w-full overflow-x-hidden bg-slate-50/80 dark:bg-slate-950 pb-20 font-sans">
+    <div className="min-h-screen w-full overflow-x-hidden bg-mercatto-bg dark:bg-slate-950 pb-20 font-sans">
       {/* ========================================================= */}
       {/* 1. HERO SHOWCASE FULL-WIDTH (100% ANCHO DE PANTALLA REAL) */}
       {/* ========================================================= */}

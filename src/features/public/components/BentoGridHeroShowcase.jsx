@@ -190,7 +190,7 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
                 </div>
 
                 {/* Badge lila redondeado con respaldo oficial */}
-                <div className="absolute left-0 sm:-left-2 bottom-1 sm:bottom-2 bg-[#beb8ea] dark:bg-violet-950/95 backdrop-blur-md border border-white/80 dark:border-violet-700 rounded-2xl p-2 sm:p-2.5 text-center shadow-lg select-none z-20">
+                <div className="absolute left-0 sm:-left-2 bottom-1 sm:bottom-2 bg-mercatto-soft dark:bg-violet-950/95 backdrop-blur-md border border-white/80 dark:border-violet-700 rounded-2xl p-2 sm:p-2.5 text-center shadow-lg select-none z-20">
                   <div className="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-none">
                     100%
                   </div>
@@ -380,13 +380,13 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 items-stretch">
               
               {/* Tarjeta lila informativa de respaldo */}
-              <div className="md:col-span-4 bg-[#cfcaef] dark:bg-violet-950/70 rounded-[28px] sm:rounded-[30px] p-5 sm:p-6 flex flex-col justify-between shadow-xs border border-violet-200/60 dark:border-violet-900 min-h-[150px] sm:h-[155px]">
-                <p className="text-xs sm:text-[13px] font-semibold text-[#2d2556] dark:text-violet-200 leading-snug">
+              <div className="md:col-span-4 bg-mercatto-lavender dark:bg-violet-950/70 rounded-[28px] sm:rounded-[30px] p-5 sm:p-6 flex flex-col justify-between shadow-xs border border-violet-200/60 dark:border-violet-900 min-h-[150px] sm:h-[155px]">
+                <p className="text-xs sm:text-[13px] font-semibold text-mercatto-text dark:text-violet-200 leading-snug">
                   {t('team_quote')}
                 </p>
 
                 <div className="flex items-center gap-2 pt-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/70 dark:bg-violet-900/80 text-[#2d2556] dark:text-white font-extrabold text-xs">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/70 dark:bg-violet-900/80 text-mercatto-text dark:text-white font-extrabold text-xs">
                     <ShieldCheck size={14} className="text-emerald-600" />
                     <span>{t('compra_protegida_titulo')}</span>
                   </span>
@@ -413,14 +413,14 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
                 <div className="space-y-1.5 sm:space-y-2 z-10">
                   <div className="flex items-center flex-wrap gap-2 text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
                     <span>{t('always_text')}</span>
-                    <span className="bg-[#cdc8f0] dark:bg-violet-900/80 text-[#2b2354] dark:text-violet-200 px-3 py-0.5 rounded-lg font-black tracking-wider">
+                    <span className="bg-mercatto-soft dark:bg-violet-900/80 text-mercatto-deep dark:text-violet-200 px-3 py-0.5 rounded-lg font-black tracking-wider">
                       {t('unique_badge')}
                     </span>
                   </div>
 
                   <div className="flex items-center flex-wrap gap-2 text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
                     <span>{t('with_the_text')}</span>
-                    <span className="bg-[#cdc8f0] dark:bg-violet-900/80 text-[#2b2354] dark:text-violet-200 px-3 py-0.5 rounded-lg font-black tracking-wider">
+                    <span className="bg-mercatto-soft dark:bg-violet-900/80 text-mercatto-deep dark:text-violet-200 px-3 py-0.5 rounded-lg font-black tracking-wider">
                       {t('best_badge')}
                     </span>
                     <span>{t('materials_text')}</span>

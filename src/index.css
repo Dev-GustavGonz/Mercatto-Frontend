@@ -2,8 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* Resto de la página (Paleta Versión E) */
+  --m-primary: #7655D6;
+  --m-primary-deep: #4C2FA0;
+  --m-lavender: #DCD3F7;
+  --m-violet-soft: #E9E3FB;
+  --m-surface: #F3F0FC;
+  --m-bg: #FAF8FF;
+  --m-dark: #25204F;
+  --m-on-dark: #B8A9F0;
+  --m-btn-on-dark: #EDE8FD;
+  --m-offer: #E0629F;
+  --m-offer-text: #A8285F;
+  --m-offer-bg: #FCE4EF;
+  --m-elite: #B8700A;
+  --m-elite-bg: #FEF3D4;
+  --m-elite-text: #7A4B05;
+  --m-text: #1F1637;
+  --m-text-muted: #645D80;
+  --m-border: #E6E1F3;
+
+  /* Header (Paleta Oficial) */
+  --h-core: #7C3AED;
+  --h-accent: #8B5CF6;
+  --h-deep: #6D28D9;
+  --h-soft: #F5F3FF;
+  --h-border: #E2E8F0;
+  --h-muted: #64748B;
+  --h-text: #0F172A;
+}
+
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+    @apply bg-mercatto-bg text-mercatto-text antialiased dark:bg-slate-950 dark:text-slate-100;
   }
 }

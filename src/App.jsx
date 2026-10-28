@@ -82,7 +82,7 @@ const AppLayout = () => {
   const esHome = location.pathname === '/'
 
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-mercatto-bg dark:bg-slate-950 text-mercatto-text dark:text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
       {!esRutaPanel && <Navbar />}
       <CartDrawer />
       {!esRutaPanel && <PublicChatbot />}

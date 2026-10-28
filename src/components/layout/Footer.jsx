@@ -19,7 +19,7 @@ export const Footer = () => {
   }
 
   return (
-    <footer className="bg-mercatto-dark text-slate-300 mt-12 font-sans">
+    <footer className="bg-mercatto-dark text-mercatto-on-dark/90 mt-12 font-sans">
       {/* Features bar */}
       <div className="border-b border-slate-800 bg-slate-900/50">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -68,7 +68,7 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div>
             <Link to="/" className="flex items-center gap-3 mb-4" title="Inicio de Mercatto">
-              <MercattoLogo className="text-3xl text-violet-400" />
+              <MercattoLogo className="text-3xl text-mercatto-on-dark" />
             </Link>
             <p className="text-sm text-slate-400 leading-relaxed pr-4">
               {isEn 

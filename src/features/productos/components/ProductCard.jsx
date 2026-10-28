@@ -73,18 +73,18 @@ export const ProductCard = ({ producto, onContactClick }) => {
   return (
     <div 
       onClick={() => navigate(`/producto/${producto.id}`)}
-      className="group bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-3 sm:p-4 transition-all duration-300 flex flex-col relative min-h-[360px] sm:h-[390px] border border-slate-200/90 dark:border-slate-800 hover:border-violet-300 dark:hover:border-violet-700 shadow-xs hover:shadow-lg hover:shadow-violet-500/10 hover:-translate-y-1.5 cursor-pointer select-none"
+      className="group bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-3 sm:p-4 transition-all duration-300 flex flex-col relative min-h-[360px] sm:h-[390px] border border-mercatto-border dark:border-slate-800 hover:border-mercatto-primary dark:hover:border-violet-700 shadow-xs hover:shadow-lg hover:shadow-violet-500/10 hover:-translate-y-1.5 cursor-pointer select-none"
     >
       {/* Insignias superiores flotantes */}
       <div className="absolute top-3 left-3 z-10 flex flex-col gap-1 items-start max-w-[70%]">
         {(producto.vendedor?.tipoSuscripcion === 'ELITE' || producto.vendedor?.plan === 'ELITE') && (
-          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-[9.5px] sm:text-[10px] font-black px-2 py-0.5 rounded-full shadow-md tracking-wider">
+          <span className="inline-flex items-center gap-1 bg-mercatto-elite-bg text-mercatto-elite-text border border-amber-300/60 text-[9.5px] sm:text-[10px] font-black px-2 py-0.5 rounded-full shadow-md tracking-wider">
             <span>👑</span>
             <span>Élite</span>
           </span>
         )}
         {tieneDescuentoReal && (
-          <div className="bg-rose-500 text-white text-[9.5px] sm:text-[10px] font-black px-2 py-0.5 rounded-full shadow-md flex items-center gap-0.5">
+          <div className="bg-mercatto-offer-bg text-mercatto-offer-text border border-mercatto-offer/40 text-[9.5px] sm:text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs flex items-center gap-0.5">
             <Zap size={10} className="fill-white" />
             <span>-{porcentajeDescuento}%</span>
           </div>
@@ -104,7 +104,7 @@ export const ProductCard = ({ producto, onContactClick }) => {
       </button>
 
       {/* Contenedor de Imagen con fondo suave */}
-      <div className="relative h-36 sm:h-44 w-full flex items-center justify-center rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 p-2.5 sm:p-3 mt-4 overflow-hidden group-hover:border-violet-300 dark:group-hover:border-violet-600 shadow-xs transition-all">
+      <div className="relative h-36 sm:h-44 w-full flex items-center justify-center rounded-xl sm:rounded-2xl bg-mercatto-surface dark:bg-slate-800/80 border border-mercatto-border dark:border-slate-700/80 p-2.5 sm:p-3 mt-4 overflow-hidden group-hover:border-violet-300 dark:group-hover:border-violet-600 shadow-xs transition-all">
         <img
           src={imagenPrincipal}
           alt={producto.titulo}
@@ -177,7 +177,7 @@ export const ProductCard = ({ producto, onContactClick }) => {
 
           <button
             onClick={handleAddToCart}
-            className="p-2 sm:p-2.5 rounded-full bg-slate-900 dark:bg-slate-100 dark:text-slate-900 group-hover:bg-violet-600 dark:group-hover:bg-violet-600 dark:group-hover:text-white text-white shadow-md hover:shadow-violet-500/25 transition-all hover:scale-110 active:scale-95"
+            className="p-2 sm:p-2.5 rounded-full bg-slate-900 dark:bg-slate-100 dark:text-slate-900 group-hover:bg-mercatto-primary dark:group-hover:bg-mercatto-primary dark:group-hover:text-white text-white shadow-md hover:shadow-violet-500/25 transition-all hover:scale-110 active:scale-95"
             title={t('anadir')}
           >
             <ShoppingCart size={15} className="sm:w-[16px] sm:h-[16px]" />

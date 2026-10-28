@@ -57,7 +57,7 @@ export const FeaturedShowcase = ({ productos = [], tiendas = [] }) => {
         {/* ============================================================== */}
         <div 
           onClick={() => navigate('/catalogo?enOferta=true')}
-          className="relative rounded-[30px] sm:rounded-[34px] overflow-hidden min-h-[380px] lg:min-h-full flex flex-col justify-between p-6 sm:p-7 text-white shadow-xs border border-violet-900/50 cursor-pointer group bg-gradient-to-b from-[#181335] via-[#100d24] to-[#0a0817]"
+          className="relative rounded-[30px] sm:rounded-[34px] overflow-hidden min-h-[380px] lg:min-h-full flex flex-col justify-between p-6 sm:p-7 text-white shadow-xs border border-violet-900/50 cursor-pointer group bg-mercatto-dark border border-violet-950/60"
         >
           {/* Glows y atmósfera Bento */}
           <div className="absolute top-0 right-0 w-48 h-48 bg-violet-600/20 rounded-full blur-3xl pointer-events-none group-hover:scale-125 transition-transform duration-700" />
@@ -73,7 +73,7 @@ export const FeaturedShowcase = ({ productos = [], tiendas = [] }) => {
           <div className="absolute inset-0 bg-gradient-to-t from-[#0a0817] via-[#100d24]/85 to-transparent" />
 
           <div className="relative z-10">
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-extrabold tracking-widest uppercase text-violet-300 bg-violet-950/80 px-3 py-1 rounded-full border border-violet-400/30 backdrop-blur-md">
+            <span className="inline-flex items-center gap-1.5 text-[10px] font-extrabold tracking-widest uppercase text-mercatto-elite-text bg-mercatto-elite-bg px-3 py-1 rounded-full border border-amber-300/40 font-bold backdrop-blur-md">
               <Sparkles size={11} className="text-violet-400" />
               <span>{t('especial_rendimiento')}</span>
             </span>
@@ -88,7 +88,7 @@ export const FeaturedShowcase = ({ productos = [], tiendas = [] }) => {
             </p>
 
             <div className="pt-2">
-              <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-bold shadow-md shadow-violet-600/30 text-xs uppercase tracking-wider shadow-md group-hover:scale-105 transition-all">
+              <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-mercatto-btn-dark hover:bg-white text-mercatto-dark font-black text-xs uppercase tracking-wider shadow-md group-hover:scale-105 transition-all">
                 <span>{t('comprar_ahora')}</span>
                 <ArrowRight size={14} className="stroke-[2.5]" />
               </span>
