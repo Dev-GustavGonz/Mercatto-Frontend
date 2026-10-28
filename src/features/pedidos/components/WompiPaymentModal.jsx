@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { formatCurrency } from '@/utils/formatCurrency'
 import {
   CreditCard,
@@ -32,6 +33,17 @@ export const WompiPaymentModal = ({
   const [mostrarConfirmarCierre, setMostrarConfirmarCierre] = useState(false)
   const [terminosAceptados, setTerminosAceptados] = useState(true)
   const { success, error: toastError } = useToast()
+
+  // Bloquear scroll de la página mientras el modal esté abierto
+  useEffect(() => {
+    if (isOpen) {
+      const originalOverflow = document.body.style.overflow
+      document.body.style.overflow = 'hidden'
+      return () => {
+        document.body.style.overflow = originalOverflow
+      }
+    }
+  }, [isOpen])
 
   // Form states para Tarjeta
   const [numeroTarjeta, setNumeroTarjeta] = useState('4242 4242 4242 4242')
@@ -102,49 +114,50 @@ export const WompiPaymentModal = ({
     }
   }
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-xs animate-fade-in font-sans">
+  const modalContent = (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-sm animate-fade-in font-sans">
       <div className="bg-white text-slate-900 w-full max-w-[480px] rounded-3xl shadow-2xl border border-slate-200/90 overflow-hidden flex flex-col max-h-[94vh]">
         
         {/* ============================================================== */}
         {/* 1. ENCABEZADO OFICIAL ESTILO WOMPI / GRUPO BANCOLOMBIA         */}
         {/* ============================================================== */}
-        <div className="p-5 sm:p-6 bg-white border-b border-slate-100 shrink-0 relative">
+        <div className="px-5 py-3.5 sm:px-6 sm:py-4 bg-white border-b border-slate-100 shrink-0 relative">
           <div className="flex items-center justify-between">
             {/* Logo Oficial Wompi */}
-            <div className="flex items-center gap-2.5">
-              <div className="flex items-center justify-center w-8 h-8 rounded-full border-2 border-[#00D68F] bg-white shadow-xs">
-                <span className="font-black text-slate-900 text-sm tracking-tighter select-none">W</span>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center w-7 h-7 rounded-full border-2 border-[#00D68F] bg-white shadow-xs">
+                <span className="font-black text-slate-900 text-xs tracking-tighter select-none">W</span>
               </div>
-              <span className="text-2xl font-black tracking-tight text-slate-900 select-none">wompi</span>
+              <span className="text-xl font-black tracking-tight text-slate-900 select-none">wompi</span>
             </div>
 
             {/* Botón Cerrar */}
             <button
               onClick={() => setMostrarConfirmarCierre(true)}
-              className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition flex items-center justify-center cursor-pointer"
+              className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition flex items-center justify-center cursor-pointer"
               title="Cerrar ventana de pago"
+              type="button"
             >
-              <X size={16} />
+              <X size={15} />
             </button>
           </div>
 
           {/* Información del Comercio y Monto */}
-          <div className="mt-4 pt-3.5 border-t border-slate-100 flex items-end justify-between gap-3">
+          <div className="mt-2.5 pt-2.5 border-t border-slate-100 flex items-center justify-between gap-3">
             <div>
-              <p className="text-xs text-slate-500 font-medium">Estás pagando en</p>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <span className="font-extrabold text-sm text-slate-900">Mercatto</span>
+              <p className="text-[11px] text-slate-400 font-medium">Estás pagando en</p>
+              <div className="flex items-center gap-1.5">
+                <span className="font-extrabold text-xs sm:text-sm text-slate-900">Mercatto</span>
                 <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-emerald-500 text-white text-[9px] font-bold">
                   ✓
                 </span>
+                <span className="text-[10px] text-slate-400 font-mono ml-1">· {pedido.codigo}</span>
               </div>
-              <p className="text-[11px] text-slate-400 font-mono mt-0.5">{pedido.codigo}</p>
             </div>
 
             <div className="text-right">
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Total a pagar</span>
-              <p className="text-2xl font-black text-slate-900 tracking-tight leading-tight">
+              <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Total a pagar</span>
+              <p className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-tight">
                 {formatCurrency(pedido.total)} <span className="text-xs font-bold text-slate-500">COP</span>
               </p>
             </div>
@@ -155,10 +168,10 @@ export const WompiPaymentModal = ({
         {/* 2. CONFIRMACIÓN DE CIERRE O FORMULARIO DE PAGO                 */}
         {/* ============================================================== */}
         {mostrarConfirmarCierre ? (
-          <div className="p-6 space-y-4 text-xs">
-            <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 space-y-2">
+          <div className="p-5 space-y-3.5 text-xs">
+            <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 space-y-1.5">
               <p className="font-bold flex items-center gap-1.5 text-sm">
-                <AlertTriangle size={17} className="text-amber-600" />
+                <AlertTriangle size={16} className="text-amber-600" />
                 <span>¿Deseas salir del proceso de pago?</span>
               </p>
               <p className="text-[11.5px] leading-relaxed text-amber-800">
@@ -166,36 +179,36 @@ export const WompiPaymentModal = ({
               </p>
             </div>
 
-            <div className="space-y-2 pt-2">
+            <div className="space-y-2 pt-1">
               <button
                 type="button"
                 onClick={() => setMostrarConfirmarCierre(false)}
-                className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold cursor-pointer transition text-xs shadow-sm"
+                className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold cursor-pointer transition text-xs shadow-sm"
               >
                 Continuar con el Pago Seguro
               </button>
               <button
                 type="button"
                 onClick={onClose}
-                className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold cursor-pointer transition text-xs"
+                className="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold cursor-pointer transition text-xs"
               >
                 Dejar Pendiente (Pagaré más tarde)
               </button>
               <button
                 type="button"
                 onClick={handleCancelarOrden}
-                className="w-full py-2 rounded-xl text-rose-600 hover:bg-rose-50 font-bold cursor-pointer transition text-xs"
+                className="w-full py-1.5 rounded-xl text-rose-600 hover:bg-rose-50 font-bold cursor-pointer transition text-xs"
               >
                 Cancelar Pedido
               </button>
             </div>
           </div>
         ) : (
-          <div className="p-5 sm:p-6 overflow-y-auto space-y-5">
+          <div className="px-5 py-3.5 sm:px-6 sm:py-4 overflow-y-auto space-y-3.5">
             
             {/* Selector de Medios de Pago (Estilo Oficial Wompi) */}
             <div>
-              <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+              <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                 Selecciona tu medio de pago
               </label>
               
@@ -204,18 +217,20 @@ export const WompiPaymentModal = ({
                 <button
                   type="button"
                   onClick={() => setMetodo('TARJETA')}
-                  className={`p-3 rounded-2xl border flex flex-col items-center justify-center gap-1.5 transition cursor-pointer text-xs font-bold ${
+                  className={`py-2 px-2 rounded-xl border flex flex-col items-center justify-center gap-1 transition cursor-pointer text-xs font-bold ${
                     metodo === 'TARJETA'
                       ? 'border-slate-900 bg-slate-50 ring-2 ring-slate-900/10 text-slate-900 shadow-xs'
                       : 'border-slate-200 hover:border-slate-300 text-slate-600 bg-white'
                   }`}
                 >
-                  <CreditCard size={18} className={metodo === 'TARJETA' ? 'text-slate-900' : 'text-slate-500'} />
-                  <span className="text-[11px]">Tarjeta</span>
-                  <div className="flex items-center gap-1 opacity-70">
-                    <span className="text-[9px] font-black italic tracking-tighter text-blue-700">VISA</span>
-                    <span className="w-2 h-2 rounded-full bg-rose-500 inline-block -mr-1" />
-                    <span className="w-2 h-2 rounded-full bg-amber-400 inline-block" />
+                  <div className="flex items-center gap-1.5">
+                    <CreditCard size={15} className={metodo === 'TARJETA' ? 'text-slate-900' : 'text-slate-500'} />
+                    <span className="text-[11px]">Tarjeta</span>
+                  </div>
+                  <div className="flex items-center gap-1 opacity-75">
+                    <span className="text-[8px] font-black italic tracking-tighter text-blue-700">VISA</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-rose-500 inline-block -mr-1" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block" />
                   </div>
                 </button>
 
@@ -223,15 +238,17 @@ export const WompiPaymentModal = ({
                 <button
                   type="button"
                   onClick={() => setMetodo('NEQUI')}
-                  className={`p-3 rounded-2xl border flex flex-col items-center justify-center gap-1.5 transition cursor-pointer text-xs font-bold ${
+                  className={`py-2 px-2 rounded-xl border flex flex-col items-center justify-center gap-1 transition cursor-pointer text-xs font-bold ${
                     metodo === 'NEQUI'
                       ? 'border-purple-600 bg-purple-50/50 ring-2 ring-purple-600/15 text-purple-900 shadow-xs'
                       : 'border-slate-200 hover:border-slate-300 text-slate-600 bg-white'
                   }`}
                 >
-                  <Smartphone size={18} className={metodo === 'NEQUI' ? 'text-purple-600' : 'text-slate-500'} />
-                  <span className="text-[11px]">Nequi</span>
-                  <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-purple-100 text-purple-800 font-bold">
+                  <div className="flex items-center gap-1.5">
+                    <Smartphone size={15} className={metodo === 'NEQUI' ? 'text-purple-600' : 'text-slate-500'} />
+                    <span className="text-[11px]">Nequi</span>
+                  </div>
+                  <span className="text-[8px] px-1 py-0.2 rounded-full bg-purple-100 text-purple-800 font-bold">
                     Directo
                   </span>
                 </button>
@@ -240,15 +257,17 @@ export const WompiPaymentModal = ({
                 <button
                   type="button"
                   onClick={() => setMetodo('PSE')}
-                  className={`p-3 rounded-2xl border flex flex-col items-center justify-center gap-1.5 transition cursor-pointer text-xs font-bold ${
+                  className={`py-2 px-2 rounded-xl border flex flex-col items-center justify-center gap-1 transition cursor-pointer text-xs font-bold ${
                     metodo === 'PSE'
                       ? 'border-blue-600 bg-blue-50/50 ring-2 ring-blue-600/15 text-blue-900 shadow-xs'
                       : 'border-slate-200 hover:border-slate-300 text-slate-600 bg-white'
                   }`}
                 >
-                  <Building size={18} className={metodo === 'PSE' ? 'text-blue-600' : 'text-slate-500'} />
-                  <span className="text-[11px]">PSE</span>
-                  <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-blue-100 text-blue-800 font-bold">
+                  <div className="flex items-center gap-1.5">
+                    <Building size={15} className={metodo === 'PSE' ? 'text-blue-600' : 'text-slate-500'} />
+                    <span className="text-[11px]">PSE</span>
+                  </div>
+                  <span className="text-[8px] px-1 py-0.2 rounded-full bg-blue-100 text-blue-800 font-bold">
                     Bancos
                   </span>
                 </button>
@@ -256,13 +275,13 @@ export const WompiPaymentModal = ({
             </div>
 
             {/* Formulario Dinámico */}
-            <form onSubmit={handlePagar} className="space-y-4 text-xs">
+            <form onSubmit={handlePagar} className="space-y-3 text-xs">
               
               {/* Formulario Tarjeta */}
               {metodo === 'TARJETA' && (
-                <div className="space-y-3.5">
+                <div className="space-y-2.5">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">
                       Número de tarjeta
                     </label>
                     <div className="relative">
@@ -273,34 +292,34 @@ export const WompiPaymentModal = ({
                         placeholder="0000 0000 0000 0000"
                         maxLength={19}
                         required
-                        className="w-full pl-3.5 pr-14 py-2.5 rounded-xl border border-slate-300 bg-white font-mono text-xs text-slate-900 focus:ring-2 focus:ring-slate-900 focus:border-slate-900 focus:outline-none transition"
+                        className="w-full pl-3 pr-14 py-2 rounded-xl border border-slate-300 bg-white font-mono text-xs text-slate-900 focus:ring-2 focus:ring-slate-900 focus:border-slate-900 focus:outline-none transition"
                       />
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                      <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
                         {esVisa && (
-                          <span className="font-black italic text-xs tracking-tighter text-blue-700 bg-blue-50 px-1 py-0.5 rounded">
+                          <span className="font-black italic text-[11px] tracking-tighter text-blue-700 bg-blue-50 px-1 py-0.5 rounded">
                             VISA
                           </span>
                         )}
                         {esMastercard && (
                           <span className="flex items-center -space-x-1">
-                            <span className="w-3.5 h-3.5 rounded-full bg-rose-500 inline-block" />
-                            <span className="w-3.5 h-3.5 rounded-full bg-amber-400 inline-block opacity-85" />
+                            <span className="w-3 h-3 rounded-full bg-rose-500 inline-block" />
+                            <span className="w-3 h-3 rounded-full bg-amber-400 inline-block opacity-85" />
                           </span>
                         )}
                         {esAmex && (
-                          <span className="font-black text-[10px] text-sky-700 bg-sky-50 px-1 py-0.5 rounded">
+                          <span className="font-black text-[9px] text-sky-700 bg-sky-50 px-1 py-0.5 rounded">
                             AMEX
                           </span>
                         )}
                         {!esVisa && !esMastercard && !esAmex && (
-                          <CreditCard size={17} className="text-slate-400" />
+                          <CreditCard size={15} className="text-slate-400" />
                         )}
                       </div>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">
                       Nombre en la tarjeta
                     </label>
                     <input
@@ -309,13 +328,13 @@ export const WompiPaymentModal = ({
                       onChange={(e) => setNombreTitular(e.target.value)}
                       placeholder="Como aparece en el plástico"
                       required
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-xs text-slate-900 focus:ring-2 focus:ring-slate-900 focus:border-slate-900 focus:outline-none transition uppercase"
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs text-slate-900 focus:ring-2 focus:ring-slate-900 focus:border-slate-900 focus:outline-none transition uppercase"
                     />
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2.5">
+                  <div className="grid grid-cols-3 gap-2">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">
                         Expiración
                       </label>
                       <input
@@ -325,11 +344,11 @@ export const WompiPaymentModal = ({
                         onChange={(e) => setVencimiento(e.target.value)}
                         placeholder="MM/AA"
                         required
-                        className="w-full px-3 py-2.5 rounded-xl border border-slate-300 bg-white text-xs font-mono text-center text-slate-900 focus:ring-2 focus:ring-slate-900 focus:border-slate-900 focus:outline-none transition"
+                        className="w-full px-2 py-2 rounded-xl border border-slate-300 bg-white text-xs font-mono text-center text-slate-900 focus:ring-2 focus:ring-slate-900 focus:border-slate-900 focus:outline-none transition"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">
                         CVC / CVV
                       </label>
                       <input
@@ -339,17 +358,17 @@ export const WompiPaymentModal = ({
                         onChange={(e) => setCvv(e.target.value)}
                         placeholder="123"
                         required
-                        className="w-full px-3 py-2.5 rounded-xl border border-slate-300 bg-white text-xs font-mono text-center text-slate-900 focus:ring-2 focus:ring-slate-900 focus:border-slate-900 focus:outline-none transition"
+                        className="w-full px-2 py-2 rounded-xl border border-slate-300 bg-white text-xs font-mono text-center text-slate-900 focus:ring-2 focus:ring-slate-900 focus:border-slate-900 focus:outline-none transition"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">
                         Cuotas
                       </label>
                       <select
                         value={cuotas}
                         onChange={(e) => setCuotas(e.target.value)}
-                        className="w-full px-2 py-2.5 rounded-xl border border-slate-300 bg-white text-xs text-slate-900 focus:ring-2 focus:ring-slate-900 focus:border-slate-900 focus:outline-none transition cursor-pointer"
+                        className="w-full px-1.5 py-2 rounded-xl border border-slate-300 bg-white text-xs text-slate-900 focus:ring-2 focus:ring-slate-900 focus:border-slate-900 focus:outline-none transition cursor-pointer"
                       >
                         <option value="1">1 cuota</option>
                         <option value="2">2 cuotas</option>
@@ -365,19 +384,19 @@ export const WompiPaymentModal = ({
 
               {/* Formulario Nequi */}
               {metodo === 'NEQUI' && (
-                <div className="space-y-3.5">
-                  <div className="p-3.5 rounded-2xl bg-purple-50 border border-purple-200 text-[11.5px] text-purple-950 space-y-1">
-                    <p className="font-bold flex items-center gap-1.5">
-                      <Smartphone size={14} className="text-purple-700" />
+                <div className="space-y-2.5">
+                  <div className="p-2.5 rounded-xl bg-purple-50 border border-purple-200 text-purple-950 space-y-0.5">
+                    <p className="font-bold flex items-center gap-1.5 text-xs">
+                      <Smartphone size={13} className="text-purple-700" />
                       <span>Pago en línea con Nequi</span>
                     </p>
                     <p className="text-purple-800 leading-relaxed text-[11px]">
-                      Te llegará una solicitud de cobro en tu app Nequi por <strong>{formatCurrency(pedido.total)} COP</strong>. Debes ingresar a tu aplicación para autorizarla.
+                      Te llegará una solicitud de cobro en tu app Nequi por <strong>{formatCurrency(pedido.total)} COP</strong>.
                     </p>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">
                       Número de celular Nequi
                     </label>
                     <div className="relative">
@@ -388,9 +407,9 @@ export const WompiPaymentModal = ({
                         onChange={(e) => setCelularNequi(e.target.value)}
                         placeholder="300 123 4567"
                         required
-                        className="w-full pl-3.5 pr-10 py-2.5 rounded-xl border border-slate-300 bg-white text-xs font-mono text-slate-900 focus:ring-2 focus:ring-purple-600 focus:border-purple-600 focus:outline-none transition"
+                        className="w-full pl-3 pr-9 py-2 rounded-xl border border-slate-300 bg-white text-xs font-mono text-slate-900 focus:ring-2 focus:ring-purple-600 focus:border-purple-600 focus:outline-none transition"
                       />
-                      <Smartphone size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                      <Smartphone size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
                     </div>
                   </div>
                 </div>
@@ -398,15 +417,15 @@ export const WompiPaymentModal = ({
 
               {/* Formulario PSE */}
               {metodo === 'PSE' && (
-                <div className="space-y-3.5">
+                <div className="space-y-2.5">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">
                       Banco
                     </label>
                     <select
                       value={banco}
                       onChange={(e) => setBanco(e.target.value)}
-                      className="w-full px-3 py-2.5 rounded-xl border border-slate-300 bg-white text-xs text-slate-900 focus:ring-2 focus:ring-slate-900 focus:border-slate-900 focus:outline-none transition cursor-pointer"
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs text-slate-900 focus:ring-2 focus:ring-slate-900 focus:border-slate-900 focus:outline-none transition cursor-pointer"
                     >
                       <option value="Bancolombia">Bancolombia</option>
                       <option value="Davivienda">Banco Davivienda</option>
@@ -420,15 +439,15 @@ export const WompiPaymentModal = ({
                     </select>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2.5">
+                  <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">
                         Tipo de persona
                       </label>
                       <select
                         value={tipoPersona}
                         onChange={(e) => setTipoPersona(e.target.value)}
-                        className="w-full px-3 py-2.5 rounded-xl border border-slate-300 bg-white text-xs text-slate-900 focus:ring-2 focus:ring-slate-900 focus:border-slate-900 focus:outline-none transition cursor-pointer"
+                        className="w-full px-2.5 py-2 rounded-xl border border-slate-300 bg-white text-xs text-slate-900 focus:ring-2 focus:ring-slate-900 focus:border-slate-900 focus:outline-none transition cursor-pointer"
                       >
                         <option value="NATURAL">Persona Natural</option>
                         <option value="JURIDICA">Persona Jurídica</option>
@@ -436,14 +455,14 @@ export const WompiPaymentModal = ({
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">
                         Documento
                       </label>
-                      <div className="flex gap-1.5">
+                      <div className="flex gap-1">
                         <select
                           value={tipoDoc}
                           onChange={(e) => setTipoDoc(e.target.value)}
-                          className="w-20 px-2 py-2.5 rounded-xl border border-slate-300 bg-white text-xs text-slate-900 focus:ring-2 focus:ring-slate-900 focus:border-slate-900 focus:outline-none transition"
+                          className="w-16 px-1.5 py-2 rounded-xl border border-slate-300 bg-white text-xs text-slate-900 focus:ring-2 focus:ring-slate-900 focus:border-slate-900 focus:outline-none transition"
                         >
                           <option value="CC">C.C.</option>
                           <option value="CE">C.E.</option>
@@ -456,7 +475,7 @@ export const WompiPaymentModal = ({
                           onChange={(e) => setCedula(e.target.value)}
                           placeholder="Número"
                           required
-                          className="flex-1 px-3 py-2.5 rounded-xl border border-slate-300 bg-white text-xs font-mono text-slate-900 focus:ring-2 focus:ring-slate-900 focus:border-slate-900 focus:outline-none transition"
+                          className="flex-1 min-w-0 px-2.5 py-2 rounded-xl border border-slate-300 bg-white text-xs font-mono text-slate-900 focus:ring-2 focus:ring-slate-900 focus:border-slate-900 focus:outline-none transition"
                         />
                       </div>
                     </div>
@@ -465,25 +484,25 @@ export const WompiPaymentModal = ({
               )}
 
               {/* Aceptación de Términos Wompi */}
-              <div className="pt-1 flex items-start gap-2.5">
+              <div className="pt-0.5 flex items-start gap-2">
                 <input
                   id="terminosWompi"
                   type="checkbox"
                   checked={terminosAceptados}
                   onChange={(e) => setTerminosAceptados(e.target.checked)}
-                  className="mt-0.5 w-4 h-4 rounded border-slate-300 text-slate-900 focus:ring-slate-900 cursor-pointer"
+                  className="mt-0.5 w-3.5 h-3.5 rounded border-slate-300 text-slate-900 focus:ring-slate-900 cursor-pointer"
                 />
-                <label htmlFor="terminosWompi" className="text-[11px] text-slate-600 leading-snug cursor-pointer">
+                <label htmlFor="terminosWompi" className="text-[10.5px] text-slate-600 leading-tight cursor-pointer">
                   Acepto haber leído los <span className="font-semibold text-slate-900 underline">Términos y Condiciones</span> y la <span className="font-semibold text-slate-900 underline">Política de Privacidad</span> para compras con Wompi.
                 </label>
               </div>
 
               {/* Botón Pagar Principal */}
-              <div className="pt-2">
+              <div className="pt-1">
                 <button
                   type="submit"
                   disabled={procesando || !terminosAceptados}
-                  className="w-full py-3.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  className="w-full py-2.5 sm:py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                 >
                   {procesando ? (
                     <>
@@ -492,7 +511,7 @@ export const WompiPaymentModal = ({
                     </>
                   ) : (
                     <>
-                      <Lock size={15} />
+                      <Lock size={14} />
                       <span>Pagar {formatCurrency(pedido.total)} COP</span>
                     </>
                   )}
@@ -500,10 +519,10 @@ export const WompiPaymentModal = ({
               </div>
 
               {/* Subtexto de Certificación y Seguridad */}
-              <div className="text-center pt-1">
-                <span className="text-[10px] text-slate-400 font-medium inline-flex items-center gap-1 justify-center">
-                  <ShieldCheck size={12} className="text-emerald-600" />
-                  <span>Transacción cifrada SSL de 256 bits · Vigilado Superintendencia Financiera</span>
+              <div className="text-center">
+                <span className="text-[9.5px] text-slate-400 font-medium inline-flex items-center gap-1 justify-center">
+                  <ShieldCheck size={11} className="text-emerald-600" />
+                  <span>Transacción cifrada SSL 256 bits · Vigilado Superfinanciera</span>
                 </span>
               </div>
             </form>
@@ -511,35 +530,41 @@ export const WompiPaymentModal = ({
         )}
 
         {/* ============================================================== */}
-        {/* 3. FOOTER OFICIAL WOMPI / GRUPO CIBEST (COMO EN EL SCREENSHOT)  */}
+        {/* 3. FOOTER OFICIAL WOMPI / GRUPO CIBEST                         */}
         {/* ============================================================== */}
-        <div className="px-6 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 shrink-0 select-none">
+        <div className="px-5 py-2.5 sm:px-6 sm:py-2.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 shrink-0 select-none">
           {/* Lado Izquierdo: Pagos Seguros por Wompi */}
           <div className="flex items-center gap-1.5">
-            <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-emerald-500 text-white text-[9px] font-bold">
+            <span className="inline-flex items-center justify-center w-3 h-3 rounded-full bg-emerald-500 text-white text-[8px] font-bold">
               ✓
             </span>
-            <span className="text-[10px] font-bold tracking-wider uppercase text-slate-600">PAGOS SEGUROS POR</span>
+            <span className="text-[9px] font-bold tracking-wider uppercase text-slate-600">PAGOS SEGUROS POR</span>
             <div className="flex items-center gap-1">
-              <span className="w-4 h-4 rounded-full border border-[#00D68F] flex items-center justify-center font-black text-[9px] text-slate-900">
+              <span className="w-3.5 h-3.5 rounded-full border border-[#00D68F] flex items-center justify-center font-black text-[8px] text-slate-900">
                 W
               </span>
-              <span className="font-black text-xs text-slate-900">Wompi</span>
+              <span className="font-black text-[11px] text-slate-900">wompi</span>
             </div>
           </div>
 
           {/* Lado Derecho: Grupo Cibest */}
           <div className="flex items-center gap-1.5 text-slate-700">
-            <span className="w-3.5 h-3.5 rounded-full border border-slate-400 flex items-center justify-center text-[8px] font-bold">
+            <span className="w-3 h-3 rounded-full border border-slate-400 flex items-center justify-center text-[7px] font-bold">
               ●
             </span>
-            <span className="font-extrabold text-[11px] tracking-tight">Grupo Cibest</span>
+            <span className="font-extrabold text-[10px] tracking-tight">Grupo Cibest</span>
           </div>
         </div>
 
       </div>
     </div>
   )
+
+  if (typeof document !== 'undefined') {
+    return createPortal(modalContent, document.body)
+  }
+
+  return modalContent
 }
 
 export default WompiPaymentModal
