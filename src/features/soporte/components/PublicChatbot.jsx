@@ -434,15 +434,15 @@ export const PublicChatbot = () => {
     <div className="fixed bottom-3 right-3 sm:bottom-5 sm:right-5 z-40 flex flex-col items-end pointer-events-none font-sans max-w-[calc(100vw-1.5rem)]">
       {/* Ventana de Atención Flotante (Se coloca ARRIBA de la pestañita) */}
       {abierto && (
-        <div className="pointer-events-auto mb-2.5 w-[calc(100vw-1.5rem)] sm:w-[400px] max-w-full h-[min(560px,calc(100dvh-90px))] bg-white dark:bg-slate-900 rounded-3xl border border-mercatto-border dark:border-slate-800 shadow-2xl shadow-mercatto-dark/25 ring-1 ring-mercatto-primary/10 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-200 backdrop-blur-sm">
+        <div className="pointer-events-auto mb-2.5 w-[calc(100vw-1.5rem)] sm:w-[370px] max-w-full h-[min(500px,calc(100dvh-150px))] sm:h-[min(520px,calc(100dvh-170px))] bg-white dark:bg-slate-900 rounded-3xl border border-mercatto-border dark:border-slate-800 shadow-2xl shadow-mercatto-dark/25 ring-1 ring-mercatto-primary/10 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-200 backdrop-blur-sm">
           
           {/* Header Elegante Degradado */}
-          <div className="px-4 sm:px-5 py-3 sm:py-3.5 bg-gradient-to-r from-mercatto-dark via-[#2f2766] to-mercatto-dark text-white flex items-center justify-between border-b border-indigo-500/20 shadow-md shrink-0">
+          <div className="px-3.5 sm:px-4 py-2.5 sm:py-3 bg-gradient-to-r from-mercatto-dark via-[#2f2766] to-mercatto-dark text-white flex items-center justify-between border-b border-indigo-500/20 shadow-md shrink-0">
             <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
               <div className="relative shrink-0">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-mercatto-primary to-mercatto-deep text-white flex items-center justify-center font-bold shadow-lg shadow-violet-500/30">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-mercatto-primary to-mercatto-deep text-white flex items-center justify-center font-bold shadow-lg shadow-violet-500/30">
                   <span 
-                    className="text-white text-xl sm:text-2xl font-normal leading-none select-none -mt-0.5"
+                    className="text-white text-lg sm:text-xl font-normal leading-none select-none -mt-0.5"
                     style={{ fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif" }}
                   >
                     M
@@ -454,11 +454,11 @@ export const PublicChatbot = () => {
                 <div className="flex items-center gap-1.5 sm:gap-2">
                   <h4 className="text-xs sm:text-sm font-bold text-white tracking-wide truncate">Mercatto Bot</h4>
                   <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9.5px] sm:text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shrink-0">
-                    IA Activa
+                    En línea
                   </span>
                 </div>
                 <p className="text-[10px] sm:text-[11px] text-slate-300 truncate">
-                  Asistente Oficial con Gemini
+                  Asistente virtual de Mercatto
                 </p>
               </div>
             </div>
@@ -489,7 +489,7 @@ export const PublicChatbot = () => {
           </div>
 
           {/* Subheader Informativo */}
-          <div className="px-4 py-2 bg-mercatto-surface dark:bg-slate-800/80 border-b border-mercatto-border dark:border-slate-800 flex items-center justify-between text-xs shrink-0">
+          <div className="px-3.5 py-1.5 bg-mercatto-surface dark:bg-slate-800/80 border-b border-mercatto-border dark:border-slate-800 flex items-center justify-between text-xs shrink-0">
             <span className="text-slate-600 dark:text-slate-300 text-[11px] font-medium flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-mercatto-primary"></span>
               {isEn ? 'Sell with commissions from 2%' : 'Vende con comisiones desde el 2%'}
@@ -770,7 +770,7 @@ export const PublicChatbot = () => {
 
           {/* Barra de Acciones y Entrada de Texto */}
           {vistaActual === 'chat' && (
-            <div className="p-2.5 sm:p-3 min-w-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 space-y-2.5 shrink-0">
+            <div className="p-2.5 sm:p-3 min-w-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 space-y-2 shrink-0">
               
               {/* Chips de Preguntas Frecuentes Rápidas */}
               <div
@@ -814,12 +814,12 @@ export const PublicChatbot = () => {
                   value={mensajeInput}
                   onChange={(e) => setMensajeInput(e.target.value)}
                   placeholder={isEn ? 'Ask Mercatto Bot...' : 'Pregúntale a Mercatto Bot...'}
-                  className="flex-1 text-xs px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-full bg-mercatto-surface dark:bg-slate-800 border border-mercatto-border dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-mercatto-primary focus:bg-white dark:focus:bg-slate-900 text-slate-800 dark:text-slate-100 transition shadow-inner min-w-0"
+                  className="flex-1 text-xs px-3.5 py-2.5 rounded-full bg-mercatto-surface dark:bg-slate-800 border border-mercatto-border dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-mercatto-primary focus:bg-white dark:focus:bg-slate-900 text-slate-800 dark:text-slate-100 transition shadow-inner min-w-0"
                 />
                 <button
                   type="submit"
                   disabled={!mensajeInput.trim()}
-                  className="p-2.5 sm:p-3 rounded-full bg-gradient-to-r from-mercatto-primary to-mercatto-deep hover:from-mercatto-deep hover:to-mercatto-deep disabled:opacity-40 text-white transition-all duration-200 cursor-pointer shrink-0 shadow-md shadow-violet-500/25 active:scale-95 hover:scale-105"
+                  className="p-2.5 rounded-full bg-gradient-to-r from-mercatto-primary to-mercatto-deep hover:from-mercatto-deep hover:to-mercatto-deep disabled:opacity-40 text-white transition-all duration-200 cursor-pointer shrink-0 shadow-md shadow-violet-500/25 active:scale-95 hover:scale-105"
                   title="Enviar consulta"
                 >
                   <Send size={15} />
@@ -833,7 +833,7 @@ export const PublicChatbot = () => {
       {/* Botón Circular Flotante del Chatbot con M en blanco en estilo Mercatto */}
       <button
         onClick={() => setAbierto(!abierto)}
-        className="pointer-events-auto group relative w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-mercatto-primary via-mercatto-primary to-mercatto-deep hover:from-mercatto-deep hover:to-mercatto-deep text-white shadow-xl shadow-violet-600/35 hover:shadow-2xl hover:shadow-violet-600/50 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center cursor-pointer border-2 border-white/30 select-none"
+        className="pointer-events-auto group relative w-11 h-11 sm:w-[52px] sm:h-[52px] rounded-full bg-gradient-to-tr from-mercatto-primary via-mercatto-primary to-mercatto-deep hover:from-mercatto-deep hover:to-mercatto-deep text-white shadow-xl shadow-violet-600/35 hover:shadow-2xl hover:shadow-violet-600/50 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center cursor-pointer border-2 border-white/30 select-none"
         aria-label={abierto ? "Cerrar chat" : "Abrir asistente Mercatto"}
         title="Mercatto"
       >
