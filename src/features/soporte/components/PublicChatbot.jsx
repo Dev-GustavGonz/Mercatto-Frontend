@@ -22,7 +22,8 @@ import {
   CreditCard,
   Truck,
   Store,
-  Tag
+  Tag,
+  Package
 } from 'lucide-react'
 
 // Línea oficial de atención al cliente Mercatto (Colombia)
@@ -49,23 +50,37 @@ const OPCIONES_GUIA = [
   {
     id: 'vender',
     titulo: '¿Cómo abrir mi propia tienda?',
-    subtitulo: 'Planes, comisiones y publicación de productos',
+    subtitulo: 'Registro, publicación de productos y cobros',
     icono: Store,
     color: 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60'
   },
   {
+    id: 'planes',
+    titulo: 'Planes y comisiones para vendedores',
+    subtitulo: 'Starter, Profesional y Elite Premium',
+    icono: Sparkles,
+    color: 'text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/60'
+  },
+  {
     id: 'envios',
     titulo: 'Cobertura de envíos en Colombia',
-    subtitulo: 'Transportadoras aliadas y flete gratis',
+    subtitulo: 'Costo de envío y envío gratis desde $150.000',
     icono: Truck,
     color: 'text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/60'
   },
   {
     id: 'cupones',
     titulo: 'Cupones de descuento activos',
-    subtitulo: 'Ahorra en tu compra con códigos oficiales',
+    subtitulo: 'MERCATTO10 y BIENVENIDA',
     icono: Tag,
     color: 'text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/60'
+  },
+  {
+    id: 'rastreo',
+    titulo: 'Rastrear mi pedido',
+    subtitulo: 'Consulta el estado de tu compra',
+    icono: Package,
+    color: 'text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/60'
   },
   {
     id: 'soporte_directo',
@@ -77,17 +92,29 @@ const OPCIONES_GUIA = [
   }
 ]
 
+const SUGERENCIAS_INICIALES = [
+  { id: 'como_comprar', label: '🛒 Cómo comprar' },
+  { id: 'medios_pago', label: '💳 Medios de pago' },
+  { id: 'envios', label: '🚚 Envíos' },
+  { id: 'cupones', label: '🏷️ Cupones' },
+  { id: 'planes', label: '✨ Vender y planes' }
+]
+
 const RESPUESTAS_BASE = {
   como_comprar:
-    '🛒 **Comprar en Mercatto es muy sencillo:**\n\n1. Explora el catálogo de productos de tiendas verificadas.\n2. Agrega los artículos deseados a tu bolsa de compras.\n3. Procede al checkout, ingresa tu dirección de entrega en Colombia.\n4. Selecciona tu medio de pago favorito (Tarjeta, PSE, Nequi o Pago Contra Entrega en efectivo al recibir).',
+    '🛒 **Comprar en Mercatto es muy sencillo:**\n\n1. Explora el catálogo o busca el producto que necesitas.\n2. Agrégalo a tu carrito (puedes comprar con tu cuenta o como invitado, solo con tu correo).\n3. En el checkout ingresa tu dirección de entrega y, si tienes uno, tu cupón.\n4. Paga de forma segura con Wompi (tarjeta, PSE, Nequi o Bancolombia) o elige pago contra entrega.\n5. Recibirás la confirmación y el recibo por correo electrónico.',
   medios_pago:
-    '💳 **Medios de Pago Seguros en Mercatto:**\n\n• **Tarjetas de Crédito y Débito:** Visa, Mastercard, American Express.\n• **Transferencias en Línea:** PSE con cualquier banco colombiano, Nequi y Daviplata.\n• **Pago Contra Entrega:** Paga en efectivo únicamente cuando el paquete llegue a la puerta de tu casa.',
+    '💳 **Medios de pago en Mercatto:**\n\n• **Wompi (pasarela segura de Bancolombia):** tarjetas de crédito y débito, PSE, Nequi y Bancolombia.\n• **Pago contra entrega:** pagas en efectivo cuando recibes tu pedido.\n\nCada pago aprobado genera un recibo en tu correo.',
   vender:
-    '🏬 **Vender en Mercatto:**\n\nPuedes abrir tu tienda en minutos con herramientas profesionales de gestión de inventario, envíos y pagos asegurados. Ofrecemos comisiones competitivas y planes adaptados para emprendedores y marcas establecidas. Haz clic en "Crear cuenta" para empezar.',
+    '🏬 **Vender en Mercatto:**\n\n1. Crea tu cuenta y elige registrarte como vendedor.\n2. Configura el perfil de tu tienda y publica tus productos con fotos, precio y variantes.\n3. Gestiona pedidos, mensajes con compradores y estadísticas desde tu panel.\n\nElige el plan que mejor se ajuste a tu negocio: empieza gratis con **Starter** y crece cuando lo necesites.',
+  planes:
+    '✨ **Planes para vendedores:**\n\n• **Starter:** $0 al mes · comisión del **10%** por venta.\n• **Profesional:** $49.000 COP al mes · comisión del **5%** por venta.\n• **Elite Premium:** $99.000 COP al mes · comisión del **2%** por venta, insignia Élite y prioridad en el catálogo.\n\nPuedes cambiar de plan cuando quieras desde tu panel de vendedor.',
   cupones:
-    '🏷️ **Cupones Activos de Mercatto:**\n\n• **MERCATTO10:** 10% de descuento en el total de tu orden.\n• **BIENVENIDA:** $20.000 COP de obsequio en compras superiores a $100.000 COP.\n\nPuedes aplicarlos al momento de revisar tu pedido en el carrito o en el checkout.',
+    '🏷️ **Cupones activos de Mercatto:**\n\n• **MERCATTO10:** 10% de descuento en compras desde $30.000 COP (descuento máximo de $50.000 COP).\n• **BIENVENIDA:** $20.000 COP de descuento en compras desde $100.000 COP.\n\nAplícalos en el carrito o en el checkout antes de pagar.',
   envios:
-    '🚚 **Envíos y Despachos Nacionales:**\n\nDespachamos a todas las ciudades y municipios de Colombia a través de las principales transportadoras del país (Servientrega, Coordinadora, Interrapidísimo y Envía). Además, en compras superiores a **$150.000 COP**, el envío es totalmente gratuito.'
+    '🚚 **Envíos en Mercatto:**\n\nDespachamos a toda Colombia a través de transportadoras aliadas. El envío cuesta **$12.000 COP** y es **gratis en compras desde $150.000 COP**. Cuando tu pedido salga, podrás seguir su estado desde tu cuenta.',
+  rastreo:
+    '📦 **Rastrea tu pedido:**\n\n• Si compraste con tu cuenta, entra a **Mis pedidos** y revisa el estado en tiempo real.\n• Si compraste como invitado, usa tu código de pedido y el correo con el que compraste.\n\nTambién te enviamos por correo la confirmación y el recibo de tu compra.'
 }
 
 export const PublicChatbot = () => {
@@ -103,7 +130,8 @@ export const PublicChatbot = () => {
       id: 1,
       remitente: 'bot',
       texto:
-        '¡Hola! Te damos la bienvenida a **Mercatto**, el marketplace multitienda de Colombia. ¿En qué podemos orientarte el día de hoy?',
+        '¡Hola! Soy el asistente de **Mercatto**, el marketplace multitienda de Colombia. 👋\n\nPuedo ayudarte con compras, pagos, envíos, cupones o con abrir tu propia tienda. ¿Por dónde empezamos?',
+      sugerencias: true,
       hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ])
@@ -289,16 +317,20 @@ export const PublicChatbot = () => {
       let respuesta = ''
       if (t.includes('pago') || t.includes('tarjeta') || t.includes('nequi') || t.includes('banco') || t.includes('pse')) {
         respuesta = RESPUESTAS_BASE.medios_pago
+      } else if (t.includes('rastre') || t.includes('seguimiento') || t.includes('estado de mi')) {
+        respuesta = RESPUESTAS_BASE.rastreo
       } else if (t.includes('comprar') || t.includes('pedido') || t.includes('orden')) {
         respuesta = RESPUESTAS_BASE.como_comprar
-      } else if (t.includes('vender') || t.includes('tienda') || t.includes('comision') || t.includes('proveedor')) {
+      } else if (t.includes('plan') || t.includes('comision') || t.includes('suscrip') || t.includes('elite') || t.includes('starter') || t.includes('mensualidad')) {
+        respuesta = RESPUESTAS_BASE.planes
+      } else if (t.includes('vender') || t.includes('tienda') || t.includes('proveedor')) {
         respuesta = RESPUESTAS_BASE.vender
       } else if (t.includes('cupon') || t.includes('descuento') || t.includes('promo')) {
         respuesta = RESPUESTAS_BASE.cupones
       } else if (t.includes('envio') || t.includes('flete') || t.includes('ciudad') || t.includes('despacho')) {
         respuesta = RESPUESTAS_BASE.envios
       } else {
-        respuesta = '¡Hola! En Mercatto estamos para ayudarte. ¿Deseas consultar sobre compras, envíos, métodos de pago o cómo vender con nuestra comisión única del 4%?'
+        respuesta = '¡Hola! En Mercatto estamos para ayudarte. Puedo orientarte sobre compras, métodos de pago, envíos, cupones, rastreo de pedidos o los planes para vender (comisiones desde el 2%). ¿Qué te gustaría saber?'
       }
 
       setMensajes((prev) => [
@@ -363,7 +395,8 @@ export const PublicChatbot = () => {
         id: Date.now(),
         remitente: 'bot',
         texto:
-          '¡Hola de nuevo! ✨ Soy el Asistente Inteligente de **Mercatto**. ¿En qué puedo colaborarte hoy? Pregúntame lo que quieras sobre productos, comisiones, pagos o envíos.',
+          '¡Conversación reiniciada! ✨ Soy el asistente de **Mercatto**. Pregúntame lo que quieras sobre compras, pagos, envíos, cupones o planes para vendedores.',
+        sugerencias: true,
         hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       }
     ])
@@ -401,13 +434,13 @@ export const PublicChatbot = () => {
     <div className="fixed bottom-3 right-3 sm:bottom-5 sm:right-5 z-40 flex flex-col items-end pointer-events-none font-sans">
       {/* Ventana de Atención Flotante (Se coloca ARRIBA de la pestañita) */}
       {abierto && (
-        <div className="pointer-events-auto mb-2.5 w-[calc(100vw-24px)] sm:w-[400px] h-[520px] max-h-[calc(100dvh-85px)] sm:max-h-[calc(100vh-95px)] bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-200 backdrop-blur-sm">
+        <div className="pointer-events-auto mb-2.5 w-[calc(100vw-24px)] sm:w-[400px] h-[560px] max-h-[calc(100dvh-85px)] sm:max-h-[calc(100vh-95px)] bg-white dark:bg-slate-900 rounded-3xl border border-mercatto-border dark:border-slate-800 shadow-2xl shadow-mercatto-dark/25 ring-1 ring-mercatto-primary/10 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-200 backdrop-blur-sm">
           
           {/* Header Elegante Degradado */}
-          <div className="px-4 sm:px-5 py-3 sm:py-3.5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white flex items-center justify-between border-b border-indigo-500/20 shadow-md shrink-0">
+          <div className="px-4 sm:px-5 py-3 sm:py-3.5 bg-gradient-to-r from-mercatto-dark via-[#2f2766] to-mercatto-dark text-white flex items-center justify-between border-b border-indigo-500/20 shadow-md shrink-0">
             <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
               <div className="relative shrink-0">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white flex items-center justify-center font-bold shadow-lg shadow-violet-500/30">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-mercatto-primary to-mercatto-deep text-white flex items-center justify-center font-bold shadow-lg shadow-violet-500/30">
                   <span 
                     className="text-white text-xl sm:text-2xl font-normal leading-none select-none -mt-0.5"
                     style={{ fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif" }}
@@ -456,10 +489,10 @@ export const PublicChatbot = () => {
           </div>
 
           {/* Subheader Informativo */}
-          <div className="px-4 py-2 bg-indigo-50/70 dark:bg-slate-800/80 border-b border-indigo-100 dark:border-slate-800 flex items-center justify-between text-xs shrink-0">
+          <div className="px-4 py-2 bg-mercatto-surface dark:bg-slate-800/80 border-b border-mercatto-border dark:border-slate-800 flex items-center justify-between text-xs shrink-0">
             <span className="text-slate-600 dark:text-slate-300 text-[11px] font-medium flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-              {isEn ? 'Flat commission: 4% per sale' : 'Comisión fija única: 4% por venta'}
+              <span className="w-1.5 h-1.5 rounded-full bg-mercatto-primary"></span>
+              {isEn ? 'Sell with commissions from 2%' : 'Vende con comisiones desde el 2%'}
             </span>
             <Link
               to="/soporte"
@@ -474,7 +507,7 @@ export const PublicChatbot = () => {
           {/* Contenido Dinámico: Chat o Menú Temas */}
           {vistaActual === 'menu_opciones' ? (
             /* Vista del Menú de Temas Frecuentes */
-            <div className="flex-1 p-4 overflow-y-auto space-y-2.5 bg-slate-50/70 dark:bg-slate-950/40">
+            <div className="flex-1 p-4 overflow-y-auto space-y-2.5 bg-mercatto-bg dark:bg-slate-950/40">
               <div className="flex items-center justify-between pb-1">
                 <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
                   Temas Frecuentes
@@ -493,8 +526,8 @@ export const PublicChatbot = () => {
                   return (
                     <button
                       key={op.id}
-                      onClick={() => seleccionarOpcionGuia(op.id)}
-                      className="w-full text-left p-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 hover:border-indigo-500/50 hover:shadow-md transition group cursor-pointer flex items-center justify-between"
+                      onClick={() => seleccionarOpcion(op.id)}
+                      className="w-full text-left p-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 hover:border-mercatto-primary/60 hover:shadow-md transition group cursor-pointer flex items-center justify-between"
                     >
                       <div className="flex items-center gap-3">
                         <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${op.color} shadow-xs`}>
@@ -554,7 +587,7 @@ export const PublicChatbot = () => {
                       placeholder="Ej. Andrés Ramírez"
                       value={formTicket.nombre}
                       onChange={(e) => setFormTicket({ ...formTicket, nombre: e.target.value })}
-                      className="w-full text-xs p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                      className="w-full text-xs p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-mercatto-primary outline-none"
                       required
                     />
                   </div>
@@ -569,7 +602,7 @@ export const PublicChatbot = () => {
                         placeholder="tu@correo.com"
                         value={formTicket.email}
                         onChange={(e) => setFormTicket({ ...formTicket, email: e.target.value })}
-                        className="w-full text-xs p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                        className="w-full text-xs p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-mercatto-primary outline-none"
                         required
                       />
                     </div>
@@ -582,7 +615,7 @@ export const PublicChatbot = () => {
                         placeholder="300 000 0000"
                         value={formTicket.telefono}
                         onChange={(e) => setFormTicket({ ...formTicket, telefono: e.target.value })}
-                        className="w-full text-xs p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                        className="w-full text-xs p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-mercatto-primary outline-none"
                       />
                     </div>
                   </div>
@@ -596,7 +629,7 @@ export const PublicChatbot = () => {
                       placeholder="Escribe tu consulta detallada..."
                       value={formTicket.mensaje}
                       onChange={(e) => setFormTicket({ ...formTicket, mensaje: e.target.value })}
-                      className="w-full text-xs p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none resize-none"
+                      className="w-full text-xs p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-mercatto-primary outline-none resize-none"
                       required
                     />
                   </div>
@@ -605,7 +638,7 @@ export const PublicChatbot = () => {
                     <button
                       type="submit"
                       disabled={ticketCargando}
-                      className="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl font-bold text-xs shadow-md transition cursor-pointer"
+                      className="flex-1 py-2.5 bg-mercatto-primary hover:bg-mercatto-deep disabled:opacity-50 text-white rounded-xl font-bold text-xs shadow-md transition cursor-pointer"
                     >
                       {ticketCargando ? 'Enviando solicitud...' : 'Enviar Consulta'}
                     </button>
@@ -624,7 +657,7 @@ export const PublicChatbot = () => {
             /* Vista del Historial de Chat */
             <div
               ref={mensajesContainerRef}
-              className="flex-1 p-4 overflow-y-auto space-y-3.5 text-xs bg-slate-50/60 dark:bg-slate-950/50"
+              className="flex-1 p-4 overflow-y-auto space-y-3.5 text-xs bg-mercatto-bg dark:bg-slate-950/50"
             >
               {mensajes.map((m) => {
                 const esBot = m.remitente === 'bot'
@@ -635,7 +668,7 @@ export const PublicChatbot = () => {
                   >
                     <div className="flex items-end gap-2 max-w-[90%]">
                       {esBot && (
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-violet-600 to-indigo-600 text-white flex items-center justify-center shrink-0 mb-1 shadow-xs">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-mercatto-primary to-mercatto-deep text-white flex items-center justify-center shrink-0 mb-1 shadow-xs">
                           <span 
                             className="text-white text-[12px] font-normal leading-none select-none"
                             style={{ fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif" }}
@@ -647,8 +680,8 @@ export const PublicChatbot = () => {
                       <div
                         className={`p-3.5 rounded-2xl leading-relaxed whitespace-pre-line shadow-sm text-xs ${
                           esBot
-                            ? 'bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 text-slate-800 dark:text-slate-100 rounded-bl-xs'
-                            : 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-br-xs shadow-violet-500/10'
+                            ? 'bg-white dark:bg-slate-800 border border-mercatto-border dark:border-slate-700/80 text-mercatto-text dark:text-slate-100 rounded-bl-xs'
+                            : 'bg-gradient-to-r from-mercatto-primary to-mercatto-deep text-white rounded-br-xs shadow-violet-500/10'
                         }`}
                       >
                         {renderizarTextoFormateado(m.texto)}
@@ -683,7 +716,33 @@ export const PublicChatbot = () => {
                         )}
                       </div>
                     </div>
-                    <span className="text-[10px] text-slate-400 px-8 mt-1">{m.hora}</span>
+
+                    {esBot && m.sugerencias && (
+                      <div className="flex flex-wrap gap-1.5 mt-2 ml-8 max-w-[92%]">
+                        {SUGERENCIAS_INICIALES.map((s) => (
+                          <button
+                            key={s.id}
+                            type="button"
+                            onClick={() => seleccionarOpcion(s.id)}
+                            className="px-3 py-1.5 rounded-full bg-white dark:bg-slate-800 text-mercatto-deep dark:text-violet-300 border border-mercatto-lavender dark:border-slate-700 hover:bg-mercatto-soft hover:border-mercatto-primary text-[11px] font-semibold transition cursor-pointer shadow-xs"
+                          >
+                            {s.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    {esBot && m.ofrecerMenu && !m.sugerencias && (
+                      <button
+                        type="button"
+                        onClick={() => setVistaActual('menu_opciones')}
+                        className="mt-2 ml-8 inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-mercatto-surface dark:bg-slate-800 text-mercatto-deep dark:text-violet-300 border border-mercatto-border dark:border-slate-700 hover:bg-mercatto-soft text-[11px] font-semibold transition cursor-pointer"
+                      >
+                        <HelpCircle size={12} />
+                        <span>Ver más temas</span>
+                        <ChevronRight size={12} />
+                      </button>
+                    )}
+                    <span className={`text-[10px] text-slate-400 mt-1 ${esBot ? 'pl-8' : 'pr-1'}`}>{m.hora}</span>
                   </div>
                 )
               })}
@@ -691,7 +750,7 @@ export const PublicChatbot = () => {
               {/* Indicador suave de IA Pensando con logo M */}
               {escribiendo && (
                 <div className="flex items-end gap-2">
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-violet-600 to-indigo-600 text-white flex items-center justify-center shrink-0 mb-1 shadow-xs">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-mercatto-primary to-mercatto-deep text-white flex items-center justify-center shrink-0 mb-1 shadow-xs">
                     <span 
                       className="text-white text-[12px] font-normal leading-none select-none"
                       style={{ fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif" }}
@@ -720,8 +779,8 @@ export const PublicChatbot = () => {
               >
                 <button
                   type="button"
-                  onClick={() => enviarPreguntaRapida('¿Cuánto cobran de comisión a los vendedores?')}
-                  className="px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 border border-indigo-200/60 dark:border-indigo-800 hover:bg-indigo-100 transition whitespace-nowrap cursor-pointer shrink-0"
+                  onClick={() => enviarPreguntaRapida('¿Qué planes y comisiones tienen para vendedores?')}
+                  className="px-2.5 py-1 rounded-full bg-mercatto-soft dark:bg-violet-950/50 text-mercatto-deep dark:text-violet-300 border border-mercatto-lavender dark:border-violet-800 hover:bg-mercatto-lavender/60 transition whitespace-nowrap cursor-pointer shrink-0"
                 >
                   {isEn ? '🏷️ Fees?' : '🏷️ ¿Comisiones?'}
                 </button>
@@ -755,12 +814,12 @@ export const PublicChatbot = () => {
                   value={mensajeInput}
                   onChange={(e) => setMensajeInput(e.target.value)}
                   placeholder={isEn ? 'Ask Mercatto Bot...' : 'Pregúntale a Mercatto Bot...'}
-                  className="flex-1 text-xs px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:bg-white dark:focus:bg-slate-900 text-slate-800 dark:text-slate-100 transition shadow-inner min-w-0"
+                  className="flex-1 text-xs px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-full bg-mercatto-surface dark:bg-slate-800 border border-mercatto-border dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-mercatto-primary focus:bg-white dark:focus:bg-slate-900 text-slate-800 dark:text-slate-100 transition shadow-inner min-w-0"
                 />
                 <button
                   type="submit"
                   disabled={!mensajeInput.trim()}
-                  className="p-2.5 sm:p-3 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 disabled:opacity-40 text-white transition-all duration-200 cursor-pointer shrink-0 shadow-md shadow-violet-500/25 active:scale-95 hover:scale-105"
+                  className="p-2.5 sm:p-3 rounded-full bg-gradient-to-r from-mercatto-primary to-mercatto-deep hover:from-mercatto-deep hover:to-mercatto-deep disabled:opacity-40 text-white transition-all duration-200 cursor-pointer shrink-0 shadow-md shadow-violet-500/25 active:scale-95 hover:scale-105"
                   title="Enviar consulta"
                 >
                   <Send size={15} />
@@ -774,7 +833,7 @@ export const PublicChatbot = () => {
       {/* Botón Circular Flotante del Chatbot con M en blanco en estilo Mercatto */}
       <button
         onClick={() => setAbierto(!abierto)}
-        className="pointer-events-auto group relative w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-violet-600 via-indigo-600 to-purple-700 hover:from-violet-500 hover:to-purple-600 text-white shadow-xl shadow-violet-600/35 hover:shadow-2xl hover:shadow-violet-600/50 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center cursor-pointer border-2 border-white/30 select-none"
+        className="pointer-events-auto group relative w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-mercatto-primary via-mercatto-primary to-mercatto-deep hover:from-mercatto-deep hover:to-mercatto-deep text-white shadow-xl shadow-violet-600/35 hover:shadow-2xl hover:shadow-violet-600/50 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center cursor-pointer border-2 border-white/30 select-none"
         aria-label={abierto ? "Cerrar chat" : "Abrir asistente Mercatto"}
         title="Mercatto"
       >

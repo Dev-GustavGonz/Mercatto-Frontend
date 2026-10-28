@@ -448,7 +448,7 @@ export const Navbar = () => {
                         className="flex items-center gap-2.5 px-4 py-2 text-slate-600 hover:bg-violet-50 hover:text-violet-700"
                       >
                         <DollarSign size={15} />
-                        <span>Comisiones & Finanzas (4%)</span>
+                        <span>Comisiones & Finanzas</span>
                       </Link>
                       <Link
                         to="/admin?tab=pedidos"
