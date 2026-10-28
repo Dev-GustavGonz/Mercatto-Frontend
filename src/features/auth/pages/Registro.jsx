@@ -122,7 +122,7 @@ export const Registro = () => {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center py-10 px-4 font-sans">
-      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-xl space-y-6">
+      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-mercatto-border dark:border-slate-800 shadow-xl space-y-6">
         
         {/* Header con Marca y Tipografía Coherente */}
         <div className="text-center space-y-2">
@@ -280,7 +280,7 @@ export const Registro = () => {
             className={`w-full font-bold shadow-lg mt-2 cursor-pointer ${
               rol === 'VENDEDOR'
                 ? 'bg-amber-600 hover:bg-amber-700 text-white shadow-amber-600/25'
-                : 'bg-violet-600 hover:bg-violet-700 text-white shadow-violet-600/25'
+                : 'bg-mercatto-primary hover:bg-mercatto-deep text-white shadow-violet-600/25'
             }`} 
             loading={loading}
           >

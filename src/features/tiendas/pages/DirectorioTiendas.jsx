@@ -57,7 +57,7 @@ export const DirectorioTiendas = () => {
       {/* Hero Banner Directorio */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-8 sm:p-12 shadow-xl border border-slate-800">
         <div className="relative z-10 max-w-3xl space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-semibold border border-indigo-400/30 backdrop-blur-sm">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-mercatto-surface0/20 text-indigo-300 text-xs font-semibold border border-indigo-400/30 backdrop-blur-sm">
             <Sparkles size={14} className="text-amber-400" />
             <span>{t('proveedores_certificados')}</span>
           </div>
@@ -94,7 +94,7 @@ export const DirectorioTiendas = () => {
         </div>
 
         {/* Decorative background circle */}
-        <div className="absolute -right-20 -bottom-20 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -right-20 -bottom-20 w-96 h-96 bg-mercatto-primary/20 rounded-full blur-3xl pointer-events-none" />
       </div>
 
       {/* Marcas Destacadas Bar */}
@@ -102,7 +102,7 @@ export const DirectorioTiendas = () => {
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-2">
-              <Tag size={16} className="text-indigo-600" />
+              <Tag size={16} className="text-mercatto-primary" />
               <span>{t('marcas_oficiales')} ({marcas.length})</span>
             </h2>
             {marcaFiltro && (
@@ -120,8 +120,8 @@ export const DirectorioTiendas = () => {
               onClick={() => setMarcaFiltro('')}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
                 !marcaFiltro
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-indigo-400'
+                  ? 'bg-mercatto-primary text-white shadow-sm'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-mercatto-border dark:border-slate-700 hover:border-indigo-400'
               }`}
             >
               {t('todas_las_categorias')}
@@ -132,8 +132,8 @@ export const DirectorioTiendas = () => {
                 onClick={() => setMarcaFiltro(marcaFiltro === m ? '' : m)}
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
                   marcaFiltro === m
-                    ? 'bg-indigo-600 text-white shadow-sm'
-                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-indigo-400'
+                    ? 'bg-mercatto-primary text-white shadow-sm'
+                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-mercatto-border dark:border-slate-700 hover:border-indigo-400'
                 }`}
               >
                 <span>{m}</span>
@@ -197,7 +197,7 @@ export const DirectorioTiendas = () => {
             return (
               <div
                 key={tienda.id}
-                className="group bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col hover:-translate-y-1"
+                className="group bg-white dark:bg-slate-900 rounded-3xl border border-mercatto-border dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col hover:-translate-y-1"
               >
                 {/* Banner / Portada */}
                 <div className="relative h-32 bg-slate-900 overflow-hidden">
@@ -234,7 +234,7 @@ export const DirectorioTiendas = () => {
 
                   <div className="space-y-1.5 flex-1">
                     <div className="flex items-center gap-1.5">
-                      <h3 className="font-extrabold text-slate-900 dark:text-white text-base group-hover:text-indigo-600 transition truncate">
+                      <h3 className="font-extrabold text-slate-900 dark:text-white text-base group-hover:text-mercatto-primary transition truncate">
                         {tienda.nombreTienda}
                       </h3>
                       <ShieldCheck size={16} className="text-emerald-500 shrink-0" />
@@ -273,7 +273,7 @@ export const DirectorioTiendas = () => {
                   <div className="mt-6 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2">
                     <Link
                       to={`/tienda/${tienda.id}`}
-                      className="flex-1 py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-bold text-xs text-center flex items-center justify-center gap-1.5 transition-colors shadow-sm cursor-pointer"
+                      className="flex-1 py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-mercatto-primary text-white font-bold text-xs text-center flex items-center justify-center gap-1.5 transition-colors shadow-sm cursor-pointer"
                     >
                       <span>{t('ver_tienda')}</span>
                       <ArrowRight size={14} />
@@ -282,7 +282,7 @@ export const DirectorioTiendas = () => {
                     {tienda.usuarioId && (
                       <button
                         onClick={() => navigate(`/mensajes?vendedorId=${tienda.usuarioId}`)}
-                        className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-slate-800 transition cursor-pointer"
+                        className="p-2.5 rounded-xl border border-mercatto-border dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-mercatto-surface hover:text-mercatto-primary dark:hover:bg-slate-800 transition cursor-pointer"
                         title={t('contacto')}
                       >
                         <MessageSquare size={16} />

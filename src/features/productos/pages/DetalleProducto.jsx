@@ -139,13 +139,13 @@ export const DetalleProducto = () => {
     <div className="space-y-10 pb-20 max-w-7xl mx-auto font-sans">
       {/* Breadcrumb de Navegación */}
       <nav className="flex items-center gap-2 text-xs text-slate-400 font-medium">
-        <Link to="/" className="hover:text-indigo-600 transition">{t('inicio')}</Link>
+        <Link to="/" className="hover:text-mercatto-primary transition">{t('inicio')}</Link>
         <ChevronRight size={12} />
-        <Link to="/catalogo" className="hover:text-indigo-600 transition">{t('catalogo')}</Link>
+        <Link to="/catalogo" className="hover:text-mercatto-primary transition">{t('catalogo')}</Link>
         {producto.categoria && (
           <>
             <ChevronRight size={12} />
-            <Link to={`/catalogo?categoriaId=${producto.categoria.id}`} className="hover:text-indigo-600 transition truncate max-w-[120px]">
+            <Link to={`/catalogo?categoriaId=${producto.categoria.id}`} className="hover:text-mercatto-primary transition truncate max-w-[120px]">
               {producto.categoria.nombre}
             </Link>
           </>
@@ -164,13 +164,13 @@ export const DetalleProducto = () => {
         {/* Product Details & Actions */}
         <div className="lg:col-span-5 space-y-6">
           {/* Vendor Card */}
-          <div className="flex items-center justify-between p-3.5 rounded-2xl bg-indigo-50/50 dark:bg-slate-800/60 border border-indigo-100 dark:border-slate-700 shadow-sm">
+          <div className="flex items-center justify-between p-3.5 rounded-2xl bg-mercatto-surface/50 dark:bg-slate-800/60 border border-mercatto-border dark:border-slate-700 shadow-sm">
             <Link
               to={producto.vendedor?.id ? `/tienda/${producto.vendedor.id}` : '#'}
               className="flex items-center gap-3 group/vendor"
               title="Ver vitrina completa y catálogo de esta tienda"
             >
-              <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-sm group-hover/vendor:scale-105 transition-transform overflow-hidden">
+              <div className="w-10 h-10 rounded-xl bg-mercatto-primary text-white flex items-center justify-center font-bold text-sm shadow-sm group-hover/vendor:scale-105 transition-transform overflow-hidden">
                 {producto.vendedor?.logoUrl ? (
                   <img src={producto.vendedor.logoUrl} alt={producto.vendedor.nombreTienda} className="w-full h-full object-cover" />
                 ) : (
@@ -181,7 +181,7 @@ export const DetalleProducto = () => {
                 <p className="text-[11px] text-slate-400 font-medium">
                   {esMiProducto ? (idioma === 'EN' ? 'Your registered store' : 'Tu tienda registrada') : t('vendido_por')}
                 </p>
-                <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover/vendor:text-indigo-600 transition flex items-center gap-1">
+                <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover/vendor:text-mercatto-primary transition flex items-center gap-1">
                   <span>{producto.vendedor?.nombreTienda || 'Tienda Oficial Mercatto'}</span>
                   <span className="text-[10px] text-indigo-500 font-normal">→ {t('ver_tienda')}</span>
                 </h4>
@@ -196,7 +196,7 @@ export const DetalleProducto = () => {
               {producto.vendedor?.id && (
                 <Link
                   to={`/tienda/${producto.vendedor.id}`}
-                  className="px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:border-indigo-500 hover:text-indigo-600 transition shadow-sm"
+                  className="px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-mercatto-border dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:border-indigo-500 hover:text-mercatto-primary transition shadow-sm"
                 >
                   {t('ver_tienda')}
                 </Link>
@@ -204,7 +204,7 @@ export const DetalleProducto = () => {
               {esMiProducto ? (
                 <Link
                   to="/panel-vendedor"
-                  className="px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 flex items-center gap-1.5 shadow-sm transition"
+                  className="px-3.5 py-2 rounded-xl bg-mercatto-primary text-white text-xs font-bold hover:bg-mercatto-deep flex items-center gap-1.5 shadow-sm transition"
                 >
                   <Store size={14} />
                   <span>{t('panel_vendedor')}</span>
@@ -212,7 +212,7 @@ export const DetalleProducto = () => {
               ) : (
                 <button
                   onClick={handleContactar}
-                  className="px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 flex items-center gap-1.5 shadow-sm cursor-pointer transition hover:scale-105"
+                  className="px-3.5 py-2 rounded-xl bg-mercatto-primary text-white text-xs font-bold hover:bg-mercatto-deep flex items-center gap-1.5 shadow-sm cursor-pointer transition hover:scale-105"
                   title={t('preguntar_vendedor')}
                 >
                   <MessageSquare size={14} />
@@ -224,13 +224,13 @@ export const DetalleProducto = () => {
 
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+              <span className="text-xs font-bold uppercase tracking-wider text-mercatto-primary dark:text-indigo-400">
                 {producto.categoria?.nombre || 'General'}
               </span>
               {producto.marca && (
                 <>
                   <span className="text-xs text-slate-300">•</span>
-                  <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-indigo-50 dark:bg-slate-800 text-indigo-700 dark:text-indigo-300 border border-indigo-100 dark:border-slate-700">
+                  <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-mercatto-surface dark:bg-slate-800 text-mercatto-deep dark:text-indigo-300 border border-mercatto-border dark:border-slate-700">
                     Marca: {producto.marca}
                   </span>
                 </>
@@ -251,7 +251,7 @@ export const DetalleProducto = () => {
           </div>
 
           {/* Pricing */}
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800">
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-mercatto-border dark:border-slate-800">
             <PriceDisplay
               precio={precioActual}
               precioOferta={precioOfertaActual}
@@ -332,7 +332,7 @@ export const DetalleProducto = () => {
             {esMiProducto ? (
               <Link
                 to="/panel-vendedor"
-                className="w-full py-3 px-4 rounded-2xl border border-indigo-200 dark:border-slate-700 bg-indigo-50/50 dark:bg-slate-800/60 hover:bg-indigo-100 text-indigo-700 dark:text-indigo-300 font-bold text-xs flex items-center justify-center gap-2 transition shadow-sm"
+                className="w-full py-3 px-4 rounded-2xl border border-mercatto-border dark:border-slate-700 bg-mercatto-surface/50 dark:bg-slate-800/60 hover:bg-indigo-100 text-mercatto-deep dark:text-indigo-300 font-bold text-xs flex items-center justify-center gap-2 transition shadow-sm"
               >
                 <Store size={16} />
                 <span>{t('panel_vendedor')}</span>
@@ -341,7 +341,7 @@ export const DetalleProducto = () => {
               <button
                 type="button"
                 onClick={handleContactar}
-                className="w-full py-3 px-4 rounded-2xl border border-indigo-200 dark:border-slate-700 bg-indigo-50/50 dark:bg-slate-800/60 hover:bg-indigo-100/70 text-indigo-700 dark:text-indigo-300 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-sm"
+                className="w-full py-3 px-4 rounded-2xl border border-mercatto-border dark:border-slate-700 bg-mercatto-surface/50 dark:bg-slate-800/60 hover:bg-indigo-100/70 text-mercatto-deep dark:text-indigo-300 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-sm"
               >
                 <MessageSquare size={16} />
                 <span>{t('preguntar_vendedor')}</span>
@@ -364,7 +364,7 @@ export const DetalleProducto = () => {
       </div>
 
       {/* Description */}
-      <section className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
+      <section className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-mercatto-border dark:border-slate-800 space-y-4">
         <h3 className="text-lg font-bold text-slate-900 dark:text-white">{t('descripcion')}</h3>
         <div className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
           {producto.descripcion}
@@ -372,7 +372,7 @@ export const DetalleProducto = () => {
       </section>
 
       {/* Reviews */}
-      <section className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+      <section className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-mercatto-border dark:border-slate-800">
         <ProductReviews
           productoId={producto.id}
           calificacionPromedio={producto.calificacion || 0}

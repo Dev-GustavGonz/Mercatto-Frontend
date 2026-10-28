@@ -22,11 +22,11 @@ export const Button = ({
 
   const variants = {
     primary:
-      'bg-mercatto-accent hover:bg-violet-600 text-white focus:ring-mercatto-accent',
+      'bg-mercatto-primary hover:bg-mercatto-deep text-white shadow-xs hover:shadow-md hover:shadow-violet-500/20 focus:ring-mercatto-primary',
     secondary:
-      'bg-mercatto-dark hover:bg-black text-white focus:ring-slate-800',
+      'bg-mercatto-dark hover:bg-slate-900 text-white focus:ring-mercatto-dark',
     outline:
-      'border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 focus:ring-slate-400',
+      'border border-mercatto-border dark:border-slate-700 bg-white dark:bg-slate-900 text-mercatto-text dark:text-slate-200 hover:bg-mercatto-surface dark:hover:bg-slate-800 focus:ring-mercatto-primary',
     danger:
       'bg-rose-600 hover:bg-rose-700 text-white shadow-md focus:ring-rose-500',
     ghost:

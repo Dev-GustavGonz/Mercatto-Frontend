@@ -33,7 +33,7 @@ export const Carrito = () => {
 
   return (
     <div className="space-y-6 pb-20 font-sans">
-      <div className="flex justify-between items-center pb-4 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex justify-between items-center pb-4 border-b border-mercatto-border dark:border-slate-800">
         <div>
           <h1 className="text-2xl font-black text-slate-900 dark:text-white">{t('tu_carrito')}</h1>
           <p className="text-xs text-slate-500 mt-0.5">{items.length} {t('productos')}</p>
@@ -49,7 +49,7 @@ export const Carrito = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Items List */}
-        <div className="lg:col-span-8 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800">
+        <div className="lg:col-span-8 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-mercatto-border dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800">
           {items.map((item, idx) => (
             <CartItem key={`${item.producto.id}-${item.variante?.id || idx}`} item={item} />
           ))}

@@ -132,72 +132,7 @@ export const Home = () => {
 
       <div className="container max-w-[1520px] mx-auto px-3 sm:px-6 lg:px-8 pt-5 sm:pt-10 space-y-8 sm:space-y-14">
 
-        {/* ========================================================= */}
-        {/* 2. BARRA FLOTANTE DELGADA DE CONFIANZA (TEMPRANA / ARRIBA)*/}
-        {/* ========================================================= */}
-        <section aria-label="Garantías y respaldo oficial de Mercatto">
-          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-3 sm:px-7 sm:py-4 shadow-md shadow-slate-200/60 dark:shadow-black/40 border border-slate-200/90 dark:border-slate-800">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-6">
-              
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-emerald-500/15 border border-emerald-500/25 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-                  <CreditCard size={19} />
-                </div>
-                <div className="min-w-0">
-                  <h4 className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white truncate">
-                    {t('envios_wompi_titulo')}
-                  </h4>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                    {t('envios_wompi_sub')}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-violet-500/15 border border-violet-500/25 text-violet-600 dark:text-violet-400 flex items-center justify-center shrink-0">
-                  <ShieldCheck size={19} />
-                </div>
-                <div className="min-w-0">
-                  <h4 className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white truncate">
-                    {t('compra_protegida_titulo')}
-                  </h4>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                    {t('compra_protegida_sub')}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-emerald-500/15 border border-emerald-500/25 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-                  <BadgeCheck size={19} />
-                </div>
-                <div className="min-w-0">
-                  <h4 className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white truncate">
-                    {t('garantia_oficial_titulo')}
-                  </h4>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                    {t('garantia_oficial_sub')}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-violet-500/15 border border-violet-500/25 text-violet-600 dark:text-violet-400 flex items-center justify-center shrink-0">
-                  <Truck size={19} />
-                </div>
-                <div className="min-w-0">
-                  <h4 className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white truncate">
-                    {t('envio_colombia_titulo')}
-                  </h4>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                    {t('envio_colombia_sub')}
-                  </p>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </section>
+        
 
         {/* ========================================================= */}
         {/* 3. SECCIÓN DE OFERTAS CON URGENCIA (JUSTO DEBAJO DEL HERO)*/}

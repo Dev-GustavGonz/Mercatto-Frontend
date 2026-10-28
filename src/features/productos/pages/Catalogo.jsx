@@ -118,15 +118,15 @@ export const Catalogo = () => {
   return (
     <div className="space-y-6 pb-16 font-sans">
       <div>
-        <h1 className="text-2xl font-black text-slate-900 dark:text-white">
+        <h1 className="text-2xl font-black text-mercatto-text dark:text-white">
           {termino ? `${t('resultados_para')}: "${termino}"` : t('catalogo_de_productos')}
         </h1>
-        <p className="text-xs text-slate-500 mt-1">{t('explora_productos_publicados')}</p>
+        <p className="text-xs text-mercatto-muted mt-1">{t('explora_productos_publicados')}</p>
       </div>
 
       {soloElite && (
-        <div className="flex items-center justify-between gap-3 p-3.5 bg-gradient-to-r from-amber-500/15 via-amber-500/5 to-violet-500/10 border border-amber-400/40 rounded-2xl animate-in fade-in">
-          <div className="flex items-center gap-2 text-xs sm:text-sm font-black text-amber-800 dark:text-amber-200">
+        <div className="flex items-center justify-between gap-3 p-3.5 bg-gradient-to-r bg-mercatto-elite-bg/50 border border-amber-300/70 rounded-2xl animate-in fade-in">
+          <div className="flex items-center gap-2 text-xs sm:text-sm font-black text-mercatto-elite-text dark:text-amber-200">
             <span className="text-base">👑</span>
             <span>Filtro Exclusivo Activado: Mostrando productos de Tiendas con Plan Élite</span>
           </div>

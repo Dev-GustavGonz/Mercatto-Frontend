@@ -79,7 +79,7 @@ export const Login = () => {
 
   return (
     <div className="max-w-md mx-auto py-12 px-4">
-      <div className="bg-white dark:bg-slate-900 p-8 sm:p-10 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xl shadow-violet-500/5 space-y-6">
+      <div className="bg-white dark:bg-slate-900 p-8 sm:p-10 rounded-3xl border border-mercatto-border/90 dark:border-slate-800 shadow-2xl shadow-violet-500/5 space-y-6">
         
         {/* Cabecera Oficial Mercatto con el logo estilizado */}
         <div className="text-center space-y-2">
@@ -151,7 +151,7 @@ export const Login = () => {
             type="submit" 
             variant="primary" 
             size="lg" 
-            className="w-full font-bold bg-violet-600 hover:bg-violet-700 text-white shadow-lg shadow-violet-600/25 mt-2 cursor-pointer" 
+            className="w-full font-bold bg-mercatto-primary hover:bg-mercatto-deep text-white shadow-lg shadow-violet-500/25 mt-2 cursor-pointer" 
             loading={loading}
           >
             <LogIn size={18} className="mr-2" />

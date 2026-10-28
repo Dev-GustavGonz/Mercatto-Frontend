@@ -137,7 +137,7 @@ export const VitrinaTienda = () => {
         <p className="text-slate-500 text-sm">La tienda que estás buscando no existe o no se encuentra activa.</p>
         <Link
           to="/tiendas"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-sm shadow hover:bg-indigo-700 transition"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-mercatto-primary text-white font-bold text-sm shadow hover:bg-mercatto-deep transition"
         >
           <ArrowLeft size={16} />
           <span>Volver al Directorio de Tiendas</span>
@@ -174,7 +174,7 @@ export const VitrinaTienda = () => {
       <div className="flex items-center justify-between">
         <Link
           to="/tiendas"
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-indigo-600 transition"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-mercatto-primary transition"
         >
           <ArrowLeft size={14} />
           <span>Volver a Tiendas Oficiales</span>
@@ -182,7 +182,7 @@ export const VitrinaTienda = () => {
       </div>
 
       {/* Header Vitrina Oficial */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-mercatto-border dark:border-slate-800 overflow-hidden shadow-sm">
         {/* Banner Superior */}
         <div className="relative h-48 sm:h-72 bg-slate-950 overflow-hidden">
           <img
@@ -225,7 +225,7 @@ export const VitrinaTienda = () => {
                   <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
                     {tienda.nombreTienda}
                   </h1>
-                  <CheckCircle2 size={22} className="text-indigo-600 fill-indigo-100 shrink-0" title="Distribuidor Autorizado" />
+                  <CheckCircle2 size={22} className="text-mercatto-primary fill-indigo-100 shrink-0" title="Distribuidor Autorizado" />
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
@@ -253,7 +253,7 @@ export const VitrinaTienda = () => {
             <div className="flex items-center gap-2.5 shrink-0 pt-2 sm:pt-0">
               <button
                 onClick={handleCompartir}
-                className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 text-slate-700 dark:text-slate-200 text-xs font-bold transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+                className="px-4 py-2.5 rounded-xl border border-mercatto-border dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 text-slate-700 dark:text-slate-200 text-xs font-bold transition flex items-center gap-1.5 shadow-sm cursor-pointer"
                 title="Copiar enlace de la tienda"
               >
                 {copiado ? <Check size={15} className="text-emerald-500" /> : <Share2 size={15} />}
@@ -262,7 +262,7 @@ export const VitrinaTienda = () => {
 
               <button
                 onClick={handleContactar}
-                className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition flex items-center gap-2 shadow-md shadow-indigo-600/20 cursor-pointer hover:scale-105"
+                className="px-5 py-2.5 rounded-xl bg-mercatto-primary hover:bg-mercatto-deep text-white text-xs font-bold transition flex items-center gap-2 shadow-md shadow-indigo-600/20 cursor-pointer hover:scale-105"
               >
                 <MessageSquare size={16} />
                 <span>Chatear con la Tienda</span>
@@ -281,7 +281,7 @@ export const VitrinaTienda = () => {
           {tienda.marcas && tienda.marcas.length > 0 && (
             <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800">
               <div className="flex items-center gap-2 mb-3">
-                <Tag size={15} className="text-indigo-600" />
+                <Tag size={15} className="text-mercatto-primary" />
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
                   Marcas que comercializa esta tienda ({tienda.marcas.length})
                 </span>
@@ -305,8 +305,8 @@ export const VitrinaTienda = () => {
                     onClick={() => { setMarcaSeleccionada(marcaSeleccionada === m ? '' : m); setPagina(0) }}
                     className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
                       marcaSeleccionada === m
-                        ? 'bg-indigo-600 text-white shadow-sm'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 hover:text-indigo-600'
+                        ? 'bg-mercatto-primary text-white shadow-sm'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-mercatto-surface hover:text-mercatto-primary'
                     }`}
                   >
                     <span>{m}</span>
@@ -319,7 +319,7 @@ export const VitrinaTienda = () => {
       </div>
 
       {/* Barra de Filtros & Búsqueda dentro de la vitrina */}
-      <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-mercatto-border dark:border-slate-800 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
         {/* Formulario de búsqueda interno */}
         <form onSubmit={handleBuscar} className="relative w-full sm:max-w-md">
           <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -328,11 +328,11 @@ export const VitrinaTienda = () => {
             placeholder={`Buscar en el catálogo de ${tienda.nombreTienda}...`}
             value={busquedaInput}
             onChange={(e) => setBusquedaInput(e.target.value)}
-            className="w-full pl-10 pr-20 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full pl-10 pr-20 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-mercatto-border dark:border-slate-700 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
           <button
             type="submit"
-            className="absolute right-1.5 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-lg bg-indigo-600 text-white text-[11px] font-bold hover:bg-indigo-700 transition"
+            className="absolute right-1.5 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-lg bg-mercatto-primary text-white text-[11px] font-bold hover:bg-mercatto-deep transition"
           >
             Buscar
           </button>
@@ -354,7 +354,7 @@ export const VitrinaTienda = () => {
             <select
               value={orden}
               onChange={(e) => { setOrden(e.target.value); setPagina(0) }}
-              className="text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+              className="text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-mercatto-border dark:border-slate-700 rounded-xl px-3 py-2 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
             >
               <option value="recientes">Más recientes</option>
               <option value="precio_asc">Precio: Menor a Mayor</option>
@@ -374,7 +374,7 @@ export const VitrinaTienda = () => {
         </h2>
 
         {marcaSeleccionada && (
-          <span className="text-xs font-bold text-indigo-600 bg-indigo-50 dark:bg-slate-800 px-3 py-1 rounded-full border border-indigo-100">
+          <span className="text-xs font-bold text-mercatto-primary bg-mercatto-surface dark:bg-slate-800 px-3 py-1 rounded-full border border-mercatto-border">
             Filtrando por marca: {marcaSeleccionada}
           </span>
         )}
@@ -394,7 +394,7 @@ export const VitrinaTienda = () => {
           <button
             onClick={() => setPagina((p) => Math.max(0, p - 1))}
             disabled={pagina === 0}
-            className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition cursor-pointer"
+            className="p-2 rounded-xl border border-mercatto-border dark:border-slate-700 bg-white dark:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition cursor-pointer"
           >
             <ChevronLeft size={16} />
           </button>
@@ -406,7 +406,7 @@ export const VitrinaTienda = () => {
           <button
             onClick={() => setPagina((p) => Math.min(totalPaginas - 1, p + 1))}
             disabled={pagina >= totalPaginas - 1}
-            className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition cursor-pointer"
+            className="p-2 rounded-xl border border-mercatto-border dark:border-slate-700 bg-white dark:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition cursor-pointer"
           >
             <ChevronRight size={16} />
           </button>

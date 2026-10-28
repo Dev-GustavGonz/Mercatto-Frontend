@@ -65,7 +65,7 @@ export const CartDrawer = () => {
                 <Link
                   to="/catalogo"
                   onClick={() => setDrawerAbierto(false)}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-violet-600 text-white text-xs font-bold shadow hover:bg-violet-700 transition"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-mercatto-primary text-white text-xs font-bold shadow hover:bg-mercatto-deep transition"
                 >
                   <span>{t('explorar_productos')}</span>
                   <ArrowRight size={14} />

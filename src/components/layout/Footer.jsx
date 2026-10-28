@@ -19,58 +19,14 @@ export const Footer = () => {
   }
 
   return (
-    <footer className="bg-mercatto-dark text-mercatto-on-dark/90 mt-12 font-sans">
-      {/* Features bar */}
-      <div className="border-b border-slate-800 bg-slate-900/50">
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="flex items-center gap-4 bg-slate-800/40 p-4 rounded-2xl border border-slate-700/50 hover:border-slate-600 transition-colors">
-              <div className="bg-red-500/10 text-mercatto-accent p-3 rounded-full shrink-0">
-                <Truck size={24} />
-              </div>
-              <div>
-                <h4 className="text-sm font-bold text-white">{t('envios_colombia')}</h4>
-                <p className="text-xs text-slate-400">{isEn ? 'Free from $150.000 COP' : 'Gratis desde $150.000'}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4 bg-slate-800/40 p-4 rounded-2xl border border-slate-700/50 hover:border-slate-600 transition-colors">
-              <div className="bg-red-500/10 text-mercatto-accent p-3 rounded-full shrink-0">
-                <ShieldCheck size={24} />
-              </div>
-              <div>
-                <h4 className="text-sm font-bold text-white">{t('compra_segura')}</h4>
-                <p className="text-xs text-slate-400">{isEn ? 'Encrypted & protected checkout' : 'Pasarela cifrada y protegida'}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4 bg-slate-800/40 p-4 rounded-2xl border border-slate-700/50 hover:border-slate-600 transition-colors">
-              <div className="bg-red-500/10 text-mercatto-accent p-3 rounded-full shrink-0">
-                <RefreshCw size={24} />
-              </div>
-              <div>
-                <h4 className="text-sm font-bold text-white">{isEn ? 'Warranty & Returns' : 'Garantía y Devolución'}</h4>
-                <p className="text-xs text-slate-400">{isEn ? 'Direct store resolution' : 'Soporte directo con vendedores'}</p>
-              </div>
-            </div>
-            <Link to="/soporte" className="flex items-center gap-4 bg-slate-800/40 p-4 rounded-2xl border border-slate-700/50 hover:border-violet-500/50 hover:bg-slate-800/70 transition-colors group">
-              <div className="bg-red-500/10 text-mercatto-accent group-hover:scale-110 p-3 rounded-full shrink-0 transition-transform">
-                <Headphones size={24} />
-              </div>
-              <div>
-                <h4 className="text-sm font-bold text-white group-hover:text-violet-400 transition-colors">{t('atencion_cliente')}</h4>
-                <p className="text-xs text-slate-400">{isEn ? 'Official WhatsApp & tickets' : 'Habla directo con soporte'}</p>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </div>
-
+    <footer className="bg-mercatto-dark text-mercatto-on-dark mt-12 font-sans border-t border-violet-900/40">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div>
             <Link to="/" className="flex items-center gap-3 mb-4" title="Inicio de Mercatto">
               <MercattoLogo className="text-3xl text-mercatto-on-dark" />
             </Link>
-            <p className="text-sm text-slate-400 leading-relaxed pr-4">
+            <p className="text-sm text-mercatto-on-dark/75 leading-relaxed pr-4">
               {isEn 
                 ? 'The direct platform connecting buyers and suppliers across Colombia. Buy securely and communicate without intermediaries.' 
                 : 'La plataforma que une compradores y proveedores directamente. Compra con seguridad y comunícate sin intermediarios.'}
@@ -79,44 +35,44 @@ export const Footer = () => {
           <div>
             <h4 className="text-sm font-bold text-white mb-4">{isEn ? 'Shop' : 'Comprar'}</h4>
             <ul className="space-y-3 text-sm">
-              <li><Link to="/catalogo" className="text-slate-400 hover:text-mercatto-accent transition-colors">{t('todo_catalogo')}</Link></li>
-              <li><Link to="/catalogo?orden=ventas" className="text-slate-400 hover:text-mercatto-accent transition-colors">{t('mas_vendidos')}</Link></li>
-              <li><Link to="/favoritos" className="text-slate-400 hover:text-mercatto-accent transition-colors">{t('mis_favoritos')}</Link></li>
-              <li><Link to="/rastreo" className="text-violet-400 font-semibold hover:text-white transition-colors">{isEn ? 'Track Order' : 'Rastrear mi Pedido'}</Link></li>
+              <li><Link to="/catalogo" className="text-mercatto-on-dark/75 hover:text-white transition-colors">{t('todo_catalogo')}</Link></li>
+              <li><Link to="/catalogo?orden=ventas" className="text-mercatto-on-dark/75 hover:text-white transition-colors">{t('mas_vendidos')}</Link></li>
+              <li><Link to="/favoritos" className="text-mercatto-on-dark/75 hover:text-white transition-colors">{t('mis_favoritos')}</Link></li>
+              <li><Link to="/rastreo" className="text-mercatto-btn-dark font-semibold hover:text-white transition-colors">{isEn ? 'Track Order' : 'Rastrear mi Pedido'}</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="text-sm font-bold text-white mb-4">{isEn ? 'Sellers' : 'Vendedores'}</h4>
             <ul className="space-y-3 text-sm">
-              <li><Link to="/registro?rol=VENDEDOR" className="text-slate-400 hover:text-mercatto-accent transition-colors">{isEn ? 'Open Virtual Store' : 'Crear Tienda Virtual'}</Link></li>
-              <li><Link to="/vendedor" className="text-slate-400 hover:text-mercatto-accent transition-colors">{t('panel_vendedor')}</Link></li>
-              <li><Link to="/login" className="text-slate-400 hover:text-mercatto-accent transition-colors">{isEn ? 'Supplier Access' : 'Acceso Proveedores'}</Link></li>
+              <li><Link to="/registro?rol=VENDEDOR" className="text-mercatto-on-dark/75 hover:text-white transition-colors">{isEn ? 'Open Virtual Store' : 'Crear Tienda Virtual'}</Link></li>
+              <li><Link to="/vendedor" className="text-mercatto-on-dark/75 hover:text-white transition-colors">{t('panel_vendedor')}</Link></li>
+              <li><Link to="/login" className="text-mercatto-on-dark/75 hover:text-white transition-colors">{isEn ? 'Supplier Access' : 'Acceso Proveedores'}</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="text-sm font-bold text-white mb-4">{t('contacto')}</h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link to="/soporte" className="text-violet-400 font-semibold hover:text-white transition-colors flex items-center gap-1.5">
+                <Link to="/soporte" className="text-mercatto-btn-dark font-semibold hover:text-white transition-colors flex items-center gap-1.5">
                   <Headphones size={15} />
                   <span>{isEn ? 'Submit Support Ticket' : 'Crear Ticket de Soporte'}</span>
                 </Link>
               </li>
               <li>
-                <a href="mailto:realmercatto@gmail.com" className="text-slate-400 hover:text-violet-400 transition-colors">
+                <a href="mailto:realmercatto@gmail.com" className="text-mercatto-on-dark/75 hover:text-white transition-colors">
                   realmercatto@gmail.com
                 </a>
               </li>
-              <li><span className="text-slate-400">{isEn ? 'Mon - Sat: 8am - 6pm' : 'Lunes a Sábado: 8am - 6pm'}</span></li>
+              <li><span className="text-mercatto-on-dark/75">{isEn ? 'Mon - Sat: 8am - 6pm' : 'Lunes a Sábado: 8am - 6pm'}</span></li>
             </ul>
           </div>
         </div>
 
-        <div className="pt-8 border-t border-slate-800 text-center text-sm text-slate-500 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="pt-8 border-t border-violet-900/30 text-center text-sm text-mercatto-on-dark/60 flex flex-col md:flex-row justify-between items-center gap-4">
           <p>© {new Date().getFullYear()} Mercatto Marketplace. {t('derechos_reservados')}.</p>
           <div className="flex gap-4">
-            <Link to="/privacidad" className="hover:text-violet-400 transition-colors">{isEn ? 'Privacy Policy' : 'Política de Privacidad'}</Link>
-            <Link to="/terminos" className="hover:text-violet-400 transition-colors">{isEn ? 'Terms & Conditions' : 'Términos y Condiciones'}</Link>
+            <Link to="/privacidad" className="hover:text-white transition-colors">{isEn ? 'Privacy Policy' : 'Política de Privacidad'}</Link>
+            <Link to="/terminos" className="hover:text-white transition-colors">{isEn ? 'Terms & Conditions' : 'Términos y Condiciones'}</Link>
           </div>
         </div>
       </div>

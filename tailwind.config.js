@@ -27,8 +27,7 @@ export default {
           text: '#1F1637',
           muted: '#645D80',
           border: '#E6E1F3',
-          // Compatibilidad adicional
-          accent: '#8B5CF6',
+          accent: '#7655D6',
           neon: '#7C3AED',
           light: '#F8F7FF',
           glow: '#A855F7'
