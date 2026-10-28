@@ -431,10 +431,10 @@ export const PublicChatbot = () => {
   if (esRutaPanel) return null
 
   return (
-    <div className="fixed bottom-3 right-3 sm:bottom-5 sm:right-5 z-40 flex flex-col items-end pointer-events-none font-sans">
+    <div className="fixed bottom-3 right-3 sm:bottom-5 sm:right-5 z-40 flex flex-col items-end pointer-events-none font-sans max-w-[calc(100vw-1.5rem)]">
       {/* Ventana de Atención Flotante (Se coloca ARRIBA de la pestañita) */}
       {abierto && (
-        <div className="pointer-events-auto mb-2.5 w-[calc(100vw-24px)] sm:w-[400px] h-[560px] max-h-[calc(100dvh-85px)] sm:max-h-[calc(100vh-95px)] bg-white dark:bg-slate-900 rounded-3xl border border-mercatto-border dark:border-slate-800 shadow-2xl shadow-mercatto-dark/25 ring-1 ring-mercatto-primary/10 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-200 backdrop-blur-sm">
+        <div className="pointer-events-auto mb-2.5 w-[calc(100vw-1.5rem)] sm:w-[400px] max-w-full h-[min(560px,calc(100dvh-90px))] bg-white dark:bg-slate-900 rounded-3xl border border-mercatto-border dark:border-slate-800 shadow-2xl shadow-mercatto-dark/25 ring-1 ring-mercatto-primary/10 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-200 backdrop-blur-sm">
           
           {/* Header Elegante Degradado */}
           <div className="px-4 sm:px-5 py-3 sm:py-3.5 bg-gradient-to-r from-mercatto-dark via-[#2f2766] to-mercatto-dark text-white flex items-center justify-between border-b border-indigo-500/20 shadow-md shrink-0">
@@ -507,7 +507,7 @@ export const PublicChatbot = () => {
           {/* Contenido Dinámico: Chat o Menú Temas */}
           {vistaActual === 'menu_opciones' ? (
             /* Vista del Menú de Temas Frecuentes */
-            <div className="flex-1 p-4 overflow-y-auto space-y-2.5 bg-mercatto-bg dark:bg-slate-950/40">
+            <div className="flex-1 min-h-0 p-3 sm:p-4 overflow-y-auto overflow-x-hidden space-y-2.5 bg-mercatto-bg dark:bg-slate-950/40">
               <div className="flex items-center justify-between pb-1">
                 <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
                   Temas Frecuentes
@@ -527,10 +527,10 @@ export const PublicChatbot = () => {
                     <button
                       key={op.id}
                       onClick={() => seleccionarOpcion(op.id)}
-                      className="w-full text-left p-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 hover:border-mercatto-primary/60 hover:shadow-md transition group cursor-pointer flex items-center justify-between"
+                      className="w-full min-w-0 text-left p-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 hover:border-mercatto-primary/60 hover:shadow-md transition group cursor-pointer flex items-center justify-between"
                     >
-                      <div className="flex items-center gap-3">
-                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${op.color} shadow-xs`}>
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className={`w-9 h-9 shrink-0 rounded-xl flex items-center justify-center ${op.color} shadow-xs`}>
                           <Icono size={18} />
                         </div>
                         <div>
@@ -550,7 +550,7 @@ export const PublicChatbot = () => {
             </div>
           ) : vistaActual === 'formulario_contacto' ? (
             /* Vista Limpia del Formulario de Solicitud */
-            <div className="flex-1 p-4 overflow-y-auto bg-slate-50/50 dark:bg-slate-950/40">
+            <div className="flex-1 min-h-0 p-3 sm:p-4 overflow-y-auto overflow-x-hidden bg-mercatto-bg dark:bg-slate-950/40">
               <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
                 <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
                   <div className="flex items-center gap-2">
@@ -657,7 +657,7 @@ export const PublicChatbot = () => {
             /* Vista del Historial de Chat */
             <div
               ref={mensajesContainerRef}
-              className="flex-1 p-4 overflow-y-auto space-y-3.5 text-xs bg-mercatto-bg dark:bg-slate-950/50"
+              className="flex-1 min-h-0 p-3 sm:p-4 overflow-y-auto overflow-x-hidden space-y-3.5 text-xs bg-mercatto-bg dark:bg-slate-950/50"
             >
               {mensajes.map((m) => {
                 const esBot = m.remitente === 'bot'
@@ -666,7 +666,7 @@ export const PublicChatbot = () => {
                     key={m.id}
                     className={`flex flex-col ${esBot ? 'items-start' : 'items-end'}`}
                   >
-                    <div className="flex items-end gap-2 max-w-[90%]">
+                    <div className="flex items-end gap-2 max-w-[92%] min-w-0">
                       {esBot && (
                         <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-mercatto-primary to-mercatto-deep text-white flex items-center justify-center shrink-0 mb-1 shadow-xs">
                           <span 
@@ -678,7 +678,7 @@ export const PublicChatbot = () => {
                         </div>
                       )}
                       <div
-                        className={`p-3.5 rounded-2xl leading-relaxed whitespace-pre-line shadow-sm text-xs ${
+                        className={`p-3 sm:p-3.5 min-w-0 break-words rounded-2xl leading-relaxed whitespace-pre-line shadow-sm text-xs ${
                           esBot
                             ? 'bg-white dark:bg-slate-800 border border-mercatto-border dark:border-slate-700/80 text-mercatto-text dark:text-slate-100 rounded-bl-xs'
                             : 'bg-gradient-to-r from-mercatto-primary to-mercatto-deep text-white rounded-br-xs shadow-violet-500/10'
@@ -718,7 +718,7 @@ export const PublicChatbot = () => {
                     </div>
 
                     {esBot && m.sugerencias && (
-                      <div className="flex flex-wrap gap-1.5 mt-2 ml-8 max-w-[92%]">
+                      <div className="flex flex-wrap gap-1.5 mt-2 ml-0 sm:ml-8 max-w-full">
                         {SUGERENCIAS_INICIALES.map((s) => (
                           <button
                             key={s.id}
@@ -735,14 +735,14 @@ export const PublicChatbot = () => {
                       <button
                         type="button"
                         onClick={() => setVistaActual('menu_opciones')}
-                        className="mt-2 ml-8 inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-mercatto-surface dark:bg-slate-800 text-mercatto-deep dark:text-violet-300 border border-mercatto-border dark:border-slate-700 hover:bg-mercatto-soft text-[11px] font-semibold transition cursor-pointer"
+                        className="mt-2 ml-0 sm:ml-8 inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-mercatto-surface dark:bg-slate-800 text-mercatto-deep dark:text-violet-300 border border-mercatto-border dark:border-slate-700 hover:bg-mercatto-soft text-[11px] font-semibold transition cursor-pointer"
                       >
                         <HelpCircle size={12} />
                         <span>Ver más temas</span>
                         <ChevronRight size={12} />
                       </button>
                     )}
-                    <span className={`text-[10px] text-slate-400 mt-1 ${esBot ? 'pl-8' : 'pr-1'}`}>{m.hora}</span>
+                    <span className={`text-[10px] text-slate-400 mt-1 ${esBot ? 'pl-0 sm:pl-8' : 'pr-1'}`}>{m.hora}</span>
                   </div>
                 )
               })}
@@ -770,11 +770,11 @@ export const PublicChatbot = () => {
 
           {/* Barra de Acciones y Entrada de Texto */}
           {vistaActual === 'chat' && (
-            <div className="p-3 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 space-y-2.5 shrink-0">
+            <div className="p-2.5 sm:p-3 min-w-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 space-y-2.5 shrink-0">
               
               {/* Chips de Preguntas Frecuentes Rápidas */}
               <div
-                className="flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px]"
+                className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1 text-[11px]"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               >
                 <button
