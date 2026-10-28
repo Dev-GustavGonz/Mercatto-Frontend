@@ -46,7 +46,9 @@ export const Checkout = () => {
     departamento: 'Bolívar',
     notasEntrega: draftPrevio.direccion?.notasEntrega || '',
   })
-  const [metodoPago, setMetodoPago] = useState(draftPrevio.metodoPago || 'WOMPI')
+  const [metodoPago, setMetodoPago] = useState(() => {
+    return draftPrevio.metodoPago === 'CONTRA_ENTREGA' ? 'CONTRA_ENTREGA' : 'WOMPI'
+  })
   const [loading, setLoading] = useState(false)
   const [pedidoCreado, setPedidoCreado] = useState(null)
   const [pedidoParaWompi, setPedidoParaWompi] = useState(null)

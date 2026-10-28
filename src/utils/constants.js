@@ -30,8 +30,16 @@ export const ESTADOS_PEDIDO = {
 }
 
 export const METODOS_PAGO = [
-  { id: 'WOMPI', nombre: 'Tarjeta de Crédito / Débito', icono: 'CreditCard' },
-  { id: 'NEQUI', nombre: 'Nequi / Daviplata Directo', icono: 'Smartphone' },
-  { id: 'PSE', nombre: 'PSE / Transferencia Bancaria', icono: 'Building' },
-  { id: 'CONTRA_ENTREGA', nombre: 'Pago Contra Entrega (Efectivo)', icono: 'Truck' },
+  {
+    id: 'WOMPI',
+    nombre: 'Otras opciones de pago',
+    descripcion: 'Tarjeta de Crédito / Débito, Nequi y PSE',
+    icono: 'CreditCard',
+  },
+  {
+    id: 'CONTRA_ENTREGA',
+    nombre: 'Pago Contra Entrega (Efectivo)',
+    descripcion: 'Pagas al recibir tu paquete en tu puerta',
+    icono: 'Truck',
+  },
 ]
