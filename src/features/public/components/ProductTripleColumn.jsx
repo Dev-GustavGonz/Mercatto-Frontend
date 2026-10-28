@@ -22,7 +22,6 @@ export const ProductTripleColumn = ({ destacados = [], nuevos = [], masVendidos 
   const { agregarItem } = useCart()
   const { favoriteIds, toggleFavoriteId } = useFavorites()
   const { t, idioma } = useLanguage()
-  const [hoveredItemId, setHoveredItemId] = useState(null)
 
   const isEn = idioma === 'EN'
 
@@ -61,22 +60,15 @@ export const ProductTripleColumn = ({ destacados = [], nuevos = [], masVendidos 
   }
 
   // Renderizador de cada fila compacta de producto Bento
-  const renderItemCard = (prod) => {
+  const renderItemCard = (prod, instanceKey) => {
     const isFav = favoriteIds.includes(prod.id)
-    const esHover = hoveredItemId === prod.id
     const precio = prod.precioOferta || prod.precio || 0
 
     return (
       <div
-        key={prod.id}
-        onMouseEnter={() => setHoveredItemId(prod.id)}
-        onMouseLeave={() => setHoveredItemId(null)}
+        key={instanceKey || prod.id}
         onClick={() => navigate(`/producto/${prod.id}`)}
-        className={`group relative rounded-[24px] sm:rounded-[26px] p-3.5 bg-white dark:bg-slate-900 border transition-all duration-300 flex items-center gap-3.5 cursor-pointer ${
-          esHover
-            ? 'border-violet-500 shadow-lg ring-1 ring-violet-500/20 -translate-y-0.5'
-            : 'border-slate-200/90 dark:border-slate-800 shadow-xs'
-        }`}
+        className="group relative rounded-[24px] sm:rounded-[26px] p-3.5 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-xs hover:border-violet-500 hover:shadow-lg hover:ring-1 hover:ring-violet-500/20 hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-3.5 cursor-pointer"
       >
         {/* Imagen del Producto en Miniatura */}
         <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-1.5 flex items-center justify-center shrink-0 overflow-hidden">
@@ -125,37 +117,35 @@ export const ProductTripleColumn = ({ destacados = [], nuevos = [], masVendidos 
             )}
           </div>
 
-          {/* Botones de acción flotantes al pasar el mouse */}
-          {esHover && (
-            <div 
-              onClick={(e) => e.stopPropagation()} 
-              className="flex items-center gap-1.5 pt-1 animate-fadeIn"
+          {/* Botones de acción flotantes al pasar el mouse (EXCLUSIVO de la tarjeta bajo el cursor) */}
+          <div 
+            onClick={(e) => e.stopPropagation()} 
+            className="hidden group-hover:flex items-center gap-1.5 pt-1 animate-fadeIn"
+          >
+            <button
+              onClick={() => agregarItem(prod)}
+              className="p-1.5 rounded-xl bg-slate-950 text-white dark:bg-white dark:text-slate-950 hover:bg-emerald-500 hover:text-white shadow-xs transition-colors cursor-pointer"
+              title={t('agregar_al_carrito')}
             >
-              <button
-                onClick={() => agregarItem(prod)}
-                className="p-1.5 rounded-xl bg-slate-950 text-white dark:bg-white dark:text-slate-950 hover:bg-emerald-500 hover:text-white shadow-xs transition-colors cursor-pointer"
-                title={t('agregar_al_carrito')}
-              >
-                <ShoppingBag size={13} />
-              </button>
-              <button
-                onClick={() => toggleFavoriteId(prod.id)}
-                className={`p-1.5 rounded-xl transition-colors cursor-pointer ${
-                  isFav ? 'bg-rose-100 text-rose-500' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-rose-500'
-                }`}
-                title={isFav ? t('quitar_favoritos') : t('guardar_favoritos')}
-              >
-                <Heart size={13} fill={isFav ? 'currentColor' : 'none'} />
-              </button>
-              <button
-                onClick={() => navigate(`/producto/${prod.id}`)}
-                className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-violet-600 transition-colors cursor-pointer"
-                title={t('ver_detalle')}
-              >
-                <Eye size={13} />
-              </button>
-            </div>
-          )}
+              <ShoppingBag size={13} />
+            </button>
+            <button
+              onClick={() => toggleFavoriteId(prod.id)}
+              className={`p-1.5 rounded-xl transition-colors cursor-pointer ${
+                isFav ? 'bg-rose-100 text-rose-500' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-rose-500'
+              }`}
+              title={isFav ? t('quitar_favoritos') : t('guardar_favoritos')}
+            >
+              <Heart size={13} fill={isFav ? 'currentColor' : 'none'} />
+            </button>
+            <button
+              onClick={() => navigate(`/producto/${prod.id}`)}
+              className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-violet-600 transition-colors cursor-pointer"
+              title={t('ver_detalle')}
+            >
+              <Eye size={13} />
+            </button>
+          </div>
         </div>
       </div>
     )
@@ -177,7 +167,7 @@ export const ProductTripleColumn = ({ destacados = [], nuevos = [], masVendidos 
           </h3>
         </div>
         <div className="space-y-3">
-          {hotDeals.map(renderItemCard)}
+          {hotDeals.map((prod, idx) => renderItemCard(prod, `deals-${prod.id}-${idx}`))}
         </div>
       </div>
 
@@ -194,7 +184,7 @@ export const ProductTripleColumn = ({ destacados = [], nuevos = [], masVendidos 
           </h3>
         </div>
         <div className="space-y-3">
-          {bestSellers.map(renderItemCard)}
+          {bestSellers.map((prod, idx) => renderItemCard(prod, `bestseller-${prod.id}-${idx}`))}
         </div>
       </div>
 
@@ -211,7 +201,7 @@ export const ProductTripleColumn = ({ destacados = [], nuevos = [], masVendidos 
           </h3>
         </div>
         <div className="space-y-3">
-          {topRated.map(renderItemCard)}
+          {topRated.map((prod, idx) => renderItemCard(prod, `toprated-${prod.id}-${idx}`))}
         </div>
       </div>
 
