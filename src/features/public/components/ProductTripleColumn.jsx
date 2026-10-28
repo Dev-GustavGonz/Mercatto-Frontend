@@ -79,11 +79,11 @@ export const ProductTripleColumn = ({ destacados = [], nuevos = [], masVendidos 
         }`}
       >
         {/* Imagen del Producto en Miniatura */}
-        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#f8f8fc] dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/70 p-1.5 flex items-center justify-center shrink-0 overflow-hidden">
+        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-1.5 flex items-center justify-center shrink-0 overflow-hidden">
           <img
             src={resolveProductImage(prod)}
             alt={prod.titulo}
-            className="max-h-full max-w-full object-contain filter drop-shadow-xs group-hover:scale-108 transition-transform duration-300"
+            className="max-h-full max-w-full object-contain filter drop-shadow-xs group-hover:scale-108 transition-transform duration-300 mix-blend-multiply dark:mix-blend-normal"
             loading="lazy"
           />
         </div>

@@ -25,11 +25,11 @@ export const ProductImages = ({ imagenes = [], titulo = 'Producto' }) => {
       )}
 
       {/* Main Image */}
-      <div className="flex-1 aspect-square rounded-2xl overflow-hidden bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 flex items-center justify-center">
+      <div className="flex-1 aspect-square rounded-2xl overflow-hidden bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex items-center justify-center p-4">
         <img
           src={activa}
           alt={titulo}
-          className="w-full h-full object-contain hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-contain hover:scale-105 transition-transform duration-500 mix-blend-multiply dark:mix-blend-normal"
         />
       </div>
     </div>
