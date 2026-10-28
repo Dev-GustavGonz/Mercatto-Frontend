@@ -346,7 +346,7 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
               <img
                 src={resolveProductImage(productLeft)}
                 alt={productLeft.titulo}
-                className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-500"
+                className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-500 mix-blend-multiply dark:mix-blend-normal"
               />
             </div>
 
@@ -490,11 +490,11 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
                       </div>
 
                       {/* Imagen del producto de la base de datos */}
-                      <div className="relative h-44 sm:h-48 w-full flex items-center justify-center my-1 bg-slate-50/80 dark:bg-slate-800/50 rounded-2xl p-3 border border-slate-100 dark:border-slate-800 overflow-hidden">
+                      <div className="relative h-44 sm:h-48 w-full flex items-center justify-center my-1 bg-white dark:bg-slate-900 rounded-2xl p-3 border border-slate-100 dark:border-slate-800 overflow-hidden">
                         <img
                           src={img}
                           alt={prod.titulo}
-                          className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-300"
+                          className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-300 mix-blend-multiply dark:mix-blend-normal"
                         />
                       </div>
 
