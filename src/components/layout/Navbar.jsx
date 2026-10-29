@@ -8,7 +8,7 @@ import { useCart } from '@/hooks/useCart'
 import { useFavorites } from '@/hooks/useFavorites'
 import { useLanguage } from '@/hooks/useLanguage'
 import { productoService } from '../../features/productos'
-import { tiendaService } from '../../features/tiendas'
+import { tiendaService, vendedorService } from '../../features/tiendas'
 import SearchBar from './SearchBar'
 import MercattoLogo from '../common/MercattoLogo'
 import { 
@@ -48,6 +48,37 @@ export const Navbar = () => {
   const [menuMobile, setMenuMobile] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
+
+  const [nombreTienda, setNombreTienda] = useState(() => {
+    return usuario?.nombreTienda || ''
+  })
+
+  useEffect(() => {
+    if (usuario?.nombreTienda) {
+      setNombreTienda(usuario.nombreTienda)
+    } else if (esVendedor && autenticado) {
+      vendedorService.obtenerPerfil()
+        .then((res) => {
+          if (res?.nombreTienda) {
+            setNombreTienda(res.nombreTienda)
+          }
+        })
+        .catch(() => {})
+    }
+  }, [usuario, esVendedor, autenticado])
+
+  // Obtener la inicial del avatar: para vendedores, la inicial del nombre de la tienda
+  const inicialAvatar = (() => {
+    if (esAdmin) return 'A'
+    if (esVendedor) {
+      const tienda = (nombreTienda || usuario?.nombreTienda || '').trim()
+      if (tienda) {
+        return tienda.charAt(0).toUpperCase()
+      }
+      return (usuario?.nombre?.trim()?.charAt(0).toUpperCase()) || 'T'
+    }
+    return (usuario?.nombre?.trim()?.charAt(0).toUpperCase()) || 'U'
+  })()
 
   // Si estamos dentro del panel de administrador o panel de vendedor, ocultamos la barra pública
   // para que el panel trabaje a pantalla completa con su propio dock y cabecera profesional.
@@ -398,9 +429,9 @@ export const Navbar = () => {
                 className={`w-9 h-9 rounded-full text-white flex items-center justify-center font-black text-xs shadow-xs border border-slate-200 hover:scale-105 transition cursor-pointer ${
                   esAdmin ? 'bg-violet-700' : esVendedor ? 'bg-violet-600' : 'bg-slate-900'
                 }`}
-                title="Opciones de cuenta"
+                title={esVendedor ? (nombreTienda || usuario?.nombreTienda || 'Mi Tienda') : 'Opciones de cuenta'}
               >
-                {esAdmin ? 'A' : esVendedor ? 'V' : (usuario?.nombre?.charAt(0).toUpperCase() || 'U')}
+                {inicialAvatar}
               </button>
 
               {dropdownUser && (
@@ -419,7 +450,9 @@ export const Navbar = () => {
                         {esAdmin ? 'Super Administrador' : esVendedor ? 'Vendedor Verificado' : 'Comprador'}
                       </span>
                     </div>
-                    <p className="font-bold text-slate-900 truncate">{usuario?.nombre || 'Usuario'}</p>
+                    <p className="font-bold text-slate-900 truncate">
+                      {esVendedor ? (nombreTienda || usuario?.nombreTienda || usuario?.nombre || 'Mi Tienda') : (usuario?.nombre || 'Usuario')}
+                    </p>
                     <p className="text-slate-400 text-[11px] truncate">{usuario?.email}</p>
                   </div>
 
@@ -801,7 +834,9 @@ export const Navbar = () => {
               <>
                 <div className="px-3.5 py-2 bg-slate-50 dark:bg-slate-800/60 rounded-xl mb-1 flex items-center justify-between">
                   <div className="min-w-0">
-                    <p className="text-xs font-black text-slate-800 dark:text-white truncate">{usuario?.nombre || 'Mi Cuenta'}</p>
+                    <p className="text-xs font-black text-slate-800 dark:text-white truncate">
+                      {esVendedor ? (nombreTienda || usuario?.nombreTienda || usuario?.nombre || 'Mi Tienda') : (usuario?.nombre || 'Mi Cuenta')}
+                    </p>
                     <p className="text-[10px] text-slate-400 truncate">{usuario?.email}</p>
                   </div>
                   <span className="text-[10px] font-bold px-2 py-0.5 bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-300 rounded-full">
