@@ -128,11 +128,15 @@ export const AboutUs = () => {
             {/* CONTENIDO: MISIÓN */}
             {activeTab === 'mision' && (
               <div className="space-y-4 text-slate-600 dark:text-slate-300 leading-relaxed text-sm sm:text-base">
-                <p>
-                  {isEn
-                    ? 'Our mission is centered on a double commitment: giving companies, official distributors, and entrepreneurs the spotlight and commercial reach they need, while guaranteeing buyers absolute peace of mind.'
-                    : 'Nuestra misión se fundamenta en un doble compromiso: dotar a las empresas, marcas y emprendedores de una vitrina profesional de alta visibilidad para conectar directamente con sus clientes, mientras garantizamos a los compradores una experiencia 100% blindada.'}
-                </p>
+                {isEn ? (
+                  <p>
+                    As our motto states, <strong className="font-black text-slate-900 dark:text-white">"From the neighborhood to your screen"</strong>, our purpose is to bring local businesses, brands, and entrepreneurs directly onto everyone's screen to give them maximum visibility, while providing buyers with total security, trust, and complete peace of mind in every purchase.
+                  </p>
+                ) : (
+                  <p>
+                    Como lo dice nuestro eslogan, <strong className="font-black text-slate-900 dark:text-white">"Del barrio a tu pantalla"</strong>, nuestro propósito es llevar a las empresas, marcas y emprendedores a la pantalla de cada persona para brindarles mayor visibilidad, garantizando a la vez total seguridad y confianza a los usuarios en cada compra.
+                  </p>
+                )}
                 <div className="space-y-2 pt-1">
                   <div className="flex items-start gap-2.5">
                     <CheckCircle2 size={18} className="text-violet-600 dark:text-violet-400 shrink-0 mt-0.5" />
@@ -229,28 +233,26 @@ export const AboutUs = () => {
           </div>
           
           {/* Card del Logo Oficial Mercatto */}
-          <div className="md:w-1/2 relative h-72 sm:h-96 w-full rounded-3xl overflow-hidden shadow-xl border border-slate-200/80 dark:border-slate-800 bg-gradient-to-br from-[#100b2b] via-[#1a1240] to-[#0c0820] flex flex-col items-center justify-center p-6 sm:p-8 text-center select-none group">
-            {/* Glow decorativo de fondo */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-violet-600/25 rounded-full blur-3xl pointer-events-none group-hover:scale-110 transition-transform duration-700" />
-            
-            <div className="relative z-10 flex flex-col items-center space-y-4">
-              <div className="w-28 sm:w-36 h-28 sm:h-36 rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 p-4 sm:p-5 shadow-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+          <div className="md:w-1/2 relative h-72 sm:h-96 w-full rounded-3xl overflow-hidden shadow-xl border border-violet-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col items-center justify-center p-6 sm:p-8 text-center select-none group">
+            {/* Glows decorativos */}
+            <div className="absolute top-0 right-0 w-48 h-48 bg-violet-500/10 rounded-full blur-3xl pointer-events-none group-hover:scale-125 transition-transform duration-700" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="relative z-10 flex flex-col items-center space-y-4 max-w-xs">
+              <div className="w-full flex items-center justify-center p-3 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-100 dark:border-slate-700/60 shadow-md group-hover:scale-105 transition-transform duration-300">
                 <img 
                   src="/logo.png" 
-                  alt="Mercatto Logo Oficial" 
-                  className="max-w-full max-h-full object-contain filter drop-shadow-md"
+                  alt="Mercatto - Del barrio a tu pantalla" 
+                  className="max-h-28 sm:max-h-36 w-auto object-contain filter drop-shadow-xs"
                 />
               </div>
 
-              <div className="space-y-1.5 text-center">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/20 border border-violet-400/30 text-violet-200 text-[10px] font-black uppercase tracking-widest backdrop-blur-md">
-                  <Sparkles size={11} className="text-violet-400" />
+              <div className="space-y-1 text-center">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-50 dark:bg-violet-950/70 border border-violet-200 dark:border-violet-800 text-violet-700 dark:text-violet-300 text-[10px] font-black uppercase tracking-widest shadow-2xs">
+                  <Sparkles size={11} className="text-violet-600 dark:text-violet-400" />
                   <span>Mercatto Marketplace</span>
                 </span>
-                <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                  "Del barrio a tu pantalla"
-                </h3>
-                <p className="text-xs text-slate-300 font-medium max-w-xs">
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold">
                   Cartagena de Indias • Expansión Colombia 2027
                 </p>
               </div>
