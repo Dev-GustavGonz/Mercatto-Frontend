@@ -6,7 +6,6 @@ import {
   MapPin, 
   TrendingUp, 
   Sparkles, 
-  Store, 
   ArrowRight, 
   Compass, 
   Award,
@@ -17,7 +16,7 @@ import {
 import { useLanguage } from '@/hooks/useLanguage'
 
 export const AboutUs = () => {
-  const { idioma, t } = useLanguage()
+  const { idioma } = useLanguage()
   const isEn = idioma === 'EN'
   const [activeTab, setActiveTab] = useState('mision')
 
@@ -158,21 +157,30 @@ export const AboutUs = () => {
             {/* CONTENIDO: VISIÓN */}
             {activeTab === 'vision' && (
               <div className="space-y-4 text-slate-600 dark:text-slate-300 leading-relaxed text-sm sm:text-base">
-                <p>
-                  {isEn
-                    ? 'Today, Mercatto operates with localized exclusivity in Cartagena de Indias, proving our model with local stores, direct deliveries, and trusted local relationships.'
-                    : 'Hoy en día, Mercatto opera con cobertura y enfoque exclusivo en la ciudad de <strong>Cartagena de Indias</strong>, consolidando un ecosistema sólido de tiendas oficiales, entregas oportunas y confianza mutua entre vecinos y comercios.'}
-                </p>
+                {isEn ? (
+                  <p>
+                    Today, Mercatto operates with localized exclusivity in <strong className="font-black text-slate-900 dark:text-white">Cartagena de Indias</strong>, proving our model with verified local stores, direct deliveries, and trusted local relationships.
+                  </p>
+                ) : (
+                  <p>
+                    Hoy en día, Mercatto opera con cobertura y enfoque exclusivo en la ciudad de <strong className="font-black text-slate-900 dark:text-white">Cartagena de Indias</strong>, consolidando un ecosistema sólido de tiendas oficiales, entregas oportunas y confianza mutua entre vecinos y comercios.
+                  </p>
+                )}
+
                 <div className="p-4 rounded-2xl bg-violet-50 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-800/60 space-y-2">
                   <div className="flex items-center gap-2 text-violet-700 dark:text-violet-300 font-black text-sm">
                     <Compass size={16} />
                     <span>{isEn ? 'Vision 2027: Nationwide Colombia' : 'Objetivo 2027: Toda Colombia'}</span>
                   </div>
-                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
-                    {isEn
-                      ? 'In 2027, Mercatto will expand to every department and major city in Colombia, connecting manufacturers, regional brands, and buyers under our signature model of zero fraud and verified stores.'
-                      : 'Nuestra visión es que para el <strong>año 2027</strong> Mercatto extienda sus alas a <strong>todo el territorio nacional</strong>, convirtiéndose en el marketplace oficial multitienda preferido por los colombianos para comprar y vender con respaldo auténtico.'}
-                  </p>
+                  {isEn ? (
+                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+                      In <strong className="font-black text-slate-900 dark:text-white">2027</strong>, Mercatto will expand across <strong className="font-black text-slate-900 dark:text-white">all of Colombia</strong>, connecting manufacturers, regional brands, and buyers under our signature model of zero fraud and verified stores.
+                    </p>
+                  ) : (
+                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+                      Nuestra visión es que para el año <strong className="font-black text-slate-900 dark:text-white">2027</strong> Mercatto extienda sus alas a <strong className="font-black text-slate-900 dark:text-white">todo el territorio nacional</strong>, convirtiéndose en el marketplace oficial multitienda preferido por los colombianos para comprar y vender con respaldo auténtico.
+                    </p>
+                  )}
                 </div>
               </div>
             )}
@@ -180,16 +188,25 @@ export const AboutUs = () => {
             {/* CONTENIDO: HISTORIA */}
             {activeTab === 'historia' && (
               <div className="space-y-4 text-slate-600 dark:text-slate-300 leading-relaxed text-sm sm:text-base">
-                <p>
-                  {isEn
-                    ? 'Mercatto was born on the Caribbean coast in Cartagena de Indias. We observed a stark paradox: countless established businesses and skilled merchants had incredible products, but were invisible in digital commerce due to exorbitant commissions and complex barriers.'
-                    : 'Mercatto nació en las calles y comercios de <strong>Cartagena de Indias</strong>. Observamos una paradoja recurrente: cientos de empresas, ferreterías, tiendas de tecnología, electrodomésticos y moda contaban con productos extraordinarios, pero carecían de una vitrina digital propia que les diera visibilidad real sin que intermediarios abusivos absorbieran sus márgenes.'}
-                </p>
-                <p>
-                  {isEn
-                    ? 'Simultaneously, local buyers felt distrust buying online. We decided to bridge this gap: building "From the neighborhood to your screen" — a transparent marketplace that validates stores and secures funds until delivery is verified.'
-                    : 'Al mismo tiempo, los compradores locales sentían incertidumbre comprando en línea. Así nació nuestro lema <strong>"Del barrio a tu pantalla"</strong>: creamos una infraestructura tecnológica robusta que le da vitrina digna a las empresas de la ciudad y blinda el dinero de los usuarios mediante pagos bancarios protegidos.'}
-                </p>
+                {isEn ? (
+                  <p>
+                    Mercatto was born in the bustling streets and commerce of <strong className="font-black text-slate-900 dark:text-white">Cartagena de Indias</strong>. We observed a recurring paradox: hundreds of businesses, hardware stores, tech shops, home appliances and fashion boutiques had extraordinary products, but lacked their own digital showcase that gave them real visibility without abusive middlemen absorbing their margins.
+                  </p>
+                ) : (
+                  <p>
+                    Mercatto nació en las calles y comercios de <strong className="font-black text-slate-900 dark:text-white">Cartagena de Indias</strong>. Observamos una paradoja recurrente: cientos de empresas, ferreterías, tiendas de tecnología, electrodomésticos y moda contaban con productos extraordinarios, pero carecían de una vitrina digital propia que les diera visibilidad real sin que intermediarios abusivos absorbieran sus márgenes.
+                  </p>
+                )}
+
+                {isEn ? (
+                  <p>
+                    Simultaneously, buyers felt distrust when shopping online. That is how our motto <strong className="font-black text-slate-900 dark:text-white">"From the neighborhood to your screen"</strong> was born: we engineered a robust marketplace that gives dignified digital visibility to local companies and safeguards buyer funds through verified bank escrow.
+                  </p>
+                ) : (
+                  <p>
+                    Al mismo tiempo, los compradores locales sentían incertidumbre comprando en línea. Así nació nuestro lema <strong className="font-black text-slate-900 dark:text-white">"Del barrio a tu pantalla"</strong>: creamos una infraestructura tecnológica robusta que le da vitrina digna a las empresas de la ciudad y blinda el dinero de los usuarios mediante pagos bancarios protegidos.
+                  </p>
+                )}
               </div>
             )}
 
@@ -211,26 +228,32 @@ export const AboutUs = () => {
             </div>
           </div>
           
-          {/* Imagen Ilustrativa Bento */}
-          <div className="md:w-1/2 relative h-72 sm:h-96 w-full rounded-3xl overflow-hidden shadow-xl border border-slate-200/80 dark:border-slate-800 bg-slate-100 dark:bg-slate-800 group">
-            <img 
-              src="https://images.unsplash.com/photo-1556742049-0a67c5574f73?w=1000&auto=format&fit=crop&q=80"
-              alt="Mercatto Comercio Seguro y Visibilidad" 
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/30 to-transparent" />
+          {/* Card del Logo Oficial Mercatto */}
+          <div className="md:w-1/2 relative h-72 sm:h-96 w-full rounded-3xl overflow-hidden shadow-xl border border-slate-200/80 dark:border-slate-800 bg-gradient-to-br from-[#100b2b] via-[#1a1240] to-[#0c0820] flex flex-col items-center justify-center p-6 sm:p-8 text-center select-none group">
+            {/* Glow decorativo de fondo */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-violet-600/25 rounded-full blur-3xl pointer-events-none group-hover:scale-110 transition-transform duration-700" />
             
-            <div className="absolute bottom-5 left-5 right-5 text-white space-y-1">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-600/90 text-[10px] font-black uppercase tracking-wider backdrop-blur-md">
-                <Sparkles size={11} />
-                <span>Mercatto Marketplace</span>
-              </span>
-              <p className="text-sm sm:text-base font-extrabold text-white">
-                "Del barrio a tu pantalla"
-              </p>
-              <p className="text-[11px] text-slate-300">
-                Cartagena de Indias • Expansión Colombia 2027
-              </p>
+            <div className="relative z-10 flex flex-col items-center space-y-4">
+              <div className="w-28 sm:w-36 h-28 sm:h-36 rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 p-4 sm:p-5 shadow-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                <img 
+                  src="/logo.png" 
+                  alt="Mercatto Logo Oficial" 
+                  className="max-w-full max-h-full object-contain filter drop-shadow-md"
+                />
+              </div>
+
+              <div className="space-y-1.5 text-center">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/20 border border-violet-400/30 text-violet-200 text-[10px] font-black uppercase tracking-widest backdrop-blur-md">
+                  <Sparkles size={11} className="text-violet-400" />
+                  <span>Mercatto Marketplace</span>
+                </span>
+                <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                  "Del barrio a tu pantalla"
+                </h3>
+                <p className="text-xs text-slate-300 font-medium max-w-xs">
+                  Cartagena de Indias • Expansión Colombia 2027
+                </p>
+              </div>
             </div>
           </div>
         </div>
