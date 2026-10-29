@@ -695,6 +695,9 @@ export const MisPedidos = () => {
           setPedidoParaPagar(null)
           cargarPedidos()
         }}
+        onDejarPendiente={() => {
+          setPedidoParaPagar(null)
+        }}
       />
     </div>
   )

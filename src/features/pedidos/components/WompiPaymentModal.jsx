@@ -24,7 +24,8 @@ export const WompiPaymentModal = ({
   metodoInicial = 'WOMPI',
   onPagoCompletado,
   esInvitado = false,
-  onCancelarPedido = null
+  onCancelarPedido = null,
+  onDejarPendiente = null
 }) => {
   const [metodo, setMetodo] = useState(
     metodoInicial === 'NEQUI' ? 'NEQUI' : metodoInicial === 'PSE' ? 'PSE' : 'TARJETA'
@@ -33,6 +34,13 @@ export const WompiPaymentModal = ({
   const [mostrarConfirmarCierre, setMostrarConfirmarCierre] = useState(false)
   const [terminosAceptados, setTerminosAceptados] = useState(true)
   const { success, error: toastError } = useToast()
+
+  // Resetear vista de confirmación cuando se abra o cierre el modal
+  useEffect(() => {
+    if (!isOpen) {
+      setMostrarConfirmarCierre(false)
+    }
+  }, [isOpen])
 
   // Bloquear scroll de la página mientras el modal esté abierto
   useEffect(() => {
@@ -189,7 +197,13 @@ export const WompiPaymentModal = ({
               </button>
               <button
                 type="button"
-                onClick={onClose}
+                onClick={() => {
+                  if (onDejarPendiente) {
+                    onDejarPendiente(pedido)
+                  } else {
+                    onClose()
+                  }
+                }}
                 className="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold cursor-pointer transition text-xs"
               >
                 Dejar Pendiente (Pagaré más tarde)

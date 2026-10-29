@@ -54,6 +54,11 @@ export const Checkout = () => {
   const [pedidoParaWompi, setPedidoParaWompi] = useState(null)
   const [mostrarModalWompi, setMostrarModalWompi] = useState(false)
 
+  // Si los productos del carrito cambian, resetear el pedido guardado en sesión
+  React.useEffect(() => {
+    setPedidoParaWompi(null)
+  }, [items])
+
   // Guardar en tiempo real cualquier cambio en el borrador (tanto para invitado como registrado)
   React.useEffect(() => {
     try {
@@ -157,25 +162,28 @@ export const Checkout = () => {
         notas: direccion.notasEntrega.trim(),
       }
 
-      let pedidoRes
+      // Si ya se generó un pedido en esta sesión de compra, reutilizarlo para NO duplicar registros
+      let pedidoRes = pedidoParaWompi
 
-      if (autenticado) {
-        pedidoRes = await pedidoService.crear({
-          items: itemsPayload,
-          direccionEntrega: payloadDireccion,
-          metodoPago,
-          codigoCupon: cupon?.codigo || null,
-        })
-      } else {
-        pedidoRes = await pedidoService.crearInvitado({
-          email: emailInvitado.trim(),
-          nombre: direccion.nombreCompleto.trim(),
-          telefono: telLimpio,
-          items: itemsPayload,
-          direccionEntrega: payloadDireccion,
-          metodoPago,
-          codigoCupon: cupon?.codigo || null,
-        })
+      if (!pedidoRes?.id) {
+        if (autenticado) {
+          pedidoRes = await pedidoService.crear({
+            items: itemsPayload,
+            direccionEntrega: payloadDireccion,
+            metodoPago,
+            codigoCupon: cupon?.codigo || null,
+          })
+        } else {
+          pedidoRes = await pedidoService.crearInvitado({
+            email: emailInvitado.trim(),
+            nombre: direccion.nombreCompleto.trim(),
+            telefono: telLimpio,
+            items: itemsPayload,
+            direccionEntrega: payloadDireccion,
+            metodoPago,
+            codigoCupon: cupon?.codigo || null,
+          })
+        }
       }
 
       const pagoPayload = {
@@ -262,6 +270,31 @@ export const Checkout = () => {
     } finally {
       setLoading(false)
       procesandoRef.current = false
+    }
+  }
+
+  // Cuando el usuario elige expresamente "Dejar Pendiente (Pagaré más tarde)"
+  const handleDejarPendiente = (pedido) => {
+    limpiarCarrito()
+    limpiarBorradorCheckout()
+    setMostrarModalWompi(false)
+    setPedidoParaWompi(null)
+
+    const cod = pedido?.codigo || pedidoParaWompi?.codigo || ''
+    if (autenticado) {
+      success(
+        idioma === 'EN'
+          ? `Order ${cod} saved as Pending. You can pay it anytime from My Orders.`
+          : `Tu orden ${cod} quedó guardada como Pendiente. Puedes pagarla cuando quieras desde Mis Pedidos.`
+      )
+      navigate('/mis-pedidos')
+    } else {
+      success(
+        idioma === 'EN'
+          ? `Order ${cod} saved as Pending.`
+          : `Tu orden ${cod} quedó registrada como Pendiente de Pago.`
+      )
+      navigate('/rastreo?codigo=' + cod)
     }
   }
 
@@ -371,12 +404,14 @@ export const Checkout = () => {
           limpiarCarrito()
           limpiarBorradorCheckout()
           setMostrarModalWompi(false)
+          setPedidoParaWompi(null)
           navigate('/pago/exitoso?ref=' + refTx)
         }}
         onCancelarPedido={() => {
           setMostrarModalWompi(false)
           setPedidoParaWompi(null)
         }}
+        onDejarPendiente={handleDejarPendiente}
       />
     </div>
   )
