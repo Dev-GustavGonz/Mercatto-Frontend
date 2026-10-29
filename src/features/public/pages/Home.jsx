@@ -73,13 +73,34 @@ export const Home = () => {
         const listaElite = eliteData?.content || []
         setProductosElite(listaElite)
         
-        // Pool unificado de todos los productos disponibles garantizando que ningún producto se pierda
+        // Prioridad de membresía comercial garantizada: ELITE > PRO > STARTER
+        const getPlanWeight = (prod) => {
+          let s = (prod?.vendedor?.tipoSuscripcion || prod?.vendedor?.plan || '').toUpperCase()
+          if (!s && (prod?.vendedor?.id || prod?.vendedorId) && Array.isArray(tiendasData)) {
+            const vId = prod?.vendedor?.id || prod?.vendedorId
+            const match = tiendasData.find(t => String(t.id) === String(vId))
+            if (match) s = (match.tipoSuscripcion || match.plan || '').toUpperCase()
+          }
+          if (s === 'ELITE') return 3
+          if (s === 'PRO') return 2
+          return 1
+        }
+
+        // Pool unificado de todos los productos disponibles garantizando prioridad absoluta a tiendas Élite
         const poolCompleto = [
           ...(Array.isArray(dest) ? dest : []),
           ...(Array.isArray(listaGeneral) ? listaGeneral : []),
           ...(Array.isArray(masVend) ? masVend : []),
           ...(Array.isArray(nuev) ? nuev : [])
-        ].filter((p, idx, arr) => p && p.id && arr.findIndex(item => item.id === p.id) === idx)
+        ]
+          .filter((p, idx, arr) => p && p.id && arr.findIndex(item => item.id === p.id) === idx)
+          .sort((a, b) => {
+            const wB = getPlanWeight(b)
+            const wA = getPlanWeight(a)
+            if (wB !== wA) return wB - wA
+            if (b.destacado !== a.destacado) return (b.destacado ? 1 : 0) - (a.destacado ? 1 : 0)
+            return (b.totalVentas || 0) - (a.totalVentas || 0)
+          })
 
         setDestacados(poolCompleto)
         setNuevos(nuev && nuev.length > 0 ? nuev : poolCompleto.slice(0, 8))

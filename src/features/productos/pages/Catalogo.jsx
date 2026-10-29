@@ -43,6 +43,21 @@ export const Catalogo = () => {
         if (soloElite) {
           items = items.filter(p => (p.vendedor?.tipoSuscripcion || p.vendedor?.plan || '').toUpperCase() === 'ELITE')
         }
+        // Si no hay un orden de precio o ventas explícito, priorizar por membresía: ÉLITE > PRO > STARTER
+        if (!orden || orden === 'recientes') {
+          items.sort((a, b) => {
+            const getPriority = (p) => {
+              const s = (p.vendedor?.tipoSuscripcion || p.vendedor?.plan || '').toUpperCase()
+              if (s === 'ELITE') return 3
+              if (s === 'PRO') return 2
+              return 1
+            }
+            const pDiff = getPriority(b) - getPriority(a)
+            if (pDiff !== 0) return pDiff
+            if (b.destacado !== a.destacado) return (b.destacado ? 1 : 0) - (a.destacado ? 1 : 0)
+            return (b.totalVentas || 0) - (a.totalVentas || 0)
+          })
+        }
         setProductos(items)
         setTotalPages(data.totalPages || 0)
       } catch {
