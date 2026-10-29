@@ -32,6 +32,7 @@ export const Home = () => {
   const [destacados, setDestacados] = useState([])
   const [nuevos, setNuevos] = useState([])
   const [masVendidos, setMasVendidos] = useState([])
+  const [productosElite, setProductosElite] = useState([])
   const [tiendas, setTiendas] = useState([])
   const [categorias, setCategorias] = useState([])
   const [loading, setLoading] = useState(true)
@@ -59,15 +60,18 @@ export const Home = () => {
   useEffect(() => {
     const cargarDatos = async () => {
       try {
-        const [dest, nuev, masVend, tiendasData, catsData, allProdsData] = await Promise.all([
+        const [dest, nuev, masVend, tiendasData, catsData, allProdsData, eliteData] = await Promise.all([
           productoService.obtenerDestacados().catch(() => []),
           productoService.obtenerNuevos().catch(() => []),
           productoService.obtenerMasVendidos().catch(() => []),
           tiendaService.listarTiendas().catch(() => []),
           productoService.listarCategorias().catch(() => []),
-          productoService.listar({ tamano: 50 }).catch(() => ({ content: [] }))
+          productoService.listar({ tamano: 50 }).catch(() => ({ content: [] })),
+          productoService.listar({ soloElite: true, tamano: 12 }).catch(() => ({ content: [] }))
         ])
         const listaGeneral = allProdsData?.content || []
+        const listaElite = eliteData?.content || []
+        setProductosElite(listaElite)
         
         // Pool unificado de todos los productos disponibles garantizando que ningún producto se pierda
         const poolCompleto = [
@@ -168,7 +172,7 @@ export const Home = () => {
         {/* 5. NUESTROS PRODUCTOS DESTACADOS PRO                      */}
         {/* ========================================================= */}
         <section>
-          <FeaturedShowcase productos={destacados} tiendas={tiendas} />
+          <FeaturedShowcase productos={productosElite.length > 0 ? productosElite : destacados} tiendas={tiendas} />
         </section>
 
         {/* ========================================================= */}

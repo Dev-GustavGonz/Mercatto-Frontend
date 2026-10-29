@@ -25,10 +25,28 @@ export const FeaturedShowcase = ({ productos = [], tiendas = [] }) => {
 
   const isEn = idioma === 'EN'
 
-  // Mostramos todos los productos destacados de la base de datos sin restricciones
+  // Filtrar exclusivamente productos de vendedores con membresía ELITE
   const items = useMemo(() => {
-    return Array.isArray(productos) ? productos.slice(0, 4) : []
-  }, [productos])
+    if (!Array.isArray(productos)) return []
+
+    const esTiendaElite = (p) => {
+      // 1. Verificar plan directamente en el vendedor del producto
+      const planDirecto = (p?.vendedor?.tipoSuscripcion || p?.vendedor?.plan || '').toUpperCase()
+      if (planDirecto === 'ELITE') return true
+
+      // 2. Cruzar con la lista de tiendas activas
+      const vId = p?.vendedor?.id || p?.vendedorId
+      if (vId && Array.isArray(tiendas)) {
+        const t = tiendas.find(item => String(item.id) === String(vId))
+        if (t && (t.tipoSuscripcion || t.plan || '').toUpperCase() === 'ELITE') {
+          return true
+        }
+      }
+      return false
+    }
+
+    return productos.filter(esTiendaElite).slice(0, 4)
+  }, [productos, tiendas])
 
   if (!items || items.length === 0) {
     return null
