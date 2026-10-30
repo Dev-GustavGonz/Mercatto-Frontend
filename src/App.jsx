@@ -5,6 +5,7 @@ import { CartProvider } from './context/CartContext'
 import { ToastProvider } from './context/ToastContext'
 import { FavoritesProvider } from './context/FavoritesContext'
 import { LanguageProvider } from './context/LanguageContext'
+import { ThemeProvider } from './context/ThemeContext'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 // Common Layout & Components
@@ -190,9 +191,11 @@ function App() {
           <FavoritesProvider>
             <CartProvider>
               <LanguageProvider>
-                <ErrorBoundary>
-                  <AppLayout />
-                </ErrorBoundary>
+                <ThemeProvider>
+                  <ErrorBoundary>
+                    <AppLayout />
+                  </ErrorBoundary>
+                </ThemeProvider>
               </LanguageProvider>
             </CartProvider>
           </FavoritesProvider>

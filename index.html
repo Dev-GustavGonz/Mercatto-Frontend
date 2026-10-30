@@ -12,6 +12,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Pacifico&family=Plus+Jakarta+Sans:wght@800;900&display=swap" rel="stylesheet">
     <!-- Pasarela Oficial Wompi Bancolombia -->
     <script type="text/javascript" src="https://checkout.wompi.co/widget.js" async defer></script>
+    <!-- Script de inicialización de Tema para evitar parpadeos -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('mercatto_theme');
+          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (saved === 'dark' || (!saved && prefersDark)) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.colorScheme = 'dark';
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.style.colorScheme = 'light';
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
