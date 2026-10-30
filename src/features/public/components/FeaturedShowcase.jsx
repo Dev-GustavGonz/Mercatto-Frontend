@@ -171,12 +171,12 @@ export const FeaturedShowcase = ({ productos = [], tiendas = [] }) => {
                 {/* Imagen del Producto */}
                 <div 
                   onClick={() => navigate(`/producto/${prod.id}`)}
-                  className="relative w-full h-44 sm:h-48 rounded-2xl bg-white dark:bg-white/95 border border-slate-100 dark:border-white/10 shadow-xs flex items-center justify-center p-3 cursor-pointer select-none overflow-hidden group-hover:border-violet-300 dark:group-hover:border-violet-400 transition-all"
+                  className="relative w-full h-44 sm:h-48 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xs flex items-center justify-center p-3 cursor-pointer select-none overflow-hidden group-hover:border-violet-300 dark:group-hover:border-violet-700 transition-all"
                 >
                   <img
                     src={resolveProductImage(prod)}
                     alt={prod.titulo}
-                    className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-300 mix-blend-multiply"
+                    className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-300 mix-blend-multiply dark:mix-blend-normal"
                     loading="lazy"
                   />
                 </div>
