@@ -7,7 +7,6 @@ import { useAuth } from '@/hooks/useAuth'
 import { useCart } from '@/hooks/useCart'
 import { useFavorites } from '@/hooks/useFavorites'
 import { useLanguage } from '@/hooks/useLanguage'
-import { useTheme } from '@/hooks/useTheme'
 import { productoService } from '../../features/productos'
 import { tiendaService, vendedorService } from '../../features/tiendas'
 import SearchBar from './SearchBar'
@@ -25,8 +24,6 @@ import {
   MessageSquare,
   Globe,
   ChevronDown,
-  Sun,
-  Moon,
   Sparkles,
   Tag,
   Layers,
@@ -43,7 +40,6 @@ export const Navbar = () => {
   const { totalItems, setDrawerAbierto } = useCart()
   const { favoriteIds } = useFavorites()
   const { idioma, cambiarIdioma, t } = useLanguage()
-  const { theme, isDark, toggleTheme } = useTheme()
   const [dropdownUser, setDropdownUser] = useState(false)
   const [dropdownLang, setDropdownLang] = useState(false)
   const [dropdownShop, setDropdownShop] = useState(false)
@@ -153,7 +149,7 @@ export const Navbar = () => {
 
   return (
     <header 
-      className={`sticky top-0 z-50 w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-100/80 dark:border-slate-800/80 transition-all duration-300 ease-in-out ${
+      className={`sticky top-0 z-50 w-full bg-white/95 backdrop-blur-xl transition-all duration-300 ease-in-out ${
         navVisible || menuMobile 
           ? 'translate-y-0 opacity-100' 
           : '-translate-y-full opacity-0 pointer-events-none'
@@ -176,7 +172,7 @@ export const Navbar = () => {
           <span className="hidden lg:block h-5 w-px bg-slate-200/80" />
 
           {/* ENLACES SUPERIORES SEGÚN EL ROL DEL USUARIO */}
-          <nav className="hidden lg:flex items-center gap-1 text-[13.5px] font-semibold text-slate-600 dark:text-slate-300">
+          <nav className="hidden lg:flex items-center gap-1 text-[13.5px] font-semibold text-slate-600">
             
             {/* 1. Catálogo desplegable (disponible para todos para inspeccionar productos) */}
             <div 
@@ -357,7 +353,7 @@ export const Navbar = () => {
           <div className="relative">
             <button 
               onClick={() => setDropdownLang(!dropdownLang)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100/85 hover:bg-slate-200/70 dark:bg-slate-800 dark:hover:bg-slate-700/80 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white transition cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100/85 hover:bg-slate-200/70 text-xs font-semibold text-slate-700 hover:text-slate-950 transition cursor-pointer"
               title="Cambiar idioma"
             >
               <Globe size={13} className="text-emerald-600" />
@@ -365,16 +361,16 @@ export const Navbar = () => {
               <ChevronDown size={12} className="text-slate-400" />
             </button>
             {dropdownLang && (
-              <div className="absolute right-0 mt-2 w-32 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl shadow-[0_15px_40px_rgba(15,23,42,0.12)] dark:shadow-[0_15px_40px_rgba(0,0,0,0.4)] py-1.5 z-50 text-xs font-semibold">
+              <div className="absolute right-0 mt-2 w-32 bg-white border border-slate-100 rounded-2xl shadow-[0_15px_40px_rgba(15,23,42,0.12)] py-1.5 z-50 text-xs font-semibold">
                 <button 
                   onClick={() => { cambiarIdioma('es'); setDropdownLang(false); }}
-                  className="w-full text-left px-3.5 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer"
+                  className="w-full text-left px-3.5 py-1.5 hover:bg-slate-50 text-slate-700 cursor-pointer"
                 >
                   🇨🇴 Español
                 </button>
                 <button 
                   onClick={() => { cambiarIdioma('en'); setDropdownLang(false); }}
-                  className="w-full text-left px-3.5 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer"
+                  className="w-full text-left px-3.5 py-1.5 hover:bg-slate-50 text-slate-700 cursor-pointer"
                 >
                   🇺🇸 English
                 </button>
@@ -382,24 +378,13 @@ export const Navbar = () => {
             )}
           </div>
 
-          {/* Botón Modo Oscuro / Modo Claro (al lado del idioma) */}
-          <button
-            type="button"
-            onClick={toggleTheme}
-            aria-label={isDark ? (idioma === 'EN' ? 'Switch to Light Mode' : 'Cambiar a modo claro') : (idioma === 'EN' ? 'Switch to Dark Mode' : 'Cambiar a modo oscuro')}
-            title={isDark ? (idioma === 'EN' ? 'Switch to Light Mode' : 'Cambiar a modo claro') : (idioma === 'EN' ? 'Switch to Dark Mode' : 'Cambiar a modo oscuro')}
-            className="flex items-center justify-center w-8 h-8 rounded-full bg-slate-100/85 hover:bg-slate-200/70 dark:bg-slate-800 dark:hover:bg-slate-700/80 text-slate-700 dark:text-amber-400 hover:text-slate-950 dark:hover:text-amber-300 transition cursor-pointer shrink-0"
-          >
-            {isDark ? <Sun size={15} className="text-amber-400" /> : <Moon size={15} className="text-slate-700" />}
-          </button>
-
-          <span className="hidden sm:block h-5 w-px bg-slate-200/80 dark:bg-slate-700" />
+          <span className="hidden sm:block h-5 w-px bg-slate-200/80" />
 
           {/* Carrito de Compras (SOLO para compradores, NO vendedor ni admin) */}
           {!esAdminOVendedor && (
             <button
               onClick={() => setDrawerAbierto(true)}
-              className="w-9 h-9 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white transition relative flex items-center justify-center cursor-pointer"
+              className="w-9 h-9 rounded-full hover:bg-slate-100 text-slate-700 hover:text-slate-950 transition relative flex items-center justify-center cursor-pointer"
               title="Carrito de compras"
             >
               <ShoppingBag size={19} />
@@ -430,7 +415,7 @@ export const Navbar = () => {
           {/* Acceso a Centro de Ayuda & Soporte */}
           <Link
             to="/soporte"
-            className="w-9 h-9 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-violet-600 dark:hover:text-violet-400 transition hidden sm:flex items-center justify-center cursor-pointer"
+            className="w-9 h-9 rounded-full hover:bg-slate-100 text-slate-700 hover:text-violet-600 transition hidden sm:flex items-center justify-center cursor-pointer"
             title="Centro de Soporte & Ayuda"
           >
             <Headphones size={19} />
@@ -450,7 +435,7 @@ export const Navbar = () => {
               </button>
 
               {dropdownUser && (
-                <div className="absolute right-0 mt-3 w-60 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl py-2 z-50 text-xs font-medium text-slate-700 dark:text-slate-200">
+                <div className="absolute right-0 mt-3 w-60 bg-white border border-slate-200 rounded-3xl shadow-2xl py-2 z-50 text-xs font-medium text-slate-700">
                   
                   {/* Encabezado del Perfil */}
                   <div className="px-4 py-3 border-b border-slate-100">
@@ -915,35 +900,23 @@ export const Navbar = () => {
             )}
           </div>
 
-          {/* 6. Selector de Idioma y Modo Oscuro en Móvil */}
+          {/* 6. Selector de Idioma en Móvil */}
           <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between px-1">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{t('idioma') || 'Idioma'}:</span>
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => { cambiarIdioma('es'); setMenuMobile(false); }}
-                  className={`px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer ${idioma === 'ES' ? 'bg-violet-600 text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'}`}
-                >
-                  🇨🇴 ES
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { cambiarIdioma('en'); setMenuMobile(false); }}
-                  className={`px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer ${idioma === 'EN' ? 'bg-violet-600 text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'}`}
-                >
-                  🇺🇸 EN
-                </button>
-              </div>
-
-              {/* Botón Modo Oscuro Móvil */}
+            <span className="text-xs font-semibold text-slate-500">{t('idioma') || 'Idioma'}:</span>
+            <div className="flex items-center gap-1.5">
               <button
                 type="button"
-                onClick={toggleTheme}
-                aria-label={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
-                className="p-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-amber-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition cursor-pointer"
+                onClick={() => { cambiarIdioma('es'); setMenuMobile(false); }}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer ${idioma === 'ES' ? 'bg-violet-600 text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'}`}
               >
-                {isDark ? <Sun size={15} /> : <Moon size={15} />}
+                🇨🇴 ES
+              </button>
+              <button
+                type="button"
+                onClick={() => { cambiarIdioma('en'); setMenuMobile(false); }}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer ${idioma === 'EN' ? 'bg-violet-600 text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'}`}
+              >
+                🇺🇸 EN
               </button>
             </div>
           </div>
