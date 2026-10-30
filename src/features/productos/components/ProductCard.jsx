@@ -8,7 +8,7 @@ import { useLanguage } from '@/hooks/useLanguage'
 import { productoService } from '@/features/productos'
 import { formatCurrency } from '@/utils/formatCurrency'
 import { resolveProductImage } from '@/utils/productUtils'
-import { ShoppingCart, Heart, MessageSquare, Store, Star, Zap } from 'lucide-react'
+import { ShoppingCart, Heart, MessageSquare, Store, Star, Zap, CheckCircle2 } from 'lucide-react'
 
 export const ProductCard = ({ producto, onContactClick }) => {
   const { agregarItem } = useCart()
@@ -34,6 +34,10 @@ export const ProductCard = ({ producto, onContactClick }) => {
     : 0
 
   const precioFinal = tieneDescuentoReal ? producto.precioOferta : producto.precio
+
+  const planVendedor = (producto.vendedor?.tipoSuscripcion || producto.vendedor?.plan || '').toUpperCase()
+  const esElite = planVendedor === 'ELITE'
+  const esPro = planVendedor === 'PRO' || planVendedor === 'PROFESIONAL'
 
   const handleToggleFavorito = async (e) => {
     e.preventDefault()
@@ -77,10 +81,16 @@ export const ProductCard = ({ producto, onContactClick }) => {
     >
       {/* Insignias superiores flotantes */}
       <div className="absolute top-3 left-3 z-10 flex flex-col gap-1 items-start max-w-[70%]">
-        {(producto.vendedor?.tipoSuscripcion === 'ELITE' || producto.vendedor?.plan === 'ELITE') && (
+        {esElite && (
           <span className="inline-flex items-center gap-1 bg-mercatto-elite-bg text-mercatto-elite-text border border-amber-300/60 text-[9.5px] sm:text-[10px] font-black px-2 py-0.5 rounded-full shadow-md tracking-wider">
             <span>👑</span>
             <span>Élite</span>
+          </span>
+        )}
+        {esPro && (
+          <span className="inline-flex items-center gap-1 bg-violet-100 text-violet-800 border border-violet-200/90 text-[9.5px] sm:text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs tracking-wider">
+            <CheckCircle2 size={11} className="text-violet-600 stroke-[2.5]" />
+            <span>Verificado</span>
           </span>
         )}
         {tieneDescuentoReal && (
@@ -136,6 +146,12 @@ export const ProductCard = ({ producto, onContactClick }) => {
           >
             <Store size={11} className="shrink-0 text-violet-500" />
             <span className="truncate">{producto.vendedor.nombreTienda}</span>
+            {esPro && (
+              <CheckCircle2 size={11} className="shrink-0 text-violet-600 stroke-[2.5]" title="Tienda PRO Verificada" />
+            )}
+            {esElite && (
+              <span className="shrink-0 text-[10px]" title="Tienda Élite Oficial">👑</span>
+            )}
           </span>
         )}
       </div>

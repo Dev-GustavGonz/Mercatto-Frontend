@@ -14,7 +14,7 @@ import ProductReviews from '../components/ProductReviews'
 import ModalContactoVendedor from '../components/ModalContactoVendedor'
 import Button from '@/components/common/Button'
 import Spinner from '@/components/common/Spinner'
-import { ShoppingBag, Heart, MessageSquare, Store, ShieldCheck, Truck, RefreshCw, ChevronRight } from 'lucide-react'
+import { ShoppingBag, Heart, MessageSquare, Store, ShieldCheck, Truck, RefreshCw, ChevronRight, CheckCircle2 } from 'lucide-react'
 
 export const DetalleProducto = () => {
   const { id } = useParams()
@@ -181,8 +181,20 @@ export const DetalleProducto = () => {
                 <p className="text-[11px] text-slate-400 font-medium">
                   {esMiProducto ? (idioma === 'EN' ? 'Your registered store' : 'Tu tienda registrada') : t('vendido_por')}
                 </p>
-                <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover/vendor:text-mercatto-primary transition flex items-center gap-1">
+                <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover/vendor:text-mercatto-primary transition flex items-center gap-1.5 flex-wrap">
                   <span>{producto.vendedor?.nombreTienda || 'Tienda Oficial Mercatto'}</span>
+                  {((producto.vendedor?.tipoSuscripcion || producto.vendedor?.plan || '').toUpperCase() === 'PRO' || (producto.vendedor?.tipoSuscripcion || producto.vendedor?.plan || '').toUpperCase() === 'PROFESIONAL') && (
+                    <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-violet-100 text-violet-700 text-[10px] font-extrabold border border-violet-200">
+                      <CheckCircle2 size={10} className="text-violet-600 stroke-[2.5]" />
+                      <span>Verificado</span>
+                    </span>
+                  )}
+                  {((producto.vendedor?.tipoSuscripcion || producto.vendedor?.plan || '').toUpperCase() === 'ELITE') && (
+                    <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-extrabold border border-amber-200">
+                      <span>👑</span>
+                      <span>Élite</span>
+                    </span>
+                  )}
                   <span className="text-[10px] text-indigo-500 font-normal">→ {t('ver_tienda')}</span>
                 </h4>
                 <span className="text-[10px] text-slate-500">
