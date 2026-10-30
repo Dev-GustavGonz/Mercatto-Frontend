@@ -113,11 +113,11 @@ export const PromotionalBento = ({ productos = [], onAddToCart }) => {
 
           {/* Imagen Flotante del Producto */}
           <div className="relative z-10 w-full h-44 flex items-center justify-center p-2 pt-3">
-            <div className="w-full h-full max-w-[240px] bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-100 dark:border-slate-800 p-2.5 shadow-xs flex items-center justify-center overflow-hidden">
+            <div className="w-full h-full max-w-[240px] bg-white dark:bg-white/95 rounded-2xl border border-slate-100 dark:border-white/10 p-2.5 shadow-xs flex items-center justify-center overflow-hidden">
               <img
                 src={imgOferta}
                 alt={pOferta?.titulo || t('oferta_del_mes')}
-                className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-500 mix-blend-multiply dark:mix-blend-normal"
+                className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-500 mix-blend-multiply"
               />
             </div>
           </div>
@@ -178,11 +178,11 @@ export const PromotionalBento = ({ productos = [], onAddToCart }) => {
 
           {/* Imagen Flotante */}
           <div className="relative z-10 w-full h-44 flex items-center justify-center p-2 pt-3">
-            <div className="w-full h-full max-w-[240px] bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-100 dark:border-slate-800 p-2.5 shadow-xs flex items-center justify-center overflow-hidden">
+            <div className="w-full h-full max-w-[240px] bg-white dark:bg-white/95 rounded-2xl border border-slate-100 dark:border-white/10 p-2.5 shadow-xs flex items-center justify-center overflow-hidden">
               <img
                 src={imgNovedad}
                 alt={pNovedad?.titulo || t('audio_pro_titulo')}
-                className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-500 mix-blend-multiply dark:mix-blend-normal"
+                className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-500 mix-blend-multiply"
               />
             </div>
           </div>
@@ -240,11 +240,11 @@ export const PromotionalBento = ({ productos = [], onAddToCart }) => {
 
           {/* Imagen del Producto */}
           <div className="relative z-10 w-full h-44 flex items-center justify-center p-2 pt-3">
-            <div className="w-full h-full max-w-[240px] bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-100 dark:border-slate-800 p-2.5 shadow-xs flex items-center justify-center overflow-hidden">
+            <div className="w-full h-full max-w-[240px] bg-white dark:bg-white/95 rounded-2xl border border-slate-100 dark:border-white/10 p-2.5 shadow-xs flex items-center justify-center overflow-hidden">
               <img
                 src={imgTemporada}
                 alt={pTemporada?.titulo || t('equipamiento_pro')}
-                className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-500 mix-blend-multiply dark:mix-blend-normal"
+                className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-500 mix-blend-multiply"
               />
             </div>
           </div>

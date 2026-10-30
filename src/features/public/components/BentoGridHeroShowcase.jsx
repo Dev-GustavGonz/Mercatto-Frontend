@@ -185,7 +185,7 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
                     key={currentHero.id}
                     src={resolveProductImage(currentHero)}
                     alt={currentHero.titulo}
-                    className="max-h-full max-w-full object-contain rounded-2xl filter drop-shadow-sm group-hover:scale-105 transition-all duration-500 ease-out mix-blend-multiply dark:mix-blend-normal"
+                    className="max-h-full max-w-full object-contain rounded-2xl filter drop-shadow-sm group-hover:scale-105 transition-all duration-500 ease-out mix-blend-multiply"
                   />
                 </div>
 
@@ -259,11 +259,11 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
             </div>
 
             {/* Imagen centrada del producto real */}
-            <div className="relative w-full h-48 sm:h-56 flex items-center justify-center p-3 my-auto bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 shadow-xs dark:border-slate-800 overflow-hidden">
+            <div className="relative w-full h-48 sm:h-56 flex items-center justify-center p-3 my-auto bg-white dark:bg-white/95 rounded-2xl border border-slate-200/90 shadow-xs dark:border-white/10 overflow-hidden">
               <img
                 src={resolveProductImage(productTopRight)}
                 alt={productTopRight.titulo}
-                className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-500 mix-blend-multiply dark:mix-blend-normal"
+                className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-500 mix-blend-multiply"
               />
             </div>
 
@@ -342,11 +342,11 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
             </div>
 
             {/* Imagen del producto real */}
-            <div className="relative w-full h-56 sm:h-64 flex items-center justify-center p-3 my-auto bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 shadow-xs dark:border-slate-800 overflow-hidden">
+            <div className="relative w-full h-56 sm:h-64 flex items-center justify-center p-3 my-auto bg-white dark:bg-white/95 rounded-2xl border border-slate-200/90 shadow-xs dark:border-white/10 overflow-hidden">
               <img
                 src={resolveProductImage(productLeft)}
                 alt={productLeft.titulo}
-                className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-500 mix-blend-multiply dark:mix-blend-normal"
+                className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-500 mix-blend-multiply"
               />
             </div>
 
@@ -490,11 +490,11 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
                       </div>
 
                       {/* Imagen del producto de la base de datos */}
-                      <div className="relative h-44 sm:h-48 w-full flex items-center justify-center my-1 bg-white dark:bg-slate-900 rounded-2xl p-3 border border-slate-100 dark:border-slate-800 overflow-hidden">
+                      <div className="relative h-44 sm:h-48 w-full flex items-center justify-center my-1 bg-white dark:bg-white/95 rounded-2xl p-3 border border-slate-100 dark:border-white/10 overflow-hidden">
                         <img
                           src={img}
                           alt={prod.titulo}
-                          className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-300 mix-blend-multiply dark:mix-blend-normal"
+                          className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-300 mix-blend-multiply"
                         />
                       </div>
 

@@ -33,8 +33,101 @@
   --h-text: #0F172A;
 }
 
+html.dark {
+  color-scheme: dark;
+  --m-primary: #8b5cf6;
+  --m-primary-deep: #7c3aed;
+  --m-lavender: #2d244c;
+  --m-violet-soft: #231b3e;
+  --m-surface: #161226;
+  --m-bg: #0d0a1a;
+  --m-dark: #0f0b1e;
+  --m-on-dark: #c4b5fd;
+  --m-btn-on-dark: #ddd6fe;
+  --m-text: #f5f3ff;
+  --m-text-muted: #a59cc0;
+  --m-border: #282046;
+}
+
 @layer base {
   body {
-    @apply bg-mercatto-bg text-mercatto-text antialiased dark:bg-slate-950 dark:text-slate-100;
+    @apply bg-mercatto-bg text-mercatto-text antialiased;
   }
+  html.dark body {
+    background-color: #0d0a1a !important;
+    color: #f5f3ff !important;
+  }
+}
+
+/* ==================================================================== */
+/* ARMONÍA MERCATTO NOCHE: MODO OSCURO ELEGANTE, SUAVE Y CUIDADO        */
+/* ==================================================================== */
+
+/* Fondos armonizados con tono violeta noche de lujo */
+html.dark .dark\:bg-slate-950 {
+  background-color: #0d0a1a !important;
+}
+
+html.dark .dark\:bg-slate-900 {
+  background-color: #161226 !important;
+}
+
+html.dark .dark\:bg-slate-800 {
+  background-color: #211a38 !important;
+}
+
+html.dark .dark\:bg-slate-800\/90 {
+  background-color: rgba(33, 26, 56, 0.9) !important;
+}
+
+html.dark .dark\:bg-slate-800\/80 {
+  background-color: rgba(33, 26, 56, 0.8) !important;
+}
+
+html.dark .dark\:bg-slate-800\/60,
+html.dark .dark\:bg-slate-800\/50,
+html.dark .dark\:bg-slate-800\/40 {
+  background-color: rgba(33, 26, 56, 0.6) !important;
+}
+
+html.dark .dark\:bg-slate-700 {
+  background-color: #2e244e !important;
+}
+
+/* Bordes suaves con tinte índigo/violeta nocturno */
+html.dark .dark\:border-slate-800 {
+  border-color: rgba(167, 139, 250, 0.14) !important;
+}
+
+html.dark .dark\:border-slate-700 {
+  border-color: rgba(167, 139, 250, 0.24) !important;
+}
+
+html.dark .dark\:border-mercatto-border {
+  border-color: rgba(167, 139, 250, 0.14) !important;
+}
+
+/* Tipografía y textos de alto confort visual */
+html.dark .dark\:text-white {
+  color: #f8f7ff !important;
+}
+
+html.dark .dark\:text-slate-100 {
+  color: #f5f3ff !important;
+}
+
+html.dark .dark\:text-slate-200 {
+  color: #ede9fe !important;
+}
+
+html.dark .dark\:text-slate-300 {
+  color: #ddd6fe !important;
+}
+
+html.dark .dark\:text-slate-400 {
+  color: #a59cc0 !important;
+}
+
+html.dark .dark\:text-slate-500 {
+  color: #837a9f !important;
 }

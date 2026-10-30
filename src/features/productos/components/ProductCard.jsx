@@ -104,11 +104,11 @@ export const ProductCard = ({ producto, onContactClick }) => {
       </button>
 
       {/* Contenedor de Imagen con fondo blanco limpio para que fotos con fondo blanco se integren sin bordes */}
-      <div className="relative h-36 sm:h-44 w-full flex items-center justify-center rounded-xl sm:rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-2.5 sm:p-3 mt-4 overflow-hidden group-hover:border-violet-200 dark:group-hover:border-violet-700/60 shadow-2xs transition-all">
+      <div className="relative h-36 sm:h-44 w-full flex items-center justify-center rounded-xl sm:rounded-2xl bg-white dark:bg-white/95 border border-slate-100 dark:border-white/10 p-2.5 sm:p-3 mt-4 overflow-hidden group-hover:border-violet-200 dark:group-hover:border-violet-400 shadow-2xs transition-all">
         <img
           src={imagenPrincipal}
           alt={producto.titulo}
-          className="max-h-full max-w-full object-contain rounded-xl group-hover:scale-108 transition-transform duration-500 drop-shadow-sm mix-blend-multiply dark:mix-blend-normal"
+          className="max-h-full max-w-full object-contain rounded-xl group-hover:scale-108 transition-transform duration-500 drop-shadow-sm mix-blend-multiply"
           loading="lazy"
         />
       </div>

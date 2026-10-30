@@ -388,9 +388,9 @@ export const Navbar = () => {
             onClick={toggleTheme}
             aria-label={isDark ? (idioma === 'EN' ? 'Switch to Light Mode' : 'Cambiar a modo claro') : (idioma === 'EN' ? 'Switch to Dark Mode' : 'Cambiar a modo oscuro')}
             title={isDark ? (idioma === 'EN' ? 'Switch to Light Mode' : 'Cambiar a modo claro') : (idioma === 'EN' ? 'Switch to Dark Mode' : 'Cambiar a modo oscuro')}
-            className="flex items-center justify-center w-8 h-8 rounded-full bg-slate-100/85 hover:bg-slate-200/70 dark:bg-slate-800 dark:hover:bg-slate-700/80 text-slate-700 dark:text-amber-400 hover:text-slate-950 dark:hover:text-amber-300 transition cursor-pointer shrink-0"
+            className="flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-violet-950/60 dark:hover:bg-violet-900/60 border border-transparent dark:border-violet-700/40 text-slate-700 dark:text-amber-300 hover:text-slate-950 dark:hover:text-amber-200 transition-all cursor-pointer shrink-0 shadow-xs"
           >
-            {isDark ? <Sun size={15} className="text-amber-400" /> : <Moon size={15} className="text-slate-700" />}
+            {isDark ? <Sun size={15} className="text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.5)]" /> : <Moon size={15} className="text-slate-700" />}
           </button>
 
           <span className="hidden sm:block h-5 w-px bg-slate-200/80 dark:bg-slate-700" />
