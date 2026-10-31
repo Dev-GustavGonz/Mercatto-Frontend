@@ -33,18 +33,18 @@ export const pagoService = {
     return res.data
   },
 
-  confirmarPago: async (pedidoId, transaccionId) => {
-    const res = await api.post('/pagos/confirmar', { pedidoId, transaccionId })
+  confirmarPago: async (pedidoId, transaccionId, metodo = null) => {
+    const res = await api.post('/pagos/confirmar', { pedidoId, transaccionId, metodo })
     return res.data
   },
 
-  confirmarPagoInvitado: async (pedidoId, transaccionId) => {
-    const res = await api.post('/pagos/confirmar-invitado', { pedidoId, transaccionId })
+  confirmarPagoInvitado: async (pedidoId, transaccionId, metodo = null) => {
+    const res = await api.post('/pagos/confirmar-invitado', { pedidoId, transaccionId, metodo })
     return res.data
   },
 
-  confirmar: async (pedidoId, transaccionId) => {
-    const res = await api.post('/pagos/confirmar', { pedidoId, transaccionId })
+  confirmar: async (pedidoId, transaccionId, metodo = null) => {
+    const res = await api.post('/pagos/confirmar', { pedidoId, transaccionId, metodo })
     return res.data
   },
 }

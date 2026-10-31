@@ -102,19 +102,25 @@ const SUGERENCIAS_INICIALES = [
 
 const RESPUESTAS_BASE = {
   como_comprar:
-    '🛒 **Comprar en Mercatto es muy sencillo:**\n\n1. Explora el catálogo o busca el producto que necesitas.\n2. Agrégalo a tu carrito (puedes comprar con tu cuenta o como invitado, solo con tu correo).\n3. En el checkout ingresa tu dirección de entrega y, si tienes uno, tu cupón.\n4. Paga de forma segura con Wompi (tarjeta, PSE, Nequi o Bancolombia) o elige pago contra entrega.\n5. Recibirás la confirmación y el recibo por correo electrónico.',
+    '🛒 **Comprar en Mercatto es fácil, rápido y 100% seguro:**\n\n1. **Explora el Catálogo:** Navega entre categorías oficiales o busca tus artículos favoritos.\n2. **Agrega a tu Carrito:** Elige la talla, color o variante que prefieras.\n3. **Compra Fácil:** Puedes comprar con tu cuenta o como **Invitado** indicando solo tu correo, teléfono y dirección de entrega.\n4. **Paga Seguro:** Mediante pasarela certificada Wompi (Tarjetas, PSE, Nequi) o Pago Contra Entrega en efectivo.\n5. **Confirmación y Factura:** Recibirás al instante un correo con el comprobante oficial y el enlace para rastrear tu paquete en vivo.',
+
   medios_pago:
-    '💳 **Medios de pago en Mercatto:**\n\n• **Wompi (pasarela segura de Bancolombia):** tarjetas de crédito y débito, PSE, Nequi y Bancolombia.\n• **Pago contra entrega:** pagas en efectivo cuando recibes tu pedido.\n\nCada pago aprobado genera un recibo en tu correo.',
+    '💳 **Medios de Pago y Protección de Fondos en Mercatto:**\n\n• 📱 **Billeteras Digitales:** Paga al instante desde tu app de **Nequi** o **Daviplata**.\n• 🏦 **Transferencias PSE:** Débito directo desde cualquier banco de Colombia.\n• 💳 **Tarjetas de Crédito y Débito:** Visa, Mastercard y American Express con opción de cuotas.\n• 💵 **Pago Contra Entrega (Efectivo):** Pagas en efectivo al momento de recibir el paquete en tu puerta.\n\n🔒 **Custodia Mercatto Escrow:** Tu dinero está 100% protegido. El vendedor recibe el desembolso únicamente después de que el pedido sea entregado a tu entera satisfacción.',
+
   vender:
-    '🏬 **Vender en Mercatto:**\n\n1. Crea tu cuenta y elige registrarte como vendedor.\n2. Configura el perfil de tu tienda y publica tus productos con fotos, precio y variantes.\n3. Gestiona pedidos, mensajes con compradores y estadísticas desde tu panel.\n\nElige el plan que mejor se ajuste a tu negocio: empieza gratis con **Starter** y crece cuando lo necesites.',
+    '🏪 **¿Cómo Vender en Mercatto y Abrir tu Propia Tienda?:**\n\n¡Abrir tu tienda en Mercatto es gratis y toma menos de 2 minutos!\n\n1. **Regístrate:** Elige el rol **Vendedor** al crear tu cuenta.\n2. **Configura tu Tienda:** Sube tu logo, portada y descripción de tu marca.\n3. **Publica tus Productos:** Agrega fotos, tallas/colores, stock y precios.\n4. **Gestiona tus Ventas:** Panel administrativo completo con analítica de ventas, control de inventario y pedidos en tiempo real.\n\n✨ **Comisión Transparente:** Desde el 2% por venta según el plan que elijas. ¡Sin costos ocultos ni ataduras!',
+
   planes:
-    '✨ **Planes para vendedores:**\n\n• **Starter:** $0 al mes · comisión del **10%** por venta.\n• **Profesional:** $49.000 COP al mes · comisión del **5%** por venta.\n• **Elite Premium:** $99.000 COP al mes · comisión del **2%** por venta, insignia Élite y prioridad en el catálogo.\n\nPuedes cambiar de plan cuando quieras desde tu panel de vendedor.',
+    '👑 **Planes y Comisiones para Vendedores en Mercatto:**\n\n• 🌱 **Plan Starter ($0 COP/mes):** Sin costo fijo mensual y comisión del **10%** por venta. Ideal para emprendedores que inician.\n• 🚀 **Plan Profesional ($49.000 COP/mes):** Comisión reducida del **5%** por venta, perfecto para negocios con ventas constantes.\n• 👑 **Plan Elite Premium ($99.000 COP/mes):** Comisión mínima del **2%**, insignia Élite de tienda verificada y máxima visibilidad en el catálogo.\n\n*Puedes cambiar o pausar tu plan en cualquier momento desde tu panel de vendedor.*',
+
   cupones:
-    '🏷️ **Cupones activos de Mercatto:**\n\n• **MERCATTO10:** 10% de descuento en compras desde $30.000 COP (descuento máximo de $50.000 COP).\n• **BIENVENIDA:** $20.000 COP de descuento en compras desde $100.000 COP.\n\nAplícalos en el carrito o en el checkout antes de pagar.',
+    '🏷️ **Cupones de Descuento Activos en Mercatto:**\n\n• 🎟️ **BIENVENIDA:** **$20.000 COP de descuento** en compras iguales o superiores a $100.000 COP.\n• 🏷️ **MERCATTO10:** **10% de descuento** en artículos seleccionados en compras desde $30.000 COP (ahorro máximo de $50.000 COP).\n\n💡 **¿Cómo aplicarlo?:** Ingresa el código en la casilla *\'Código de cupón\'* en el Carrito o en el Checkout antes de finalizar tu orden.',
+
   envios:
-    '🚚 **Envíos en Mercatto:**\n\nDespachamos a toda Colombia a través de transportadoras aliadas. El envío cuesta **$12.000 COP** y es **gratis en compras desde $150.000 COP**. Cuando tu pedido salga, podrás seguir su estado desde tu cuenta.',
+    '🚚 **Política de Envíos y Tiempos de Entrega:**\n\n• 🎁 **¡Envío Gratis:** En todas tus compras iguales o superiores a **$150.000 COP** en Colombia.\n• 📦 **Tarifa Estándar Fija:** Solo **$12.000 COP** para pedidos menores.\n• ⏱️ **Tiempos de Entrega:**\n  - **Cartagena de Indias:** De 24 a 48 horas hábiles.\n  - **Otras Ciudades de Colombia:** De 48 a 72 horas hábiles.\n• 🚚 **Transportadoras:** Despachos asegurados con Coordinadora, Servientrega e Interrapidísimo.\n• 📸 **Foto de Evidencia:** El vendedor o repartidor carga una foto de prueba física al momento de la entrega.',
+
   rastreo:
-    '📦 **Rastrea tu pedido:**\n\n• Si compraste con tu cuenta, entra a **Mis pedidos** y revisa el estado en tiempo real.\n• Si compraste como invitado, usa tu código de pedido y el correo con el que compraste.\n\nTambién te enviamos por correo la confirmación y el recibo de tu compra.'
+    '📍 **Rastreo de Pedidos en Tiempo Real:**\n\n• **Si compraste con cuenta:** Ingresa a **Mis Pedidos** desde tu menú de usuario para ver el historial y fotos de entrega.\n• **Si compraste como invitado:** Entra a **Rastrear Pedido** (`/rastreo`) e ingresa tu código de orden (ej: `PED-20261031-1045`) y tu correo electrónico.\n\n*Verás el paso a paso en tiempo real y la foto de evidencia cargada por el vendedor al momento de la entrega.*'
 }
 
 export const PublicChatbot = () => {
@@ -278,25 +284,53 @@ export const PublicChatbot = () => {
     }
 
     try {
-      // Llamada directa al agente de Inteligencia Artificial en n8n
-      const n8nUrl = import.meta.env.VITE_N8N_WEBHOOK_URL || 'http://localhost:5678/webhook/mercatto-chat'
-      const response = await fetch(n8nUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          message: texto,
-          sessionId: sessionId
-        })
-      })
+      let respuestaIA = ''
+      let agenteUsado = ''
 
-      if (!response.ok) {
-        throw new Error('Error al conectar con el servidor de IA')
+      // 1. Intentar primero con el servicio Multi-Agente del Backend (failover automático entre múltiples cuentas/tokens)
+      try {
+        const resIa = await api.post('/ia/chat', {
+          message: texto,
+          mensaje: texto,
+          sessionId: sessionId
+        }, { timeout: 25000 })
+
+        const rawReply = resIa?.data?.reply || resIa?.data?.respuesta
+        if (rawReply) {
+          respuestaIA = rawReply
+          agenteUsado = resIa.data.agente
+        }
+      } catch (errBackendIa) {
+        console.warn('Backend IA no disponible o timeout, intentando n8n directo:', errBackendIa)
       }
 
-      const data = await response.json()
-      const respuestaIA = data?.reply || data?.output || 'Disculpa, no pude procesar tu mensaje en este momento.'
+      // 2. Si no respondió el backend, intentar con n8n webhook directo
+      if (!respuestaIA) {
+        try {
+          const n8nUrl = import.meta.env.VITE_N8N_WEBHOOK_URL || 'http://localhost:5678/webhook/mercatto-chat'
+          const response = await fetch(n8nUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              message: texto,
+              sessionId: sessionId
+            })
+          })
+
+          if (response.ok) {
+            const data = await response.json()
+            respuestaIA = data?.reply || data?.output || data?.text
+          }
+        } catch (errN8n) {
+          console.warn('n8n directo falló:', errN8n)
+        }
+      }
+
+      if (!respuestaIA) {
+        throw new Error('Sin respuesta de los agentes')
+      }
 
       setEscribiendo(false)
       setMensajes((prev) => [
@@ -307,11 +341,12 @@ export const PublicChatbot = () => {
           texto: respuestaIA,
           hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           esOpcionSoporte: false,
-          ofrecerMenu: true
+          ofrecerMenu: true,
+          agente: agenteUsado
         }
       ])
     } catch (err) {
-      console.warn('Fallo n8n webhook, usando respuestas de respaldo:', err)
+      console.warn('Fallo agentes IA y n8n, usando respuestas inteligentes locales:', err)
       setEscribiendo(false)
 
       let respuesta = ''

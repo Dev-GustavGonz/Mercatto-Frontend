@@ -152,13 +152,15 @@ export const Checkout = () => {
       }))
 
       const payloadDireccion = {
+        nombreCompleto: direccion.nombreCompleto.trim(),
         nombre: direccion.nombreCompleto.trim(),
         telefono: telLimpio,
         direccion: direccion.direccion.trim(),
         barrio: direccion.barrio.trim(),
-        ciudad: 'Cartagena de Indias',
-        departamento: 'Bolívar',
-        pais: 'Colombia',
+        ciudad: direccion.ciudad || 'Cartagena de Indias',
+        departamento: direccion.departamento || 'Bolívar',
+        codigoPostal: '130001',
+        notasEntrega: direccion.notasEntrega.trim(),
         notas: direccion.notasEntrega.trim(),
       }
 
@@ -169,17 +171,24 @@ export const Checkout = () => {
         if (autenticado) {
           pedidoRes = await pedidoService.crear({
             items: itemsPayload,
+            nuevaDireccion: payloadDireccion,
             direccionEntrega: payloadDireccion,
+            notas: direccion.notasEntrega.trim(),
             metodoPago,
             codigoCupon: cupon?.codigo || null,
           })
         } else {
           pedidoRes = await pedidoService.crearInvitado({
             email: emailInvitado.trim(),
+            emailInvitado: emailInvitado.trim(),
             nombre: direccion.nombreCompleto.trim(),
+            nombreInvitado: direccion.nombreCompleto.trim(),
             telefono: telLimpio,
+            telefonoInvitado: telLimpio,
             items: itemsPayload,
+            nuevaDireccion: payloadDireccion,
             direccionEntrega: payloadDireccion,
+            notas: direccion.notasEntrega.trim(),
             metodoPago,
             codigoCupon: cupon?.codigo || null,
           })

@@ -94,9 +94,9 @@ export const WompiPaymentModal = ({
       const refTransaccion = `WPI-${metodo}-${Date.now().toString().slice(-8)}`
 
       if (esInvitado) {
-        await pagoService.confirmarPagoInvitado(pedido.id, refTransaccion)
+        await pagoService.confirmarPagoInvitado(pedido.id, refTransaccion, metodo)
       } else {
-        await pagoService.confirmarPago(pedido.id, refTransaccion)
+        await pagoService.confirmarPago(pedido.id, refTransaccion, metodo)
       }
 
       success('¡Transacción autorizada con éxito por Wompi!')
