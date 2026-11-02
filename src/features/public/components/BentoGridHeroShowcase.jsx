@@ -47,15 +47,71 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
     return [];
   }, [productos, masVendidos])
 
-  // Distribución de productos reales en los bloques del Bento
-  const heroItems = dbProducts.slice(0, 5)
-  const currentHero = heroItems[activeHeroIdx % heroItems.length] || heroItems[0]
-  
-  // Tarjeta superior derecha: Segundo producto real de la BD
-  const productTopRight = dbProducts[1] || dbProducts[0]
+  // Distribución de productos reales en los bloques del Bento:
+  // Seleccionamos un producto representativo por cada categoría DISTINTA para que el Hero
+  // y sus pills muestren variedad de categorías sin repetirse.
+  const heroItems = useMemo(() => {
+    if (!dbProducts || dbProducts.length === 0) return [];
 
-  // Tarjeta izquierda: Tercer producto real de la BD
-  const productLeft = dbProducts[2] || dbProducts[0]
+    const seenCategories = new Set();
+    const uniqueCategoryItems = [];
+    const restItems = [];
+
+    // Priorizamos un producto por cada categoría distinta presente en los productos
+    for (const prod of dbProducts) {
+      const catKey = prod.categoria?.id || prod.categoria?.nombre;
+      if (catKey && !seenCategories.has(catKey)) {
+        seenCategories.add(catKey);
+        uniqueCategoryItems.push(prod);
+      } else {
+        restItems.push(prod);
+      }
+      if (uniqueCategoryItems.length >= 6) break;
+    }
+
+    // Completar hasta 5 productos si no hubiese suficientes categorías distintas en el pool
+    const finalItems = [...uniqueCategoryItems];
+    for (const prod of restItems) {
+      if (finalItems.length >= 5) break;
+      if (!finalItems.some(item => item.id === prod.id)) {
+        finalItems.push(prod);
+      }
+    }
+
+    return finalItems.slice(0, 5);
+  }, [dbProducts]);
+
+  const currentHero = heroItems[activeHeroIdx % heroItems.length] || heroItems[0]
+
+  // Pills de categorías únicos sin repetir nombres
+  const heroPills = useMemo(() => {
+    const seenLabels = new Set();
+    return heroItems.map((prod, idx) => {
+      const catName = translateCategoryName(prod.categoria?.nombre, isEn);
+      let label = catName;
+      if (!label || seenLabels.has(label)) {
+        label = prod.marca || prod.titulo || (isEn ? `Item #${idx + 1}` : `Item #${idx + 1}`);
+      }
+      seenLabels.add(label);
+      return {
+        prod,
+        idx,
+        label
+      };
+    });
+  }, [heroItems, isEn]);
+  
+  // Tarjeta superior derecha: Producto de la BD distinto al actual
+  const productTopRight = useMemo(() => {
+    if (!currentHero) return dbProducts[1] || dbProducts[0];
+    return dbProducts.find(p => p.id !== currentHero.id) || dbProducts[0];
+  }, [dbProducts, currentHero]);
+
+  // Tarjeta izquierda: Tercer producto de la BD distinto al actual y superior derecha
+  const productLeft = useMemo(() => {
+    if (!currentHero) return dbProducts[2] || dbProducts[0];
+    return dbProducts.find(p => p.id !== currentHero.id && p.id !== productTopRight?.id) || dbProducts[1] || dbProducts[0];
+  }, [dbProducts, currentHero, productTopRight]);
 
   // Si no hay productos en la base de datos, no renderizar elementos estáticos
   if (!currentHero) {
@@ -123,9 +179,9 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
               <span className="text-[10px] font-black uppercase tracking-widest text-violet-700/70 dark:text-violet-400 mr-1 select-none">
                 {t('hero_categories_label')}
               </span>
-              {heroItems.map((prod, idx) => (
+              {heroPills.map(({ prod, idx, label }) => (
                 <button
-                  key={prod.id}
+                  key={prod.id || idx}
                   onClick={() => setActiveHeroIdx(idx)}
                   className={`text-[11px] font-bold px-3 py-1 rounded-full transition-all cursor-pointer ${
                     activeHeroIdx === idx 
@@ -133,7 +189,7 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
                       : 'bg-white/70 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700'
                   }`}
                 >
-                  {translateCategoryName(prod.categoria?.nombre, isEn) || prod.marca || (isEn ? `Product #${idx + 1}` : `Producto #${idx + 1}`)}
+                  {label}
                 </button>
               ))}
             </div>
