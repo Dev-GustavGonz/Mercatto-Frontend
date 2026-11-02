@@ -62,7 +62,9 @@ export const MercattoLogo = ({
         className={`inline-block font-['Pacifico',cursive] text-2xl sm:text-[28px] font-normal ${brandTextColor} transition-all duration-200 tracking-wide group-hover:scale-102 ${className}`}
         style={{
           fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif",
+          ...(size ? { fontSize: `${size}px` } : {}),
           ...(isWhiteBorder ? {
+            color: '#7C3AED',
             WebkitTextStroke: '2px #FFFFFF',
             paintOrder: 'stroke fill',
             textShadow: '-1px -1px 0 #FFFFFF, 1px -1px 0 #FFFFFF, -1px 1px 0 #FFFFFF, 1px 1px 0 #FFFFFF, 0 2px 10px rgba(255,255,255,0.35)'
@@ -73,13 +75,14 @@ export const MercattoLogo = ({
       </span>
       {showSlogan && (
         <span 
-          className={`text-[10px] sm:text-[11.5px] font-normal ${sloganClassName.includes('text-') ? '' : defaultSloganColor} tracking-wide -mt-0.5 sm:-mt-1 whitespace-nowrap truncate max-w-[280px] ${sloganClassName || 'hidden sm:block'}`}
+          className={`text-[11px] sm:text-[12.5px] font-bold ${sloganClassName.includes('text-') ? '' : defaultSloganColor} tracking-wide -mt-0.5 sm:-mt-1 whitespace-nowrap truncate max-w-[320px] ${sloganClassName || 'hidden sm:block'}`}
           style={{
             fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif",
             ...(isWhiteBorder ? {
-              WebkitTextStroke: '1.2px #FFFFFF',
+              color: '#7C3AED',
+              WebkitTextStroke: '0.5px #FFFFFF',
               paintOrder: 'stroke fill',
-              textShadow: '-1px -1px 0 #FFFFFF, 1px -1px 0 #FFFFFF, -1px 1px 0 #FFFFFF, 1px 1px 0 #FFFFFF, 0 1px 6px rgba(255,255,255,0.45)'
+              textShadow: '-0.8px -0.8px 0 #FFFFFF, 0.8px -0.8px 0 #FFFFFF, -0.8px 0.8px 0 #FFFFFF, 0.8px 0.8px 0 #FFFFFF, 0 -0.8px 0 #FFFFFF, 0 0.8px 0 #FFFFFF, -0.8px 0 0 #FFFFFF, 0.8px 0 0 #FFFFFF, 0 1px 4px rgba(255,255,255,0.4)'
             } : {})
           }}
         >
