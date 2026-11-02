@@ -139,6 +139,13 @@ const RESPUESTAS_BASE_EN = {
     '**Real-Time Order Tracking:**\n\n• **If you have an account:** Go to **My Orders** from your account menu to review tracking status and delivery photos.\n• **If you bought as guest:** Visit **Track Order** (`/rastreo`) and enter your order code (e.g., `PED-20261031-1045`) and email address.\n\n*You can view real-time courier progress and photo proof.*'
 }
 
+export const isEnglishText = (text) => {
+  if (!text) return false
+  const t = text.toLowerCase().trim()
+  const pattern = /\b(how|what|where|when|why|who|which|can|could|would|should|do|does|did|is|are|was|were|will|shall|hello|hi|hey|good\s+(morning|afternoon|evening)|please|help|buy|buying|purchase|order|orders|shipping|ship|delivery|store|shop|seller|sell|payment|pay|paid|price|cost|discount|coupon|coupons|track|tracking|product|products|item|items|refund|thanks|thank\s+you|support|recommend|shoes|clothes|laptop|phone)\b/i
+  return pattern.test(t)
+}
+
 export const PublicChatbot = () => {
   const { usuario } = useAuth()
   const location = useLocation()
@@ -304,6 +311,7 @@ export const PublicChatbot = () => {
     ])
 
     const t = texto.toLowerCase()
+    const isEffectiveEn = isEn || isEnglishText(texto)
     setEscribiendo(true)
 
     // Si pide explícitamente contacto con humano/soporte
@@ -323,7 +331,7 @@ export const PublicChatbot = () => {
         {
           id: Date.now() + 1,
           remitente: 'bot',
-          texto: isEn
+          texto: isEffectiveEn
             ? 'I will gladly connect you with the **Mercatto Customer Support** team. You can chat directly via WhatsApp or send us an inquiry below:'
             : 'Con gusto te comunico con el equipo de **Atención al Cliente Mercatto**. Puedes escribirnos directamente por WhatsApp o dejarnos tu solicitud por mensaje:',
           hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -346,7 +354,7 @@ export const PublicChatbot = () => {
             message: texto,
             mensaje: texto,
             sessionId: sessionId,
-            idioma: isEn ? 'en' : 'es'
+            idioma: isEffectiveEn ? 'en' : 'es'
           },
           { timeout: 25000 }
         )
@@ -372,7 +380,7 @@ export const PublicChatbot = () => {
             body: JSON.stringify({
               message: texto,
               sessionId: sessionId,
-              idioma: isEn ? 'en' : 'es'
+              idioma: isEffectiveEn ? 'en' : 'es'
             })
           })
 
@@ -405,23 +413,24 @@ export const PublicChatbot = () => {
     } catch {
       setEscribiendo(false)
 
+      const fallbackRespuestas = isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES
       let respuesta = ''
-      if (t.includes('pago') || t.includes('tarjeta') || t.includes('nequi') || t.includes('banco') || t.includes('pse') || t.includes('pay')) {
-        respuesta = respuestasBase.medios_pago
-      } else if (t.includes('rastre') || t.includes('seguimiento') || t.includes('estado de mi') || t.includes('track')) {
-        respuesta = respuestasBase.rastreo
-      } else if (t.includes('comprar') || t.includes('pedido') || t.includes('orden') || t.includes('buy') || t.includes('purchase')) {
-        respuesta = respuestasBase.como_comprar
+      if (t.includes('pago') || t.includes('tarjeta') || t.includes('nequi') || t.includes('banco') || t.includes('pse') || t.includes('pay') || t.includes('card')) {
+        respuesta = fallbackRespuestas.medios_pago
+      } else if (t.includes('rastre') || t.includes('seguimiento') || t.includes('estado de mi') || t.includes('track') || t.includes('where is')) {
+        respuesta = fallbackRespuestas.rastreo
+      } else if (t.includes('comprar') || t.includes('pedido') || t.includes('orden') || t.includes('buy') || t.includes('purchase') || t.includes('how to')) {
+        respuesta = fallbackRespuestas.como_comprar
       } else if (t.includes('plan') || t.includes('comision') || t.includes('suscrip') || t.includes('fee')) {
-        respuesta = respuestasBase.planes
+        respuesta = fallbackRespuestas.planes
       } else if (t.includes('vender') || t.includes('tienda') || t.includes('proveedor') || t.includes('sell') || t.includes('store')) {
-        respuesta = respuestasBase.vender
-      } else if (t.includes('cupon') || t.includes('descuento') || t.includes('promo') || t.includes('coupon')) {
-        respuesta = respuestasBase.cupones
-      } else if (t.includes('envio') || t.includes('flete') || t.includes('ciudad') || t.includes('despacho') || t.includes('ship')) {
-        respuesta = respuestasBase.envios
+        respuesta = fallbackRespuestas.vender
+      } else if (t.includes('cupon') || t.includes('descuento') || t.includes('promo') || t.includes('coupon') || t.includes('discount')) {
+        respuesta = fallbackRespuestas.cupones
+      } else if (t.includes('envio') || t.includes('flete') || t.includes('ciudad') || t.includes('despacho') || t.includes('ship') || t.includes('delivery')) {
+        respuesta = fallbackRespuestas.envios
       } else {
-        respuesta = isEn
+        respuesta = isEffectiveEn
           ? 'Hello! We are here to help. I can assist you with orders, payment methods, shipping, discount coupons, order tracking, or selling plans (commissions from 2%). What would you like to know?'
           : '¡Hola! En Mercatto estamos para ayudarte. Puedo orientarte sobre compras, métodos de pago, envíos, cupones, rastreo de pedidos o los planes para vender (comisiones desde el 2%). ¿Qué te gustaría saber?'
       }
