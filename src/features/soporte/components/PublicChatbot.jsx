@@ -139,6 +139,50 @@ const RESPUESTAS_BASE_EN = {
     '**Real-Time Order Tracking:**\n\n• **If you have an account:** Go to **My Orders** from your account menu to review tracking status and delivery photos.\n• **If you bought as guest:** Visit **Track Order** (`/rastreo`) and enter your order code (e.g., `PED-20261031-1045`) and email address.\n\n*You can view real-time courier progress and photo proof.*'
 }
 
+const sanitizeResponseLanguage = (text, isEn, userQuery) => {
+  if (!isEn || !text) return text
+  const t = text.toLowerCase()
+  const q = (userQuery || '').toLowerCase()
+
+  // Detect Spanish leakage in English mode
+  const hasSpanish =
+    t.includes('¡hola') ||
+    t.includes('artículos más') ||
+    t.includes('articulos mas') ||
+    t.includes('¿deseas') ||
+    t.includes('con gusto te ayudo') ||
+    t.includes('métodos de pago') ||
+    t.includes('metodos de pago') ||
+    t.includes('cómo comprar') ||
+    t.includes('como comprar') ||
+    t.includes('en la tienda hoy') ||
+    t.includes('soy mercattobot')
+
+  if (!hasSpanish) return text
+
+  // Map to clean English based on query
+  if (q.includes('pay') || q.includes('card') || q.includes('method') || q.includes('pse') || q.includes('cash')) {
+    return RESPUESTAS_BASE_EN.medios_pago
+  }
+  if (q.includes('buy') || q.includes('how to') || q.includes('purchase') || q.includes('order')) {
+    return RESPUESTAS_BASE_EN.como_comprar
+  }
+  if (q.includes('sell') || q.includes('store') || q.includes('plan') || q.includes('fee') || q.includes('commission')) {
+    return RESPUESTAS_BASE_EN.planes
+  }
+  if (q.includes('ship') || q.includes('delivery') || q.includes('freight')) {
+    return RESPUESTAS_BASE_EN.envios
+  }
+  if (q.includes('coupon') || q.includes('discount') || q.includes('promo')) {
+    return RESPUESTAS_BASE_EN.cupones
+  }
+  if (q.includes('track') || q.includes('where is')) {
+    return RESPUESTAS_BASE_EN.rastreo
+  }
+
+  return RESPUESTAS_BASE_EN.como_comprar
+}
+
 export const isEnglishText = (text) => {
   if (!text) return false
   const t = text.toLowerCase().trim()
@@ -299,6 +343,7 @@ export const PublicChatbot = () => {
 
   const handleEnviarMensaje = async (e, textoDirecto = null) => {
     if (e && e.preventDefault) e.preventDefault()
+    if (escribiendo) return
     const texto = (textoDirecto !== null ? textoDirecto : mensajeInput).trim()
     if (!texto) return
 
@@ -356,12 +401,12 @@ export const PublicChatbot = () => {
             sessionId: sessionId,
             idioma: isEffectiveEn ? 'en' : 'es'
           },
-          { timeout: 25000 }
+          { timeout: 6000 }
         )
 
         const rawReply = resIa?.data?.reply || resIa?.data?.respuesta
         if (rawReply) {
-          respuestaIA = rawReply
+          respuestaIA = sanitizeResponseLanguage(rawReply, isEffectiveEn, texto)
           agenteUsado = resIa.data.agente
         }
       } catch (errBackendIa) {
@@ -386,7 +431,10 @@ export const PublicChatbot = () => {
 
           if (response.ok) {
             const data = await response.json()
-            respuestaIA = data?.reply || data?.output || data?.text
+            const n8nRaw = data?.reply || data?.output || data?.text
+            if (n8nRaw) {
+              respuestaIA = sanitizeResponseLanguage(n8nRaw, isEffectiveEn, texto)
+            }
           }
         } catch (errN8n) {
           console.warn('n8n directo falló:', errN8n)
@@ -509,6 +557,7 @@ export const PublicChatbot = () => {
   }
 
   const enviarPreguntaRapida = (preguntaTexto) => {
+    if (escribiendo) return
     setMensajeInput(preguntaTexto)
     const e = { preventDefault: () => {} }
     setTimeout(() => {
