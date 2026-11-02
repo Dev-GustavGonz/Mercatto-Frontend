@@ -13,7 +13,8 @@ export const MercattoLogo = ({
   showText = true, 
   size = 28, 
   showSlogan = true,
-  sloganClassName = '' 
+  sloganClassName = '',
+  variant = 'default'
 }) => {
   // Obtenemos la función de traducción para el eslogan
   let t = (clave) => (clave === 'eslogan' ? 'Del barrio a tu pantalla' : clave)
@@ -40,10 +41,19 @@ export const MercattoLogo = ({
     )
   }
 
+  const isDarkBg = variant === 'light' || variant === 'onDark'
+  const brandTextColor = isDarkBg
+    ? 'text-white group-hover:text-violet-200 drop-shadow-[0_2px_12px_rgba(255,255,255,0.25)]'
+    : 'text-violet-600 dark:text-violet-400 group-hover:text-violet-500 drop-shadow-[0_1px_6px_rgba(139,92,246,0.18)]'
+
+  const defaultSloganColor = isDarkBg
+    ? 'text-violet-300 font-medium'
+    : 'text-violet-700/90 dark:text-violet-300'
+
   return (
     <div className="flex flex-col items-start leading-none select-none group">
       <span 
-        className={`inline-block font-['Pacifico',cursive] text-2xl sm:text-[28px] font-normal text-violet-600 dark:text-violet-400 group-hover:text-violet-500 transition-all duration-200 tracking-wide group-hover:scale-102 drop-shadow-[0_1px_6px_rgba(139,92,246,0.18)] ${className}`}
+        className={`inline-block font-['Pacifico',cursive] text-2xl sm:text-[28px] font-normal ${brandTextColor} transition-all duration-200 tracking-wide group-hover:scale-102 ${className}`}
         style={{
           fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif"
         }}
@@ -52,7 +62,7 @@ export const MercattoLogo = ({
       </span>
       {showSlogan && (
         <span 
-          className={`hidden sm:block text-[10px] sm:text-[11.5px] font-normal text-violet-700/90 dark:text-violet-300 tracking-wide -mt-0.5 sm:-mt-1 whitespace-nowrap truncate max-w-[280px] ${sloganClassName}`}
+          className={`text-[10px] sm:text-[11.5px] font-normal ${defaultSloganColor} tracking-wide -mt-0.5 sm:-mt-1 whitespace-nowrap truncate max-w-[280px] ${sloganClassName || 'hidden sm:block'}`}
           style={{
             fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif"
           }}
