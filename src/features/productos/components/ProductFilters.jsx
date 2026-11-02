@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { productoService } from '@/features/productos'
 import { tiendaService } from '@/features/tiendas'
 import Button from '@/components/common/Button'
-import { Filter, RotateCcw, Tag, Layers, ChevronDown, ChevronUp } from 'lucide-react'
+import { Filter, RotateCcw, Tag, Layers, ChevronDown, ChevronUp, Crown } from 'lucide-react'
 import { useLanguage } from '@/hooks/useLanguage'
 import { translateCategoryName } from '@/utils/categoryUtils'
 

@@ -5,6 +5,7 @@ import ProductGrid from '../components/ProductGrid'
 import ProductFilters from '../components/ProductFilters'
 import Pagination from '@/components/common/Pagination'
 import ModalContactoVendedor from '../components/ModalContactoVendedor'
+import { Crown } from 'lucide-react'
 import { useLanguage } from '@/hooks/useLanguage'
 
 export const Catalogo = () => {

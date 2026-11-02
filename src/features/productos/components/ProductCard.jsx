@@ -8,7 +8,7 @@ import { useLanguage } from '@/hooks/useLanguage'
 import { productoService } from '@/features/productos'
 import { formatCurrency } from '@/utils/formatCurrency'
 import { resolveProductImage } from '@/utils/productUtils'
-import { ShoppingCart, Heart, MessageSquare, Store, Star, Zap, CheckCircle2 } from 'lucide-react'
+import { ShoppingCart, Heart, MessageSquare, Store, Star, Zap, CheckCircle2, Crown } from 'lucide-react'
 
 export const ProductCard = ({ producto, onContactClick }) => {
   const { agregarItem } = useCart()
