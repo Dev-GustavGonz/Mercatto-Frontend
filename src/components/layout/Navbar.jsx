@@ -7,12 +7,14 @@ import { useAuth } from '@/hooks/useAuth'
 import { useCart } from '@/hooks/useCart'
 import { useFavorites } from '@/hooks/useFavorites'
 import { useLanguage } from '@/hooks/useLanguage'
+import { translateCategoryName } from '@/utils/categoryUtils'
 import { productoService } from '../../features/productos'
 import { tiendaService, vendedorService } from '../../features/tiendas'
 import SearchBar from './SearchBar'
 import MercattoLogo from '../common/MercattoLogo'
 import { 
   ShoppingBag,
+  Crown,
   Heart,
   User,
   LogOut,
@@ -232,7 +234,7 @@ export const Navbar = () => {
                                 onClick={() => setDropdownShop(false)}
                                 className="block px-2 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-950 transition truncate"
                               >
-                                {cat.nombre}
+                                {translateCategoryName(cat.nombre, idioma === 'EN')}
                               </Link>
                             ))
                           ) : (
@@ -746,7 +748,7 @@ export const Navbar = () => {
                 onClick={() => setMenuMobile(false)}
                 className="flex items-center gap-2 p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 text-xs font-bold text-amber-700 dark:text-amber-300 hover:text-amber-600 transition shadow-xs"
               >
-                <span className="text-xs">👑</span>
+                <Crown size={14} className="text-amber-500 fill-amber-500/20 shrink-0" />
                 <span className="truncate">Tiendas Élite</span>
               </Link>
             </div>
@@ -766,7 +768,7 @@ export const Navbar = () => {
                       onClick={() => setMenuMobile(false)}
                       className="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:bg-emerald-50 hover:text-emerald-700 transition"
                     >
-                      {cat.nombre}
+                      {translateCategoryName(cat.nombre, idioma === 'EN')}
                     </Link>
                   ))}
                 </div>

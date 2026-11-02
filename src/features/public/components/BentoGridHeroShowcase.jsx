@@ -19,6 +19,7 @@ import { useFavorites } from '@/hooks/useFavorites'
 import { useLanguage } from '@/hooks/useLanguage'
 import { formatCurrency } from '@/utils/formatCurrency'
 import { resolveProductImage } from '@/utils/productUtils'
+import { translateCategoryName } from '@/utils/categoryUtils'
 
 /**
  * BentoGridHeroShowcase
@@ -85,9 +86,9 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
       imagenes: [{ url: resolveProductImage(product), principal: true }]
     }
     if (onAddToCart) {
-      onAddToCart(itemToAdd, 1)
+      onAddToCart(itemToAdd, null, 1)
     } else {
-      agregarItem(itemToAdd, 1)
+      agregarItem(itemToAdd, null, 1)
     }
 
     setCartToast({
@@ -132,7 +133,7 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
                       : 'bg-white/70 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700'
                   }`}
                 >
-                  {prod.categoria?.nombre || prod.marca || `Producto #${idx + 1}`}
+                  {translateCategoryName(prod.categoria?.nombre, isEn) || prod.marca || (isEn ? `Product #${idx + 1}` : `Producto #${idx + 1}`)}
                 </button>
               ))}
             </div>
@@ -270,7 +271,7 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
             {/* Footer con título y precio del producto real */}
             <div className="relative z-10 pt-3 border-t border-slate-100 dark:border-slate-800 space-y-1.5">
               <p className="text-[11px] font-bold text-violet-600 dark:text-violet-400 truncate uppercase">
-                {productTopRight.marca || productTopRight.categoria?.nombre || t('tienda_oficial')}
+                {productTopRight.marca || translateCategoryName(productTopRight.categoria?.nombre, isEn) || t('tienda_oficial')}
               </p>
               
               <h3 className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white truncate group-hover:text-violet-600 transition-colors">
@@ -328,7 +329,7 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
               </h2>
               
               <p className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold truncate">
-                {productLeft.categoria?.nombre || productLeft.marca || t('tienda_oficial')}
+                {translateCategoryName(productLeft.categoria?.nombre, isEn) || productLeft.marca || t('tienda_oficial')}
               </p>
               <div className="flex items-center gap-1.5 text-xs pt-0.5">
                 <div className="flex items-center gap-1 text-amber-500 font-bold">
@@ -471,7 +472,7 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
                     >
                       <div className="flex items-center justify-between z-10 mb-1">
                         <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500 truncate max-w-[140px]">
-                          {prod.categoria?.nombre || prod.marca || t('tienda_oficial')}
+                          {translateCategoryName(prod.categoria?.nombre, isEn) || prod.marca || t('tienda_oficial')}
                         </span>
                         
                         <button

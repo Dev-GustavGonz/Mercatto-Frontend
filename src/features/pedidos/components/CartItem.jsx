@@ -1,5 +1,6 @@
 import React from 'react'
 import { useCart } from '@/hooks/useCart'
+import { getItemPrice } from '@/context/CartContext'
 import { formatCurrency } from '@/utils/formatCurrency'
 import { Trash2, Plus, Minus } from 'lucide-react'
 
@@ -7,21 +8,20 @@ export const CartItem = ({ item }) => {
   const { actualizarCantidad, eliminarItem } = useCart()
   const { producto, variante, cantidad } = item
 
-  const precio = variante
-    ? variante.precioOferta || variante.precio
-    : producto.precioOferta || producto.precio
+  const precio = getItemPrice(producto, variante)
 
   const imagen =
-    variante?.imagenUrl ||
+    (variante && typeof variante === 'object' && variante.imagenUrl) ||
     producto.imagenes?.find((i) => i.principal)?.url ||
     producto.imagenes?.[0]?.url ||
+    producto.imagenUrl ||
     'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200'
 
   return (
     <div className="flex gap-3.5 py-4 border-b border-slate-100 dark:border-slate-800 last:border-none">
       {/* Image */}
       <div className="w-16 h-16 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 border border-slate-200 dark:border-slate-700">
-        <img src={imagen} alt={producto.titulo} className="w-full h-full object-cover" />
+        <img src={imagen} alt={producto.titulo || producto.nombre} className="w-full h-full object-cover" />
       </div>
 
       {/* Info & Actions */}
@@ -29,9 +29,9 @@ export const CartItem = ({ item }) => {
         <div className="flex justify-between items-start gap-2">
           <div>
             <h4 className="text-xs font-semibold text-slate-800 dark:text-slate-100 line-clamp-1">
-              {producto.titulo}
+              {producto.titulo || producto.nombre}
             </h4>
-            {variante && (
+            {variante && typeof variante === 'object' && variante.nombre && (
               <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                 {variante.nombre}
               </span>

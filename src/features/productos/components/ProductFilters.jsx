@@ -4,6 +4,7 @@ import { tiendaService } from '@/features/tiendas'
 import Button from '@/components/common/Button'
 import { Filter, RotateCcw, Tag, Layers, ChevronDown, ChevronUp } from 'lucide-react'
 import { useLanguage } from '@/hooks/useLanguage'
+import { translateCategoryName } from '@/utils/categoryUtils'
 
 export const ProductFilters = ({
   selectedCategory,
@@ -22,7 +23,7 @@ export const ProductFilters = ({
   const [marcas, setMarcas] = useState([])
   const [precioMin, setPrecioMin] = useState(priceRange.min || '')
   const [precioMax, setPrecioMax] = useState(priceRange.max || '')
-  const { t } = useLanguage()
+  const { t, idioma } = useLanguage()
   const [mobileOpen, setMobileOpen] = useState(false)
 
   useEffect(() => {
@@ -88,7 +89,7 @@ export const ProductFilters = ({
         <label className="flex items-center justify-between cursor-pointer select-none">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-mercatto-elite-bg text-mercatto-elite dark:text-amber-400 flex items-center justify-center font-bold text-base shadow-xs shrink-0">
-              👑
+              <Crown size={16} className="text-amber-500 fill-amber-500/20" />
             </div>
             <div>
               <span className="block text-xs font-black text-slate-900 dark:text-white leading-tight">
@@ -153,7 +154,7 @@ export const ProductFilters = ({
                   : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
               }`}
             >
-              {cat.nombre}
+              {translateCategoryName(cat.nombre, (idioma || '').toUpperCase() === 'EN')}
             </button>
           ))}
         </div>

@@ -142,7 +142,7 @@ export const Catalogo = () => {
       {soloElite && (
         <div className="flex items-center justify-between gap-3 p-3.5 bg-gradient-to-r bg-mercatto-elite-bg/50 border border-amber-300/70 rounded-2xl animate-in fade-in">
           <div className="flex items-center gap-2 text-xs sm:text-sm font-black text-mercatto-elite-text dark:text-amber-200">
-            <span className="text-base">👑</span>
+            <Crown size={18} className="text-amber-600 fill-amber-500/20 shrink-0" />
             <span>Filtro Exclusivo Activado: Mostrando productos de Tiendas con Plan Élite</span>
           </div>
           <button

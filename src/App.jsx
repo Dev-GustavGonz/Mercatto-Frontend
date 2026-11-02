@@ -185,19 +185,19 @@ function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
-      <ToastProvider>
-        <AuthProvider>
-          <FavoritesProvider>
-            <CartProvider>
-              <LanguageProvider>
+      <LanguageProvider>
+        <ToastProvider>
+          <AuthProvider>
+            <FavoritesProvider>
+              <CartProvider>
                 <ErrorBoundary>
                   <AppLayout />
                 </ErrorBoundary>
-              </LanguageProvider>
-            </CartProvider>
-          </FavoritesProvider>
-        </AuthProvider>
-      </ToastProvider>
+              </CartProvider>
+            </FavoritesProvider>
+          </AuthProvider>
+        </ToastProvider>
+      </LanguageProvider>
     </BrowserRouter>
   )
 }

@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/useToast'
 import { useFavorites } from '@/hooks/useFavorites'
 import { useLanguage } from '@/hooks/useLanguage'
+import { translateCategoryName } from '@/utils/categoryUtils'
 import ProductImages from '../components/ProductImages'
 import ProductVariants from '../components/ProductVariants'
 import PriceDisplay from '../components/PriceDisplay'
@@ -14,7 +15,7 @@ import ProductReviews from '../components/ProductReviews'
 import ModalContactoVendedor from '../components/ModalContactoVendedor'
 import Button from '@/components/common/Button'
 import Spinner from '@/components/common/Spinner'
-import { ShoppingBag, Heart, MessageSquare, Store, ShieldCheck, Truck, RefreshCw, ChevronRight, CheckCircle2 } from 'lucide-react'
+import { ShoppingBag, Heart, MessageSquare, Store, ShieldCheck, Truck, RefreshCw, ChevronRight, CheckCircle2, Crown } from 'lucide-react'
 
 export const DetalleProducto = () => {
   const { id } = useParams()
@@ -86,12 +87,12 @@ export const DetalleProducto = () => {
     )
   }
 
-  const precioActual = varianteSeleccionada
-    ? varianteSeleccionada.precio
-    : producto.precio
-  const precioOfertaActual = varianteSeleccionada
-    ? varianteSeleccionada.precioOferta
-    : producto.precioOferta
+  const precioActual = (varianteSeleccionada?.precio && Number(varianteSeleccionada.precio) > 0)
+    ? Number(varianteSeleccionada.precio)
+    : Number(producto.precio || 0)
+  const precioOfertaActual = (varianteSeleccionada?.precioOferta && Number(varianteSeleccionada.precioOferta) > 0)
+    ? Number(varianteSeleccionada.precioOferta)
+    : (producto.precioOferta ? Number(producto.precioOferta) : null)
   const stockDisponible = varianteSeleccionada
     ? varianteSeleccionada.stock
     : producto.stock
@@ -146,7 +147,7 @@ export const DetalleProducto = () => {
           <>
             <ChevronRight size={12} />
             <Link to={`/catalogo?categoriaId=${producto.categoria.id}`} className="hover:text-mercatto-primary transition truncate max-w-[120px]">
-              {producto.categoria.nombre}
+              {translateCategoryName(producto.categoria.nombre, idioma === 'EN')}
             </Link>
           </>
         )}
@@ -191,7 +192,7 @@ export const DetalleProducto = () => {
                   )}
                   {((producto.vendedor?.tipoSuscripcion || producto.vendedor?.plan || '').toUpperCase() === 'ELITE') && (
                     <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-extrabold border border-amber-200">
-                      <span>👑</span>
+                      <Crown size={11} className="text-amber-600 fill-amber-500/20 shrink-0" />
                       <span>Élite</span>
                     </span>
                   )}
@@ -237,7 +238,7 @@ export const DetalleProducto = () => {
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs font-bold uppercase tracking-wider text-mercatto-primary dark:text-indigo-400">
-                {producto.categoria?.nombre || 'General'}
+                {translateCategoryName(producto.categoria?.nombre, idioma === 'EN') || (idioma === 'EN' ? 'General' : 'General')}
               </span>
               {producto.marca && (
                 <>

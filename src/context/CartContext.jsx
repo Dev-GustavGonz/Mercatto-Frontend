@@ -2,6 +2,23 @@ import React, { createContext, useContext, useState, useEffect } from 'react'
 import { storage } from '@/utils/storage'
 import { pedidoService } from '../features/pedidos'
 import { useToast } from './ToastContext'
+import { useLanguage } from './LanguageContext'
+
+export const getItemPrice = (producto, variante = null) => {
+  if (variante && typeof variante === 'object') {
+    const vOferta = Number(variante.precioOferta)
+    if (!isNaN(vOferta) && vOferta > 0) return vOferta
+    const vPrecio = Number(variante.precio)
+    if (!isNaN(vPrecio) && vPrecio > 0) return vPrecio
+  }
+  if (producto && typeof producto === 'object') {
+    const pOferta = Number(producto.precioOferta)
+    if (!isNaN(pOferta) && pOferta > 0) return pOferta
+    const pPrecio = Number(producto.precio)
+    if (!isNaN(pPrecio) && pPrecio > 0) return pPrecio
+  }
+  return 0
+}
 
 const CartContext = createContext(null)
 
@@ -10,6 +27,8 @@ export const CartProvider = ({ children }) => {
   const [cupon, setCupon] = useState(() => storage.get('mercatto_coupon', null))
   const [drawerAbierto, setDrawerAbierto] = useState(false)
   const { success, error: toastError } = useToast()
+  const { idioma } = useLanguage()
+  const isEn = (idioma || '').toUpperCase() === 'EN'
 
   useEffect(() => {
     storage.set('mercatto_cart', items)
@@ -20,20 +39,44 @@ export const CartProvider = ({ children }) => {
   }, [cupon])
 
   const agregarItem = (producto, variante = null, cantidad = 1) => {
+    if (!producto) return
+
+    let varObj = variante
+    let cant = typeof cantidad === 'number' && cantidad > 0 ? cantidad : 1
+
+    // Si el 2do argumento fue enviado como número (ej. agregarItem(item, 1)), normalizar
+    if (typeof variante === 'number') {
+      cant = variante > 0 ? variante : 1
+      varObj = null
+    } else if (variante && typeof variante !== 'object') {
+      varObj = null
+    }
+
+    // Asegurar objeto de producto con precios numéricos garantizados
+    const prodLimpio = {
+      ...producto,
+      precio: Number(producto.precio) || 0,
+      precioOferta: producto.precioOferta != null ? Number(producto.precioOferta) : null,
+    }
+
     setItems((prev) => {
       const index = prev.findIndex(
-        (i) => i.producto.id === producto.id && (i.variante?.id || null) === (variante?.id || null)
+        (i) => i.producto.id === prodLimpio.id && (i.variante?.id || null) === (varObj?.id || null)
       )
 
       if (index > -1) {
         const nuevos = [...prev]
-        nuevos[index].cantidad += cantidad
+        nuevos[index].cantidad += cant
+        nuevos[index].producto = { ...nuevos[index].producto, ...prodLimpio }
+        if (varObj) nuevos[index].variante = varObj
         return nuevos
       } else {
-        return [...prev, { producto, variante, cantidad }]
+        return [...prev, { producto: prodLimpio, variante: varObj, cantidad: cant }]
       }
     })
-    success(`"${producto.titulo}" agregado al carrito`)
+
+    const prodTitulo = prodLimpio.titulo || prodLimpio.nombre || ''
+    success(isEn ? `"${prodTitulo}" added to cart` : `"${prodTitulo}" agregado al carrito`)
   }
 
   const eliminarItem = (productoId, varianteId = null) => {
@@ -67,10 +110,8 @@ export const CartProvider = ({ children }) => {
   }
 
   const subtotal = items.reduce((acc, item) => {
-    const precio = item.variante
-      ? item.variante.precioOferta || item.variante.precio
-      : item.producto.precioOferta || item.producto.precio
-    return acc + precio * item.cantidad
+    const precio = getItemPrice(item.producto, item.variante)
+    return acc + precio * (item.cantidad || 1)
   }, 0)
 
   const descuento = cupon ? (cupon.descuento || 0) : 0
@@ -83,11 +124,11 @@ export const CartProvider = ({ children }) => {
       const res = await pedidoService.validarCupon(codigo, subtotal)
       if (res?.exito) {
         setCupon(res)
-        success(`Cupón '${codigo}' aplicado: -$${res.descuento}`)
+        success(isEn ? `Coupon '${codigo}' applied: -$${res.descuento}` : `Cupón '${codigo}' aplicado: -$${res.descuento}`)
         return { exito: true }
       }
     } catch (err) {
-      const msg = err.response?.data?.mensaje || 'Cupón inválido o expirado'
+      const msg = err.response?.data?.mensaje || (isEn ? 'Invalid or expired coupon' : 'Cupón inválido o expirado')
       toastError(msg)
       return { exito: false, mensaje: msg }
     }
@@ -129,3 +170,5 @@ export const useCart = () => {
   }
   return context
 }
+
+export default CartContext

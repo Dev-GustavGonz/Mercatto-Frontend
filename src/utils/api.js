@@ -11,13 +11,15 @@ const api = axios.create({
   },
 })
 
-// Request Interceptor: Attach JWT Token
+// Request Interceptor: Attach JWT Token and active language
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('mercatto_token')
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
+    const idioma = (localStorage.getItem('mercatto_idioma') || 'es').toLowerCase()
+    config.headers['Accept-Language'] = idioma
     return config
   },
   (error) => Promise.reject(error)
@@ -48,6 +50,7 @@ api.interceptors.response.use(
         if (rutaActual.startsWith('/admin') || rutaActual.startsWith('/vendedor') || rutaActual.startsWith('/perfil') || rutaActual.startsWith('/panel-vendedor')) {
           window.location.href = '/login'
         }
+        return Promise.reject(refreshError)
       }
     }
 

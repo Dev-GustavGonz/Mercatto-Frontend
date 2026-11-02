@@ -83,7 +83,7 @@ export const ProductCard = ({ producto, onContactClick }) => {
       <div className="absolute top-3 left-3 z-10 flex flex-col gap-1 items-start max-w-[70%]">
         {esElite && (
           <span className="inline-flex items-center gap-1 bg-mercatto-elite-bg text-mercatto-elite-text border border-amber-300/60 text-[9.5px] sm:text-[10px] font-black px-2 py-0.5 rounded-full shadow-md tracking-wider">
-            <span>👑</span>
+            <Crown size={11} className="text-amber-600 fill-amber-500/20 shrink-0" />
             <span>Élite</span>
           </span>
         )}
@@ -150,7 +150,7 @@ export const ProductCard = ({ producto, onContactClick }) => {
               <CheckCircle2 size={11} className="shrink-0 text-violet-600 stroke-[2.5]" title="Tienda PRO Verificada" />
             )}
             {esElite && (
-              <span className="shrink-0 text-[10px]" title="Tienda Élite Oficial">👑</span>
+              <Crown size={11} className="shrink-0 text-amber-500 fill-amber-500/20" title="Tienda Élite Oficial" />
             )}
           </span>
         )}
