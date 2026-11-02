@@ -52,7 +52,7 @@ export const MercattoLogo = ({
       </span>
       {showSlogan && (
         <span 
-          className={`text-[10px] sm:text-[11.5px] font-normal text-violet-700/90 dark:text-violet-300 tracking-wide -mt-0.5 sm:-mt-1 whitespace-nowrap ${sloganClassName}`}
+          className={`hidden sm:block text-[10px] sm:text-[11.5px] font-normal text-violet-700/90 dark:text-violet-300 tracking-wide -mt-0.5 sm:-mt-1 whitespace-nowrap truncate max-w-[280px] ${sloganClassName}`}
           style={{
             fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif"
           }}

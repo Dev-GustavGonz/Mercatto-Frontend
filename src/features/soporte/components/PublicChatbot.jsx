@@ -595,10 +595,10 @@ export const PublicChatbot = () => {
   if (esRutaPanel) return null
 
   return (
-    <div className="fixed bottom-3 right-3 sm:bottom-5 sm:right-5 z-40 flex flex-col items-end pointer-events-none font-sans max-w-[calc(100vw-1.5rem)]">
+    <div className="fixed bottom-3 right-3 sm:bottom-5 sm:right-5 z-40 flex flex-col items-end pointer-events-none font-sans">
       {/* Ventana Flotante del Asistente */}
       {abierto && (
-        <div className="pointer-events-auto mb-2.5 w-[calc(100vw-1.5rem)] sm:w-[380px] max-w-full h-[min(510px,calc(100dvh-150px))] sm:h-[min(530px,calc(100dvh-170px))] bg-white dark:bg-slate-900 rounded-3xl border border-mercatto-border dark:border-slate-800 shadow-2xl shadow-mercatto-dark/25 ring-1 ring-mercatto-primary/10 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-200 backdrop-blur-sm">
+        <div className="pointer-events-auto mb-2.5 w-[calc(100vw-1.5rem)] sm:w-[380px] max-w-[380px] h-[min(510px,calc(100dvh-150px))] sm:h-[min(530px,calc(100dvh-170px))] bg-white dark:bg-slate-900 rounded-3xl border border-mercatto-border dark:border-slate-800 shadow-2xl shadow-mercatto-dark/25 ring-1 ring-mercatto-primary/10 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-200 backdrop-blur-sm">
           
           {/* Header Elegante Minimalista */}
           <div className="px-3.5 sm:px-4 py-2.5 sm:py-3 bg-gradient-to-r from-mercatto-dark via-[#2f2766] to-mercatto-dark text-white flex items-center justify-between border-b border-indigo-500/20 shadow-md shrink-0">
@@ -1009,7 +1009,7 @@ export const PublicChatbot = () => {
       {/* Botón Circular Flotante del Chatbot */}
       <button
         onClick={() => setAbierto(!abierto)}
-        className="pointer-events-auto group relative w-11 h-11 sm:w-[52px] sm:h-[52px] rounded-full bg-gradient-to-tr from-mercatto-primary via-mercatto-primary to-mercatto-deep hover:from-mercatto-deep hover:to-mercatto-deep text-white shadow-xl shadow-violet-600/35 hover:shadow-2xl hover:shadow-violet-600/50 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center cursor-pointer border-2 border-white/30 select-none"
+        className="pointer-events-auto shrink-0 group relative w-11 h-11 sm:w-[52px] sm:h-[52px] rounded-full bg-gradient-to-tr from-mercatto-primary via-mercatto-primary to-mercatto-deep hover:from-mercatto-deep hover:to-mercatto-deep text-white shadow-xl shadow-violet-600/35 hover:shadow-2xl hover:shadow-violet-600/50 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center cursor-pointer border-2 border-white/30 select-none"
         aria-label={abierto ? (isEn ? 'Close assistant' : 'Cerrar asistente') : (isEn ? 'Open Mercatto assistant' : 'Abrir asistente Mercatto')}
         title="Mercatto"
       >

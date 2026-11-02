@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { tiendaService } from '@/features/tiendas'
-import { Store, Search, MapPin, Star, ShieldCheck, CheckCircle2, Package, Tag, ArrowRight, MessageSquare, Sparkles } from 'lucide-react'
+import { Store, Search, MapPin, Star, ShieldCheck, CheckCircle2, Package, Tag, ArrowRight, MessageSquare, Sparkles, Crown } from 'lucide-react'
 import Spinner from '@/components/common/Spinner'
 import EmptyState from '@/components/common/EmptyState'
 import { getMediaUrl } from '@/utils/constants'
@@ -13,6 +13,8 @@ export const DirectorioTiendas = () => {
   const [cargando, setCargando] = useState(true)
   const [busqueda, setBusqueda] = useState('')
   const [marcaFiltro, setMarcaFiltro] = useState('')
+  const [planFiltro, setPlanFiltro] = useState('')
+  const [criterioOrden, setCriterioOrden] = useState('plan')
   const { t, idioma } = useLanguage()
   const navigate = useNavigate()
 
@@ -37,6 +39,14 @@ export const DirectorioTiendas = () => {
   }
 
   // Filtrado local dinámico
+  // Peso de suscripcion: ELITE (3) > PRO (2) > STARTER (1)
+  const getPesoPlan = (item) => {
+    const p = (item?.tipoSuscripcion || '').toUpperCase()
+    if (p === 'ELITE') return 3
+    if (p === 'PRO') return 2
+    return 1
+  }
+
   const tiendasFiltradas = tiendas.filter((t) => {
     const coincideTexto =
       !busqueda.trim() ||
@@ -49,7 +59,38 @@ export const DirectorioTiendas = () => {
       !marcaFiltro ||
       t.marcas?.some((m) => m.toLowerCase() === marcaFiltro.toLowerCase())
 
-    return coincideTexto && coincideMarca
+    const coincidePlan =
+      !planFiltro ||
+      (t.tipoSuscripcion || 'STARTER').toUpperCase() === planFiltro.toUpperCase()
+
+    return coincideTexto && coincideMarca && coincidePlan
+  }).sort((a, b) => {
+    if (criterioOrden === 'calificacion') {
+      const cDiff = (b.calificacion || 0) - (a.calificacion || 0)
+      if (cDiff !== 0) return cDiff
+    } else if (criterioOrden === 'ventas') {
+      const vDiff = (b.totalVentas || 0) - (a.totalVentas || 0)
+      if (vDiff !== 0) return vDiff
+    } else if (criterioOrden === 'nombre') {
+      const nDiff = (a.nombreTienda || '').localeCompare(b.nombreTienda || '')
+      if (nDiff !== 0) return nDiff
+    }
+
+    // Por defecto: PRIORIZAR POR PLAN (ÉLITE > PRO > STARTER)
+    const pesoA = getPesoPlan(a)
+    const pesoB = getPesoPlan(b)
+    if (pesoB !== pesoA) {
+      return pesoB - pesoA
+    }
+
+    // Desempate dentro del mismo nivel de plan
+    const califDiff = (b.calificacion || 0) - (a.calificacion || 0)
+    if (califDiff !== 0) return califDiff
+
+    const ventasDiff = (b.totalVentas || 0) - (a.totalVentas || 0)
+    if (ventasDiff !== 0) return ventasDiff
+
+    return (a.nombreTienda || '').localeCompare(b.nombreTienda || '')
   })
 
   return (
@@ -120,19 +161,79 @@ export const DirectorioTiendas = () => {
             )}
           </div>
           
-          <div className="flex items-center justify-between sm:justify-end gap-3 text-xs text-slate-500 font-medium px-1">
+          <div className="flex flex-wrap items-center justify-between sm:justify-end gap-3 text-xs text-slate-500 font-medium px-1">
+            <div className="flex items-center gap-1.5">
+              <span className="text-slate-400 font-normal">{t('ordenar_por') || (idioma === 'EN' ? 'Sort by:' : 'Ordenar:')}:</span>
+              <select
+                value={criterioOrden}
+                onChange={(e) => setCriterioOrden(e.target.value)}
+                className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-bold px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-mercatto-primary cursor-pointer"
+              >
+                <option value="plan">{t('orden_plan') || (idioma === 'EN' ? 'By Plan (Elite / Pro / Starter)' : 'Por Plan (Élite / Pro / Starter)')}</option>
+                <option value="calificacion">{t('mejor_calificadas') || (idioma === 'EN' ? 'Highest Rated' : 'Mayor Calificación')}</option>
+                <option value="ventas">{t('mas_vendidos') || (idioma === 'EN' ? 'Most Sales' : 'Más Ventas')}</option>
+                <option value="nombre">{idioma === 'EN' ? 'Name (A-Z)' : 'Nombre (A-Z)'}</option>
+              </select>
+            </div>
             <span className="font-semibold text-slate-700 dark:text-slate-300">
               {tiendasFiltradas.length} {t('tiendas_oficiales')}
             </span>
-            {(busqueda || marcaFiltro) && (
+            {(busqueda || marcaFiltro || planFiltro || criterioOrden !== 'plan') && (
               <button
-                onClick={() => { setBusqueda(''); setMarcaFiltro(''); }}
+                onClick={() => { setBusqueda(''); setMarcaFiltro(''); setPlanFiltro(''); setCriterioOrden('plan'); }}
                 className="text-xs font-bold text-rose-500 hover:text-rose-600 underline cursor-pointer"
               >
                 {t('limpiar')}
               </button>
             )}
           </div>
+        </div>
+
+        {/* Filtro interactivo por Nivel de Membresia / Plan */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none text-xs">
+          <button
+            onClick={() => setPlanFiltro('')}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
+              !planFiltro
+                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs'
+                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-mercatto-border dark:border-slate-700 hover:border-slate-400'
+            }`}
+          >
+            {t('todos_los_planes') || (idioma === 'EN' ? 'All Plans' : 'Todos los planes')}
+          </button>
+          <button
+            onClick={() => setPlanFiltro(planFiltro === 'ELITE' ? '' : 'ELITE')}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+              planFiltro === 'ELITE'
+                ? 'bg-amber-400 text-slate-950 font-black shadow-sm ring-1 ring-amber-300'
+                : 'bg-white dark:bg-slate-800 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-900/40 hover:bg-amber-50 dark:hover:bg-amber-950/20'
+            }`}
+          >
+            <Crown size={13} className="text-amber-600 dark:text-amber-400 fill-amber-500/20" />
+            <span>Élite</span>
+          </button>
+          <button
+            onClick={() => setPlanFiltro(planFiltro === 'PRO' ? '' : 'PRO')}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+              planFiltro === 'PRO'
+                ? 'bg-indigo-600 text-white font-black shadow-sm'
+                : 'bg-white dark:bg-slate-800 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-900/40 hover:bg-indigo-50 dark:hover:bg-indigo-950/20'
+            }`}
+          >
+            <Sparkles size={13} className="text-indigo-600 dark:text-indigo-400" />
+            <span>Pro</span>
+          </button>
+          <button
+            onClick={() => setPlanFiltro(planFiltro === 'STARTER' ? '' : 'STARTER')}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+              planFiltro === 'STARTER'
+                ? 'bg-slate-700 text-white font-black shadow-sm'
+                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/80'
+            }`}
+          >
+            <Store size={13} className="text-slate-400" />
+            <span>Starter</span>
+          </button>
         </div>
 
         {/* Marcas Destacadas Bar */}

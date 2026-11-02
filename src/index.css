@@ -34,6 +34,12 @@
 }
 
 @layer base {
+  html,
+  body {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
   body {
     @apply bg-mercatto-bg text-mercatto-text antialiased dark:bg-slate-950 dark:text-slate-100;
   }
