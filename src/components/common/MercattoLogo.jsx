@@ -41,21 +41,28 @@ export const MercattoLogo = ({
     )
   }
 
-  const isWhite = variant === 'white' || variant === 'onDark' || variant === 'light'
+  const isWhite = variant === 'white' || variant === 'light'
+  const isWhiteBorder = variant === 'whiteBorder' || variant === 'onDark'
+
   const brandTextColor = isWhite
     ? 'text-white group-hover:text-slate-100 drop-shadow-[0_2px_12px_rgba(255,255,255,0.3)]'
-    : 'text-violet-600 dark:text-violet-400 group-hover:text-violet-500 drop-shadow-[0_1px_6px_rgba(139,92,246,0.18)]'
+    : 'text-violet-600 dark:text-violet-400 group-hover:text-violet-500'
 
   const defaultSloganColor = isWhite
     ? 'text-white font-medium'
-    : 'text-violet-700/90 dark:text-violet-300'
+    : 'text-violet-600 dark:text-violet-400 font-semibold'
 
   return (
     <div className="flex flex-col items-start leading-none select-none group">
       <span 
         className={`inline-block font-['Pacifico',cursive] text-2xl sm:text-[28px] font-normal ${brandTextColor} transition-all duration-200 tracking-wide group-hover:scale-102 ${className}`}
         style={{
-          fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif"
+          fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif",
+          ...(isWhiteBorder ? {
+            WebkitTextStroke: '2px #FFFFFF',
+            paintOrder: 'stroke fill',
+            textShadow: '-1px -1px 0 #FFFFFF, 1px -1px 0 #FFFFFF, -1px 1px 0 #FFFFFF, 1px 1px 0 #FFFFFF, 0 2px 10px rgba(255,255,255,0.35)'
+          } : {})
         }}
       >
         Mercatto
@@ -64,7 +71,12 @@ export const MercattoLogo = ({
         <span 
           className={`text-[10px] sm:text-[11.5px] font-normal ${sloganClassName.includes('text-') ? '' : defaultSloganColor} tracking-wide -mt-0.5 sm:-mt-1 whitespace-nowrap truncate max-w-[280px] ${sloganClassName || 'hidden sm:block'}`}
           style={{
-            fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif"
+            fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif",
+            ...(isWhiteBorder ? {
+              WebkitTextStroke: '1px #FFFFFF',
+              paintOrder: 'stroke fill',
+              textShadow: '-0.75px -0.75px 0 #FFFFFF, 0.75px -0.75px 0 #FFFFFF, -0.75px 0.75px 0 #FFFFFF, 0.75px 0.75px 0 #FFFFFF'
+            } : {})
           }}
         >
           {t('eslogan')}

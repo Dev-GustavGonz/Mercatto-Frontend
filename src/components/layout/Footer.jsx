@@ -114,10 +114,10 @@ export const Footer = () => {
           <div className="lg:col-span-4 space-y-4">
             <Link to="/" className="inline-block" title="Ir al inicio de Mercatto">
               <MercattoLogo 
-                variant="white" 
+                variant="whiteBorder" 
                 size={34} 
                 showSlogan={true} 
-                sloganClassName="text-white font-medium text-xs block drop-shadow-sm" 
+                sloganClassName="block text-xs" 
               />
             </Link>
 
