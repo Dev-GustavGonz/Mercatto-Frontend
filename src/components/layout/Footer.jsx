@@ -117,7 +117,7 @@ export const Footer = () => {
                 variant="whiteBorder" 
                 size={34} 
                 showSlogan={true} 
-                sloganClassName="block text-xs" 
+                sloganClassName="block text-xs sm:text-[13px] font-bold tracking-wide mt-0.5" 
               />
             </Link>
 

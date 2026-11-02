@@ -46,10 +46,14 @@ export const MercattoLogo = ({
 
   const brandTextColor = isWhite
     ? 'text-white group-hover:text-slate-100 drop-shadow-[0_2px_12px_rgba(255,255,255,0.3)]'
+    : isWhiteBorder
+    ? 'text-violet-600 font-normal'
     : 'text-violet-600 dark:text-violet-400 group-hover:text-violet-500'
 
   const defaultSloganColor = isWhite
     ? 'text-white font-medium'
+    : isWhiteBorder
+    ? 'text-violet-600 font-bold'
     : 'text-violet-600 dark:text-violet-400 font-semibold'
 
   return (
@@ -73,9 +77,9 @@ export const MercattoLogo = ({
           style={{
             fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif",
             ...(isWhiteBorder ? {
-              WebkitTextStroke: '1px #FFFFFF',
+              WebkitTextStroke: '1.2px #FFFFFF',
               paintOrder: 'stroke fill',
-              textShadow: '-0.75px -0.75px 0 #FFFFFF, 0.75px -0.75px 0 #FFFFFF, -0.75px 0.75px 0 #FFFFFF, 0.75px 0.75px 0 #FFFFFF'
+              textShadow: '-1px -1px 0 #FFFFFF, 1px -1px 0 #FFFFFF, -1px 1px 0 #FFFFFF, 1px 1px 0 #FFFFFF, 0 1px 6px rgba(255,255,255,0.45)'
             } : {})
           }}
         >
