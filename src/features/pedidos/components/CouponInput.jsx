@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import { useCart } from '@/hooks/useCart'
+import { useLanguage } from '@/hooks/useLanguage'
 import Button from '@/components/common/Button'
 import { Tag, Check, X } from 'lucide-react'
 
 export const CouponInput = () => {
   const { cupon, aplicarCupon, removerCupon } = useCart()
+  const { t } = useLanguage()
   const [codigo, setCodigo] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -23,15 +25,15 @@ export const CouponInput = () => {
         <div className="flex items-center gap-2">
           <Check size={16} className="text-emerald-600" />
           <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300">
-            Cupón activo: {cupon.codigo}
+            {t('cupon_activo')}: {cupon.codigo}
           </span>
         </div>
         <button
           onClick={removerCupon}
-          className="text-xs text-rose-500 hover:underline flex items-center gap-1 cursor-pointer"
+          className="text-xs text-rose-500 hover:underline flex items-center gap-1 cursor-pointer font-medium"
         >
           <X size={12} />
-          <span>Quitar</span>
+          <span>{t('quitar')}</span>
         </button>
       </div>
     )
@@ -45,14 +47,14 @@ export const CouponInput = () => {
         </div>
         <input
           type="text"
-          placeholder="Código de cupón (ej: MERCATTO10)"
+          placeholder={t('codigo_cupon_placeholder')}
           value={codigo}
           onChange={(e) => setCodigo(e.target.value)}
           className="w-full text-xs pl-8 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl uppercase tracking-wider focus:outline-none focus:ring-1 focus:ring-indigo-500"
         />
       </div>
       <Button type="submit" size="sm" variant="outline" loading={loading} disabled={!codigo.trim()}>
-        Aplicar
+        {t('aplicar')}
       </Button>
     </form>
   )
