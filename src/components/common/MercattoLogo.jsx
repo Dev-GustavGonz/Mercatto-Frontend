@@ -41,13 +41,13 @@ export const MercattoLogo = ({
     )
   }
 
-  const isDarkBg = variant === 'light' || variant === 'onDark'
-  const brandTextColor = isDarkBg
-    ? 'text-white group-hover:text-violet-200 drop-shadow-[0_2px_12px_rgba(255,255,255,0.25)]'
+  const isWhite = variant === 'white' || variant === 'onDark' || variant === 'light'
+  const brandTextColor = isWhite
+    ? 'text-white group-hover:text-slate-100 drop-shadow-[0_2px_12px_rgba(255,255,255,0.3)]'
     : 'text-violet-600 dark:text-violet-400 group-hover:text-violet-500 drop-shadow-[0_1px_6px_rgba(139,92,246,0.18)]'
 
-  const defaultSloganColor = isDarkBg
-    ? 'text-violet-300 font-medium'
+  const defaultSloganColor = isWhite
+    ? 'text-white font-medium'
     : 'text-violet-700/90 dark:text-violet-300'
 
   return (
@@ -62,7 +62,7 @@ export const MercattoLogo = ({
       </span>
       {showSlogan && (
         <span 
-          className={`text-[10px] sm:text-[11.5px] font-normal ${defaultSloganColor} tracking-wide -mt-0.5 sm:-mt-1 whitespace-nowrap truncate max-w-[280px] ${sloganClassName || 'hidden sm:block'}`}
+          className={`text-[10px] sm:text-[11.5px] font-normal ${sloganClassName.includes('text-') ? '' : defaultSloganColor} tracking-wide -mt-0.5 sm:-mt-1 whitespace-nowrap truncate max-w-[280px] ${sloganClassName || 'hidden sm:block'}`}
           style={{
             fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif"
           }}

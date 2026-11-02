@@ -66,10 +66,10 @@ export const Footer = () => {
               </div>
               <div>
                 <h5 className="text-xs sm:text-sm font-bold text-white tracking-wide">
-                  {isEn ? 'National Shipping' : 'Envíos en Colombia'}
+                  {isEn ? 'Citywide Shipping' : 'Envíos a toda la ciudad'}
                 </h5>
                 <p className="text-[11px] sm:text-xs text-slate-400 leading-tight">
-                  {isEn ? 'Live order tracking' : 'Rastreo en vivo de tu paquete'}
+                  {isEn ? 'Fast delivery to your door' : 'Entregas rápidas a tu puerta'}
                 </p>
               </div>
             </div>
@@ -114,17 +114,17 @@ export const Footer = () => {
           <div className="lg:col-span-4 space-y-4">
             <Link to="/" className="inline-block" title="Ir al inicio de Mercatto">
               <MercattoLogo 
-                variant="onDark" 
+                variant="white" 
                 size={34} 
                 showSlogan={true} 
-                sloganClassName="text-violet-300 font-semibold text-xs block" 
+                sloganClassName="text-white font-medium text-xs block drop-shadow-sm" 
               />
             </Link>
 
             <p className="text-sm text-slate-300 leading-relaxed pr-2 sm:pr-6">
               {isEn 
-                ? 'The direct marketplace connecting verified brands, official distributors, and buyers across Colombia. Buy with total peace of mind and zero intermediaries.' 
-                : 'La plataforma que une marcas verificadas, distribuidores oficiales y compradores en toda Colombia. Compra con total tranquilidad y cero intermediarios.'}
+                ? 'The direct marketplace connecting verified brands, official distributors, and buyers with fast citywide deliveries. Buy with peace of mind and zero intermediaries.' 
+                : 'La plataforma que une marcas verificadas, distribuidores oficiales y compradores con envíos a toda la ciudad. Compra con total tranquilidad y cero intermediarios.'}
             </p>
 
             {/* Certificación y medios de pago */}
