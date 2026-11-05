@@ -10,6 +10,7 @@ import { useLanguage } from '@/hooks/useLanguage'
 import { translateCategoryName } from '@/utils/categoryUtils'
 import { productoService } from '../../features/productos'
 import { tiendaService, vendedorService } from '../../features/tiendas'
+import { apiCache } from '@/utils/apiCache'
 import SearchBar from './SearchBar'
 import MercattoLogo from '../common/MercattoLogo'
 import { 
@@ -45,8 +46,8 @@ export const Navbar = () => {
   const [dropdownUser, setDropdownUser] = useState(false)
   const [dropdownLang, setDropdownLang] = useState(false)
   const [dropdownShop, setDropdownShop] = useState(false)
-  const [categorias, setCategorias] = useState([])
-  const [marcas, setMarcas] = useState([])
+  const [categorias, setCategorias] = useState(() => apiCache.peekData('/categorias') || [])
+  const [marcas, setMarcas] = useState(() => apiCache.peekData('/tiendas/marcas') || [])
   const [menuMobile, setMenuMobile] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()

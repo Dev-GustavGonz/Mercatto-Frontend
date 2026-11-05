@@ -66,7 +66,7 @@ api.interceptors.response.use(
   }
 )
 
-// Wrapper transparente para peticiones GET con caché inteligente en memoria y deduplicación concurrente
+// Wrapper transparente para peticiones GET con caché inteligente persistente (SWR) y deduplicación
 const originalGet = api.get.bind(api)
 api.get = async (url, config = {}) => {
   const reqConfig = { ...config, url, method: 'GET' }
@@ -76,13 +76,34 @@ api.get = async (url, config = {}) => {
     return originalGet(url, config)
   }
 
-  // 2. Comprobar si existe en caché vigente (0ms de tiempo de respuesta)
-  const cachedResponse = apiCache.get(reqConfig)
-  if (cachedResponse) {
-    return Promise.resolve(cachedResponse)
+  // 2. Comprobar si existe en caché persistente o memoria
+  const cachedEntry = apiCache.getEntry(reqConfig)
+  if (cachedEntry) {
+    // Si la caché está fresca (TTL no expirado), responder en 0ms
+    if (!cachedEntry.isStale) {
+      return Promise.resolve(cachedEntry.response)
+    }
+
+    // Stale-While-Revalidate: Si está expirada, responder con la caché en 0ms
+    // y disparar una actualización silenciosa en segundo plano
+    const key = apiCache.generateKey(reqConfig)
+    if (!apiCache.inFlightRequests.has(key)) {
+      const backgroundPromise = originalGet(url, config)
+        .then((freshResponse) => {
+          apiCache.set(reqConfig, freshResponse)
+          return freshResponse
+        })
+        .catch(() => {})
+        .finally(() => {
+          apiCache.inFlightRequests.delete(key)
+        })
+      apiCache.inFlightRequests.set(key, backgroundPromise)
+    }
+
+    return Promise.resolve(cachedEntry.response)
   }
 
-  // 3. Deduplicación de peticiones concurrentes idénticas (evita duplicar llamadas paralelas)
+  // 3. Deduplicación de peticiones concurrentes idénticas
   const key = apiCache.generateKey(reqConfig)
   if (apiCache.inFlightRequests.has(key)) {
     return apiCache.inFlightRequests.get(key)

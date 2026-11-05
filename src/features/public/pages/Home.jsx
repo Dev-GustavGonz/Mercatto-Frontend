@@ -5,6 +5,7 @@ import { tiendaService } from '@/features/tiendas/services/tiendaService'
 import { useCart } from '@/hooks/useCart'
 import { useFavorites } from '@/hooks/useFavorites'
 import { useLanguage } from '@/hooks/useLanguage'
+import { apiCache } from '@/utils/apiCache'
 import Spinner from '@/components/common/Spinner'
 
 // Componentes del diseño Showcase Bento 2026
@@ -29,13 +30,20 @@ import {
 } from 'lucide-react'
 
 export const Home = () => {
-  const [destacados, setDestacados] = useState([])
-  const [nuevos, setNuevos] = useState([])
-  const [masVendidos, setMasVendidos] = useState([])
+  const cachedDest = apiCache.peekData('/productos/destacados')
+  const cachedNuev = apiCache.peekData('/productos/nuevos')
+  const cachedMasV = apiCache.peekData('/productos/mas-vendidos')
+  const cachedTiendas = apiCache.peekData('/tiendas')
+  const cachedCats = apiCache.peekData('/categorias')
+  const tieneCachePrevia = Boolean(cachedDest && cachedDest.length > 0)
+
+  const [destacados, setDestacados] = useState(() => (Array.isArray(cachedDest) ? cachedDest : []))
+  const [nuevos, setNuevos] = useState(() => (Array.isArray(cachedNuev) ? cachedNuev : []))
+  const [masVendidos, setMasVendidos] = useState(() => (Array.isArray(cachedMasV) ? cachedMasV : []))
   const [productosElite, setProductosElite] = useState([])
-  const [tiendas, setTiendas] = useState([])
-  const [categorias, setCategorias] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [tiendas, setTiendas] = useState(() => (Array.isArray(cachedTiendas) ? cachedTiendas : []))
+  const [categorias, setCategorias] = useState(() => (Array.isArray(cachedCats) ? cachedCats : []))
+  const [loading, setLoading] = useState(!tieneCachePrevia)
   const [productoContacto, setProductoContacto] = useState(null)
 
   const { agregarItem } = useCart()
@@ -128,8 +136,8 @@ export const Home = () => {
     }
   }
 
-  // Pantalla de carga hasta que respondan los artículos reales de la base de datos
-  if (loading) {
+  // Pantalla de carga hasta que respondan los artículos reales (solo si no hay caché previa)
+  if (loading && destacados.length === 0) {
     return (
       <div className="min-h-[65vh] w-full flex flex-col items-center justify-center p-6 space-y-2">
         <Spinner size="lg" className="py-2" />

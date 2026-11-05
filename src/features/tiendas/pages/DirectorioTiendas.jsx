@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { tiendaService } from '@/features/tiendas'
+import { apiCache } from '@/utils/apiCache'
 import { Store, Search, MapPin, Star, ShieldCheck, CheckCircle2, Package, Tag, ArrowRight, MessageSquare, Sparkles, Crown } from 'lucide-react'
 import Spinner from '@/components/common/Spinner'
 import EmptyState from '@/components/common/EmptyState'
@@ -8,9 +9,13 @@ import { getMediaUrl } from '@/utils/constants'
 import { useLanguage } from '@/hooks/useLanguage'
 
 export const DirectorioTiendas = () => {
-  const [tiendas, setTiendas] = useState([])
-  const [marcas, setMarcas] = useState([])
-  const [cargando, setCargando] = useState(true)
+  const cachedTiendas = apiCache.peekData('/tiendas')
+  const cachedMarcas = apiCache.peekData('/tiendas/marcas')
+  const tieneCache = Boolean(cachedTiendas && cachedTiendas.length > 0)
+
+  const [tiendas, setTiendas] = useState(() => (Array.isArray(cachedTiendas) ? cachedTiendas : []))
+  const [marcas, setMarcas] = useState(() => (Array.isArray(cachedMarcas) ? cachedMarcas : []))
+  const [cargando, setCargando] = useState(!tieneCache)
   const [busqueda, setBusqueda] = useState('')
   const [marcaFiltro, setMarcaFiltro] = useState('')
   const [planFiltro, setPlanFiltro] = useState('')
@@ -24,7 +29,7 @@ export const DirectorioTiendas = () => {
 
   const cargarDatos = async () => {
     try {
-      setCargando(true)
+      if (!tieneCache) setCargando(true)
       const [tiendasData, marcasData] = await Promise.all([
         tiendaService.listarTiendas(),
         tiendaService.listarMarcas(),

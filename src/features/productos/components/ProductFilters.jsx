@@ -5,6 +5,7 @@ import Button from '@/components/common/Button'
 import { Filter, RotateCcw, Tag, Layers, ChevronDown, ChevronUp, Crown } from 'lucide-react'
 import { useLanguage } from '@/hooks/useLanguage'
 import { translateCategoryName } from '@/utils/categoryUtils'
+import { apiCache } from '@/utils/apiCache'
 
 export const ProductFilters = ({
   selectedCategory,
@@ -19,8 +20,8 @@ export const ProductFilters = ({
   onSoloEliteChange,
   onReset,
 }) => {
-  const [categorias, setCategorias] = useState([])
-  const [marcas, setMarcas] = useState([])
+  const [categorias, setCategorias] = useState(() => apiCache.peekData('/categorias') || [])
+  const [marcas, setMarcas] = useState(() => apiCache.peekData('/tiendas/marcas') || [])
   const [precioMin, setPrecioMin] = useState(priceRange.min || '')
   const [precioMax, setPrecioMax] = useState(priceRange.max || '')
   const { t, idioma } = useLanguage()

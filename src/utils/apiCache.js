@@ -1,27 +1,33 @@
 /**
- * Sistema de Caché Inteligente en Memoria para Mercatto Frontend
+ * Sistema de Caché Inteligente Persistente (SWR) para Mercatto Frontend
  * 
  * Beneficios:
- * 1. Reduce los tiempos de carga a 0ms en navegación repetida.
- * 2. Deduplica peticiones concurrentes (In-Flight Request Deduplication).
- * 3. Invalida automáticamente la caché ante operaciones de mutación (POST, PUT, PATCH, DELETE).
- * 4. Evita sobrecargar la base de datos remota con consultas redundantes.
+ * 1. Reduce los tiempos de carga a 0ms en navegación repetida y refresco de página.
+ * 2. Persistencia en localStorage: Al volver a abrir la web en móvil o escritorio,
+ *    el contenido se muestra al instante sin pantalla blanca ni spinner bloqueante.
+ * 3. Stale-While-Revalidate (SWR): Muestra datos en caché de inmediato y revalida
+ *    silenciosamente en segundo plano si la caché ya expiró.
+ * 4. Deduplica peticiones concurrentes (In-Flight Request Deduplication).
+ * 5. Invalida automáticamente la caché ante operaciones de mutación (POST, PUT, PATCH, DELETE).
  */
+
+const STORAGE_PREFIX = 'mercatto_cache:v2:'
+const MAX_STALE_AGE = 24 * 60 * 60 * 1000 // Permitir datos en caché de hasta 24 horas como fallback instantáneo
 
 class ApiCacheManager {
   constructor() {
     this.cache = new Map()
     this.inFlightRequests = new Map()
 
-    // Reglas de TTL por prefijo de ruta (en milisegundos)
+    // Reglas de TTL fresco (en milisegundos)
     this.ttlRules = [
-      { pattern: /^\/categorias/, ttl: 15 * 60 * 1000 },      // 15 minutos
-      { pattern: /^\/tiendas\/marcas/, ttl: 15 * 60 * 1000 }, // 15 minutos
-      { pattern: /^\/tiendas/, ttl: 5 * 60 * 1000 },          // 5 minutos
-      { pattern: /^\/productos\/(destacados|mas-vendidos|nuevos)/, ttl: 5 * 60 * 1000 }, // 5 minutos
-      { pattern: /^\/productos\/slug\//, ttl: 5 * 60 * 1000 }, // 5 minutos
-      { pattern: /^\/productos\/\d+$/, ttl: 5 * 60 * 1000 },  // 5 minutos
-      { pattern: /^\/productos/, ttl: 3 * 60 * 1000 },        // 3 minutos
+      { pattern: /^\/categorias/, ttl: 30 * 60 * 1000 },      // 30 minutos
+      { pattern: /^\/tiendas\/marcas/, ttl: 30 * 60 * 1000 }, // 30 minutos
+      { pattern: /^\/tiendas/, ttl: 10 * 60 * 1000 },          // 10 minutos
+      { pattern: /^\/productos\/(destacados|mas-vendidos|nuevos)/, ttl: 10 * 60 * 1000 }, // 10 minutos
+      { pattern: /^\/productos\/slug\//, ttl: 10 * 60 * 1000 }, // 10 minutos
+      { pattern: /^\/productos\/\d+$/, ttl: 10 * 60 * 1000 },  // 10 minutos
+      { pattern: /^\/productos/, ttl: 5 * 60 * 1000 },        // 5 minutos
     ]
 
     // Rutas que SIEMPRE deben ser frescas y nunca guardarse en caché
@@ -35,6 +41,40 @@ class ApiCacheManager {
       /^\/admin\/pedidos/,
       /^\/panel-vendedor/
     ]
+
+    // Cargar caché previa de localStorage a memoria de manera perezosa
+    this.initFromStorage()
+  }
+
+  /**
+   * Carga llaves activas de localStorage a la memoria RAM.
+   */
+  initFromStorage() {
+    try {
+      if (typeof window === 'undefined' || !window.localStorage) return
+      const now = Date.now()
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i)
+        if (key && key.startsWith(STORAGE_PREFIX)) {
+          try {
+            const raw = localStorage.getItem(key)
+            if (!raw) continue
+            const parsed = JSON.parse(raw)
+            // Descartar si excede el límite máximo de 24 horas
+            if (now - (parsed.cachedAt || 0) > MAX_STALE_AGE) {
+              localStorage.removeItem(key)
+            } else {
+              const memKey = key.slice(STORAGE_PREFIX.length)
+              this.cache.set(memKey, parsed)
+            }
+          } catch (e) {
+            localStorage.removeItem(key)
+          }
+        }
+      }
+    } catch (e) {
+      // Ignorar si localStorage está deshabilitado por modo incógnito
+    }
   }
 
   /**
@@ -74,42 +114,142 @@ class ApiCacheManager {
         return rule.ttl
       }
     }
-    return 2 * 60 * 1000 // 2 minutos por defecto
+    return 3 * 60 * 1000 // 3 minutos por defecto
   }
 
   /**
-   * Obtiene un elemento válido de la caché si no ha expirado.
+   * Obtiene un elemento de la caché, evaluando si está fresco o stale.
+   * Retorna { response, isStale } o null si no existe.
    */
-  get(config) {
+  getEntry(config) {
     const key = this.generateKey(config)
-    const entry = this.cache.get(key)
+    let entry = this.cache.get(key)
+
+    // Si no está en memoria, intentar buscar en localStorage
+    if (!entry) {
+      try {
+        const raw = localStorage.getItem(STORAGE_PREFIX + key)
+        if (raw) {
+          entry = JSON.parse(raw)
+          this.cache.set(key, entry)
+        }
+      } catch (e) {}
+    }
+
     if (!entry) return null
 
-    if (Date.now() > entry.expiresAt) {
+    const now = Date.now()
+    const age = now - (entry.cachedAt || 0)
+
+    // Si superó el tiempo máximo de 24 horas, eliminarlo
+    if (age > MAX_STALE_AGE) {
       this.cache.delete(key)
+      try { localStorage.removeItem(STORAGE_PREFIX + key) } catch (e) {}
       return null
     }
 
-    return entry.response
+    const isStale = now > entry.expiresAt
+    return {
+      response: entry.response,
+      isStale,
+      cachedAt: entry.cachedAt
+    }
   }
 
   /**
-   * Almacena una respuesta en la caché.
+   * Método de compatibilidad para lecturas directas (retorna response o null)
+   */
+  get(config) {
+    const result = this.getEntry(config)
+    return result ? result.response : null
+  }
+
+  /**
+   * Permite inspeccionar síncronamente datos cacheados para inicializar estado en 0ms
+   */
+  peekData(urlPattern) {
+    try {
+      // 1. Revisar en memoria
+      for (const [key, entry] of this.cache.entries()) {
+        if (key.includes(urlPattern) && entry?.response?.data) {
+          return entry.response.data
+        }
+      }
+      // 2. Revisar en localStorage
+      if (typeof window !== 'undefined' && window.localStorage) {
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i)
+          if (k && k.startsWith(STORAGE_PREFIX) && k.includes(urlPattern)) {
+            const raw = localStorage.getItem(k)
+            if (raw) {
+              const entry = JSON.parse(raw)
+              if (entry?.response?.data) return entry.response.data
+            }
+          }
+        }
+      }
+    } catch (e) {}
+
+    // Fallback inicial ultrarrápido para categorías estándar
+    if (urlPattern && urlPattern.includes('/categorias')) {
+      return [
+        { id: 1, nombre: 'Hogar & Muebles', slug: 'hogar-muebles', icono: 'Home' },
+        { id: 2, nombre: 'Tecnología & Electrónica', slug: 'tecnologia-electronica', icono: 'Laptop' },
+        { id: 3, nombre: 'Moda & Calzado', slug: 'moda-calzado', icono: 'Shirt' },
+        { id: 4, nombre: 'Deportes & Fitness', slug: 'deportes-fitness', icono: 'Activity' },
+        { id: 5, nombre: 'Belleza & Cuidado Personal', slug: 'belleza-cuidado', icono: 'Sparkles' }
+      ]
+    }
+
+    return null
+  }
+
+  /**
+   * Almacena una respuesta en la caché en memoria y persistente.
    */
   set(config, response) {
     const key = this.generateKey(config)
     const ttl = this.getTTL(config)
-    this.cache.set(key, {
+    const entry = {
       response: {
         data: response.data,
         status: response.status,
         statusText: response.statusText,
         headers: response.headers,
-        config: response.config,
       },
       cachedAt: Date.now(),
       expiresAt: Date.now() + ttl,
-    })
+    }
+
+    this.cache.set(key, entry)
+
+    // Persistir en localStorage
+    try {
+      localStorage.setItem(STORAGE_PREFIX + key, JSON.stringify(entry))
+    } catch (e) {
+      // Quota excedida: limpiar entradas antiguas de mercatto_cache y reintentar
+      this.pruneStorage()
+      try {
+        localStorage.setItem(STORAGE_PREFIX + key, JSON.stringify(entry))
+      } catch (err) {}
+    }
+  }
+
+  /**
+   * Libera espacio eliminando entradas antiguas de localStorage.
+   */
+  pruneStorage() {
+    try {
+      const keysToRemove = []
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i)
+        if (k && k.startsWith(STORAGE_PREFIX)) {
+          keysToRemove.push(k)
+        }
+      }
+      // Eliminar la mitad más vieja o todas si es necesario
+      keysToRemove.forEach((k) => localStorage.removeItem(k))
+    } catch (e) {}
   }
 
   /**
@@ -138,16 +278,37 @@ class ApiCacheManager {
     for (const key of this.cache.keys()) {
       if (key.includes(prefix)) {
         this.cache.delete(key)
+        try { localStorage.removeItem(STORAGE_PREFIX + key) } catch (e) {}
       }
     }
+    try {
+      const toRemove = []
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i)
+        if (k && k.startsWith(STORAGE_PREFIX) && k.includes(prefix)) {
+          toRemove.push(k)
+        }
+      }
+      toRemove.forEach((k) => localStorage.removeItem(k))
+    } catch (e) {}
   }
 
   /**
-   * Limpia toda la caché en memoria.
+   * Limpia toda la caché en memoria y persistente.
    */
   clear() {
     this.cache.clear()
     this.inFlightRequests.clear()
+    try {
+      const toRemove = []
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i)
+        if (k && k.startsWith(STORAGE_PREFIX)) {
+          toRemove.push(k)
+        }
+      }
+      toRemove.forEach((k) => localStorage.removeItem(k))
+    } catch (e) {}
   }
 }
 
