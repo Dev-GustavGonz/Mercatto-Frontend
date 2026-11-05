@@ -177,19 +177,20 @@ const esConsultaTecnicaOPrivada = (texto) => {
 }
 
 const DISCULPAS_FUERA_DE_TEMA_ES = [
+  'Lo siento, no estoy programado para responder esa pregunta. Mi función es orientarte sobre el uso, compras, ventas y servicios de Mercatto. ¿En qué te puedo ayudar sobre la plataforma?',
+  'Disculpa, no estoy programado para responder sobre ese tema. Como asesor virtual de Mercatto, puedo ayudarte a realizar compras, consultar métodos de pago o abrir tu propia tienda. ¿Qué te gustaría saber sobre la tienda?',
+  'Lo siento, no puedo responder esa pregunta ya que está fuera de mis funciones. Estoy capacitado exclusivamente para atender consultas sobre el marketplace de Mercatto. ¿Deseas consultar sobre compras, envíos o cupones?',
   'Soy el asistente virtual de esta aplicación y estoy aquí para ayudarte con información sobre sus servicios y funcionalidades. ¿Qué te gustaría conocer sobre la plataforma?',
-  'Disculpa, como asistente oficial de Mercatto mi propósito es ayudarte con compras, pedidos, métodos de pago, envíos y gestión de tiendas dentro de nuestro marketplace. ¿Te puedo colaborar con algo sobre nuestra plataforma?',
-  'Disculpa la molestia, pero solo tengo información y soporte relacionado con la tienda y marketplace de Mercatto (pedidos, despachos, cupones o registro de vendedores). ¿Deseas consultar sobre alguno de estos temas?',
-  'Disculpa, esa consulta está fuera de los servicios de Mercatto. Estoy diseñado para asistirte en todo lo relacionado con nuestro catálogo, compras seguras, métodos de pago o soporte de órdenes. ¿En qué puedo orientarte sobre la tienda?',
-  'Disculpa, no puedo ayudarte con temas ajenos a Mercatto. Con gusto puedo responderte sobre el estado de un pedido, cómo vender, costos de envío o cupones vigentes. ¿Qué te gustaría consultar?'
+  'Disculpa la molestia, pero no tengo respuestas sobre ese asunto. Mi propósito es orientarte sobre el uso y los beneficios de Mercatto. ¿Te puedo colaborar con alguna duda sobre la plataforma?',
+  'Lo siento, esa pregunta no está relacionada con la plataforma. Con gusto te asisto con información de productos, despachos en Colombia o registro de vendedores. ¿En qué te colaboro?'
 ]
 
 const DISCULPAS_FUERA_DE_TEMA_EN = [
-  'I am the official virtual assistant of this application and I am here to help you with information about its services and features. What would you like to know about the platform?',
-  "I apologize, but as Mercatto's official assistant, I am designed to assist exclusively with shopping, orders, payments, shipping, and store management on our marketplace. May I help you with any of these?",
-  "I'm sorry, but I only provide guidance on Mercatto-related topics such as orders, shipping across Colombia, payment methods, or opening a seller store. Would you like assistance with any of these?",
-  "I apologize, that query is outside the scope of Mercatto. I am dedicated to helping you with our products, checkout process, tracking, or seller plans. How can I guide you on our marketplace?",
-  "I'm sorry, I cannot assist with inquiries outside of Mercatto. I would be delighted to help you track an order, learn how to sell, check shipping rates, or apply active coupons. What would you like to know?"
+  "I'm sorry, I am not programmed to answer that question. My role is to help you with information about products, orders, payments, shipping, and stores on Mercatto. What would you like to know about the platform?",
+  "I apologize, I am not programmed to respond to that topic. As Mercatto's virtual assistant, I can guide you through purchases, payment methods, or opening your own store. How may I assist you?",
+  "I am the official virtual assistant of this application and I am here to help you with information about its services and features. What would you like to know about the platform?",
+  "I'm sorry, that question is outside my programming. I am strictly designed to assist with Mercatto marketplace inquiries. Would you like details on orders, shipping, or coupons?",
+  "I apologize, but I do not have answers on that subject. My sole focus is to assist you with Mercatto services, shopping, and seller features in Colombia. How can I help you today?"
 ]
 
 const SOPORTE_VARIADO_ES = [
@@ -573,10 +574,16 @@ export const PublicChatbot = () => {
         const rawReply = resIa?.data?.reply || resIa?.data?.respuesta
         if (rawReply) {
           const esPreguntaComoFunciona = /funciona|que es mercatto|de que trata|como opera|how it works|what is mercatto|about mercatto/i.test(t)
-          const contieneListaProductosInesperada = (rawReply.includes('Artículos más destacados') || rawReply.includes('Articulos mas destacados') || rawReply.includes('Nevera No Frost') || rawReply.includes('Grand theft')) && !/producto|articulo|catalogo|recomienda|venden/i.test(t)
+          const pideCatalogoOProductos = /producto|articulo|articulos|catalogo|recomienda|venden|tienda|comprar|que hay|precio|precios|buy|item|items/i.test(t)
+          const contieneListaProductosInesperada = (rawReply.includes('Artículos más destacados') || rawReply.includes('Articulos mas destacados') || rawReply.includes('Nevera No Frost') || rawReply.includes('Grand theft'))
 
-          if (esPreguntaComoFunciona && contieneListaProductosInesperada) {
-            respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).como_funciona)
+          if (contieneListaProductosInesperada && !pideCatalogoOProductos) {
+            // El backend devolvió una lista de productos por desactualización de agente local ante una pregunta que no era de catálogo
+            if (esPreguntaComoFunciona) {
+              respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).como_funciona)
+            } else {
+              respuestaIA = obtenerRespuestaVariada(isEffectiveEn ? DISCULPAS_FUERA_DE_TEMA_EN : DISCULPAS_FUERA_DE_TEMA_ES)
+            }
           } else {
             respuestaIA = sanitizeResponseLanguage(rawReply, isEffectiveEn, texto)
           }
