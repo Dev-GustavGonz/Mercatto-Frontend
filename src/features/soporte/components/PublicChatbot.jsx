@@ -27,6 +27,13 @@ const WHATSAPP_SOPORTE = '573233882717'
 
 const getOpcionesGuia = (isEn) => [
   {
+    id: 'como_funciona',
+    titulo: isEn ? 'How does Mercatto work?' : '¿Cómo funciona Mercatto?',
+    subtitulo: isEn ? 'Everything you need to know about our marketplace' : 'Conoce qué es Mercatto para comprar y vender',
+    icono: HelpCircle,
+    color: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60'
+  },
+  {
     id: 'como_comprar',
     titulo: isEn ? 'How to buy on Mercatto?' : '¿Cómo comprar en Mercatto?',
     subtitulo: isEn ? 'Step-by-step guide to place your order' : 'Paso a paso para hacer tu primer pedido',
@@ -86,6 +93,7 @@ const getOpcionesGuia = (isEn) => [
 ]
 
 const SUGERENCIAS_INICIALES = [
+  { id: 'como_funciona', labelEs: '¿Cómo funciona?', labelEn: 'How it works?', icono: HelpCircle },
   { id: 'como_comprar', labelEs: 'Cómo comprar', labelEn: 'How to buy', icono: ShoppingBag },
   { id: 'medios_pago', labelEs: 'Medios de pago', labelEn: 'Payment methods', icono: CreditCard },
   { id: 'envios', labelEs: 'Envíos', labelEn: 'Shipping', icono: Truck },
@@ -144,6 +152,11 @@ const SOPORTE_VARIADO_EN = [
 ]
 
 const RESPUESTAS_BASE_ES = {
+  como_funciona: [
+    '**¿Cómo funciona Mercatto? — Tu Marketplace Multitienda en Colombia:**\n\nMercatto conecta a compradores con tiendas y emprendedores verificados en un ecosistema ágil y 100% seguro:\n\n• **Para Compradores:**\n  1. **Explora el Catálogo:** Descubre miles de artículos en Tecnología, Moda, Calzado, Hogar y Belleza.\n  2. **Compra Fácil:** Puedes comprar con tu cuenta o como **Invitado** indicando solo tu correo, teléfono y dirección de entrega.\n  3. **Pagos 100% Protegidos:** Mediante pasarela certificada Wompi Bancolombia (Tarjetas, PSE, Nequi, Daviplata) o **Pago Contra Entrega** en efectivo en tu puerta.\n  4. **Custodia Mercatto Escrow:** Tu dinero está en custodia segura y solo se libera a la tienda una vez que recibes tu pedido a entera satisfacción.\n  5. **Envíos y Rastreo:** Envíos a toda Colombia (¡gratis desde $150.000 COP!), seguimiento en vivo 24/7 y foto física como prueba de entrega.\n\n• **Para Vendedores:**\n  1. **Abre tu Tienda en 2 Minutos:** Regístrate gratis como vendedor, personaliza tu marca y publica tus productos con stock y variantes.\n  2. **Comisiones Bajas:** Desde el 2% según tu plan (Starter gratuito al 10%, Profesional al 5% o Élite Premium al 2%).\n  3. **Control Total:** Panel administrativo completo con analítica de ventas y control de inventario en tiempo real.\n\n*¿Deseas saber más sobre métodos de pago, cómo abrir tu propia tienda o rastrear una compra?*',
+    '**Mercatto en pocas palabras — La plataforma de comercio multitienda de Colombia:**\n\n• **Compras 100% Seguras:** Pagas con PSE, Nequi, tarjetas de crédito/débito o en efectivo al recibir. Tu dinero queda bajo custodia Escrow hasta que el paquete llega a tus manos con evidencia fotográfica.\n• **Logística Asegurada:** Despachos a nivel nacional con Servientrega, Coordinadora e Interrapidísimo. Flete fijo de $12.000 COP y **Envío Gratis** desde $150.000 COP.\n• **Oportunidad para Emprendedores:** Cualquier marca o tienda puede registrarse y vender a todo el país con las comisiones más competitivas del mercado.\n\n¿Te gustaría que te oriente sobre cómo realizar un pedido, los medios de pago o cómo registrar tu tienda?'
+  ],
+
   como_comprar: [
     '**Comprar en Mercatto es fácil, rápido y 100% seguro:**\n\n• **1. Explora el Catálogo:** Navega entre categorías oficiales o busca tus artículos favoritos.\n• **2. Agrega al Carrito:** Elige la talla, color o variante que prefieras.\n• **3. Compra Fácil:** Puedes comprar con tu cuenta o como **Invitado** indicando solo tu correo, teléfono y dirección de entrega.\n• **4. Paga Seguro:** Mediante pasarela certificada Wompi (Tarjetas, PSE, Nequi) o Pago Contra Entrega en efectivo.\n• **5. Confirmación y Factura:** Recibirás al instante un correo con el comprobante oficial y el enlace para rastrear tu paquete en vivo.',
     '**Guía rápida para realizar tu pedido en Mercatto:**\n\n1. Selecciona el artículo que te interese y haz clic en *Agregar al Carrito* o *Comprar Ahora*.\n2. Si no tienes cuenta, ¡no te preocupes! Puedes tramitar la orden como **Invitado** ingresando tus datos de entrega.\n3. Escoge tu medio de pago favorito: PSE, Nequi, tarjetas o Contra Entrega.\n4. Al confirmar la compra te llegará un correo con el identificador único para monitorear el estado del despacho en tiempo real.'
@@ -181,6 +194,11 @@ const RESPUESTAS_BASE_ES = {
 }
 
 const RESPUESTAS_BASE_EN = {
+  como_funciona: [
+    '**How does Mercatto work? — Colombia\'s Multi-Vendor Marketplace:**\n\nMercatto connects shoppers with verified stores and brands across Colombia in a secure and transparent shopping ecosystem:\n\n• **For Shoppers:**\n  1. **Browse the Catalog:** Explore thousands of items in Fashion, Tech, Footwear, Home, and Beauty.\n  2. **Guest or Account Checkout:** Order with your registered profile or simply as a **Guest** without requiring passwords.\n  3. **100% Protected Payments:** Handled by certified Wompi gateway (Cards, PSE, Nequi) or **Cash on Delivery** at your door.\n  4. **Mercatto Escrow Guarantee:** Your funds are safely held in custody and only released to the store once delivery is confirmed.\n  5. **Live Tracking:** Nationwide shipping (free over $150,000 COP), 24/7 parcel tracking, and physical delivery photo proof.\n\n• **For Sellers:**\n  1. **Open Your Store in 2 Minutes:** Quick sign-up, brand customization, and simple product listing.\n  2. **Low Commissions:** From 2% per sale depending on your plan (Starter, Professional, Elite Premium).\n  3. **Full Management:** Dashboard with real-time inventory, order processing, and sales analytics.\n\n*Would you like more details on how to buy, payment methods, or opening a seller store?*',
+    '**Mercatto in a nutshell:**\n\n• **Safe Shopping:** Pay securely via PSE, Nequi, credit cards, or cash at delivery. Funds are held in escrow until you receive your items.\n• **Reliable Shipping:** Fast dispatch across Colombia with delivery photo evidence and 24/7 tracking.\n• **Empowering Entrepreneurs:** Businesses can easily launch an official storefront and sell nationwide with competitive commission rates.\n\nHow may I help you today? Would you like to explore products, learn about payment options, or register as a seller?'
+  ],
+
   como_comprar: [
     '**Buying on Mercatto is easy, fast, and 100% secure:**\n\n• **1. Browse the Catalog:** Explore verified categories or search for your favorite items.\n• **2. Add to Cart:** Pick your desired size, color, or variant.\n• **3. Easy Checkout:** Shop with your account or as a **Guest** by simply entering your email, phone, and delivery address.\n• **4. Secure Payment:** Handled by certified Wompi gateway (Cards, PSE, Nequi) or Cash on Delivery.\n• **5. Live Tracking:** You will immediately receive order confirmation and a real-time tracking link with delivery photo proof.',
     '**Quick guide to purchasing on Mercatto:**\n\n1. Select your favorite items and add them to your cart.\n2. Checkout with your registered account or simply as a **Guest**.\n3. Pick your preferred payment method: credit/debit card, PSE, Nequi, or Cash on Delivery.\n4. You will receive an instant confirmation email with live tracking details.'
@@ -239,6 +257,9 @@ const sanitizeResponseLanguage = (text, isEn, userQuery) => {
   if (!hasSpanish) return text
 
   // Map to clean English based on query
+  if (q.includes('work') || q.includes('how does') || q.includes('about')) {
+    return obtenerRespuestaVariada(RESPUESTAS_BASE_EN.como_funciona)
+  }
   if (q.includes('pay') || q.includes('card') || q.includes('method') || q.includes('pse') || q.includes('cash')) {
     return obtenerRespuestaVariada(RESPUESTAS_BASE_EN.medios_pago)
   }
@@ -482,7 +503,14 @@ export const PublicChatbot = () => {
 
         const rawReply = resIa?.data?.reply || resIa?.data?.respuesta
         if (rawReply) {
-          respuestaIA = sanitizeResponseLanguage(rawReply, isEffectiveEn, texto)
+          const esPreguntaComoFunciona = /funciona|que es mercatto|de que trata|como opera|how it works|what is mercatto|about mercatto/i.test(t)
+          const contieneListaProductosInesperada = (rawReply.includes('Artículos más destacados') || rawReply.includes('Articulos mas destacados') || rawReply.includes('Nevera No Frost') || rawReply.includes('Grand theft')) && !/producto|articulo|catalogo|recomienda|venden/i.test(t)
+
+          if (esPreguntaComoFunciona && contieneListaProductosInesperada) {
+            respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).como_funciona)
+          } else {
+            respuestaIA = sanitizeResponseLanguage(rawReply, isEffectiveEn, texto)
+          }
           agenteUsado = resIa.data.agente
         }
       } catch (errBackendIa) {
@@ -541,7 +569,9 @@ export const PublicChatbot = () => {
       const esSaludo = /^(hola|buenas|buen dia|buenos dias|buenas tardes|buenas noches|hey|hi|hello|saludos|que tal|como estas|holi|alo)/i.test(t.trim())
 
       let respuesta = ''
-      if (esSaludo) {
+      if (t.includes('funciona') || t.includes('que es mercatto') || t.includes('de que trata') || t.includes('como opera') || t.includes('how it works') || t.includes('about mercatto') || t.includes('how does mercatto work')) {
+        respuesta = obtenerRespuestaVariada(fallbackRespuestas.como_funciona)
+      } else if (esSaludo) {
         respuesta = isEffectiveEn ? obtenerRespuestaVariada(SALUDOS_VARIADOS_EN) : obtenerRespuestaVariada(SALUDOS_VARIADOS_ES)
       } else if (t.includes('pago') || t.includes('tarjeta') || t.includes('nequi') || t.includes('banco') || t.includes('pse') || t.includes('pay') || t.includes('card')) {
         respuesta = obtenerRespuestaVariada(fallbackRespuestas.medios_pago)
