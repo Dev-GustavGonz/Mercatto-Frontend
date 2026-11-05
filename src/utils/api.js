@@ -6,7 +6,7 @@ const api = axios.create({
   baseURL: API_BASE_URL,
   // Necesario para que el navegador mande/reciba la cookie httpOnly del refresh token.
   withCredentials: true,
-  timeout: 8000,
+  timeout: 30000, // 30s de tolerancia para soportar Cold Starts de la nube sin fallar
   headers: {
     'Content-Type': 'application/json',
   },
