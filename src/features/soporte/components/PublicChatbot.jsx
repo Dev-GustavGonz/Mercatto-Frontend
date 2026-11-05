@@ -212,7 +212,8 @@ const RESPUESTAS_BASE_ES = {
   ],
 
   como_comprar: [
-    '**Comprar en Mercatto es fácil, rápido y 100% seguro:**\n\n• **1. Explora el Catálogo:** Navega entre categorías oficiales o busca tus artículos favoritos.\n• **2. Agrega al Carrito:** Elige la talla, color o variante que prefieras.\n• **3. Compra Fácil:** Puedes comprar con tu cuenta o como **Invitado** indicando solo tu correo, teléfono y dirección de entrega.\n• **4. Paga Seguro:** Mediante pasarela certificada Wompi (Tarjetas, PSE, Nequi) o Pago Contra Entrega en efectivo.\n• **5. Confirmación y Factura:** Recibirás al instante un correo con el comprobante oficial y el enlace para rastrear tu paquete en vivo.',
+    '**¡Comprar en Mercatto es muy fácil y 100% seguro! Sigue estos sencillos pasos:**\n\n1. **Busca tus artículos:** Explora las categorías en el menú superior (Moda, Tecnología, Calzado, Hogar) o usa la barra de búsqueda.\n2. **Elige variantes:** Selecciona tu talla, color o modelo y presiona **\'Agregar al Carrito\'** o **\'Comprar Ahora\'**.\n3. **Compra con cuenta o como Invitado:** No es obligatorio registrar contraseña; puedes tramitar tu pedido como invitado ingresando tu correo, teléfono y dirección de entrega en Colombia.\n4. **Elige tu método de pago:** Paga en línea mediante pasarela segura Wompi (Tarjetas, PSE, Nequi, Daviplata) o en efectivo con **Pago Contra Entrega** al recibir en tu puerta.\n5. **Garantía y Rastreo:** Tu dinero queda protegido bajo custodia Escrow hasta que recibes tu pedido a conformidad con foto de evidencia.\n\n*¿Buscas alguna categoría o artículo en especial para ayudarte a encontrarlo?*',
+    '**¿Quieres hacer una compra? Aquí te explico qué hacer paso a paso:**\n\n• **1. Encuentra lo que te gusta:** Navega por nuestro catálogo multitienda.\n• **2. Revisa tu Carrito:** Haz clic en *Proceder al Pago*.\n• **3. Datos de Envío:** Escribe la dirección donde deseas recibir en Colombia (¡envío gratis en órdenes desde $150.000 COP!).\n• **4. Paga Seguro:** Usa PSE, Nequi, tarjeta o selecciona Pago Contra Entrega en efectivo.\n• **5. Seguimiento:** Al instante te llegará tu comprobante al correo con el código de orden para rastrear el despacho en vivo en `/rastreo`.\n\n¿Deseas saber más sobre medios de pago o tiempos de entrega?',
     '**Guía rápida para realizar tu pedido en Mercatto:**\n\n1. Selecciona el artículo que te interese y haz clic en *Agregar al Carrito* o *Comprar Ahora*.\n2. Si no tienes cuenta, ¡no te preocupes! Puedes tramitar la orden como **Invitado** ingresando tus datos de entrega.\n3. Escoge tu medio de pago favorito: PSE, Nequi, tarjetas o Contra Entrega.\n4. Al confirmar la compra te llegará un correo con el identificador único para monitorear el estado del despacho en tiempo real.'
   ],
 
@@ -573,14 +574,31 @@ export const PublicChatbot = () => {
 
         const rawReply = resIa?.data?.reply || resIa?.data?.respuesta
         if (rawReply) {
-          const esPreguntaComoFunciona = /funciona|que es mercatto|de que trata|como opera|how it works|what is mercatto|about mercatto/i.test(t)
-          const pideCatalogoOProductos = /producto|articulo|articulos|catalogo|recomienda|venden|tienda|comprar|que hay|precio|precios|buy|item|items/i.test(t)
           const contieneListaProductosInesperada = (rawReply.includes('Artículos más destacados') || rawReply.includes('Articulos mas destacados') || rawReply.includes('Nevera No Frost') || rawReply.includes('Grand theft'))
+          // Solo se considera petición de catálogo si el usuario pide explícitamente ver artículos o explorar el catálogo comercial
+          const esPeticionExplicitaCatalogo = /\b(ver catalogo|ver productos|que venden|que hay|muestrame productos|mostrar catalogo|recomienda|recomiendame|articulos destacados|productos destacados|show catalog|what do you sell)\b/i.test(t) && !/\b(como|cómo|que hago|qué hago|pasos|ayuda|guia|guía)\b/i.test(t)
 
-          if (contieneListaProductosInesperada && !pideCatalogoOProductos) {
-            // El backend devolvió una lista de productos por desactualización de agente local ante una pregunta que no era de catálogo
-            if (esPreguntaComoFunciona) {
+          if (contieneListaProductosInesperada && !esPeticionExplicitaCatalogo) {
+            // El backend devolvió una lista de productos en lugar de dar la asistencia sobre el uso de la app que pidió el usuario.
+            // Detectamos el propósito exacto de asistencia del usuario:
+            if (t.includes('comprar') || t.includes('que hago') || t.includes('como compro') || t.includes('pasos') || t.includes('pedido') || t.includes('orden') || t.includes('buy') || t.includes('purchase') || t.includes('how to')) {
+              respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).como_comprar)
+            } else if (t.includes('funciona') || t.includes('que es mercatto') || t.includes('de que trata') || t.includes('como opera') || t.includes('how it works') || t.includes('what is mercatto') || t.includes('about mercatto')) {
               respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).como_funciona)
+            } else if (t.includes('pago') || t.includes('tarjeta') || t.includes('nequi') || t.includes('banco') || t.includes('pse') || t.includes('contra entrega') || t.includes('efectivo') || t.includes('pay') || t.includes('card')) {
+              respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).medios_pago)
+            } else if (t.includes('vender') || t.includes('tienda') || t.includes('proveedor') || t.includes('sell') || t.includes('store')) {
+              respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).vender)
+            } else if (t.includes('plan') || t.includes('comision') || t.includes('suscrip') || t.includes('fee')) {
+              respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).planes)
+            } else if (t.includes('envio') || t.includes('flete') || t.includes('ciudad') || t.includes('despacho') || t.includes('ship') || t.includes('delivery')) {
+              respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).envios)
+            } else if (t.includes('rastre') || t.includes('seguimiento') || t.includes('estado de mi') || t.includes('donde esta') || t.includes('track') || t.includes('where is')) {
+              respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).rastreo)
+            } else if (t.includes('cupon') || t.includes('descuento') || t.includes('promo') || t.includes('coupon') || t.includes('discount')) {
+              respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).cupones)
+            } else if (/^(hola|buenas|buen dia|buenos dias|buenas tardes|buenas noches|hey|hi|hello|saludos|que tal|como estas|holi|alo)/i.test(t.trim())) {
+              respuestaIA = isEffectiveEn ? obtenerRespuestaVariada(SALUDOS_VARIADOS_EN) : obtenerRespuestaVariada(SALUDOS_VARIADOS_ES)
             } else {
               respuestaIA = obtenerRespuestaVariada(isEffectiveEn ? DISCULPAS_FUERA_DE_TEMA_EN : DISCULPAS_FUERA_DE_TEMA_ES)
             }
