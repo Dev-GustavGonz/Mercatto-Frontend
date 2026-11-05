@@ -83,6 +83,20 @@ const getOpcionesGuia = (isEn) => [
     color: 'text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/60'
   },
   {
+    id: 'tickets_soporte',
+    titulo: isEn ? 'How to submit a support ticket?' : '¿Cómo radicar un ticket de soporte?',
+    subtitulo: isEn ? 'Step-by-step guide to report issues or warranties' : 'Reportar incidencias, garantías y dudas',
+    icono: Mail,
+    color: 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60'
+  },
+  {
+    id: 'devoluciones_garantias',
+    titulo: isEn ? 'Warranties & Return Policy' : 'Garantías y devoluciones',
+    subtitulo: isEn ? 'Buyer Escrow protection and refunds' : 'Protección al comprador y reembolsos',
+    icono: AlertCircle,
+    color: 'text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/60'
+  },
+  {
     id: 'soporte_directo',
     titulo: isEn ? 'Mercatto Customer Support' : 'Atención al Cliente Mercatto',
     subtitulo: isEn ? 'Talk to a customer care or sales specialist' : 'Hablar con un asesor comercial o de soporte',
@@ -95,6 +109,8 @@ const getOpcionesGuia = (isEn) => [
 const SUGERENCIAS_INICIALES = [
   { id: 'como_funciona', labelEs: '¿Cómo funciona?', labelEn: 'How it works?', icono: HelpCircle },
   { id: 'como_comprar', labelEs: 'Cómo comprar', labelEn: 'How to buy', icono: ShoppingBag },
+  { id: 'tickets_soporte', labelEs: 'Tickets de soporte', labelEn: 'Support tickets', icono: Mail },
+  { id: 'devoluciones_garantias', labelEs: 'Garantías', labelEn: 'Warranties', icono: AlertCircle },
   { id: 'medios_pago', labelEs: 'Medios de pago', labelEn: 'Payment methods', icono: CreditCard },
   { id: 'envios', labelEs: 'Envíos', labelEn: 'Shipping', icono: Truck },
   { id: 'cupones', labelEs: 'Cupones', labelEn: 'Coupons', icono: Tag },
@@ -245,6 +261,16 @@ const RESPUESTAS_BASE_ES = {
   rastreo: [
     '**Rastreo de Pedidos en Tiempo Real:**\n\n• **Si compraste con cuenta:** Ingresa a **Mis Pedidos** desde tu menú de usuario para ver el historial y fotos de entrega.\n• **Si compraste como invitado:** Entra a **Rastrear Pedido** (`/rastreo`) e ingresa tu código de orden (ej: `PED-20261031-1045`) y tu correo electrónico.\n\n*Verás el paso a paso en tiempo real y la foto de evidencia cargada por el vendedor al momento de la entrega.*',
     '**Sigue el estado de tu compra:**\n\nPuedes consultar el progreso en vivo desde la sección **/rastreo** digitando tu número de orden y correo, o desde el panel de **Mis Pedidos** si tienes cuenta. El transportista además sube una fotografía física al confirmar la entrega.'
+  ],
+
+  tickets_soporte: [
+    '**¿Cómo generar y radicar un Ticket de Soporte en Mercatto?:**\n\nPuedes radicar una solicitud formal de asistencia directamente:\n\n• **1. Desde este chat:** Haz clic en el botón verde **\'Radicar Ticket\'** (ícono de audífonos) en la barra inferior para abrir el formulario directo.\n• **2. Completa tus datos:** Escribe tu nombre, correo electrónico donde recibirás la respuesta, teléfono (opcional) y el detalle de tu solicitud o código de pedido (ej: `PED-20261031-1045`).\n• **3. Enviar:** Presiona *\'Enviar Solicitud\'* y tu ticket quedará registrado. Nuestro equipo humano te responderá directamente a tu correo.\n\n*También puedes escribir al WhatsApp oficial [+57 323 388 2717](https://wa.me/573233882717) o al correo realmercatto@gmail.com.*',
+    '**Pasos para radicar un Ticket de Atención:**\n\n1. Presiona el botón de **Ticket** en la parte inferior de este asistente.\n2. Ingresa tu correo y describe tu caso (devolución, garantía, pago o duda de orden).\n3. Al hacer clic en *Enviar*, nuestro equipo revisará tu caso y se pondrá en contacto contigo de inmediato.'
+  ],
+
+  devoluciones_garantias: [
+    '**Garantías, Devoluciones y Protección Escrow:**\n\n• **Garantía Mercatto Escrow:** Tu dinero está 100% protegido. El vendedor NO recibe el pago hasta que confirmes la entrega satisfactoria del producto.\n• **¿Tu producto llegó defectuoso o no corresponde?:**\n  1. Tienes hasta **5 días hábiles** tras recibir el paquete para reportarlo.\n  2. Radica un **Ticket de Soporte** desde este chat o escribe al WhatsApp [+57 323 388 2717](https://wa.me/573233882717) con fotos de evidencia y tu código de orden.\n  3. El equipo de soporte congelará el desembolso y coordinará el cambio o el **reembolso total** de tu dinero a tu cuenta.\n• **Foto de Entrega:** Cada transportista carga una foto física al momento de la entrega.',
+    '**¿Cómo solicitar una devolución o reembolso?:**\n\nSi requieres un cambio o reembolso, tienes 5 días hábiles desde la entrega para reportarlo mediante un ticket de soporte o por nuestro WhatsApp oficial (+57 323 388 2717) adjuntando fotos del artículo y número de pedido.'
   ]
 }
 
@@ -287,6 +313,14 @@ const RESPUESTAS_BASE_EN = {
   rastreo: [
     '**Real-Time Order Tracking:**\n\n• **If you have an account:** Go to **My Orders** from your account menu to review tracking status and delivery photos.\n• **If you bought as guest:** Visit **Track Order** (`/rastreo`) and enter your order code (e.g., `PED-20261031-1045`) and email address.\n\n*You can view real-time courier progress and photo proof.*',
     '**Track your package:**\n\nAccess **/rastreo** anytime with your order code and email, or view full status history and photo evidence under **My Orders**.'
+  ],
+
+  tickets_soporte: [
+    '**How to submit a Support Ticket in Mercatto:**\n\n• **1. In this widget:** Click the **\'Submit Ticket\'** button in the bottom bar to open the form.\n• **2. Enter your details:** Type your name, email, phone (optional), and case description or Order Code.\n• **3. Submit:** Once sent, our customer support team will reply directly to your email address.\n\n*You can also contact our official WhatsApp at [+57 323 388 2717](https://wa.me/573233882717) or email realmercatto@gmail.com.*'
+  ],
+
+  devoluciones_garantias: [
+    '**Warranties, Returns & Escrow Refunds:**\n\n• **Buyer Protection:** Funds remain in escrow until you receive and verify your order.\n• **Defective Item:** You have **5 business days** after delivery to request an exchange or full refund by submitting a ticket or contacting WhatsApp [+57 323 388 2717](https://wa.me/573233882717) with photos of the item and order code.'
   ]
 }
 
@@ -581,7 +615,11 @@ export const PublicChatbot = () => {
           if (contieneListaProductosInesperada && !esPeticionExplicitaCatalogo) {
             // El backend devolvió una lista de productos en lugar de dar la asistencia sobre el uso de la app que pidió el usuario.
             // Detectamos el propósito exacto de asistencia del usuario:
-            if (t.includes('comprar') || t.includes('que hago') || t.includes('como compro') || t.includes('pasos') || t.includes('pedido') || t.includes('orden') || t.includes('buy') || t.includes('purchase') || t.includes('how to')) {
+            if (t.includes('ticket') || t.includes('radicar') || t.includes('generar ticket') || t.includes('abrir ticket') || t.includes('formulario de soporte')) {
+              respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).tickets_soporte)
+            } else if (t.includes('garantia') || t.includes('garantía') || t.includes('devoluc') || t.includes('reembolso') || t.includes('cambio') || t.includes('defectuoso') || t.includes('warranty') || t.includes('refund') || t.includes('return')) {
+              respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).devoluciones_garantias)
+            } else if (t.includes('comprar') || t.includes('que hago') || t.includes('como compro') || t.includes('pasos') || t.includes('pedido') || t.includes('orden') || t.includes('buy') || t.includes('purchase') || t.includes('how to')) {
               respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).como_comprar)
             } else if (t.includes('funciona') || t.includes('que es mercatto') || t.includes('de que trata') || t.includes('como opera') || t.includes('how it works') || t.includes('what is mercatto') || t.includes('about mercatto')) {
               respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).como_funciona)
@@ -663,7 +701,11 @@ export const PublicChatbot = () => {
       const esSaludo = /^(hola|buenas|buen dia|buenos dias|buenas tardes|buenas noches|hey|hi|hello|saludos|que tal|como estas|holi|alo)/i.test(t.trim())
 
       let respuesta = ''
-      if (t.includes('funciona') || t.includes('que es mercatto') || t.includes('de que trata') || t.includes('como opera') || t.includes('how it works') || t.includes('about mercatto') || t.includes('how does mercatto work')) {
+      if (t.includes('ticket') || t.includes('radicar') || t.includes('generar ticket') || t.includes('abrir ticket')) {
+        respuesta = obtenerRespuestaVariada(fallbackRespuestas.tickets_soporte)
+      } else if (t.includes('garantia') || t.includes('garantía') || t.includes('devoluc') || t.includes('reembolso') || t.includes('defectuoso') || t.includes('warranty') || t.includes('refund')) {
+        respuesta = obtenerRespuestaVariada(fallbackRespuestas.devoluciones_garantias)
+      } else if (t.includes('funciona') || t.includes('que es mercatto') || t.includes('de que trata') || t.includes('como opera') || t.includes('how it works') || t.includes('about mercatto') || t.includes('how does mercatto work')) {
         respuesta = obtenerRespuestaVariada(fallbackRespuestas.como_funciona)
       } else if (esSaludo) {
         respuesta = isEffectiveEn ? obtenerRespuestaVariada(SALUDOS_VARIADOS_EN) : obtenerRespuestaVariada(SALUDOS_VARIADOS_ES)
