@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuth } from '@/context/AuthContext'
 import { useToast } from '@/hooks/useToast'
 import { vendedorService } from '@/features/tiendas'
 import { productoService } from '@/features/productos'
@@ -65,7 +65,7 @@ export const PanelVendedor = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const tab = searchParams.get('tab') || 'resumen'
 
-  const [timeRange, setTimeRange] = useState('1M')
+  const [timeRange, setTimeRange] = useState('1A')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [stats, setStats] = useState({})
   const [perfil, setPerfil] = useState(null)

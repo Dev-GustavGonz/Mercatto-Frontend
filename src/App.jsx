@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, Suspense, lazy } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
@@ -18,12 +18,15 @@ import { Home, AboutUs, NotFound, Terminos, Privacidad } from './features/public
 import { Login, Registro } from './features/auth'
 import { Catalogo, DetalleProducto, Categoria, Busqueda, Favoritos } from './features/productos'
 import { Carrito, Checkout, MisPedidos, PagoExitoso, PagoCancelado, CartDrawer, RastreoPedido } from './features/pedidos'
-import { DirectorioTiendas, VitrinaTienda, PanelVendedor } from './features/tiendas'
-import { PanelAdmin } from './features/admin'
+import { DirectorioTiendas, VitrinaTienda } from './features/tiendas'
 import { Perfil } from './features/usuario'
 import { Mensajes } from './features/mensajes'
 import { PublicChatbot, CentroSoporte } from './features/soporte'
 import ScrollToTop from './components/common/ScrollToTop'
+
+// Carga perezosa (Code-Splitting) para paneles pesados
+const PanelAdmin = lazy(() => import('./features/admin/pages/PanelAdmin'))
+const PanelVendedor = lazy(() => import('./features/tiendas/pages/PanelVendedor'))
 
 // Protected Route Wrapper for Vendor
 const RutaVendedor = ({ children }) => {
@@ -88,92 +91,98 @@ const AppLayout = () => {
       {!esRutaPanel && <PublicChatbot />}
 
       <main className={esRutaPanel || esHome ? "flex-1 w-full" : "flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6"}>
-        <Routes>
-          {/* Public Marketplace routes */}
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<AboutUs />} />
-          <Route path="/catalogo" element={<Catalogo />} />
-          <Route path="/categoria/:id" element={<Categoria />} />
-          <Route path="/buscar" element={<Busqueda />} />
-          <Route path="/tiendas" element={<DirectorioTiendas />} />
-          <Route path="/tienda/:id" element={<VitrinaTienda />} />
-          <Route path="/producto/:id" element={<DetalleProducto />} />
-          <Route path="/carrito" element={<Carrito />} />
-          <Route path="/rastreo" element={<RastreoPedido />} />
-          <Route path="/soporte" element={<CentroSoporte />} />
-          <Route path="/terminos" element={<Terminos />} />
-          <Route path="/privacidad" element={<Privacidad />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/registro" element={<Registro />} />
+        <Suspense fallback={
+          <div className="min-h-[50vh] flex items-center justify-center">
+            <Spinner size="lg" />
+          </div>
+        }>
+          <Routes>
+            {/* Public Marketplace routes */}
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<AboutUs />} />
+            <Route path="/catalogo" element={<Catalogo />} />
+            <Route path="/categoria/:id" element={<Categoria />} />
+            <Route path="/buscar" element={<Busqueda />} />
+            <Route path="/tiendas" element={<DirectorioTiendas />} />
+            <Route path="/tienda/:id" element={<VitrinaTienda />} />
+            <Route path="/producto/:id" element={<DetalleProducto />} />
+            <Route path="/carrito" element={<Carrito />} />
+            <Route path="/rastreo" element={<RastreoPedido />} />
+            <Route path="/soporte" element={<CentroSoporte />} />
+            <Route path="/terminos" element={<Terminos />} />
+            <Route path="/privacidad" element={<Privacidad />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/registro" element={<Registro />} />
 
-          {/* Buyer protected routes */}
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/pago/exitoso" element={<PagoExitoso />} />
-          <Route path="/pago/cancelado" element={<PagoCancelado />} />
-          <Route
-            path="/perfil"
-            element={
-              <RutaProtegida>
-                <Perfil />
-              </RutaProtegida>
-            }
-          />
-          <Route
-            path="/mis-pedidos"
-            element={
-              <RutaProtegida>
-                <MisPedidos />
-              </RutaProtegida>
-            }
-          />
-          <Route
-            path="/favoritos"
-            element={
-              <RutaProtegida>
-                <Favoritos />
-              </RutaProtegida>
-            }
-          />
-          <Route
-            path="/mensajes"
-            element={
-              <RutaProtegida>
-                <Mensajes />
-              </RutaProtegida>
-            }
-          />
+            {/* Buyer protected routes */}
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/pago/exitoso" element={<PagoExitoso />} />
+            <Route path="/pago/cancelado" element={<PagoCancelado />} />
+            <Route
+              path="/perfil"
+              element={
+                <RutaProtegida>
+                  <Perfil />
+                </RutaProtegida>
+              }
+            />
+            <Route
+              path="/mis-pedidos"
+              element={
+                <RutaProtegida>
+                  <MisPedidos />
+                </RutaProtegida>
+              }
+            />
+            <Route
+              path="/favoritos"
+              element={
+                <RutaProtegida>
+                  <Favoritos />
+                </RutaProtegida>
+              }
+            />
+            <Route
+              path="/mensajes"
+              element={
+                <RutaProtegida>
+                  <Mensajes />
+                </RutaProtegida>
+              }
+            />
 
-          {/* Vendor Panel */}
-          <Route
-            path="/vendedor"
-            element={
-              <RutaVendedor>
-                <PanelVendedor />
-              </RutaVendedor>
-            }
-          />
-          <Route
-            path="/panel-vendedor"
-            element={
-              <RutaVendedor>
-                <PanelVendedor />
-              </RutaVendedor>
-            }
-          />
+            {/* Vendor Panel */}
+            <Route
+              path="/vendedor"
+              element={
+                <RutaVendedor>
+                  <PanelVendedor />
+                </RutaVendedor>
+              }
+            />
+            <Route
+              path="/panel-vendedor"
+              element={
+                <RutaVendedor>
+                  <PanelVendedor />
+                </RutaVendedor>
+              }
+            />
 
-          {/* Admin Panel */}
-          <Route
-            path="/admin"
-            element={
-              <RutaAdmin>
-                <PanelAdmin />
-              </RutaAdmin>
-            }
-          />
+            {/* Admin Panel */}
+            <Route
+              path="/admin"
+              element={
+                <RutaAdmin>
+                  <PanelAdmin />
+                </RutaAdmin>
+              }
+            />
 
-          {/* 404 Fallback */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            {/* 404 Fallback */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </main>
 
       {!esRutaPanel && <Footer />}

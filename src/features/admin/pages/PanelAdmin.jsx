@@ -10,7 +10,7 @@ import BentoSalesChart from '@/components/common/BentoSalesChart'
 import Spinner from '@/components/common/Spinner'
 import Modal from '@/components/common/Modal'
 import { useToast } from '@/hooks/useToast'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuth } from '@/context/AuthContext'
 import { formatCurrency } from '@/utils/formatCurrency'
 import MercattoLogo from '@/components/common/MercattoLogo'
 import {
@@ -65,7 +65,7 @@ export const PanelAdmin = () => {
     setSearchParams({ tab: nuevoTab })
   }
 
-  const [timeRange, setTimeRange] = useState('1M')
+  const [timeRange, setTimeRange] = useState('1A')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [stats, setStats] = useState({})
   const [vendedores, setVendedores] = useState([])

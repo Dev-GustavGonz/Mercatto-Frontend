@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { API_BASE_URL } from '@/utils/constants'
+import { apiCache } from '@/utils/apiCache'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -28,7 +29,13 @@ api.interceptors.request.use(
 // Response Interceptor: si el access token expiró (401), pedimos uno nuevo
 // usando la cookie httpOnly (no hace falta mandar nada en el body).
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Si fue una mutación exitosa (POST, PUT, PATCH, DELETE), invalidamos la caché asociada
+    if (response.config?.method && response.config.method.toUpperCase() !== 'GET') {
+      apiCache.invalidateOnMutation(response.config.method, response.config.url || '')
+    }
+    return response
+  },
   async (error) => {
     const originalRequest = error.config
 
@@ -46,6 +53,7 @@ api.interceptors.response.use(
       } catch (refreshError) {
         localStorage.removeItem('mercatto_token')
         localStorage.removeItem('mercatto_user')
+        apiCache.clear()
         const rutaActual = window.location.pathname
         if (rutaActual.startsWith('/admin') || rutaActual.startsWith('/vendedor') || rutaActual.startsWith('/perfil') || rutaActual.startsWith('/panel-vendedor')) {
           window.location.href = '/login'
@@ -57,5 +65,50 @@ api.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+
+// Wrapper transparente para peticiones GET con caché inteligente en memoria y deduplicación concurrente
+const originalGet = api.get.bind(api)
+api.get = async (url, config = {}) => {
+  const reqConfig = { ...config, url, method: 'GET' }
+
+  // 1. Si la petición no es cacheable (rutas privadas, tokens, config.noCache), ejecutar directo a red
+  if (!apiCache.isCacheable(reqConfig)) {
+    return originalGet(url, config)
+  }
+
+  // 2. Comprobar si existe en caché vigente (0ms de tiempo de respuesta)
+  const cachedResponse = apiCache.get(reqConfig)
+  if (cachedResponse) {
+    return Promise.resolve(cachedResponse)
+  }
+
+  // 3. Deduplicación de peticiones concurrentes idénticas (evita duplicar llamadas paralelas)
+  const key = apiCache.generateKey(reqConfig)
+  if (apiCache.inFlightRequests.has(key)) {
+    return apiCache.inFlightRequests.get(key)
+  }
+
+  // 4. Disparar petición real a la red y almacenar en caché
+  const requestPromise = originalGet(url, config)
+    .then((response) => {
+      apiCache.set(reqConfig, response)
+      return response
+    })
+    .finally(() => {
+      apiCache.inFlightRequests.delete(key)
+    })
+
+  apiCache.inFlightRequests.set(key, requestPromise)
+  return requestPromise
+}
+
+// Método utilitario expuesto para invalidar caché manualmente
+api.clearCache = (pattern) => {
+  if (pattern) {
+    apiCache.invalidateByPrefix(pattern)
+  } else {
+    apiCache.clear()
+  }
+}
 
 export default api
