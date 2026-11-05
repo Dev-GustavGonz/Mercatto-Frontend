@@ -125,7 +125,59 @@ const SALUDOS_VARIADOS_EN = [
   "Hello! Welcome to Mercatto. Tell me, are you looking for a specific item, or would you like details on shipping and payment options?"
 ]
 
+const MENSAJE_RESTRICCION_SEGURIDAD_ES =
+  'Lo siento, no puedo proporcionar información interna, técnica o privada de la aplicación. Mi función es ayudarte a conocer sus funcionalidades y orientarte sobre cómo utilizarla.'
+
+const MENSAJE_RESTRICCION_SEGURIDAD_EN =
+  'I am sorry, I cannot provide internal, technical, or private information about the application. My role is to help you learn about its features and guide you on how to use it.'
+
+const esConsultaTecnicaOPrivada = (texto) => {
+  if (!texto) return false
+  const t = texto.toLowerCase()
+  return (
+    t.includes('codigo fuente') ||
+    t.includes('código fuente') ||
+    t.includes('source code') ||
+    t.includes('base de datos') ||
+    t.includes('database') ||
+    t.includes('schema') ||
+    t.includes('sql') ||
+    t.includes('postgresql') ||
+    t.includes('supabase') ||
+    t.includes('tabla ') ||
+    t.includes('tablas') ||
+    t.includes('credencial') ||
+    t.includes('api key') ||
+    t.includes('apikey') ||
+    t.includes('token') ||
+    t.includes('password') ||
+    t.includes('contraseña') ||
+    t.includes('endpoint') ||
+    t.includes('ruta interna') ||
+    t.includes('servidor') ||
+    t.includes('server') ||
+    t.includes('infraestructura') ||
+    t.includes('arquitectura interna') ||
+    t.includes('logica de negocio') ||
+    t.includes('lógica de negocio') ||
+    t.includes('algoritmo') ||
+    t.includes('prompt del sistema') ||
+    t.includes('system prompt') ||
+    t.includes('instrucciones internas') ||
+    t.includes('configuracion del agente') ||
+    t.includes('como estas programado') ||
+    t.includes('cómo estás programado') ||
+    t.includes('muestrame el codigo') ||
+    t.includes('muéstrame el código') ||
+    t.includes('ver el codigo') ||
+    t.includes('dame el codigo') ||
+    t.includes('dame la api') ||
+    t.includes('dame la clave')
+  )
+}
+
 const DISCULPAS_FUERA_DE_TEMA_ES = [
+  'Soy el asistente virtual de esta aplicación y estoy aquí para ayudarte con información sobre sus servicios y funcionalidades. ¿Qué te gustaría conocer sobre la plataforma?',
   'Disculpa, como asistente oficial de Mercatto mi propósito es ayudarte con compras, pedidos, métodos de pago, envíos y gestión de tiendas dentro de nuestro marketplace. ¿Te puedo colaborar con algo sobre nuestra plataforma?',
   'Disculpa la molestia, pero solo tengo información y soporte relacionado con la tienda y marketplace de Mercatto (pedidos, despachos, cupones o registro de vendedores). ¿Deseas consultar sobre alguno de estos temas?',
   'Disculpa, esa consulta está fuera de los servicios de Mercatto. Estoy diseñado para asistirte en todo lo relacionado con nuestro catálogo, compras seguras, métodos de pago o soporte de órdenes. ¿En qué puedo orientarte sobre la tienda?',
@@ -133,6 +185,7 @@ const DISCULPAS_FUERA_DE_TEMA_ES = [
 ]
 
 const DISCULPAS_FUERA_DE_TEMA_EN = [
+  'I am the official virtual assistant of this application and I am here to help you with information about its services and features. What would you like to know about the platform?',
   "I apologize, but as Mercatto's official assistant, I am designed to assist exclusively with shopping, orders, payments, shipping, and store management on our marketplace. May I help you with any of these?",
   "I'm sorry, but I only provide guidance on Mercatto-related topics such as orders, shipping across Colombia, payment methods, or opening a seller store. Would you like assistance with any of these?",
   "I apologize, that query is outside the scope of Mercatto. I am dedicated to helping you with our products, checkout process, tracking, or seller plans. How can I guide you on our marketplace?",
@@ -456,6 +509,22 @@ export const PublicChatbot = () => {
 
     const t = texto.toLowerCase()
     const isEffectiveEn = isEn || isEnglishText(texto)
+
+    // [SEGURIDAD Y PRIVACIDAD] Restricción estricta de información técnica o interna
+    if (esConsultaTecnicaOPrivada(t)) {
+      setMensajes((prev) => [
+        ...prev,
+        {
+          id: Date.now() + 1,
+          remitente: 'bot',
+          texto: isEffectiveEn ? MENSAJE_RESTRICCION_SEGURIDAD_EN : MENSAJE_RESTRICCION_SEGURIDAD_ES,
+          hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          ofrecerMenu: true
+        }
+      ])
+      return
+    }
+
     setEscribiendo(true)
 
     // Si pide explícitamente contacto con humano/soporte
