@@ -225,7 +225,12 @@ export const translations = {
   "preguntale_a_mercatto": "Pregúntale a Mercatto Bot...",
   "ia_activa": "IA Activa",
   "comision_unica": "Comisión fija única: 4% por venta",
-  "vende_gratis": "Vende gratis"
+  "vende_gratis": "Vende gratis",
+  "inicio": "Inicio",
+  "ver_todo": "Ver todo",
+  "tiendas_elite": "Tiendas Élite",
+  "soporte_titulo": "Centro de Ayuda & Soporte",
+  "mensajes_tiendas": "Mensajes con Tiendas"
 },
   en: {
   "eslogan": "From the neighborhood to your screen",
@@ -453,7 +458,12 @@ export const translations = {
   "preguntale_a_mercatto": "Ask Mercatto Bot...",
   "ia_activa": "AI Active",
   "comision_unica": "Flat commission: 4% per sale",
-  "vende_gratis": "Sell for free"
+  "vende_gratis": "Sell for free",
+  "inicio": "Home",
+  "ver_todo": "View all",
+  "tiendas_elite": "Elite Stores",
+  "soporte_titulo": "Help & Support Center",
+  "mensajes_tiendas": "Messages with Stores"
 }
 }
 

@@ -255,7 +255,7 @@ export const Home = () => {
         {/* 8. SECCIÓN TIENDAS OFICIALES VERIFICADAS EN COLOMBIA      */}
         {/* ========================================================= */}
         {tiendasMostradas.length > 0 && (
-          <section className="space-y-5">
+          <section className="space-y-5 overflow-hidden">
             <div className="flex items-end justify-between">
               <div className="space-y-1">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-100 dark:bg-violet-950/80 text-[11px] font-extrabold tracking-widest uppercase text-violet-700 dark:text-violet-300">

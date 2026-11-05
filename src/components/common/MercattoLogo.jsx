@@ -75,7 +75,7 @@ export const MercattoLogo = ({
       </span>
       {showSlogan && (
         <span 
-          className={`text-[9.5px] xs:text-[11px] sm:text-[12.5px] font-bold ${sloganClassName.includes('text-') ? '' : defaultSloganColor} tracking-wide -mt-0.5 sm:-mt-1 whitespace-nowrap truncate max-w-[280px] sm:max-w-[340px] select-none ${sloganClassName || 'block'}`}
+          className={`text-[9.5px] xs:text-[11px] sm:text-[12.5px] font-bold ${sloganClassName.includes('text-') ? '' : defaultSloganColor} tracking-wide -mt-0.5 sm:-mt-1 whitespace-nowrap truncate max-w-[200px] xs:max-w-[280px] sm:max-w-[340px] select-none ${sloganClassName || 'block'}`}
           style={{
             fontFamily: "'Pacifico', 'Caveat', cursive, sans-serif",
             ...(isWhiteBorder ? {

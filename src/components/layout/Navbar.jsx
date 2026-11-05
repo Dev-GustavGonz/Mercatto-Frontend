@@ -159,7 +159,7 @@ export const Navbar = () => {
       }`}
     >
       {/* BARRA DE NAVEGACIÓN FULL-WIDTH LIMPIA SIN BORDES DE CAJA */}
-      <div className="w-full max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-10 py-3 flex items-center justify-between gap-4 sm:gap-6 pointer-events-auto transition-all">
+      <div className="w-full max-w-[1520px] mx-auto px-3 sm:px-6 lg:px-10 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-6 pointer-events-auto transition-all">
         
         {/* BLOQUE IZQUIERDO: LOGO + DIVISOR SUTIL + NAVEGACIÓN EDITORIAL */}
         <div className="flex items-center gap-4 lg:gap-5 shrink-0">
@@ -353,7 +353,7 @@ export const Navbar = () => {
         <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           
           {/* Selector de Idioma (Pastilla limpia sin borde duro) */}
-          <div className="relative">
+          <div className="relative hidden sm:block">
             <button 
               onClick={() => setDropdownLang(!dropdownLang)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100/85 hover:bg-slate-200/70 text-xs font-semibold text-slate-700 hover:text-slate-950 transition cursor-pointer"
@@ -592,7 +592,7 @@ export const Navbar = () => {
                         className="flex items-center gap-2.5 px-4 py-2 text-slate-700 hover:bg-violet-50 hover:text-violet-700"
                       >
                         <MessageSquare size={15} />
-                        <span>Mensajes con Tiendas</span>
+                        <span>{t('mensajes_tiendas')}</span>
                       </Link>
                       <Link
                         to="/soporte"
@@ -600,7 +600,7 @@ export const Navbar = () => {
                         className="flex items-center gap-2.5 px-4 py-2 text-slate-700 hover:bg-violet-50 hover:text-violet-700"
                       >
                         <Headphones size={15} />
-                        <span>Centro de Ayuda & Soporte</span>
+                        <span>{t('soporte_titulo')}</span>
                       </Link>
                     </div>
                   )}
@@ -649,7 +649,7 @@ export const Navbar = () => {
 
       {/* Menú Móvil desplegable adaptado al Rol con Accesos de Catálogo Completos */}
       {menuMobile && (
-        <div className="lg:hidden absolute top-full left-0 w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-2xl px-4 py-4 space-y-3.5 max-h-[calc(100vh-65px)] overflow-y-auto z-50 animate-in fade-in slide-in-from-top-2 duration-200 pointer-events-auto">
+        <div className="lg:hidden fixed inset-x-0 top-[56px] sm:top-[64px] w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-2xl px-4 py-4 space-y-3.5 max-h-[calc(100vh-56px)] sm:max-h-[calc(100vh-64px)] overflow-y-auto z-50 animate-in fade-in slide-in-from-top-2 duration-200 pointer-events-auto">
           
           {/* 1. Buscador de catálogo dentro del menú móvil */}
           <SearchBar 
@@ -711,7 +711,7 @@ export const Navbar = () => {
                 onClick={() => setMenuMobile(false)} 
                 className="text-[11px] font-bold text-violet-600 dark:text-violet-400 hover:underline"
               >
-                {t('ver_todo') || 'Ver todo'} →
+                {t('ver_todo')} →
               </Link>
             </div>
 
@@ -750,7 +750,7 @@ export const Navbar = () => {
                 className="flex items-center gap-2 p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 text-xs font-bold text-amber-700 dark:text-amber-300 hover:text-amber-600 transition shadow-xs"
               >
                 <Crown size={14} className="text-amber-500 fill-amber-500/20 shrink-0" />
-                <span className="truncate">Tiendas Élite</span>
+                <span className="truncate">{t('tiendas_elite')}</span>
               </Link>
             </div>
 
@@ -828,7 +828,7 @@ export const Navbar = () => {
             className="px-3.5 py-2 rounded-xl hover:bg-violet-50 dark:hover:bg-violet-950/40 flex items-center gap-2.5 text-violet-700 dark:text-violet-300 font-bold transition text-xs"
           >
             <Headphones size={16} />
-            <span>Centro de Ayuda & Soporte</span>
+            <span>{t('soporte_titulo')}</span>
           </Link>
 
           {/* 5. Sección de Usuario / Cuenta */}
