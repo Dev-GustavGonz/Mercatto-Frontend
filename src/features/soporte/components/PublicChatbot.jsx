@@ -93,50 +93,128 @@ const SUGERENCIAS_INICIALES = [
   { id: 'planes', labelEs: 'Vender y planes', labelEn: 'Sell & plans', icono: Sparkles }
 ]
 
+const obtenerRespuestaVariada = (elemento) => {
+  if (!elemento) return ''
+  if (Array.isArray(elemento)) {
+    if (elemento.length === 0) return ''
+    const idx = Math.floor(Math.random() * elemento.length)
+    return elemento[idx]
+  }
+  return String(elemento)
+}
+
+const SALUDOS_VARIADOS_ES = [
+  '¡Hola! Qué gusto saludarte. Soy el asistente oficial de Mercatto. ¿En qué te puedo colaborar hoy con tus compras o tu tienda?',
+  '¡Hola! Bienvenido a Mercatto Colombia. Con gusto te asisto con información de productos, medios de pago, envíos o ventas. ¿Qué necesitas saber?',
+  '¡Buenas! Me alegra saludarte. Estoy aquí para resolver tus dudas sobre compras, pedidos o apertura de tienda en Mercatto. ¿Cómo te ayudo?',
+  '¡Hola! Te doy la bienvenida a Mercatto. Cuéntame, ¿buscas algún producto en especial o deseas consultar sobre despachos o pagos?'
+]
+
+const SALUDOS_VARIADOS_EN = [
+  "Hello! Great to connect with you. I am Mercatto's official virtual assistant. How can I help you today with your orders or store?",
+  "Welcome to Mercatto Colombia! I'm happy to assist you with products, payments, shipping, or seller inquiries. What can I do for you?",
+  "Hi there! Glad to assist you today. I can guide you through checkout, tracking your packages, or setting up a seller account. How may I help?",
+  "Hello! Welcome to Mercatto. Tell me, are you looking for a specific item, or would you like details on shipping and payment options?"
+]
+
+const DISCULPAS_FUERA_DE_TEMA_ES = [
+  'Disculpa, como asistente oficial de Mercatto mi propósito es ayudarte con compras, pedidos, métodos de pago, envíos y gestión de tiendas dentro de nuestro marketplace. ¿Te puedo colaborar con algo sobre nuestra plataforma?',
+  'Disculpa la molestia, pero solo tengo información y soporte relacionado con la tienda y marketplace de Mercatto (pedidos, despachos, cupones o registro de vendedores). ¿Deseas consultar sobre alguno de estos temas?',
+  'Disculpa, esa consulta está fuera de los servicios de Mercatto. Estoy diseñado para asistirte en todo lo relacionado con nuestro catálogo, compras seguras, métodos de pago o soporte de órdenes. ¿En qué puedo orientarte sobre la tienda?',
+  'Disculpa, no puedo ayudarte con temas ajenos a Mercatto. Con gusto puedo responderte sobre el estado de un pedido, cómo vender, costos de envío o cupones vigentes. ¿Qué te gustaría consultar?'
+]
+
+const DISCULPAS_FUERA_DE_TEMA_EN = [
+  "I apologize, but as Mercatto's official assistant, I am designed to assist exclusively with shopping, orders, payments, shipping, and store management on our marketplace. May I help you with any of these?",
+  "I'm sorry, but I only provide guidance on Mercatto-related topics such as orders, shipping across Colombia, payment methods, or opening a seller store. Would you like assistance with any of these?",
+  "I apologize, that query is outside the scope of Mercatto. I am dedicated to helping you with our products, checkout process, tracking, or seller plans. How can I guide you on our marketplace?",
+  "I'm sorry, I cannot assist with inquiries outside of Mercatto. I would be delighted to help you track an order, learn how to sell, check shipping rates, or apply active coupons. What would you like to know?"
+]
+
+const SOPORTE_VARIADO_ES = [
+  'Nuestro equipo de **Atención al Cliente Mercatto** está disponible de lunes a sábado de 8:00 a.m. a 7:00 p.m. para resolver cualquier duda o acompañarte en tus compras.',
+  'En **Mercatto** contamos con canales dedicados de soporte y postventa para que compres o vendas con total tranquilidad. ¿Cómo prefieres comunicarte?',
+  '¡Con gusto te conecto con un asesor de Mercatto! Nuestro equipo humano está atento para atender tus solicitudes o dudas especiales.'
+]
+
+const SOPORTE_VARIADO_EN = [
+  'Our **Mercatto Customer Support** team is available Monday through Saturday from 8:00 AM to 7:00 PM to help with any question or order support.',
+  'At **Mercatto**, we offer dedicated human support and sales advisory so you can buy and sell with complete confidence. How would you like to get in touch?',
+  'I will gladly connect you with a Mercatto specialist! Our human team is ready to assist you with your orders and inquiries.'
+]
+
 const RESPUESTAS_BASE_ES = {
-  como_comprar:
+  como_comprar: [
     '**Comprar en Mercatto es fácil, rápido y 100% seguro:**\n\n• **1. Explora el Catálogo:** Navega entre categorías oficiales o busca tus artículos favoritos.\n• **2. Agrega al Carrito:** Elige la talla, color o variante que prefieras.\n• **3. Compra Fácil:** Puedes comprar con tu cuenta o como **Invitado** indicando solo tu correo, teléfono y dirección de entrega.\n• **4. Paga Seguro:** Mediante pasarela certificada Wompi (Tarjetas, PSE, Nequi) o Pago Contra Entrega en efectivo.\n• **5. Confirmación y Factura:** Recibirás al instante un correo con el comprobante oficial y el enlace para rastrear tu paquete en vivo.',
+    '**Guía rápida para realizar tu pedido en Mercatto:**\n\n1. Selecciona el artículo que te interese y haz clic en *Agregar al Carrito* o *Comprar Ahora*.\n2. Si no tienes cuenta, ¡no te preocupes! Puedes tramitar la orden como **Invitado** ingresando tus datos de entrega.\n3. Escoge tu medio de pago favorito: PSE, Nequi, tarjetas o Contra Entrega.\n4. Al confirmar la compra te llegará un correo con el identificador único para monitorear el estado del despacho en tiempo real.'
+  ],
 
-  medios_pago:
+  medios_pago: [
     '**Medios de Pago y Protección de Fondos:**\n\n• **Billeteras Digitales:** Paga al instante desde tu app de **Nequi** o **Daviplata**.\n• **Transferencias PSE:** Débito directo desde cualquier banco de Colombia.\n• **Tarjetas de Crédito y Débito:** Visa, Mastercard y American Express con opción de cuotas.\n• **Pago Contra Entrega (Efectivo):** Pagas en efectivo al momento de recibir el paquete en tu puerta.\n\n**Custodia Mercatto Escrow:** Tu dinero está 100% protegido. El vendedor recibe el desembolso únicamente después de que el pedido sea entregado a tu entera satisfacción.',
+    '**Opciones de pago seguras en Mercatto:**\n\nAceptamos pagos electrónicos mediante pasarela bancaria certificada Wompi (tarjetas de crédito, débito, PSE y Nequi), además de **Pago Contra Entrega** en efectivo en las principales ciudades.\n\nTu dinero permanece resguardado por el sistema de custodia Mercatto hasta que recibes tu paquete conforme.'
+  ],
 
-  vender:
+  vender: [
     '**¿Cómo Vender en Mercatto y Abrir tu Propia Tienda?:**\n\n¡Abrir tu tienda en Mercatto es gratis y toma menos de 2 minutos!\n\n• **1. Regístrate:** Elige el rol **Vendedor** al crear tu cuenta.\n• **2. Configura tu Tienda:** Sube tu logo, portada y descripción de tu marca.\n• **3. Publica tus Productos:** Agrega fotos, tallas/colores, stock y precios.\n• **4. Gestiona tus Ventas:** Panel administrativo completo con analítica de ventas, control de inventario y pedidos en tiempo real.\n\n**Comisión Transparente:** Desde el 2% por venta según el plan que elijas. ¡Sin costos ocultos ni ataduras!',
+    '**Emprende y vende con Mercatto:**\n\nSolo requieres registrarte como **Vendedor**, personalizar tu perfil comercial y subir tu inventario. Dispondrás de un panel con métricas de ventas, logística de envíos integrada y pagos seguros directamente a tu cuenta bancaria.'
+  ],
 
-  planes:
+  planes: [
     '**Planes y Comisiones para Vendedores en Mercatto:**\n\n• **Plan Starter ($0 COP/mes):** Sin costo fijo mensual y comisión del **10%** por venta. Ideal para emprendedores que inician.\n• **Plan Profesional ($49.000 COP/mes):** Comisión reducida del **5%** por venta, perfecto para negocios con ventas constantes.\n• **Plan Elite Premium ($99.000 COP/mes):** Comisión mínima del **2%**, insignia Élite de tienda verificada y máxima visibilidad en el catálogo.\n\n*Puedes cambiar o pausar tu plan en cualquier momento desde tu panel de vendedor.*',
+    '**Tarifas y membresías de tienda:**\n\nOfrecemos el plan **Starter** sin cuota mensual (10% por venta exitosa), el plan **Profesional** por $49.000 COP/mes (5% de comisión) y el plan **Élite Premium** por $99.000 COP/mes (solo 2% de comisión y badge verificado). Puedes iniciar gratis hoy mismo.'
+  ],
 
-  cupones:
+  cupones: [
     '**Cupones de Descuento Activos en Mercatto:**\n\n• **BIENVENIDA:** **$20.000 COP de descuento** en compras iguales o superiores a $100.000 COP.\n• **MERCATTO10:** **10% de descuento** en artículos seleccionados en compras desde $30.000 COP (ahorro máximo de $50.000 COP).\n\n**¿Cómo aplicarlo?:** Ingresa el código en la casilla *\'Código de cupón\'* en el Carrito o en el Checkout antes de finalizar tu orden.',
+    '**Promociones y códigos vigentes:**\n\nUsa **BIENVENIDA** para ahorrar $20.000 COP en pedidos superiores a $100.000 COP, o **MERCATTO10** para obtener 10% de descuento en referencias seleccionadas. Recuerda escribirlo en el campo de cupón durante el checkout.'
+  ],
 
-  envios:
+  envios: [
     '**Política de Envíos y Tiempos de Entrega:**\n\n• **Envío Gratis:** En todas tus compras iguales o superiores a **$150.000 COP** en Colombia.\n• **Tarifa Estándar Fija:** Solo **$12.000 COP** para pedidos menores.\n• **Tiempos de Entrega:**\n  - **Cartagena de Indias:** De 24 a 48 horas hábiles.\n  - **Otras Ciudades de Colombia:** De 48 a 72 horas hábiles.\n• **Transportadoras:** Despachos asegurados con Coordinadora, Servientrega e Interrapidísimo.\n• **Evidencia de Entrega:** El vendedor o repartidor carga una foto de prueba física al momento de la entrega.',
+    '**Cobertura y despacho a nivel nacional:**\n\nContamos con entregas en toda Colombia (24-48 horas en Cartagena y 48-72 horas en el resto de ciudades). En pedidos desde $150.000 COP el envío es completamente gratuito, y para órdenes inferiores la tarifa plana es de solo $12.000 COP.'
+  ],
 
-  rastreo:
-    '**Rastreo de Pedidos en Tiempo Real:**\n\n• **Si compraste con cuenta:** Ingresa a **Mis Pedidos** desde tu menú de usuario para ver el historial y fotos de entrega.\n• **Si compraste como invitado:** Entra a **Rastrear Pedido** (`/rastreo`) e ingresa tu código de orden (ej: `PED-20261031-1045`) y tu correo electrónico.\n\n*Verás el paso a paso en tiempo real y la foto de evidencia cargada por el vendedor al momento de la entrega.*'
+  rastreo: [
+    '**Rastreo de Pedidos en Tiempo Real:**\n\n• **Si compraste con cuenta:** Ingresa a **Mis Pedidos** desde tu menú de usuario para ver el historial y fotos de entrega.\n• **Si compraste como invitado:** Entra a **Rastrear Pedido** (`/rastreo`) e ingresa tu código de orden (ej: `PED-20261031-1045`) y tu correo electrónico.\n\n*Verás el paso a paso en tiempo real y la foto de evidencia cargada por el vendedor al momento de la entrega.*',
+    '**Sigue el estado de tu compra:**\n\nPuedes consultar el progreso en vivo desde la sección **/rastreo** digitando tu número de orden y correo, o desde el panel de **Mis Pedidos** si tienes cuenta. El transportista además sube una fotografía física al confirmar la entrega.'
+  ]
 }
 
 const RESPUESTAS_BASE_EN = {
-  como_comprar:
+  como_comprar: [
     '**Buying on Mercatto is easy, fast, and 100% secure:**\n\n• **1. Browse the Catalog:** Explore verified categories or search for your favorite items.\n• **2. Add to Cart:** Pick your desired size, color, or variant.\n• **3. Easy Checkout:** Shop with your account or as a **Guest** by simply entering your email, phone, and delivery address.\n• **4. Secure Payment:** Handled by certified Wompi gateway (Cards, PSE, Nequi) or Cash on Delivery.\n• **5. Live Tracking:** You will immediately receive order confirmation and a real-time tracking link with delivery photo proof.',
+    '**Quick guide to purchasing on Mercatto:**\n\n1. Select your favorite items and add them to your cart.\n2. Checkout with your registered account or simply as a **Guest**.\n3. Pick your preferred payment method: credit/debit card, PSE, Nequi, or Cash on Delivery.\n4. You will receive an instant confirmation email with live tracking details.'
+  ],
 
-  medios_pago:
+  medios_pago: [
     '**Payment Methods & Buyer Protection:**\n\n• **Digital Wallets:** Instant payment through **Nequi** or **Daviplata**.\n• **Bank Transfers (PSE):** Direct debit from any bank in Colombia.\n• **Credit & Debit Cards:** Visa, Mastercard, and American Express with installment options.\n• **Cash on Delivery:** Pay in cash when the courier hands the package at your door.\n\n**Mercatto Escrow Guarantee:** Your funds are 100% protected. Sellers only get paid after your order has been safely delivered to your total satisfaction.',
+    '**Secure payment options:**\n\nWe accept credit/debit cards, bank debit through PSE, Nequi, and Cash on Delivery. All electronic payments are processed securely via Wompi with escrow protection.'
+  ],
 
-  vender:
+  vender: [
     '**How to Sell on Mercatto & Open Your Store:**\n\nOpening your store on Mercatto is free and takes under 2 minutes!\n\n• **1. Sign Up:** Choose the **Seller** role when registering.\n• **2. Set Up Your Store:** Upload your logo, cover banner, and brand description.\n• **3. List Your Products:** Add pictures, colors/sizes, stock, and prices.\n• **4. Manage Orders:** Full dashboard with live inventory, sales analytics, and order fulfillment.\n\n**Transparent Commission:** From 2% per sale depending on your plan. No hidden fees!',
+    '**Start selling on Mercatto today:**\n\nCreate a seller profile in just minutes, customize your storefront, list your products, and receive automatic payouts with full analytics support.'
+  ],
 
-  planes:
+  planes: [
     '**Seller Plans & Commission Rates:**\n\n• **Starter Plan ($0 COP/month):** No monthly fee and **10%** commission per sale. Perfect for new entrepreneurs.\n• **Professional Plan ($49,000 COP/month):** Reduced **5%** commission per sale, great for established businesses.\n• **Elite Premium Plan ($99,000 COP/month):** Minimal **2%** commission, verified Elite badge, and top catalog priority.\n\n*You can upgrade, downgrade, or pause your plan at any time from your seller panel.*',
+    '**Seller tiers and benefits:**\n\nChoose **Starter** with $0 monthly cost (10% commission), **Professional** at $49,000 COP/month (5% commission), or **Elite Premium** at $99,000 COP/month (2% commission and verified badge).'
+  ],
 
-  cupones:
+  cupones: [
     '**Active Discount Coupons on Mercatto:**\n\n• **BIENVENIDA:** **$20,000 COP off** on orders of $100,000 COP or more.\n• **MERCATTO10:** **10% off** on selected items for orders over $30,000 COP (max savings $50,000 COP).\n\n**How to redeem:** Enter the code in the *\'Coupon code\'* field in the Cart drawer or at Checkout before completing your order.',
+    '**Current promo codes:**\n\nApply **BIENVENIDA** for $20,000 COP discount on orders over $100,000 COP, or **MERCATTO10** for 10% off on eligible items during checkout.'
+  ],
 
-  envios:
+  envios: [
     '**Shipping Policy & Delivery Times:**\n\n• **Free Shipping:** On all purchases equal to or over **$150,000 COP** in Colombia.\n• **Flat Shipping Fee:** Only **$12,000 COP** for smaller orders nationwide.\n• **Estimated Delivery Times:**\n  - **Cartagena de Indias:** 24 to 48 business hours.\n  - **Other Major Cities in Colombia:** 48 to 72 business hours.\n• **Couriers:** Insured shipping via Coordinadora, Servientrega, and Interrapidísimo.\n• **Delivery Photo Proof:** Couriers upload a real physical delivery photo upon delivery.',
+    '**Nationwide shipping coverage:**\n\nOrders over $150,000 COP enjoy free delivery anywhere in Colombia. For smaller orders, a standard fee of $12,000 COP applies. Deliveries take 24-48 hours in Cartagena and 48-72 hours in other major cities.'
+  ],
 
-  rastreo:
-    '**Real-Time Order Tracking:**\n\n• **If you have an account:** Go to **My Orders** from your account menu to review tracking status and delivery photos.\n• **If you bought as guest:** Visit **Track Order** (`/rastreo`) and enter your order code (e.g., `PED-20261031-1045`) and email address.\n\n*You can view real-time courier progress and photo proof.*'
+  rastreo: [
+    '**Real-Time Order Tracking:**\n\n• **If you have an account:** Go to **My Orders** from your account menu to review tracking status and delivery photos.\n• **If you bought as guest:** Visit **Track Order** (`/rastreo`) and enter your order code (e.g., `PED-20261031-1045`) and email address.\n\n*You can view real-time courier progress and photo proof.*',
+    '**Track your package:**\n\nAccess **/rastreo** anytime with your order code and email, or view full status history and photo evidence under **My Orders**.'
+  ]
 }
 
 const sanitizeResponseLanguage = (text, isEn, userQuery) => {
@@ -162,25 +240,25 @@ const sanitizeResponseLanguage = (text, isEn, userQuery) => {
 
   // Map to clean English based on query
   if (q.includes('pay') || q.includes('card') || q.includes('method') || q.includes('pse') || q.includes('cash')) {
-    return RESPUESTAS_BASE_EN.medios_pago
+    return obtenerRespuestaVariada(RESPUESTAS_BASE_EN.medios_pago)
   }
   if (q.includes('buy') || q.includes('how to') || q.includes('purchase') || q.includes('order')) {
-    return RESPUESTAS_BASE_EN.como_comprar
+    return obtenerRespuestaVariada(RESPUESTAS_BASE_EN.como_comprar)
   }
   if (q.includes('sell') || q.includes('store') || q.includes('plan') || q.includes('fee') || q.includes('commission')) {
-    return RESPUESTAS_BASE_EN.planes
+    return obtenerRespuestaVariada(RESPUESTAS_BASE_EN.planes)
   }
   if (q.includes('ship') || q.includes('delivery') || q.includes('freight')) {
-    return RESPUESTAS_BASE_EN.envios
+    return obtenerRespuestaVariada(RESPUESTAS_BASE_EN.envios)
   }
   if (q.includes('coupon') || q.includes('discount') || q.includes('promo')) {
-    return RESPUESTAS_BASE_EN.cupones
+    return obtenerRespuestaVariada(RESPUESTAS_BASE_EN.cupones)
   }
   if (q.includes('track') || q.includes('where is')) {
-    return RESPUESTAS_BASE_EN.rastreo
+    return obtenerRespuestaVariada(RESPUESTAS_BASE_EN.rastreo)
   }
 
-  return RESPUESTAS_BASE_EN.como_comprar
+  return obtenerRespuestaVariada(RESPUESTAS_BASE_EN.como_comprar)
 }
 
 export const isEnglishText = (text) => {
@@ -332,7 +410,7 @@ export const PublicChatbot = () => {
         {
           id: Date.now() + 1,
           remitente: 'bot',
-          texto: respuestasBase[opcionId] || (isEn ? 'Would you like to ask anything else?' : '¿Deseas consultar alguna otra información?'),
+          texto: obtenerRespuestaVariada(respuestasBase[opcionId]) || (isEn ? 'Would you like to ask anything else?' : '¿Deseas consultar alguna otra información?'),
           hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           ofrecerMenu: true
         }
@@ -376,9 +454,7 @@ export const PublicChatbot = () => {
         {
           id: Date.now() + 1,
           remitente: 'bot',
-          texto: isEffectiveEn
-            ? 'I will gladly connect you with the **Mercatto Customer Support** team. You can chat directly via WhatsApp or send us an inquiry below:'
-            : 'Con gusto te comunico con el equipo de **Atención al Cliente Mercatto**. Puedes escribirnos directamente por WhatsApp o dejarnos tu solicitud por mensaje:',
+          texto: isEffectiveEn ? obtenerRespuestaVariada(SOPORTE_VARIADO_EN) : obtenerRespuestaVariada(SOPORTE_VARIADO_ES),
           hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           esOpcionSoporte: true,
           ofrecerMenu: false
@@ -401,7 +477,7 @@ export const PublicChatbot = () => {
             sessionId: sessionId,
             idioma: isEffectiveEn ? 'en' : 'es'
           },
-          { timeout: 6000 }
+          { timeout: 12000 }
         )
 
         const rawReply = resIa?.data?.reply || resIa?.data?.respuesta
@@ -462,25 +538,28 @@ export const PublicChatbot = () => {
       setEscribiendo(false)
 
       const fallbackRespuestas = isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES
+      const esSaludo = /^(hola|buenas|buen dia|buenos dias|buenas tardes|buenas noches|hey|hi|hello|saludos|que tal|como estas|holi|alo)/i.test(t.trim())
+
       let respuesta = ''
-      if (t.includes('pago') || t.includes('tarjeta') || t.includes('nequi') || t.includes('banco') || t.includes('pse') || t.includes('pay') || t.includes('card')) {
-        respuesta = fallbackRespuestas.medios_pago
+      if (esSaludo) {
+        respuesta = isEffectiveEn ? obtenerRespuestaVariada(SALUDOS_VARIADOS_EN) : obtenerRespuestaVariada(SALUDOS_VARIADOS_ES)
+      } else if (t.includes('pago') || t.includes('tarjeta') || t.includes('nequi') || t.includes('banco') || t.includes('pse') || t.includes('pay') || t.includes('card')) {
+        respuesta = obtenerRespuestaVariada(fallbackRespuestas.medios_pago)
       } else if (t.includes('rastre') || t.includes('seguimiento') || t.includes('estado de mi') || t.includes('track') || t.includes('where is')) {
-        respuesta = fallbackRespuestas.rastreo
+        respuesta = obtenerRespuestaVariada(fallbackRespuestas.rastreo)
       } else if (t.includes('comprar') || t.includes('pedido') || t.includes('orden') || t.includes('buy') || t.includes('purchase') || t.includes('how to')) {
-        respuesta = fallbackRespuestas.como_comprar
+        respuesta = obtenerRespuestaVariada(fallbackRespuestas.como_comprar)
       } else if (t.includes('plan') || t.includes('comision') || t.includes('suscrip') || t.includes('fee')) {
-        respuesta = fallbackRespuestas.planes
+        respuesta = obtenerRespuestaVariada(fallbackRespuestas.planes)
       } else if (t.includes('vender') || t.includes('tienda') || t.includes('proveedor') || t.includes('sell') || t.includes('store')) {
-        respuesta = fallbackRespuestas.vender
+        respuesta = obtenerRespuestaVariada(fallbackRespuestas.vender)
       } else if (t.includes('cupon') || t.includes('descuento') || t.includes('promo') || t.includes('coupon') || t.includes('discount')) {
-        respuesta = fallbackRespuestas.cupones
+        respuesta = obtenerRespuestaVariada(fallbackRespuestas.cupones)
       } else if (t.includes('envio') || t.includes('flete') || t.includes('ciudad') || t.includes('despacho') || t.includes('ship') || t.includes('delivery')) {
-        respuesta = fallbackRespuestas.envios
+        respuesta = obtenerRespuestaVariada(fallbackRespuestas.envios)
       } else {
-        respuesta = isEffectiveEn
-          ? 'Hello! We are here to help. I can assist you with orders, payment methods, shipping, discount coupons, order tracking, or selling plans (commissions from 2%). What would you like to know?'
-          : '¡Hola! En Mercatto estamos para ayudarte. Puedo orientarte sobre compras, métodos de pago, envíos, cupones, rastreo de pedidos o los planes para vender (comisiones desde el 2%). ¿Qué te gustaría saber?'
+        // Fuera de tema de Mercatto: Respuesta obligatoria con disculpa cortés y variada
+        respuesta = isEffectiveEn ? obtenerRespuestaVariada(DISCULPAS_FUERA_DE_TEMA_EN) : obtenerRespuestaVariada(DISCULPAS_FUERA_DE_TEMA_ES)
       }
 
       setMensajes((prev) => [
