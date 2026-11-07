@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Sparkles, Check, Zap, Crown, ArrowRight, X } from 'lucide-react'
+import { Sparkles, Check, Zap, Crown, ArrowRight, X, CreditCard, AlertCircle } from 'lucide-react'
 import { vendedorService } from '@/features/tiendas'
 import { useToast } from '@/hooks/useToast'
 import { formatCurrency } from '@/utils/formatCurrency'
@@ -7,6 +7,17 @@ import { formatCurrency } from '@/utils/formatCurrency'
 export const VendorMembershipModal = ({ perfil, onClose, onActualizado }) => {
   const [procesando, setProcesando] = useState(false)
   const { success, error } = useToast()
+
+  const [cuentaBancaria, setCuentaBancaria] = useState(perfil?.cuentaBancaria || '')
+  const [banco, setBanco] = useState(perfil?.banco || 'Bancolombia')
+  const [errorCuenta, setErrorCuenta] = useState('')
+
+  useEffect(() => {
+    if (perfil) {
+      if (perfil.cuentaBancaria) setCuentaBancaria(perfil.cuentaBancaria)
+      if (perfil.banco) setBanco(perfil.banco)
+    }
+  }, [perfil])
 
   // Cerrar al presionar la tecla Escape
   useEffect(() => {
@@ -28,10 +39,11 @@ export const VendorMembershipModal = ({ perfil, onClose, onActualizado }) => {
       color: 'slate',
       icono: Sparkles,
       descripcion: 'Ideal para personas naturales o tiendas que están comenzando.',
-      comision: '10% de comisión por venta',
+      comision: '6% de comisión por venta',
       beneficios: [
         'Hasta 10 productos en catálogo',
         'Vitrina básica de tienda oficial',
+        'Comisión reducida al 6%',
         'Soporte estándar vía tickets',
         'Chat directo con compradores'
       ],
@@ -45,11 +57,11 @@ export const VendorMembershipModal = ({ perfil, onClose, onActualizado }) => {
       color: 'indigo',
       icono: Zap,
       descripcion: 'Para negocios en crecimiento que buscan mayor visibilidad y menos comisión.',
-      comision: 'Solo 5% de comisión por venta',
+      comision: 'Solo 3% de comisión por venta',
       beneficios: [
         'Hasta 50 productos en catálogo',
         'Insignia Verificado Mercatto',
-        'Comisión reducida al 5%',
+        'Comisión reducida al 3%',
         'Prioridad intermedia en catálogo',
         'Soporte prioritario 24/7'
       ],
@@ -63,11 +75,11 @@ export const VendorMembershipModal = ({ perfil, onClose, onActualizado }) => {
       color: 'amber',
       icono: Crown,
       descripcion: 'Para marcas y distribuidores que exigen máxima facturación e impacto.',
-      comision: 'Solo 2% de comisión por venta',
+      comision: 'Solo 1% de comisión por venta',
       beneficios: [
         'Productos ilimitados sin restricciones',
         'Insignia dorada ELITE oficial',
-        'Comisión mínima del 2%',
+        'Comisión mínima del 1%',
         'Aparición prioritaria en catálogo',
         'Vitrina en Selección Exclusiva Élite'
       ],
@@ -76,15 +88,32 @@ export const VendorMembershipModal = ({ perfil, onClose, onActualizado }) => {
   ]
 
   const handleCambiarPlan = async (planId) => {
+    if (!cuentaBancaria || !cuentaBancaria.trim()) {
+      setErrorCuenta('Debes ingresar tu número de cuenta bancaria para el cobro de la suscripción antes de seleccionar tu plan.')
+      error('Por favor ingresa un número de cuenta bancaria para el débito de la suscripción.')
+      return
+    }
+
+    if (cuentaBancaria.trim().length < 5) {
+      setErrorCuenta('Por favor ingresa un número de cuenta válido (mínimo 5 dígitos).')
+      error('Número de cuenta bancaria demasiado corto.')
+      return
+    }
+
     if (planId === perfil?.tipoSuscripcion) {
       if (onClose) onClose()
       return
     }
 
     setProcesando(true)
+    setErrorCuenta('')
     try {
-      await vendedorService.actualizarSuscripcion(planId)
-      success(`¡Membresía actualizada con éxito al ${planId}!`)
+      await vendedorService.actualizarSuscripcion({
+        plan: planId,
+        cuentaBancaria: cuentaBancaria.trim(),
+        banco: banco.trim() || 'Bancolombia'
+      })
+      success(`¡Membresía actualizada con éxito al ${planId} con cuenta para débito registrada!`)
       if (onActualizado) onActualizado()
       if (onClose) onClose()
     } catch (err) {
@@ -114,11 +143,10 @@ export const VendorMembershipModal = ({ perfil, onClose, onActualizado }) => {
               Elige el Plan para potenciar tus Ventas
             </h2>
             <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 max-w-2xl leading-normal">
-              Elige el nivel de suscripción ideal para tu negocio. Disfruta de menor comisión por venta y máxima visibilidad en el catálogo frente a los compradores.
+              Comisiones reducidas: <strong>6% Starter</strong>, <strong>3% Profesional</strong> y <strong>1% Elite</strong>. Ingresa tu número de cuenta bancaria para domiciliar el cobro de la suscripción y recibir tus desembolsos.
             </p>
           </div>
           
-          {/* Botón de cierre superior (X funcional) */}
           <button
             type="button"
             onClick={(e) => {
@@ -133,7 +161,72 @@ export const VendorMembershipModal = ({ perfil, onClose, onActualizado }) => {
           </button>
         </div>
 
-        {/* Tarjetas de Planes (Ajustado para eliminar overflow vertical en desktop) */}
+        {/* Sección Obligatoria: Número de Cuenta para Cobro de Suscripción */}
+        <div className="mx-4 sm:mx-6 mt-3 p-3.5 sm:p-4 rounded-2xl bg-violet-50/60 dark:bg-violet-950/30 border border-violet-200 dark:border-violet-800/60 space-y-2 shrink-0">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-violet-600 text-white flex items-center justify-center shrink-0">
+                <CreditCard size={15} />
+              </div>
+              <div>
+                <h4 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+                  <span>Cuenta Bancaria para Débito de Suscripción</span>
+                  <span className="text-[10px] font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/60 px-2 py-0.5 rounded-full border border-rose-200 dark:border-rose-800">
+                    Requerido antes de elegir plan
+                  </span>
+                </h4>
+                <p className="text-[11px] text-slate-600 dark:text-slate-400">
+                  Ingresa el número de cuenta donde se realizará el cobro de la membresía y se consignarán tus liquidaciones.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+            <div>
+              <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                Banco o Billetera Digital
+              </label>
+              <input
+                type="text"
+                value={banco}
+                onChange={(e) => setBanco(e.target.value)}
+                placeholder="Ej: Bancolombia, Davivienda, Nequi, Daviplata"
+                className="w-full text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500 font-medium"
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center justify-between">
+                <span>Número de Cuenta Bancaria / Nequi *</span>
+                {!cuentaBancaria.trim() && (
+                  <span className="text-[10px] text-rose-500 font-bold">Obligatorio</span>
+                )}
+              </label>
+              <input
+                type="text"
+                value={cuentaBancaria}
+                onChange={(e) => {
+                  setCuentaBancaria(e.target.value)
+                  if (errorCuenta) setErrorCuenta('')
+                }}
+                placeholder="Ej: 123-456789-00 o Celular Nequi"
+                className={`w-full text-xs rounded-xl border px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500 font-mono font-bold ${
+                  !cuentaBancaria.trim()
+                    ? 'border-rose-400 bg-rose-50/30 dark:border-rose-800'
+                    : 'border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900'
+                }`}
+              />
+            </div>
+          </div>
+
+          {errorCuenta && (
+            <p className="text-[11px] font-bold text-rose-600 dark:text-rose-400 flex items-center gap-1 mt-1">
+              <AlertCircle size={13} /> {errorCuenta}
+            </p>
+          )}
+        </div>
+
+        {/* Tarjetas de Planes */}
         <div className="px-4 sm:px-6 py-3 sm:py-4 grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 overflow-y-auto lg:overflow-visible">
           {planes.map((p) => {
             const Icono = p.icono
@@ -191,7 +284,7 @@ export const VendorMembershipModal = ({ perfil, onClose, onActualizado }) => {
                         <span className="text-[10px] text-slate-400 font-semibold">/{p.periodo}</span>
                       )}
                     </div>
-                    <span className="inline-block mt-0.5 text-[10px] font-bold text-violet-600 dark:text-violet-400">
+                    <span className="inline-block mt-0.5 text-[10px] font-black text-violet-600 dark:text-violet-400">
                       {p.comision}
                     </span>
                   </div>
@@ -233,7 +326,7 @@ export const VendorMembershipModal = ({ perfil, onClose, onActualizado }) => {
         {/* Footer Informativo Compacto */}
         <div className="px-5 sm:px-6 py-2.5 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2 shrink-0">
           <span className="text-[11px] text-center sm:text-left">
-            El pago de suscripción mensual se liquida de forma segura y directa a la administración del Marketplace.
+            El cobro de suscripción mensual se realizará al número de cuenta bancaria registrado.
           </span>
           <button 
             type="button"

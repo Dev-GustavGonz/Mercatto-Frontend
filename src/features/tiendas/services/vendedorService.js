@@ -40,8 +40,9 @@ export const vendedorService = {
     return res.data
   },
 
-  actualizarSuscripcion: async (plan) => {
-    const res = await api.post('/vendedor/suscripcion', { plan })
+  actualizarSuscripcion: async (datos) => {
+    const payload = typeof datos === 'string' ? { plan: datos } : datos
+    const res = await api.post('/vendedor/suscripcion', payload)
     return res.data
   },
 }

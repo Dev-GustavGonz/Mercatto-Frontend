@@ -19,9 +19,9 @@ import {
 import { formatCurrency } from '@/utils/formatCurrency'
 
 const COMISIONES_PLAN = {
-  STARTER: { nombre: 'Plan Starter', porcentaje: 10, tasa: 0.10, icono: Sparkles, color: 'text-slate-600', bg: 'bg-slate-100' },
-  PRO: { nombre: 'Plan Profesional', porcentaje: 5, tasa: 0.05, icono: Zap, color: 'text-indigo-600', bg: 'bg-indigo-50 dark:bg-indigo-950/40' },
-  ELITE: { nombre: 'Plan Elite Premium', porcentaje: 2, tasa: 0.02, icono: Crown, color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-950/40' }
+  STARTER: { nombre: 'Plan Starter', porcentaje: 6, tasa: 0.06, icono: Sparkles, color: 'text-slate-600', bg: 'bg-slate-100' },
+  PRO: { nombre: 'Plan Profesional', porcentaje: 3, tasa: 0.03, icono: Zap, color: 'text-indigo-600', bg: 'bg-indigo-50 dark:bg-indigo-950/40' },
+  ELITE: { nombre: 'Plan Elite Premium', porcentaje: 1, tasa: 0.01, icono: Crown, color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-950/40' }
 }
 
 export const PredictiveEarningsModel = ({

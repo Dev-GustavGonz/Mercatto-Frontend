@@ -24,8 +24,8 @@ import { adminService } from '@/features/admin'
 const PLANES_CONFIG = {
   STARTER: {
     nombre: 'Plan Starter',
-    porcentajeComision: 10,
-    tasa: 0.10,
+    porcentajeComision: 6,
+    tasa: 0.06,
     cuotaMensual: 0,
     color: 'text-slate-700',
     bg: 'bg-slate-100',
@@ -34,8 +34,8 @@ const PLANES_CONFIG = {
   },
   PRO: {
     nombre: 'Plan Profesional',
-    porcentajeComision: 5,
-    tasa: 0.05,
+    porcentajeComision: 3,
+    tasa: 0.03,
     cuotaMensual: 49000,
     color: 'text-indigo-600',
     bg: 'bg-indigo-50',
@@ -44,8 +44,8 @@ const PLANES_CONFIG = {
   },
   ELITE: {
     nombre: 'Plan Elite Premium',
-    porcentajeComision: 2,
-    tasa: 0.02,
+    porcentajeComision: 1,
+    tasa: 0.01,
     cuotaMensual: 99000,
     color: 'text-amber-600',
     bg: 'bg-amber-50',
@@ -341,7 +341,7 @@ export const AdminPredictiveModel = ({ vendedores = [], pedidos = [] }) => {
                 </div>
                 <div>
                   <h4 className="text-sm font-black text-slate-900">Plan Starter</h4>
-                  <span className="text-[10px] font-bold text-slate-500">10% comisión | $0/mes</span>
+                  <span className="text-[10px] font-bold text-slate-500">6% comisión | $0/mes</span>
                 </div>
               </div>
               <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-700">
@@ -355,7 +355,7 @@ export const AdminPredictiveModel = ({ vendedores = [], pedidos = [] }) => {
                 <span className="font-bold text-slate-900">{formatCurrency(gmvStarter)}</span>
               </div>
               <div className="flex justify-between text-slate-600">
-                <span>Comisión Mercatto (10%):</span>
+                <span>Comisión Mercatto (6%):</span>
                 <span className="font-bold text-violet-700">+{formatCurrency(comisionStarter)}</span>
               </div>
               <div className="flex justify-between text-slate-600">
@@ -378,7 +378,7 @@ export const AdminPredictiveModel = ({ vendedores = [], pedidos = [] }) => {
                 </div>
                 <div>
                   <h4 className="text-sm font-black text-slate-900">Plan Profesional</h4>
-                  <span className="text-[10px] font-bold text-indigo-700">5% comisión | $49.000/mes</span>
+                  <span className="text-[10px] font-bold text-indigo-700">3% comisión | $49.000/mes</span>
                 </div>
               </div>
               <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-700 border border-indigo-200">
@@ -392,7 +392,7 @@ export const AdminPredictiveModel = ({ vendedores = [], pedidos = [] }) => {
                 <span className="font-bold text-slate-900">{formatCurrency(gmvPro)}</span>
               </div>
               <div className="flex justify-between text-slate-600">
-                <span>Comisión Mercatto (5%):</span>
+                <span>Comisión Mercatto (3%):</span>
                 <span className="font-bold text-violet-700">+{formatCurrency(comisionPro)}</span>
               </div>
               <div className="flex justify-between text-slate-600">
@@ -415,7 +415,7 @@ export const AdminPredictiveModel = ({ vendedores = [], pedidos = [] }) => {
                 </div>
                 <div>
                   <h4 className="text-sm font-black text-slate-900">Plan Elite Premium</h4>
-                  <span className="text-[10px] font-bold text-amber-700">2% comisión | $99.000/mes</span>
+                  <span className="text-[10px] font-bold text-amber-700">1% comisión | $99.000/mes</span>
                 </div>
               </div>
               <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
@@ -429,7 +429,7 @@ export const AdminPredictiveModel = ({ vendedores = [], pedidos = [] }) => {
                 <span className="font-bold text-slate-900">{formatCurrency(gmvElite)}</span>
               </div>
               <div className="flex justify-between text-slate-600">
-                <span>Comisión Mercatto (2%):</span>
+                <span>Comisión Mercatto (1%):</span>
                 <span className="font-bold text-violet-700">+{formatCurrency(comisionElite)}</span>
               </div>
               <div className="flex justify-between text-slate-600">

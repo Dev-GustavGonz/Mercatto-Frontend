@@ -165,12 +165,12 @@ export const PanelAdmin = () => {
 
   const tiendasPendientes = vendedores.filter((v) => v.estado === 'PENDIENTE').length
 
-  // Helper de comisiones por plan: STARTER 10%, PRO 5%, ELITE 2%
+  // Helper de comisiones por plan: STARTER 6%, PRO 3%, ELITE 1%
   const obtenerTasaPlan = (plan) => {
     const p = (plan || 'STARTER').toUpperCase()
-    if (p === 'PRO') return 0.05
-    if (p === 'ELITE') return 0.02
-    return 0.10
+    if (p === 'PRO') return 0.03
+    if (p === 'ELITE') return 0.01
+    return 0.06
   }
 
   const obtenerCuotaPlan = (plan) => {
@@ -490,7 +490,7 @@ export const PanelAdmin = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full bg-violet-600" />
-                        <span className="font-bold text-slate-700">Comisiones Ventas (10%, 5%, 2%)</span>
+                        <span className="font-bold text-slate-700">Comisiones Ventas (6%, 3%, 1%)</span>
                       </div>
                       <span className="font-black text-slate-900">{formatCurrency(totalComisionesVentasAdmin)}</span>
                     </div>

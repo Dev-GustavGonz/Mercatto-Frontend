@@ -223,104 +223,229 @@ const SOPORTE_VARIADO_EN = [
 
 const RESPUESTAS_BASE_ES = {
   como_funciona: [
-    '**¿Cómo funciona Mercatto? — Tu Marketplace Multitienda en Colombia:**\n\nMercatto conecta a compradores con tiendas y emprendedores verificados en un ecosistema ágil y 100% seguro:\n\n• **Para Compradores:**\n  1. **Explora el Catálogo:** Descubre miles de artículos en Tecnología, Moda, Calzado, Hogar y Belleza.\n  2. **Compra Fácil:** Puedes comprar con tu cuenta o como **Invitado** indicando solo tu correo, teléfono y dirección de entrega.\n  3. **Pagos 100% Protegidos:** Mediante pasarela certificada Wompi Bancolombia (Tarjetas, PSE, Nequi, Daviplata) o **Pago Contra Entrega** en efectivo en tu puerta.\n  4. **Custodia Mercatto Escrow:** Tu dinero está en custodia segura y solo se libera a la tienda una vez que recibes tu pedido a entera satisfacción.\n  5. **Envíos y Rastreo:** Envíos a toda Colombia (¡gratis desde $150.000 COP!), seguimiento en vivo 24/7 y foto física como prueba de entrega.\n\n• **Para Vendedores:**\n  1. **Abre tu Tienda en 2 Minutos:** Regístrate gratis como vendedor, personaliza tu marca y publica tus productos con stock y variantes.\n  2. **Comisiones Bajas:** Desde el 2% según tu plan (Starter gratuito al 10%, Profesional al 5% o Élite Premium al 2%).\n  3. **Control Total:** Panel administrativo completo con analítica de ventas y control de inventario en tiempo real.\n\n*¿Deseas saber más sobre métodos de pago, cómo abrir tu propia tienda o rastrear una compra?*',
-    '**Mercatto en pocas palabras — La plataforma de comercio multitienda de Colombia:**\n\n• **Compras 100% Seguras:** Pagas con PSE, Nequi, tarjetas de crédito/débito o en efectivo al recibir. Tu dinero queda bajo custodia Escrow hasta que el paquete llega a tus manos con evidencia fotográfica.\n• **Logística Asegurada:** Despachos a nivel nacional con Servientrega, Coordinadora e Interrapidísimo. Flete fijo de $12.000 COP y **Envío Gratis** desde $150.000 COP.\n• **Oportunidad para Emprendedores:** Cualquier marca o tienda puede registrarse y vender a todo el país con las comisiones más competitivas del mercado.\n\n¿Te gustaría que te oriente sobre cómo realizar un pedido, los medios de pago o cómo registrar tu tienda?'
+    '**¿Cómo funciona Mercatto? — Tu Marketplace Multitienda en Colombia:**\n\nMercatto conecta a compradores con tiendas y emprendedores verificados en un ecosistema ágil y 100% seguro:\n\n• **Para Compradores:**\n  1. **Explora el Catálogo:** Descubre miles de artículos en Tecnología, Moda, Calzado, Hogar y Belleza.\n  2. **Compra Fácil:** Puedes comprar con tu cuenta o como **Invitado** indicando solo tu correo, teléfono y dirección de entrega.\n  3. **Pagos 100% Protegidos:** Mediante pasarela certificada Wompi Bancolombia (Tarjetas, PSE, Nequi, Daviplata) o **Pago Contra Entrega** en efectivo en tu puerta.\n  4. **Custodia Mercatto Escrow:** Tu dinero está en custodia segura y solo se libera a la tienda una vez que recibes tu pedido a entera satisfacción.\n  5. **Envíos y Rastreo:** Envíos a toda Colombia (¡gratis desde $150.000 COP!), seguimiento en vivo 24/7 y foto física como prueba de entrega.\n\n• **Para Vendedores:**\n  1. **Abre tu Tienda en 2 Minutos:** Regístrate gratis como vendedor y personaliza tu marca.\n  2. **Registro de Cuenta Bancaria:** Para activar o cambiar cualquier membresía, es obligatorio ingresar tu número de cuenta bancaria y banco donde se liquidarán ventas y se cobrará la suscripción.\n  3. **Comisiones Competitivas:** Starter al 6% ($0/mes), Profesional al 3% ($49.000 COP/mes) o Elite Premium al 1% ($99.000 COP/mes).\n  4. **Control Total:** Panel administrativo completo con analítica de ventas y control de inventario en tiempo real.\n\n*¿Deseas saber más sobre métodos de pago, cómo abrir tu propia tienda o rastrear una compra?*',
+    '**Mercatto en pocas palabras — La plataforma multitienda líder:**\n\n• **Compras 100% Seguras:** Pagas con PSE, Nequi, tarjetas de crédito/débito o en efectivo al recibir (Contra Entrega). Tu dinero queda bajo custodia Escrow hasta que el paquete llega a tus manos con evidencia fotográfica.\n• **Logística Asegurada:** Despachos a nivel nacional con flete fijo de $12.000 COP y **Envío Gratis** desde $150.000 COP.\n• **Oportunidad para Vendedores:** Abre tu tienda online con comisiones hipercompetitivas: Starter (6%), Profesional (3%) y Elite (1%). Los vendedores deben vincular previamente su número de cuenta bancaria para el débito de la suscripción.\n\n¿Te gustaría que te oriente sobre cómo realizar un pedido, los medios de pago o cómo registrar tu tienda?',
+    '**Todo sobre Mercatto de un vistazo:**\n\nSomos el marketplace que reúne a las mejores marcas y emprendimientos colombianos con compradores en todo el territorio nacional.\n\n1. **Compradores:** Compras con pasarela bancaria o contra entrega, entregas rápidas y garantía total de devolución.\n2. **Vendedores:** Panel de control, analítica predictiva de ingresos y comisiones reducidas (6% Starter, 3% Pro y 1% Elite) previa inscripción de su cuenta bancaria de facturación.\n\n¿Tienes alguna duda puntual sobre compras, envíos o ventas?',
+    '**Mercatto: Comercio electrónico transparente y confiable:**\n\nNuestra plataforma garantiza una experiencia ágil tanto para clientes como para comerciantes:\n\n• Los compradores disfrutan de protección de fondos Escrow, soporte por tickets y rastreo en tiempo real.\n• Los comercios disfrutan de visibilidad nacional, bajas tasas por venta (Starter 6%, Pro 3%, Elite 1%) y cobro seguro de suscripción mediante cuenta bancaria registrada.\n\n¿En qué proceso te podemos ayudar en este momento?'
   ],
 
   como_comprar: [
-    '**¡Comprar en Mercatto es muy fácil y 100% seguro! Sigue estos sencillos pasos:**\n\n1. **Busca tus artículos:** Explora las categorías en el menú superior (Moda, Tecnología, Calzado, Hogar) o usa la barra de búsqueda.\n2. **Elige variantes:** Selecciona tu talla, color o modelo y presiona **\'Agregar al Carrito\'** o **\'Comprar Ahora\'**.\n3. **Compra con cuenta o como Invitado:** No es obligatorio registrar contraseña; puedes tramitar tu pedido como invitado ingresando tu correo, teléfono y dirección de entrega en Colombia.\n4. **Elige tu método de pago:** Paga en línea mediante pasarela segura Wompi (Tarjetas, PSE, Nequi, Daviplata) o en efectivo con **Pago Contra Entrega** al recibir en tu puerta.\n5. **Garantía y Rastreo:** Tu dinero queda protegido bajo custodia Escrow hasta que recibes tu pedido a conformidad con foto de evidencia.\n\n*¿Buscas alguna categoría o artículo en especial para ayudarte a encontrarlo?*',
+    '**¡Comprar en Mercatto es muy fácil y 100% seguro! Sigue estos sencillos pasos:**\n\n1. **Busca tus artículos:** Explora las categorías en el menú superior (Moda, Tecnología, Calzado, Hogar) o usa la barra de búsqueda.\n2. **Elige variantes:** Selecciona tu talla, color o modelo y presiona **"Agregar al Carrito"** o **"Comprar Ahora"**.\n3. **Compra con cuenta o como Invitado:** No es obligatorio registrar contraseña; puedes tramitar tu pedido como invitado ingresando tu correo, teléfono y dirección de entrega en Colombia.\n4. **Elige tu método de pago:** Paga en línea mediante pasarela segura Wompi (Tarjetas, PSE, Nequi, Daviplata) o en efectivo con **Pago Contra Entrega** al recibir en tu puerta.\n5. **Garantía y Rastreo:** Tu dinero queda protegido bajo custodia Escrow hasta que recibes tu pedido a conformidad con foto de evidencia.\n\n*¿Buscas alguna categoría o artículo en especial para ayudarte a encontrarlo?*',
     '**¿Quieres hacer una compra? Aquí te explico qué hacer paso a paso:**\n\n• **1. Encuentra lo que te gusta:** Navega por nuestro catálogo multitienda.\n• **2. Revisa tu Carrito:** Haz clic en *Proceder al Pago*.\n• **3. Datos de Envío:** Escribe la dirección donde deseas recibir en Colombia (¡envío gratis en órdenes desde $150.000 COP!).\n• **4. Paga Seguro:** Usa PSE, Nequi, tarjeta o selecciona Pago Contra Entrega en efectivo.\n• **5. Seguimiento:** Al instante te llegará tu comprobante al correo con el código de orden para rastrear el despacho en vivo en `/rastreo`.\n\n¿Deseas saber más sobre medios de pago o tiempos de entrega?',
-    '**Guía rápida para realizar tu pedido en Mercatto:**\n\n1. Selecciona el artículo que te interese y haz clic en *Agregar al Carrito* o *Comprar Ahora*.\n2. Si no tienes cuenta, ¡no te preocupes! Puedes tramitar la orden como **Invitado** ingresando tus datos de entrega.\n3. Escoge tu medio de pago favorito: PSE, Nequi, tarjetas o Contra Entrega.\n4. Al confirmar la compra te llegará un correo con el identificador único para monitorear el estado del despacho en tiempo real.'
+    '**Guía rápida para realizar tu pedido en Mercatto:**\n\n1. Selecciona el artículo que te interese y haz clic en *Agregar al Carrito* o *Comprar Ahora*.\n2. Si no tienes cuenta, ¡no te preocupes! Puedes tramitar la orden como **Invitado** ingresando tus datos de entrega.\n3. Escoge tu medio de pago favorito: PSE, Nequi, tarjetas o Contra Entrega.\n4. Al confirmar la compra te llegará un correo con el identificador único para monitorear el estado del despacho en tiempo real.',
+    '**Paso a paso para adquirir tus productos favoritos:**\n\n• Agrega los productos a tu bolsa de compras.\n• Ve al checkout y diligencia la dirección de entrega en cualquier ciudad de Colombia.\n• Selecciona tu método de pago preferido (Tarjetas bancarias, PSE, Nequi o Pago Contra Entrega en efectivo).\n• Recibe tu código de guía y realiza el seguimiento minuto a minuto con fotografía de entrega garantizada.'
   ],
 
   medios_pago: [
     '**Medios de Pago y Protección de Fondos:**\n\n• **Billeteras Digitales:** Paga al instante desde tu app de **Nequi** o **Daviplata**.\n• **Transferencias PSE:** Débito directo desde cualquier banco de Colombia.\n• **Tarjetas de Crédito y Débito:** Visa, Mastercard y American Express con opción de cuotas.\n• **Pago Contra Entrega (Efectivo):** Pagas en efectivo al momento de recibir el paquete en tu puerta.\n\n**Custodia Mercatto Escrow:** Tu dinero está 100% protegido. El vendedor recibe el desembolso únicamente después de que el pedido sea entregado a tu entera satisfacción.',
-    '**Opciones de pago seguras en Mercatto:**\n\nAceptamos pagos electrónicos mediante pasarela bancaria certificada Wompi (tarjetas de crédito, débito, PSE y Nequi), además de **Pago Contra Entrega** en efectivo en las principales ciudades.\n\nTu dinero permanece resguardado por el sistema de custodia Mercatto hasta que recibes tu paquete conforme.'
+    '**Opciones de pago seguras en Mercatto:**\n\nAceptamos pagos electrónicos mediante pasarela bancaria certificada Wompi (tarjetas de crédito, débito, PSE y Nequi), además de **Pago Contra Entrega** en efectivo en las principales ciudades.\n\nTu dinero permanece resguardado por el sistema de custodia Mercatto hasta que recibes tu paquete conforme.',
+    '**¿Cómo pagar tu orden en Mercatto?:**\n\nDispones de múltiples alternativas:\n1. **Wompi Bancolombia:** PSE, transferencias interbancarias, cuentas de ahorro y tarjetas Visa/Mastercard.\n2. **Billeteras móviles:** Nequi y Daviplata con notificación inmediata.\n3. **Contra Entrega:** Cancela en efectivo al mensajero en la comodidad de tu domicilio.\n\nTodas las transacciones en línea cuentan con cifrado TLS y protocolo 3D Secure.',
+    '**Flexibilidad y seguridad en tus pagos:**\n\nPuedes abonar de forma digital inmediata o elegir contraentrega en efectivo. Lo mejor: con la garantía Mercatto Escrow tu dinero no se le desembolsa a la tienda hasta que verifiques la llegada de tu producto.'
   ],
 
   vender: [
-    '**¿Cómo Vender en Mercatto y Abrir tu Propia Tienda?:**\n\n¡Abrir tu tienda en Mercatto es gratis y toma menos de 2 minutos!\n\n• **1. Regístrate:** Elige el rol **Vendedor** al crear tu cuenta.\n• **2. Configura tu Tienda:** Sube tu logo, portada y descripción de tu marca.\n• **3. Publica tus Productos:** Agrega fotos, tallas/colores, stock y precios.\n• **4. Gestiona tus Ventas:** Panel administrativo completo con analítica de ventas, control de inventario y pedidos en tiempo real.\n\n**Comisión Transparente:** Desde el 2% por venta según el plan que elijas. ¡Sin costos ocultos ni ataduras!',
-    '**Emprende y vende con Mercatto:**\n\nSolo requieres registrarte como **Vendedor**, personalizar tu perfil comercial y subir tu inventario. Dispondrás de un panel con métricas de ventas, logística de envíos integrada y pagos seguros directamente a tu cuenta bancaria.'
+    '**¿Cómo Vender en Mercatto y Abrir tu Propia Tienda?:**\n\n¡Abrir tu tienda en Mercatto es muy fácil! Sigue estos pasos:\n\n• **1. Regístrate:** Elige el rol **Vendedor** al crear tu cuenta.\n• **2. Vincula tu Cuenta Bancaria:** Por seguridad y facturación de la suscripción, debes ingresar tu número de cuenta bancaria y banco antes de seleccionar tu membresía.\n• **3. Elige tu Plan:**\n  - **Starter:** $0/mes, comisión del **6%** por venta.\n  - **Profesional:** $49.000 COP/mes, comisión del **3%** por venta.\n  - **Elite Premium:** $99.000 COP/mes, comisión de solo el **1%** por venta.\n• **4. Publica tus Productos:** Agrega fotos, descripciones, stock y precios.\n• **5. Gestiona tus Ventas:** Panel administrativo con inventario, despacho y analítica predictiva de ingresos.',
+    '**Emprende y vende a nivel nacional con Mercatto:**\n\nSolo requieres registrarte como **Vendedor**, registrar la cuenta bancaria donde se te desembolsarán las ventas y se facturará tu suscripción, y seleccionar el plan que mejor se adapte a tu volumen (Starter 6%, Pro 3% o Elite 1%). Dispondrás de soporte dedicado, logística integrada y analítica en tiempo real.',
+    '**Requisitos y pasos para abrir tu tienda hoy:**\n\n1. Crea tu cuenta con perfil Vendedor.\n2. Completa los datos de tu comercio y registra el número de cuenta bancaria donde se debitará la suscripción y recibirás tus pagos.\n3. Selecciona tu plan de membresía (Starter 6%, Pro 3% o Elite 1%).\n4. Empieza a cargar tu catálogo y recibe pedidos de compradores de toda Colombia.',
+    '**¿Por qué vender en Mercatto?:**\n\nOfrecemos las tasas de comisión más bajas de Colombia (6% Starter, 3% Profesional y 1% Elite Premium), pasarela de pagos integrada, protección de fondos y logística automatizada. Solo necesitas tu cuenta bancaria activa para iniciar.'
   ],
 
   planes: [
-    '**Planes y Comisiones para Vendedores en Mercatto:**\n\n• **Plan Starter ($0 COP/mes):** Sin costo fijo mensual y comisión del **10%** por venta. Ideal para emprendedores que inician.\n• **Plan Profesional ($49.000 COP/mes):** Comisión reducida del **5%** por venta, perfecto para negocios con ventas constantes.\n• **Plan Elite Premium ($99.000 COP/mes):** Comisión mínima del **2%**, insignia Élite de tienda verificada y máxima visibilidad en el catálogo.\n\n*Puedes cambiar o pausar tu plan en cualquier momento desde tu panel de vendedor.*',
-    '**Tarifas y membresías de tienda:**\n\nOfrecemos el plan **Starter** sin cuota mensual (10% por venta exitosa), el plan **Profesional** por $49.000 COP/mes (5% de comisión) y el plan **Élite Premium** por $99.000 COP/mes (solo 2% de comisión y badge verificado). Puedes iniciar gratis hoy mismo.'
+    '**Planes y Comisiones para Vendedores en Mercatto:**\n\n• **Plan Starter ($0 COP/mes):** Sin costo fijo mensual y comisión del **6%** por venta exitosa. Ideal para nuevos emprendedores.\n• **Plan Profesional ($49.000 COP/mes):** Comisión reducida al **3%** por venta, perfecto para tiendas en crecimiento constante.\n• **Plan Elite Premium ($99.000 COP/mes):** Comisión mínima del **1%** por venta, insignia verificada de tienda oficial y máxima exposición en el catálogo.\n\n> **Requisito obligatorio:** Para seleccionar o activar cualquier plan, el vendedor debe registrar previamente su número de cuenta bancaria y entidad bancaria para la facturación y cobro automático de la suscripción.\n\n*Puedes gestionar o cambiar tu plan en cualquier momento desde tu panel de vendedor.*',
+    '**Tarifas y membresías de tienda Mercatto:**\n\nOfrecemos 3 niveles:\n1. **Starter:** $0 cuota mensual y **6%** de comisión por venta.\n2. **Profesional:** $49.000 COP/mes y solo **3%** de comisión.\n3. **Elite Premium:** $99.000 COP/mes con la tasa más baja: solo **1%** de comisión.\n\n*Nota:* Antes de escoger el plan, el sistema te solicitará ingresar el número de cuenta bancaria en el que se debitará la cuota de la suscripción.',
+    '**Comisiones actualizadas de Mercatto:**\n\n• Starter: **6%** por transacción.\n• Pro: **3%** por transacción.\n• Elite: **1%** por transacción.\n\nRecuerda que antes de activar el plan debes tener cargada tu cuenta bancaria en el formulario de membresía para habilitar el cobro correspondiente.',
+    '**Estructura de suscripción para vendedores:**\n\nElige entre Starter (6% comisión, $0/mes), Profesional (3% comisión, $49.000 COP/mes) y Elite Premium (1% comisión, $99.000 COP/mes). El alta o cambio de plan exige el registro formal del número de cuenta bancaria del titular del comercio.'
   ],
 
   cupones: [
-    '**Cupones de Descuento Activos en Mercatto:**\n\n• **BIENVENIDA:** **$20.000 COP de descuento** en compras iguales o superiores a $100.000 COP.\n• **MERCATTO10:** **10% de descuento** en artículos seleccionados en compras desde $30.000 COP (ahorro máximo de $50.000 COP).\n\n**¿Cómo aplicarlo?:** Ingresa el código en la casilla *\'Código de cupón\'* en el Carrito o en el Checkout antes de finalizar tu orden.',
-    '**Promociones y códigos vigentes:**\n\nUsa **BIENVENIDA** para ahorrar $20.000 COP en pedidos superiores a $100.000 COP, o **MERCATTO10** para obtener 10% de descuento en referencias seleccionadas. Recuerda escribirlo en el campo de cupón durante el checkout.'
+    '**Cupones de Descuento Activos en Mercatto:**\n\n• **BIENVENIDA:** **$20.000 COP de descuento** en compras iguales o superiores a $100.000 COP.\n• **MERCATTO10:** **10% de descuento** en artículos seleccionados en compras desde $30.000 COP (ahorro máximo de $50.000 COP).\n\n**¿Cómo aplicarlo?:** Ingresa el código en la casilla *"Código de cupón"* en el Carrito o en el Checkout antes de finalizar tu orden.',
+    '**Promociones y códigos vigentes:**\n\nUsa **BIENVENIDA** para ahorrar $20.000 COP en pedidos superiores a $100.000 COP, o **MERCATTO10** para obtener 10% de descuento en referencias seleccionadas. Recuerda escribirlo en el campo de cupón durante el checkout.',
+    '**Ahorra en tus compras con cupones Mercatto:**\n\nActualmente disponemos de:\n1. **BIENVENIDA**: Te rebaja $20.000 COP en compras mayores a $100.000 COP.\n2. **MERCATTO10**: Te brinda un 10% de descuento en referencias participantes a partir de $30.000 COP.\n\n¡Aprovéchalos antes de culminar tu compra!',
+    '**Descuentos especiales disponibles:**\n\nPuedes redimir los cupones **BIENVENIDA** ($20.000 COP de rebaja en órdenes de $100.000+) y **MERCATTO10** (10% de ahorro directo). Solo digítalos en la pantalla de pago.'
   ],
 
   envios: [
-    '**Política de Envíos y Tiempos de Entrega:**\n\n• **Envío Gratis:** En todas tus compras iguales o superiores a **$150.000 COP** en Colombia.\n• **Tarifa Estándar Fija:** Solo **$12.000 COP** para pedidos menores.\n• **Tiempos de Entrega:**\n  - **Cartagena de Indias:** De 24 a 48 horas hábiles.\n  - **Otras Ciudades de Colombia:** De 48 a 72 horas hábiles.\n• **Transportadoras:** Despachos asegurados con Coordinadora, Servientrega e Interrapidísimo.\n• **Evidencia de Entrega:** El vendedor o repartidor carga una foto de prueba física al momento de la entrega.',
-    '**Cobertura y despacho a nivel nacional:**\n\nContamos con entregas en toda Colombia (24-48 horas en Cartagena y 48-72 horas en el resto de ciudades). En pedidos desde $150.000 COP el envío es completamente gratuito, y para órdenes inferiores la tarifa plana es de solo $12.000 COP.'
+    '**Política de Envíos y Tiempos de Entrega:**\n\n• **Envío Gratis:** En todas tus compras iguales o superiores a **$150.000 COP** en Colombia.\n• **Tarifa Estándar Fija:** Solo **$12.000 COP** para pedidos menores.\n• **Tiempos de Entrega:**\n  - **Cartagena de Indias:** De 24 a 48 horas hábiles.\n  - **Otras Ciudades de Colombia:** De 48 a 72 horas hábiles.\n• **Transportadoras:** Despachos asegurados con Coordinadora, Servientrega e Interrapidísimo.\n• **Evidencia de Entrega:** El transportista carga una foto de prueba física al momento de la entrega.',
+    '**Cobertura y despacho a nivel nacional:**\n\nContamos con entregas en toda Colombia (24-48 horas en Cartagena y 48-72 horas en el resto de ciudades). En pedidos desde $150.000 COP el envío es completamente gratuito, y para órdenes inferiores la tarifa plana es de solo $12.000 COP.',
+    '**Tiempos de entrega y transportadoras:**\n\nTrabajamos con las mejores empresas logísticas del país (Coordinadora, Servientrega, Interrapidísimo). Los despachos tardan entre 1 y 3 días hábiles y cuentan con foto de evidencia al ser entregados.',
+    '**Tarifas de flete y despacho:**\n\nDisfruta de flete totalmente gratis por compras desde $150.000 COP. Si el total es inferior, el envío a cualquier rincón de Colombia cuesta únicamente $12.000 COP.'
   ],
 
   rastreo: [
     '**Rastreo de Pedidos en Tiempo Real:**\n\n• **Si compraste con cuenta:** Ingresa a **Mis Pedidos** desde tu menú de usuario para ver el historial y fotos de entrega.\n• **Si compraste como invitado:** Entra a **Rastrear Pedido** (`/rastreo`) e ingresa tu código de orden (ej: `PED-20261031-1045`) y tu correo electrónico.\n\n*Verás el paso a paso en tiempo real y la foto de evidencia cargada por el vendedor al momento de la entrega.*',
-    '**Sigue el estado de tu compra:**\n\nPuedes consultar el progreso en vivo desde la sección **/rastreo** digitando tu número de orden y correo, o desde el panel de **Mis Pedidos** si tienes cuenta. El transportista además sube una fotografía física al confirmar la entrega.'
+    '**Sigue el estado de tu compra:**\n\nPuedes consultar el progreso en vivo desde la sección **/rastreo** digitando tu número de orden y correo, o desde el panel de **Mis Pedidos** si tienes cuenta. El transportista además sube una fotografía física al confirmar la entrega.',
+    '**¿Dónde viene mi paquete?:**\n\nConsulta en tiempo real en la página de rastreo de Mercatto con tu número de pedido y correo. Podrás observar la fase actual (Confirmado, En preparación, En camino, Entregado) y la constancia fotográfica.',
+    '**Monitoreo 24/7 de tus envíos:**\n\nCada orden genera una guía rastreable automáticamente. Puedes revisar el estado de tu envío en la opción *Rastrear Pedido* de la cabecera en cualquier momento del día.'
+  ],
+
+  contraentrega: [
+    '**Pago Contra Entrega en Efectivo:**\n\n• **¿En qué consiste?:** Pagas el valor total de tu orden en efectivo directamente al mensajero cuando llegue a tu puerta.\n• **Cobertura:** Disponible para las principales ciudades y municipios de Colombia.\n• **Seguridad:** No requieres tarjetas bancarias ni claves por internet. Solo asegúrate de tener el dinero en efectivo disponible al momento del arribo del transportista.',
+    '**¿Cómo funciona el pago contra entrega?:**\n\nAl finalizar tu compra en el checkout, selecciona la opción **Pago Contra Entrega**. El pedido se despacha a tu dirección y cancelas en efectivo una vez que el mensajero te entregue el paquete en mano.',
+    '**Beneficios de comprar contraentrega:**\n\n1. Pagas únicamente cuando el paquete está físicamente en tu puerta.\n2. Ideal si prefieres no utilizar tarjetas bancarias por internet.\n3. Despacho rápido y seguro con las principales transportadoras de Colombia.',
+    '**Disponibilidad de Pago Contra Entrega:**\n\nPuedes elegir contra entrega en el checkout siempre que la cobertura de la transportadora esté habilitada en tu código postal. ¡Es una forma práctica y muy segura de comprar en Mercatto!'
+  ],
+
+  seguridad_confianza: [
+    '**Seguridad, Privacidad y Confianza en Mercatto:**\n\n• **Custodia Escrow:** Tu dinero nunca va de inmediato al vendedor; Mercatto lo resguarda en custodia hasta que recibes tu producto a conformidad.\n• **Pagos Certificados:** Procesados a través de Wompi Bancolombia bajo normas PCI-DSS y encriptación de 256 bits.\n• **Prueba de Entrega con Foto:** Todos los envíos cuentan con registro fotográfico al momento del despacho y de la recepción.',
+    '**¿Por qué es seguro comprar en Mercatto?:**\n\nPorque contamos con garantía de protección al comprador Escrow. Si el producto no llega o tiene defectos, tu dinero te es reembolsado en su totalidad.',
+    '**Protección de compras y datos personales:**\n\nCumplimos estrictamente con la normativa colombiana de Habeas Data y protección al consumidor. Tus datos están cifrados y las transacciones monitoreadas antifraude.',
+    '**Garantía Mercatto:**\n\nComprar en nuestra plataforma es 100% confiable: pagos protegidos, vendedores verificados y soporte continuo ante cualquier eventualidad.'
+  ],
+
+  categorias: [
+    '**Categorías disponibles en Mercatto:**\n\nEncuentra miles de referencias organizadas en:\n• **Tecnología:** Smartphones, computadores, accesorios y audio.\n• **Moda y Ropa:** Tendencias urbanas, prendas para damas, caballeros y niños.\n• **Calzado:** Zapatos casuales, deportivos y formales.\n• **Hogar y Cocina:** Decoración, utensilios y electrodomésticos.\n• **Belleza y Cuidado Personal:** Cosméticos, perfumes y cuidado facial.',
+    '**Variedad de productos en nuestro catálogo:**\n\nExplora moda, tecnología, calzado, hogar, deportes y belleza navegando por el menú superior de categorías o filtrando tus marcas favoritas en la barra de búsqueda.',
+    '**¿Qué productos puedes comprar en Mercatto?:**\n\nDesde lo último en tecnología y calzado hasta artículos de moda y hogar suministrados por comercios directos de todo el país.',
+    '**Catálogo multitienda Mercatto:**\n\nTenemos un amplio portafolio de artículos en categorías como Moda, Calzado, Tecnología, Belleza y Hogar, con envíos garantizados a toda Colombia.'
+  ],
+
+  cuenta_registro: [
+    '**Gestión de Cuentas y Registro en Mercatto:**\n\n• **Crear Cuenta:** Puedes registrarte gratis con tu correo o iniciar sesión rápidamente con tu cuenta de Google.\n• **Perfil de Comprador o Vendedor:** Elige ser comprador para disfrutar de ofertas, o vendedor para abrir tu tienda.\n• **Compra como Invitado:** Si no deseas crear cuenta, puedes comprar indicando únicamente tus datos de envío.',
+    '**¿Cómo registrarte o iniciar sesión?:**\n\nHaz clic en el botón **Ingresar** en la esquina superior derecha. Podrás iniciar sesión con Google o tu correo y contraseña en segundos.',
+    '**Recuperación de cuenta y datos:**\n\nSi olvidaste tu clave, utiliza el enlace "¿Olvidaste tu contraseña?" en el formulario de inicio de sesión para recibir un correo de restablecimiento seguro.',
+    '**Beneficios de tener una cuenta Mercatto:**\n\nGuarda tus direcciones preferidas, revisa el historial completo de pedidos, gestiona tus cupones y realiza compras con un solo clic.'
+  ],
+
+  facturacion: [
+    '**Facturación y Comprobantes de Pago:**\n\n• **Compradores:** Cada compra genera su comprobante digital enviado inmediatamente a tu correo electrónico registrado.\n• **Vendedores:** El cobro de las suscripciones (Starter $0, Profesional $49.000 COP, Elite $99.000 COP) se debita directamente de la cuenta bancaria vinculada por el comerciante.\n• **Liquidación de Ventas:** Los fondos de tus ventas liberados por Escrow se transfieren a tu cuenta bancaria registrada.',
+    '**Detalles de facturación y cobro:**\n\nLos compradores reciben su factura/recibo digital en su correo. Para los vendedores, la cuota mensual del plan se carga a la cuenta bancaria obligatoria registrada en el perfil de tienda.',
+    '**Transparencia en cobros y desembolsos:**\n\nTodas las transacciones y cobros de comisiones (6% Starter, 3% Pro, 1% Elite) se reflejan de forma clara y detallada en el panel de vendedor.',
+    '**Soporte de pagos y facturación:**\n\nSi requieres una factura electrónica con NIT o tienes dudas sobre un cobro bancario, puedes radicar un ticket de soporte adjuntando tu número de orden.'
+  ],
+
+  despedida_agradecimiento: [
+    '¡Con el mayor gusto! Recuerda que estoy disponible 24/7 para asistirte en Mercatto. ¡Que tengas un excelente día y felices compras!',
+    '¡Ha sido un verdadero placer ayudarte! Si necesitas cualquier otra información sobre pedidos, envíos o tu tienda, aquí estaré.',
+    '¡De nada! Gracias por confiar en Mercatto, tu marketplace multitienda de confianza en Colombia. ¡Hasta pronto!',
+    '¡Para servirte siempre! No dudes en volver a consultar si tienes preguntas adicionales sobre tus compras o ventas en Mercatto.'
   ],
 
   tickets_soporte: [
-    '**¿Cómo generar y radicar un Ticket de Soporte en Mercatto?:**\n\nPuedes radicar una solicitud formal de asistencia directamente:\n\n• **1. Desde este chat:** Haz clic en el botón verde **\'Radicar Ticket\'** (ícono de audífonos) en la barra inferior para abrir el formulario directo.\n• **2. Completa tus datos:** Escribe tu nombre, correo electrónico donde recibirás la respuesta, teléfono (opcional) y el detalle de tu solicitud o código de pedido (ej: `PED-20261031-1045`).\n• **3. Enviar:** Presiona *\'Enviar Solicitud\'* y tu ticket quedará registrado. Nuestro equipo humano te responderá directamente a tu correo.\n\n*También puedes escribir al WhatsApp oficial [+57 323 388 2717](https://wa.me/573233882717) o al correo realmercatto@gmail.com.*',
-    '**Pasos para radicar un Ticket de Atención:**\n\n1. Presiona el botón de **Ticket** en la parte inferior de este asistente.\n2. Ingresa tu correo y describe tu caso (devolución, garantía, pago o duda de orden).\n3. Al hacer clic en *Enviar*, nuestro equipo revisará tu caso y se pondrá en contacto contigo de inmediato.'
+    '**¿Cómo generar y radicar un Ticket de Soporte en Mercatto?:**\n\nPuedes radicar una solicitud formal de asistencia directamente:\n\n• **1. Desde este chat:** Haz clic en el botón verde **"Radicar Ticket"** (ícono de audífonos) en la barra inferior para abrir el formulario directo.\n• **2. Completa tus datos:** Escribe tu nombre, correo electrónico donde recibirás la respuesta, teléfono (opcional) y el detalle de tu solicitud o código de pedido (ej: `PED-20261031-1045`).\n• **3. Enviar:** Presiona *"Enviar Solicitud"* y tu ticket quedará registrado. Nuestro equipo humano te responderá directamente a tu correo.\n\n*También puedes escribir al WhatsApp oficial [+57 323 388 2717](https://wa.me/573233882717) o al correo realmercatto@gmail.com.*',
+    '**Pasos para radicar un Ticket de Atención:**\n\n1. Presiona el botón de **Ticket** en la parte inferior de este asistente.\n2. Ingresa tu correo y describe tu caso (devolución, garantía, pago o duda de orden).\n3. Al hacer clic en *Enviar*, nuestro equipo revisará tu caso y se pondrá en contacto contigo de inmediato.',
+    '**Asistencia formal mediante ticket:**\n\nGenera un ticket de soporte haciendo clic en la opción *Radicar Ticket* abajo. Nuestro equipo de atención al cliente le dará seguimiento prioritario a tu solicitud con respuesta por correo electrónico.',
+    '**Canal oficial de soporte Mercatto:**\n\nSi tienes inconvenientes con una orden, garantía o pago, radica un ticket con tus datos de contacto y número de pedido para brindarte una solución ágil.'
   ],
 
   devoluciones_garantias: [
     '**Garantías, Devoluciones y Protección Escrow:**\n\n• **Garantía Mercatto Escrow:** Tu dinero está 100% protegido. El vendedor NO recibe el pago hasta que confirmes la entrega satisfactoria del producto.\n• **¿Tu producto llegó defectuoso o no corresponde?:**\n  1. Tienes hasta **5 días hábiles** tras recibir el paquete para reportarlo.\n  2. Radica un **Ticket de Soporte** desde este chat o escribe al WhatsApp [+57 323 388 2717](https://wa.me/573233882717) con fotos de evidencia y tu código de orden.\n  3. El equipo de soporte congelará el desembolso y coordinará el cambio o el **reembolso total** de tu dinero a tu cuenta.\n• **Foto de Entrega:** Cada transportista carga una foto física al momento de la entrega.',
-    '**¿Cómo solicitar una devolución o reembolso?:**\n\nSi requieres un cambio o reembolso, tienes 5 días hábiles desde la entrega para reportarlo mediante un ticket de soporte o por nuestro WhatsApp oficial (+57 323 388 2717) adjuntando fotos del artículo y número de pedido.'
+    '**¿Cómo solicitar una devolución o reembolso?:**\n\nSi requieres un cambio o reembolso, tienes 5 días hábiles desde la entrega para reportarlo mediante un ticket de soporte o por nuestro WhatsApp oficial (+57 323 388 2717) adjuntando fotos del artículo y número de pedido.',
+    '**Protección de compras y devoluciones:**\n\nEn Mercatto tu satisfacción está garantizada. Si el producto no es lo que esperabas o llega con defectos de fábrica, abres un ticket y gestionamos tu reembolso íntegro de inmediato.',
+    '**Política de cambios y garantías:**\n\nCuentas con respaldo integral en todos tus pedidos. Tu dinero permanece bajo custodia segura hasta que tengas el producto en tus manos y confirmes que todo está en perfecto orden.'
   ]
 }
 
 const RESPUESTAS_BASE_EN = {
   como_funciona: [
-    '**How does Mercatto work? — Colombia\'s Multi-Vendor Marketplace:**\n\nMercatto connects shoppers with verified stores and brands across Colombia in a secure and transparent shopping ecosystem:\n\n• **For Shoppers:**\n  1. **Browse the Catalog:** Explore thousands of items in Fashion, Tech, Footwear, Home, and Beauty.\n  2. **Guest or Account Checkout:** Order with your registered profile or simply as a **Guest** without requiring passwords.\n  3. **100% Protected Payments:** Handled by certified Wompi gateway (Cards, PSE, Nequi) or **Cash on Delivery** at your door.\n  4. **Mercatto Escrow Guarantee:** Your funds are safely held in custody and only released to the store once delivery is confirmed.\n  5. **Live Tracking:** Nationwide shipping (free over $150,000 COP), 24/7 parcel tracking, and physical delivery photo proof.\n\n• **For Sellers:**\n  1. **Open Your Store in 2 Minutes:** Quick sign-up, brand customization, and simple product listing.\n  2. **Low Commissions:** From 2% per sale depending on your plan (Starter, Professional, Elite Premium).\n  3. **Full Management:** Dashboard with real-time inventory, order processing, and sales analytics.\n\n*Would you like more details on how to buy, payment methods, or opening a seller store?*',
-    '**Mercatto in a nutshell:**\n\n• **Safe Shopping:** Pay securely via PSE, Nequi, credit cards, or cash at delivery. Funds are held in escrow until you receive your items.\n• **Reliable Shipping:** Fast dispatch across Colombia with delivery photo evidence and 24/7 tracking.\n• **Empowering Entrepreneurs:** Businesses can easily launch an official storefront and sell nationwide with competitive commission rates.\n\nHow may I help you today? Would you like to explore products, learn about payment options, or register as a seller?'
+    '**How does Mercatto work? — Colombia\'s Multi-Vendor Marketplace:**\n\nMercatto connects shoppers with verified stores and brands across Colombia in a secure and transparent shopping ecosystem:\n\n• **For Shoppers:**\n  1. **Browse the Catalog:** Explore thousands of items in Fashion, Tech, Footwear, Home, and Beauty.\n  2. **Guest or Account Checkout:** Order with your registered profile or simply as a **Guest** without requiring passwords.\n  3. **100% Protected Payments:** Handled by certified Wompi gateway (Cards, PSE, Nequi) or **Cash on Delivery** at your door.\n  4. **Mercatto Escrow Guarantee:** Your funds are safely held in custody and only released to the store once delivery is confirmed.\n  5. **Live Tracking:** Nationwide shipping (free over $150,000 COP), 24/7 parcel tracking, and physical delivery photo proof.\n\n• **For Sellers:**\n  1. **Open Your Store in 2 Minutes:** Quick sign-up and brand customization.\n  2. **Bank Account Registration:** Vendors must register their bank account and bank name before choosing a subscription plan for billing.\n  3. **Low Commissions:** Starter at 6% ($0/mo), Professional at 3% ($49,000 COP/mo), or Elite Premium at 1% ($99,000 COP/mo).\n  4. **Full Management:** Dashboard with real-time inventory, order processing, and sales analytics.\n\n*Would you like more details on how to buy, payment methods, or opening a seller store?*',
+    '**Mercatto in a nutshell:**\n\n• **Safe Shopping:** Pay securely via PSE, Nequi, credit cards, or cash at delivery. Funds are held in escrow until you receive your items.\n• **Reliable Shipping:** Fast dispatch across Colombia with delivery photo evidence and 24/7 tracking.\n• **Empowering Sellers:** Launch your online store with industry-low commissions (Starter 6%, Pro 3%, Elite 1%). Sellers register their bank account upfront for automatic subscription billing.\n\nHow may I help you today? Would you like to explore products, learn about payment options, or register as a seller?',
+    '**Everything you need to know about Mercatto:**\n\nWe bring Colombian merchants and shoppers together on one secure platform.\n• **Buyers:** Protected payments, escrow safety, and cash on delivery available.\n• **Sellers:** Low commission tiers (6% Starter, 3% Pro, 1% Elite) with automated bank account billing.',
+    '**Why choose Mercatto?:**\n\nEnjoy guaranteed escrow security, nationwide parcel shipping with proof of delivery photos, and low commission seller plans (Starter 6%, Pro 3%, Elite 1%).'
   ],
 
   como_comprar: [
     '**Buying on Mercatto is easy, fast, and 100% secure:**\n\n• **1. Browse the Catalog:** Explore verified categories or search for your favorite items.\n• **2. Add to Cart:** Pick your desired size, color, or variant.\n• **3. Easy Checkout:** Shop with your account or as a **Guest** by simply entering your email, phone, and delivery address.\n• **4. Secure Payment:** Handled by certified Wompi gateway (Cards, PSE, Nequi) or Cash on Delivery.\n• **5. Live Tracking:** You will immediately receive order confirmation and a real-time tracking link with delivery photo proof.',
-    '**Quick guide to purchasing on Mercatto:**\n\n1. Select your favorite items and add them to your cart.\n2. Checkout with your registered account or simply as a **Guest**.\n3. Pick your preferred payment method: credit/debit card, PSE, Nequi, or Cash on Delivery.\n4. You will receive an instant confirmation email with live tracking details.'
+    '**Quick guide to purchasing on Mercatto:**\n\n1. Select your favorite items and add them to your cart.\n2. Checkout with your registered account or simply as a **Guest**.\n3. Pick your preferred payment method: credit/debit card, PSE, Nequi, or Cash on Delivery.\n4. You will receive an instant confirmation email with live tracking details.',
+    '**Step-by-step shopping on Mercatto:**\n\nAdd items to your bag, choose shipping address anywhere in Colombia, pay online or upon delivery, and track your package 24/7 with photographic evidence.',
+    '**Ordering made simple:**\n\nNo registration required! You can place orders as a guest with safe payment processing and full Escrow protection.'
   ],
 
   medios_pago: [
     '**Payment Methods & Buyer Protection:**\n\n• **Digital Wallets:** Instant payment through **Nequi** or **Daviplata**.\n• **Bank Transfers (PSE):** Direct debit from any bank in Colombia.\n• **Credit & Debit Cards:** Visa, Mastercard, and American Express with installment options.\n• **Cash on Delivery:** Pay in cash when the courier hands the package at your door.\n\n**Mercatto Escrow Guarantee:** Your funds are 100% protected. Sellers only get paid after your order has been safely delivered to your total satisfaction.',
-    '**Secure payment options:**\n\nWe accept credit/debit cards, bank debit through PSE, Nequi, and Cash on Delivery. All electronic payments are processed securely via Wompi with escrow protection.'
+    '**Secure payment options:**\n\nWe accept credit/debit cards, bank debit through PSE, Nequi, and Cash on Delivery. All electronic payments are processed securely via Wompi with escrow protection.',
+    '**How to pay your order:**\n\nChoose between Wompi (Cards, PSE, Nequi) or Cash on Delivery. Your funds are secured in escrow until you verify your items.',
+    '**Payment flexibility:**\n\nPay digitally with instant confirmation or pay cash at your doorstep. Both methods include complete buyer protection.'
   ],
 
   vender: [
-    '**How to Sell on Mercatto & Open Your Store:**\n\nOpening your store on Mercatto is free and takes under 2 minutes!\n\n• **1. Sign Up:** Choose the **Seller** role when registering.\n• **2. Set Up Your Store:** Upload your logo, cover banner, and brand description.\n• **3. List Your Products:** Add pictures, colors/sizes, stock, and prices.\n• **4. Manage Orders:** Full dashboard with live inventory, sales analytics, and order fulfillment.\n\n**Transparent Commission:** From 2% per sale depending on your plan. No hidden fees!',
-    '**Start selling on Mercatto today:**\n\nCreate a seller profile in just minutes, customize your storefront, list your products, and receive automatic payouts with full analytics support.'
+    '**How to Sell on Mercatto & Open Your Store:**\n\nOpening your store on Mercatto is free and takes under 2 minutes!\n\n• **1. Sign Up:** Choose the **Seller** role when registering.\n• **2. Add Bank Account:** Provide your bank account number and bank name where sales will be paid out and subscriptions will be billed.\n• **3. Pick a Plan:** Starter (6% commission, $0/mo), Professional (3% commission, $49,000 COP/mo), or Elite Premium (1% commission, $99,000 COP/mo).\n• **4. List Your Products:** Add pictures, colors/sizes, stock, and prices.\n• **5. Manage Orders:** Full dashboard with live inventory, sales analytics, and predictive earnings.',
+    '**Start selling on Mercatto today:**\n\nCreate a seller profile in just minutes, register your bank account for payouts and subscription billing, pick your tier (Starter 6%, Pro 3%, Elite 1%), and receive orders from buyers all across Colombia.',
+    '**Seller registration steps:**\n\n1. Create your seller account.\n2. Upload your store details and bank account information.\n3. Select your commission tier (6% Starter, 3% Pro, 1% Elite).\n4. List your inventory and start generating sales.',
+    '**Why sell on Mercatto?:**\n\nEnjoy the lowest commission rates in Colombia (Starter 6%, Pro 3%, Elite 1%), automated courier shipping, escrow protection, and advanced analytics.'
   ],
 
   planes: [
-    '**Seller Plans & Commission Rates:**\n\n• **Starter Plan ($0 COP/month):** No monthly fee and **10%** commission per sale. Perfect for new entrepreneurs.\n• **Professional Plan ($49,000 COP/month):** Reduced **5%** commission per sale, great for established businesses.\n• **Elite Premium Plan ($99,000 COP/month):** Minimal **2%** commission, verified Elite badge, and top catalog priority.\n\n*You can upgrade, downgrade, or pause your plan at any time from your seller panel.*',
-    '**Seller tiers and benefits:**\n\nChoose **Starter** with $0 monthly cost (10% commission), **Professional** at $49,000 COP/month (5% commission), or **Elite Premium** at $99,000 COP/month (2% commission and verified badge).'
+    '**Seller Plans & Commission Rates:**\n\n• **Starter Plan ($0 COP/month):** No monthly fee and **6%** commission per sale. Perfect for new entrepreneurs.\n• **Professional Plan ($49,000 COP/month):** Reduced **3%** commission per sale, great for established businesses.\n• **Elite Premium Plan ($99,000 COP/month):** Minimal **1%** commission, verified Elite badge, and top catalog priority.\n\n> **Mandatory Requirement:** Before activating or changing a plan, sellers must provide their bank account number and bank name for automated subscription billing.\n\n*You can upgrade, downgrade, or pause your plan at any time from your seller panel.*',
+    '**Seller tiers and benefits:**\n\nChoose **Starter** with $0 monthly cost (6% commission), **Professional** at $49,000 COP/month (3% commission), or **Elite Premium** at $99,000 COP/month (1% commission and verified badge).\n\n*Note:* You must register your bank account prior to selecting your plan.',
+    '**Updated commission rates:**\n\n• Starter: **6%** per sale.\n• Pro: **3%** per sale.\n• Elite: **1%** per sale.\n\nEnsure your bank account is saved in your store profile for subscription debiting.',
+    '**Membership structure for merchants:**\n\nPick between Starter (6% commission), Professional (3% commission), and Elite Premium (1% commission). Bank account registration is required upfront.'
   ],
 
   cupones: [
-    '**Active Discount Coupons on Mercatto:**\n\n• **BIENVENIDA:** **$20,000 COP off** on orders of $100,000 COP or more.\n• **MERCATTO10:** **10% off** on selected items for orders over $30,000 COP (max savings $50,000 COP).\n\n**How to redeem:** Enter the code in the *\'Coupon code\'* field in the Cart drawer or at Checkout before completing your order.',
-    '**Current promo codes:**\n\nApply **BIENVENIDA** for $20,000 COP discount on orders over $100,000 COP, or **MERCATTO10** for 10% off on eligible items during checkout.'
+    '**Active Discount Coupons on Mercatto:**\n\n• **BIENVENIDA:** **$20,000 COP off** on orders of $100,000 COP or more.\n• **MERCATTO10:** **10% off** on selected items for orders over $30,000 COP (max savings $50,000 COP).\n\n**How to redeem:** Enter the code in the *"Coupon code"* field in the Cart drawer or at Checkout before completing your order.',
+    '**Current promo codes:**\n\nApply **BIENVENIDA** for $20,000 COP discount on orders over $100,000 COP, or **MERCATTO10** for 10% off on eligible items during checkout.',
+    '**Save with Mercatto coupons:**\n\nEnjoy $20,000 COP off with code **BIENVENIDA** (orders $100,000+) or 10% off with **MERCATTO10**.',
+    '**Special discounts available:**\n\nEnter coupon **BIENVENIDA** or **MERCATTO10** at checkout to unlock instant discounts.'
   ],
 
   envios: [
     '**Shipping Policy & Delivery Times:**\n\n• **Free Shipping:** On all purchases equal to or over **$150,000 COP** in Colombia.\n• **Flat Shipping Fee:** Only **$12,000 COP** for smaller orders nationwide.\n• **Estimated Delivery Times:**\n  - **Cartagena de Indias:** 24 to 48 business hours.\n  - **Other Major Cities in Colombia:** 48 to 72 business hours.\n• **Couriers:** Insured shipping via Coordinadora, Servientrega, and Interrapidísimo.\n• **Delivery Photo Proof:** Couriers upload a real physical delivery photo upon delivery.',
-    '**Nationwide shipping coverage:**\n\nOrders over $150,000 COP enjoy free delivery anywhere in Colombia. For smaller orders, a standard fee of $12,000 COP applies. Deliveries take 24-48 hours in Cartagena and 48-72 hours in other major cities.'
+    '**Nationwide shipping coverage:**\n\nOrders over $150,000 COP enjoy free delivery anywhere in Colombia. For smaller orders, a standard fee of $12,000 COP applies. Deliveries take 24-48 hours in Cartagena and 48-72 hours in other major cities.',
+    '**Delivery carriers and times:**\n\nWe work with top couriers (Coordinadora, Servientrega, Interrapidísimo). Packages arrive in 1 to 3 business days with photographic evidence.',
+    '**Shipping rates:**\n\nFree shipping on orders from $150,000 COP; flat rate of $12,000 COP for lower amounts across all Colombia.'
   ],
 
   rastreo: [
     '**Real-Time Order Tracking:**\n\n• **If you have an account:** Go to **My Orders** from your account menu to review tracking status and delivery photos.\n• **If you bought as guest:** Visit **Track Order** (`/rastreo`) and enter your order code (e.g., `PED-20261031-1045`) and email address.\n\n*You can view real-time courier progress and photo proof.*',
-    '**Track your package:**\n\nAccess **/rastreo** anytime with your order code and email, or view full status history and photo evidence under **My Orders**.'
+    '**Track your package:**\n\nAccess **/rastreo** anytime with your order code and email, or view full status history and photo evidence under **My Orders**.',
+    '**Where is my parcel?:**\n\nCheck live status using your order number and email on the tracking page with real-time milestones and courier photo proof.',
+    '**24/7 package monitoring:**\n\nEvery order generates a tracking code. Follow delivery progress anytime in the Track Order section.'
+  ],
+
+  contraentrega: [
+    '**Cash on Delivery (COD) in Colombia:**\n\n• **How it works:** Pay the total order value in cash directly to the courier when the parcel arrives at your address.\n• **Coverage:** Available in major Colombian cities and metropolitan areas.\n• **Security:** No online cards or passwords needed. Simply have exact cash ready when the driver arrives.',
+    '**Cash on Delivery details:**\n\nSelect **Cash on Delivery** at checkout. Your order will be dispatched to your address and you pay in cash upon receiving the package.',
+    '**Benefits of COD:**\n\n1. Pay only when the physical box arrives at your door.\n2. Perfect if you prefer not using online bank cards.\n3. Fast and safe dispatch with leading domestic couriers.',
+    '**Cash on Delivery availability:**\n\nAvailable at checkout for eligible postal codes throughout Colombia. Safe, convenient, and easy!'
+  ],
+
+  seguridad_confianza: [
+    '**Security, Privacy & Trust at Mercatto:**\n\n• **Escrow Custody:** Your payment is safely held by Mercatto and not released to the seller until you confirm receipt.\n• **Certified Payments:** Handled by Wompi Bancolombia with 256-bit encryption and PCI-DSS compliance.\n• **Photo Evidence:** Couriers capture a physical delivery photo upon handing over the order.',
+    '**Why shopping on Mercatto is safe:**\n\nBecause we provide full buyer escrow protection. If your order is missing or damaged, you get a full refund.',
+    '**Data protection and privacy:**\n\nWe adhere to Colombian Habeas Data regulations. Your private details and payment credentials are fully encrypted.',
+    '**The Mercatto Guarantee:**\n\n100% peace of mind: secured funds, verified merchants, and responsive customer support.'
+  ],
+
+  categorias: [
+    '**Shopping Categories on Mercatto:**\n\nExplore thousands of items in:\n• **Technology:** Smartphones, laptops, audio, and accessories.\n• **Fashion & Apparel:** Trending clothes for men, women, and kids.\n• **Footwear:** Sneakers, formal and casual shoes.\n• **Home & Kitchen:** Appliances, decor, and cookware.\n• **Beauty & Personal Care:** Skincare, perfumes, and cosmetics.',
+    '**Catalog variety:**\n\nBrowse tech, footwear, apparel, home essentials, and beauty in the category menu or search by brand in the search bar.',
+    '**What can you buy on Mercatto?:**\n\nFrom cutting-edge electronics and footwear to trendy fashion and home goods from verified merchants.',
+    '**Multi-vendor selection:**\n\nWide array of catalog items with guaranteed courier delivery across Colombia.'
+  ],
+
+  cuenta_registro: [
+    '**Account Management & Sign Up:**\n\n• **Sign Up:** Register for free using your email or sign in instantly with your Google account.\n• **Buyer or Seller:** Choose between a buyer profile to shop deals or seller account to open a store.\n• **Guest Checkout:** You can also complete orders without creating an account.',
+    '**How to register or log in:**\n\nClick the **Sign In** button in the top right corner. You can log in via Google or email in seconds.',
+    '**Password recovery:**\n\nIf you forgot your password, click "Forgot password?" on the login page to receive a password reset link.',
+    '**Benefits of a Mercatto account:**\n\nSave multiple addresses, view order history, redeem exclusive coupons, and checkout faster.'
+  ],
+
+  facturacion: [
+    '**Billing & Payment Invoices:**\n\n• **Buyers:** Receive a digital receipt in your email immediately upon completing your purchase.\n• **Sellers:** Plan subscriptions (Starter $0, Pro $49,000 COP, Elite $99,000 COP) are automatically debited from your registered bank account.\n• **Payouts:** Escrow-released funds are transferred directly to the seller\'s bank account.',
+    '**Billing details:**\n\nCustomers get instant digital receipts. For sellers, monthly plan fees are billed to the registered bank account.',
+    '**Clear fees and payouts:**\n\nCommission rates (6% Starter, 3% Pro, 1% Elite) and transaction logs are transparently itemized in your seller dashboard.',
+    '**Invoicing support:**\n\nNeed an official tax invoice or have questions about a bank charge? Submit a ticket with your order ID for prompt assistance.'
+  ],
+
+  despedida_agradecimiento: [
+    'You are very welcome! Remember I am here 24/7 to assist you on Mercatto. Have a great day and happy shopping!',
+    'It was my pleasure! If you have any further questions about your orders or store, just ask.',
+    'Glad I could help! Thank you for choosing Mercatto Colombia. See you soon!',
+    'Always happy to assist! Feel free to reach out anytime for shopping or seller inquiries on Mercatto.'
   ],
 
   tickets_soporte: [
-    '**How to submit a Support Ticket in Mercatto:**\n\n• **1. In this widget:** Click the **\'Submit Ticket\'** button in the bottom bar to open the form.\n• **2. Enter your details:** Type your name, email, phone (optional), and case description or Order Code.\n• **3. Submit:** Once sent, our customer support team will reply directly to your email address.\n\n*You can also contact our official WhatsApp at [+57 323 388 2717](https://wa.me/573233882717) or email realmercatto@gmail.com.*'
+    '**How to submit a Support Ticket in Mercatto:**\n\n• **1. In this widget:** Click the **"Submit Ticket"** button in the bottom bar to open the form.\n• **2. Enter your details:** Type your name, email, phone (optional), and case description or Order Code.\n• **3. Submit:** Once sent, our customer support team will reply directly to your email address.\n\n*You can also contact our official WhatsApp at [+57 323 388 2717](https://wa.me/573233882717) or email realmercatto@gmail.com.*',
+    '**Steps to open a support ticket:**\n\n1. Click the **Ticket** button at the bottom of this widget.\n2. Enter your email and order details.\n3. Our team will review your case and reply shortly.',
+    '**Priority customer support:**\n\nSubmit a ticket anytime for refunds, warranties, or delivery inquiries. Our support agents respond directly to your email.',
+    '**Official Mercatto support:**\n\nNeed help with an existing order? Create a support ticket with your order code for expedited assistance.'
   ],
 
   devoluciones_garantias: [
-    '**Warranties, Returns & Escrow Refunds:**\n\n• **Buyer Protection:** Funds remain in escrow until you receive and verify your order.\n• **Defective Item:** You have **5 business days** after delivery to request an exchange or full refund by submitting a ticket or contacting WhatsApp [+57 323 388 2717](https://wa.me/573233882717) with photos of the item and order code.'
+    '**Warranties, Returns & Escrow Refunds:**\n\n• **Buyer Protection:** Funds remain in escrow until you receive and verify your order.\n• **Defective Item:** You have **5 business days** after delivery to request an exchange or full refund by submitting a ticket or contacting WhatsApp [+57 323 388 2717](https://wa.me/573233882717) with photos of the item and order code.',
+    '**How to request a refund or exchange:**\n\nIf you need a refund, notify us within 5 business days after delivery with photos and order ID via ticket or WhatsApp (+57 323 388 2717).',
+    '**Satisfaction guaranteed:**\n\nIf an item arrives damaged or incorrect, our escrow warranty protects you with an immediate exchange or full refund.',
+    '**Return policy:**\n\nWe protect your purchase from checkout to delivery. Report any issues within 5 business days for swift resolution.'
   ]
 }
 
@@ -619,21 +744,33 @@ export const PublicChatbot = () => {
               respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).tickets_soporte)
             } else if (t.includes('garantia') || t.includes('garantía') || t.includes('devoluc') || t.includes('reembolso') || t.includes('cambio') || t.includes('defectuoso') || t.includes('warranty') || t.includes('refund') || t.includes('return')) {
               respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).devoluciones_garantias)
+            } else if (t.includes('contraentrega') || t.includes('contra entrega') || t.includes('en efectivo') || t.includes('cod ') || t.endsWith('cod')) {
+              respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).contraentrega)
+            } else if (t.includes('seguridad') || t.includes('confianza') || t.includes('escrow') || t.includes('fraude') || t.includes('proteccion') || t.includes('protección') || t.includes('security')) {
+              respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).seguridad_confianza)
+            } else if (t.includes('categoria') || t.includes('categoría') || t.includes('seccion') || t.includes('sección') || t.includes('category') || t.includes('categories')) {
+              respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).categorias)
+            } else if (t.includes('registro') || t.includes('crear cuenta') || t.includes('iniciar sesion') || t.includes('iniciar sesión') || t.includes('login') || t.includes('sign up') || t.includes('recuperar clave')) {
+              respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).cuenta_registro)
+            } else if (t.includes('factura') || t.includes('facturación') || t.includes('facturacion') || t.includes('recibo') || t.includes('cobro') || t.includes('invoice') || t.includes('billing')) {
+              respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).facturacion)
+            } else if (t.includes('gracias') || t.includes('muchas gracias') || t.includes('agradezco') || t.includes('thank') || t.includes('thanks') || t.includes('adios') || t.includes('adiós') || t.includes('chao') || t.includes('bye')) {
+              respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).despedida_agradecimiento)
             } else if (t.includes('comprar') || t.includes('que hago') || t.includes('como compro') || t.includes('pasos') || t.includes('pedido') || t.includes('orden') || t.includes('buy') || t.includes('purchase') || t.includes('how to')) {
               respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).como_comprar)
             } else if (t.includes('funciona') || t.includes('que es mercatto') || t.includes('de que trata') || t.includes('como opera') || t.includes('how it works') || t.includes('what is mercatto') || t.includes('about mercatto')) {
               respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).como_funciona)
-            } else if (t.includes('pago') || t.includes('tarjeta') || t.includes('nequi') || t.includes('banco') || t.includes('pse') || t.includes('contra entrega') || t.includes('efectivo') || t.includes('pay') || t.includes('card')) {
+            } else if (t.includes('pago') || t.includes('tarjeta') || t.includes('nequi') || t.includes('banco') || t.includes('pse') || t.includes('pay') || t.includes('card')) {
               respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).medios_pago)
             } else if (t.includes('vender') || t.includes('tienda') || t.includes('proveedor') || t.includes('sell') || t.includes('store')) {
               respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).vender)
-            } else if (t.includes('plan') || t.includes('comision') || t.includes('suscrip') || t.includes('fee')) {
+            } else if (t.includes('plan') || t.includes('comision') || t.includes('comisión') || t.includes('suscrip') || t.includes('fee')) {
               respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).planes)
-            } else if (t.includes('envio') || t.includes('flete') || t.includes('ciudad') || t.includes('despacho') || t.includes('ship') || t.includes('delivery')) {
+            } else if (t.includes('envio') || t.includes('envío') || t.includes('flete') || t.includes('ciudad') || t.includes('despacho') || t.includes('ship') || t.includes('delivery')) {
               respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).envios)
             } else if (t.includes('rastre') || t.includes('seguimiento') || t.includes('estado de mi') || t.includes('donde esta') || t.includes('track') || t.includes('where is')) {
               respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).rastreo)
-            } else if (t.includes('cupon') || t.includes('descuento') || t.includes('promo') || t.includes('coupon') || t.includes('discount')) {
+            } else if (t.includes('cupon') || t.includes('cupón') || t.includes('descuento') || t.includes('promo') || t.includes('coupon') || t.includes('discount')) {
               respuestaIA = obtenerRespuestaVariada((isEffectiveEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).cupones)
             } else if (/^(hola|buenas|buen dia|buenos dias|buenas tardes|buenas noches|hey|hi|hello|saludos|que tal|como estas|holi|alo)/i.test(t.trim())) {
               respuestaIA = isEffectiveEn ? obtenerRespuestaVariada(SALUDOS_VARIADOS_EN) : obtenerRespuestaVariada(SALUDOS_VARIADOS_ES)
@@ -705,6 +842,18 @@ export const PublicChatbot = () => {
         respuesta = obtenerRespuestaVariada(fallbackRespuestas.tickets_soporte)
       } else if (t.includes('garantia') || t.includes('garantía') || t.includes('devoluc') || t.includes('reembolso') || t.includes('defectuoso') || t.includes('warranty') || t.includes('refund')) {
         respuesta = obtenerRespuestaVariada(fallbackRespuestas.devoluciones_garantias)
+      } else if (t.includes('contraentrega') || t.includes('contra entrega') || t.includes('en efectivo') || t.includes('cod ') || t.endsWith('cod')) {
+        respuesta = obtenerRespuestaVariada(fallbackRespuestas.contraentrega)
+      } else if (t.includes('seguridad') || t.includes('confianza') || t.includes('escrow') || t.includes('fraude') || t.includes('proteccion') || t.includes('protección') || t.includes('security')) {
+        respuesta = obtenerRespuestaVariada(fallbackRespuestas.seguridad_confianza)
+      } else if (t.includes('categoria') || t.includes('categoría') || t.includes('seccion') || t.includes('sección') || t.includes('category') || t.includes('categories')) {
+        respuesta = obtenerRespuestaVariada(fallbackRespuestas.categorias)
+      } else if (t.includes('registro') || t.includes('crear cuenta') || t.includes('iniciar sesion') || t.includes('iniciar sesión') || t.includes('login') || t.includes('sign up') || t.includes('recuperar clave')) {
+        respuesta = obtenerRespuestaVariada(fallbackRespuestas.cuenta_registro)
+      } else if (t.includes('factura') || t.includes('facturación') || t.includes('facturacion') || t.includes('recibo') || t.includes('cobro') || t.includes('invoice') || t.includes('billing')) {
+        respuesta = obtenerRespuestaVariada(fallbackRespuestas.facturacion)
+      } else if (t.includes('gracias') || t.includes('muchas gracias') || t.includes('agradezco') || t.includes('thank') || t.includes('thanks') || t.includes('adios') || t.includes('adiós') || t.includes('chao') || t.includes('bye')) {
+        respuesta = obtenerRespuestaVariada(fallbackRespuestas.despedida_agradecimiento)
       } else if (t.includes('funciona') || t.includes('que es mercatto') || t.includes('de que trata') || t.includes('como opera') || t.includes('how it works') || t.includes('about mercatto') || t.includes('how does mercatto work')) {
         respuesta = obtenerRespuestaVariada(fallbackRespuestas.como_funciona)
       } else if (esSaludo) {
@@ -715,13 +864,13 @@ export const PublicChatbot = () => {
         respuesta = obtenerRespuestaVariada(fallbackRespuestas.rastreo)
       } else if (t.includes('comprar') || t.includes('pedido') || t.includes('orden') || t.includes('buy') || t.includes('purchase') || t.includes('how to')) {
         respuesta = obtenerRespuestaVariada(fallbackRespuestas.como_comprar)
-      } else if (t.includes('plan') || t.includes('comision') || t.includes('suscrip') || t.includes('fee')) {
+      } else if (t.includes('plan') || t.includes('comision') || t.includes('comisión') || t.includes('suscrip') || t.includes('fee')) {
         respuesta = obtenerRespuestaVariada(fallbackRespuestas.planes)
       } else if (t.includes('vender') || t.includes('tienda') || t.includes('proveedor') || t.includes('sell') || t.includes('store')) {
         respuesta = obtenerRespuestaVariada(fallbackRespuestas.vender)
-      } else if (t.includes('cupon') || t.includes('descuento') || t.includes('promo') || t.includes('coupon') || t.includes('discount')) {
+      } else if (t.includes('cupon') || t.includes('cupón') || t.includes('descuento') || t.includes('promo') || t.includes('coupon') || t.includes('discount')) {
         respuesta = obtenerRespuestaVariada(fallbackRespuestas.cupones)
-      } else if (t.includes('envio') || t.includes('flete') || t.includes('ciudad') || t.includes('despacho') || t.includes('ship') || t.includes('delivery')) {
+      } else if (t.includes('envio') || t.includes('envío') || t.includes('flete') || t.includes('ciudad') || t.includes('despacho') || t.includes('ship') || t.includes('delivery')) {
         respuesta = obtenerRespuestaVariada(fallbackRespuestas.envios)
       } else {
         // Fuera de tema de Mercatto: Respuesta obligatoria con disculpa cortés y variada

@@ -232,13 +232,13 @@ export const PanelVendedor = () => {
 
   // ==============================================================
   // MODELO PREDICTIVO PYTHON & REGLA DEL PLAN: resultado = valor - porcentaje
-  // STARTER: 10% | PRO: 5% | ELITE: 2%
+  // STARTER: 6% | PRO: 3% | ELITE: 1%
   // ==============================================================
   const planActivo = (perfil?.tipoSuscripcion || 'PRO').toUpperCase()
   const COMISIONES = {
-    STARTER: { nombre: 'Plan Starter', tasa: 0.10, porcentaje: 10, badge: 'bg-slate-100 text-slate-700 border-slate-200' },
-    PRO: { nombre: 'Plan PRO', tasa: 0.05, porcentaje: 5, badge: 'bg-violet-100 text-violet-800 border-violet-200' },
-    ELITE: { nombre: 'Plan Elite', tasa: 0.02, porcentaje: 2, badge: 'bg-amber-100 text-amber-800 border-amber-200' },
+    STARTER: { nombre: 'Plan Starter', tasa: 0.06, porcentaje: 6, badge: 'bg-slate-100 text-slate-700 border-slate-200' },
+    PRO: { nombre: 'Plan PRO', tasa: 0.03, porcentaje: 3, badge: 'bg-violet-100 text-violet-800 border-violet-200' },
+    ELITE: { nombre: 'Plan Elite', tasa: 0.01, porcentaje: 1, badge: 'bg-amber-100 text-amber-800 border-amber-200' },
   }
   const configPlan = COMISIONES[planActivo] || COMISIONES.PRO || COMISIONES.STARTER
   const comisionTasa = configPlan.tasa
