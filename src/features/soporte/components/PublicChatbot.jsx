@@ -449,6 +449,23 @@ const RESPUESTAS_BASE_EN = {
   ]
 }
 
+const sanitizarComisionesYPlanes = (texto, isEn) => {
+  if (!texto) return texto
+  const lower = texto.toLowerCase()
+  if (
+    lower.includes('4%') ||
+    lower.includes('sin membresías fijas') ||
+    lower.includes('sin membresias fijas') ||
+    lower.includes('sin cobros mensuales') ||
+    lower.includes('sin planes ni cuotas') ||
+    lower.includes('comisión fija única') ||
+    lower.includes('comision fija unica')
+  ) {
+    return obtenerRespuestaVariada((isEn ? RESPUESTAS_BASE_EN : RESPUESTAS_BASE_ES).planes)
+  }
+  return texto
+}
+
 const sanitizeResponseLanguage = (text, isEn, userQuery) => {
   if (!isEn || !text) return text
   const t = text.toLowerCase()
@@ -819,12 +836,13 @@ export const PublicChatbot = () => {
       }
 
       setEscribiendo(false)
+      const textoFinal = sanitizarComisionesYPlanes(respuestaIA, isEffectiveEn)
       setMensajes((prev) => [
         ...prev,
         {
           id: Date.now() + 1,
           remitente: 'bot',
-          texto: respuestaIA,
+          texto: textoFinal,
           hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           esOpcionSoporte: false,
           ofrecerMenu: true,
