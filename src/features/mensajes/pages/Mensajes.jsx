@@ -108,7 +108,7 @@ export const Mensajes = () => {
 
         if (perteneceAEstaConversacion) {
           setMensajes(prev => {
-            // Evitar duplicados si ya fue aÃ±adido por el propio usuario localmente
+            // Evitar duplicados si ya fue añadido por el propio usuario localmente
             if (prev.some(m => m.id === nuevoMsg.id)) return prev
             return [...prev, nuevoMsg]
           })
@@ -118,7 +118,7 @@ export const Mensajes = () => {
         return currentContacto
       })
 
-      // Refrescar la lista de contactos para mostrar el Ãºltimo mensaje o contador
+      // Refrescar la lista de contactos para mostrar el último mensaje o contador
       mensajeService.obtenerContactos().then(res => setContactos(res || []))
     })
 
@@ -179,7 +179,7 @@ export const Mensajes = () => {
       scrollToBottom()
       mensajeService.obtenerContactos().then(res => setContactos(res || []))
     } catch (e) {
-      toastError("Error al cargar la conversaciÃ³n")
+      toastError("Error al cargar la conversación")
     }
   }
 
@@ -254,7 +254,7 @@ export const Mensajes = () => {
   const handleProcesarPagoConTarjeta = async (e) => {
     e.preventDefault()
     if (!datosTarjeta.numero || datosTarjeta.numero.replace(/\s/g, '').length < 15) {
-      toastError('Por favor ingresa un nÃºmero de tarjeta vÃ¡lido (16 dÃ­gitos).')
+      toastError('Por favor ingresa un número de tarjeta válido (16 dígitos).')
       return
     }
     if (!datosTarjeta.titular.trim()) {
@@ -262,17 +262,17 @@ export const Mensajes = () => {
       return
     }
     if (!datosTarjeta.expiracion || datosTarjeta.expiracion.length < 5) {
-      toastError('Por favor ingresa una fecha de expiraciÃ³n vÃ¡lida (MM/AA).')
+      toastError('Por favor ingresa una fecha de expiración válida (MM/AA).')
       return
     }
     if (!datosTarjeta.cvc || datosTarjeta.cvc.length < 3) {
-      toastError('Por favor ingresa el cÃ³digo de seguridad CVC (3 dÃ­gitos).')
+      toastError('Por favor ingresa el código de seguridad CVC (3 dígitos).')
       return
     }
 
     setProcesandoPago(true)
     try {
-      // Simular latencia de autorizaciÃ³n con red de adquirencia (Visa/Mastercard)
+      // Simular latencia de autorización con red de adquirencia (Visa/Mastercard)
       await new Promise(r => setTimeout(r, 1200))
       
       const res = await mensajeService.recargarTokens(planSeleccionado.tokens)
@@ -293,7 +293,7 @@ export const Mensajes = () => {
       })
 
       setPasoModal('exito')
-      success('Â¡Pago con tarjeta aprobado y tokens acreditados!')
+      success('¡Pago con tarjeta aprobado y tokens acreditados!')
     } catch {
       toastError("Error al procesar el pago con la entidad bancaria.")
     } finally {
@@ -311,7 +311,7 @@ export const Mensajes = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto h-[82vh] flex flex-col md:flex-row bg-white dark:bg-slate-900 rounded-3xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-800 my-6 font-sans">
+    <div className="max-w-7xl mx-auto h-[82vh] flex flex-col md:flex-row bg-white dark:bg-slate-900 rounded-3xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-800 my-4 sm:my-6 font-sans">
       
       {/* Sidebar de Contactos */}
       <div className="w-full md:w-80 lg:w-96 border-r border-slate-200 dark:border-slate-800 flex flex-col bg-slate-50 dark:bg-slate-900/60">
@@ -332,7 +332,7 @@ export const Mensajes = () => {
                 <ShieldCheck size={16} />
               </div>
               <div>
-                <p className="text-[10px] text-slate-500 uppercase font-extrabold tracking-wider">ComunicaciÃ³n</p>
+                <p className="text-[10px] text-slate-500 uppercase font-extrabold tracking-wider">Comunicación</p>
                 <p className="text-xs font-black text-slate-800 dark:text-white">
                   Chat Ilimitado y Gratuito
                 </p>
@@ -358,7 +358,7 @@ export const Mensajes = () => {
                 onClick={() => setBusquedaContacto('')}
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 cursor-pointer"
               >
-                âœ•
+                ✕
               </button>
             )}
           </div>
@@ -372,8 +372,8 @@ export const Mensajes = () => {
               <p className="text-sm">No tienes conversaciones activas.</p>
               <p className="text-xs text-slate-400">
                 {usuario?.rol === 'VENDEDOR' 
-                  ? 'AquÃ­ aparecerÃ¡n los clientes que te consulten desde tus productos.' 
-                  : 'EscrÃ­bele a un vendedor desde cualquier producto del catÃ¡logo.'}
+                  ? 'Aquí aparecerán los clientes que te consulten desde tus productos.' 
+                  : 'Escríbele a un vendedor desde cualquier producto del catálogo.'}
               </p>
             </div>
           ) : (
@@ -411,14 +411,14 @@ export const Mensajes = () => {
                     <div className="flex items-center justify-between">
                       <h4 className="font-bold text-sm text-slate-800 dark:text-white truncate">
                         {usuario?.rol === 'ADMIN' && c.remitenteNombre && c.destinatarioNombre
-                          ? `${c.remitenteNombre} â†” ${c.destinatarioNombre}`
+                          ? `${c.remitenteNombre} ↔ ${c.destinatarioNombre}`
                           : c.usuario.nombre}
                       </h4>
                     </div>
-                    <p className="text-xs text-slate-500 truncate mt-0.5">{c.ultimoMensaje || 'ConversaciÃ³n iniciada'}</p>
+                    <p className="text-xs text-slate-500 truncate mt-0.5">{c.ultimoMensaje || 'Conversación iniciada'}</p>
                     {usuario?.rol === 'ADMIN' && (
                       <span className="text-[10px] text-rose-500 font-semibold uppercase tracking-wider block mt-0.5">
-                        SupervisiÃ³n Admin
+                        Supervisión Admin
                       </span>
                     )}
                   </div>
@@ -429,7 +429,7 @@ export const Mensajes = () => {
         </div>
       </div>
 
-      {/* Ãrea del Chat */}
+      {/* Área del Chat */}
       <div className="flex-1 flex flex-col bg-white dark:bg-slate-900">
         {contactoActivo ? (
           <>
@@ -446,13 +446,13 @@ export const Mensajes = () => {
                 <div>
                   <h3 className="font-bold text-slate-900 dark:text-white text-sm">
                     {usuario?.rol === 'ADMIN' && contactoActivo?.remitenteNombre && contactoActivo?.destinatarioNombre
-                      ? `${contactoActivo.remitenteNombre} â†” ${contactoActivo.destinatarioNombre}`
+                      ? `${contactoActivo.remitenteNombre} ↔ ${contactoActivo.destinatarioNombre}`
                       : contactoActivo.nombre}
                   </h3>
                   <span className="text-[11px] font-semibold text-emerald-600 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                     {usuario?.rol === 'ADMIN' 
-                      ? 'ðŸ›¡ï¸ AuditorÃ­a de Chat en Vivo (Super Administrador)' 
+                      ? '🛡️ Auditoría de Chat en Vivo (Super Administrador)' 
                       : (contactoActivo.rol === 'VENDEDOR' ? 'Vendedor Verificado' : 'Cliente Comprador')}
                   </span>
                 </div>
@@ -473,9 +473,9 @@ export const Mensajes = () => {
                   <div className="w-16 h-16 rounded-full bg-indigo-50 dark:bg-slate-800 text-indigo-600 flex items-center justify-center">
                     <MessageSquare size={32} />
                   </div>
-                  <h4 className="font-bold text-slate-800 dark:text-white">ConversaciÃ³n directa</h4>
+                  <h4 className="font-bold text-slate-800 dark:text-white">Conversación directa</h4>
                   <p className="text-xs text-slate-500 max-w-sm">
-                    Inicia el diÃ¡logo con <span className="font-bold text-slate-700 dark:text-slate-300">{contactoActivo.nombre}</span>.
+                    Inicia el diálogo con <span className="font-bold text-slate-700 dark:text-slate-300">{contactoActivo.nombre}</span>.
                   </p>
                   {usuario?.rol === 'COMPRADOR' && (
                     <span className="inline-flex items-center gap-1.5 text-xs bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 px-3 py-1.5 rounded-full font-bold">
@@ -497,7 +497,7 @@ export const Mensajes = () => {
                           ? (esAdmin ? 'bg-emerald-600 text-white rounded-tr-sm' : 'bg-indigo-600 text-white rounded-tr-sm')
                           : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-tl-sm'
                       }`}>
-                        {/* Etiqueta de quiÃ©n envÃ­a (vital para el Admin) */}
+                        {/* Etiqueta de quién envía (vital para el Admin) */}
                         {esAdmin && (
                           <div className={`text-[11px] font-bold mb-1.5 flex items-center gap-1.5 ${
                             alinearDerecha ? 'text-emerald-100' : 'text-indigo-600 dark:text-indigo-400'
@@ -527,7 +527,7 @@ export const Mensajes = () => {
               <div ref={mensajesEndRef} />
             </div>
 
-            {/* Input para Escribir Mensaje (Oculto para el Admin en Modo AuditorÃ­a) */}
+            {/* Input para Escribir Mensaje (Oculto para el Admin en Modo Auditoría) */}
             <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
               {usuario?.rol === 'ADMIN' ? (
                 <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
@@ -535,9 +535,9 @@ export const Mensajes = () => {
                     <Shield size={18} />
                   </div>
                   <div className="text-xs">
-                    <p className="font-bold text-slate-900 dark:text-white">Modo AuditorÃ­a / Solo Lectura</p>
+                    <p className="font-bold text-slate-900 dark:text-white">Modo Auditoría / Solo Lectura</p>
                     <p className="text-[11px] text-slate-500">
-                      Como Administrador estÃ¡s supervisando la conversaciÃ³n neutralmente para auditorÃ­a y resoluciÃ³n de disputas. No puedes intervenir en el chat privado.
+                      Como Administrador estás supervisando la conversación neutralmente para auditoría y resolución de disputas. No puedes intervenir en el chat privado.
                     </p>
                   </div>
                 </div>
@@ -571,9 +571,9 @@ export const Mensajes = () => {
             <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
               <MessageSquare size={38} className="opacity-30" />
             </div>
-            <h3 className="font-bold text-slate-700 dark:text-slate-300 text-lg">Bandeja de MensajerÃ­a</h3>
+            <h3 className="font-bold text-slate-700 dark:text-slate-300 text-lg">Bandeja de Mensajería</h3>
             <p className="text-xs max-w-sm text-slate-500">
-              Selecciona una conversaciÃ³n del listado izquierdo para responder o coordinar ventas y entregas.
+              Selecciona una conversación del listado izquierdo para responder o coordinar ventas y entregas.
             </p>
           </div>
         )}
@@ -584,4 +584,3 @@ export const Mensajes = () => {
 }
 
 export default Mensajes
-
