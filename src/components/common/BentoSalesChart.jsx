@@ -20,12 +20,9 @@ export const BentoSalesChart = ({
     const diaHoy = ahora.getDate()
     const mesHoyIdx = ahora.getMonth()
     const anioHoy = ahora.getFullYear()
-
-    // 2. Anclaje de inicio: exactamente un mes antes del mes actual
-    const fechaInicio = new Date(anioHoy, mesHoyIdx - 1, diaHoy)
     const diaStr = diaHoy
-    const mesAntNombre = MESES[fechaInicio.getMonth()]
     const mesHoyNombre = MESES[mesHoyIdx]
+    const anioSig = String(anioHoy + 1).slice(-2)
 
     // Base monetaria mensual de ventas
     const totalSeguro =
@@ -52,20 +49,22 @@ export const BentoSalesChart = ({
     let puntosInfo = []
     let factorEscala = 1.0
     let cambioPeriodo = '+28.4% Modelo IA'
+    let subtitulo = `Proyección anual: Desde Hoy (${diaStr} de ${mesHoyNombre}) hasta el ${diaStr} de ${mesHoyNombre} del próximo año`
+    let etiquetasEje = []
 
     switch (timeRange) {
       case '1A': {
-        // 13 meses continuos: 1 mes antes (Octubre) -> Hoy (Noviembre) -> ... -> Octubre del año siguiente
+        // Proyección anual: 13 puntos mensuales comenzando HOY y proyectando 12 meses adelante
         factorEscala = 12.0
         cambioPeriodo = '+32.8% proyectado (1 Año)'
+        subtitulo = `Proyección anual: Desde Hoy (${diaStr} de ${mesHoyNombre}) hasta el ${diaStr} de ${mesHoyNombre} del próximo año`
 
         for (let i = 0; i <= 12; i++) {
-          const d = new Date(anioHoy, mesHoyIdx - 1 + i, diaHoy)
+          const d = new Date(anioHoy, mesHoyIdx + i, diaHoy)
           const mIdx = d.getMonth()
           const aStr = String(d.getFullYear()).slice(-2)
-          const esPasado = i === 0
-          const esHoy = i === 1
-          const esFuturo = i > 1
+          const esHoy = i === 0
+          const esFuturo = i > 0
 
           const label = esHoy
             ? `Hoy (${diaStr} ${MESES[mIdx]})`
@@ -75,12 +74,7 @@ export const BentoSalesChart = ({
           // Inferencia predictiva: Estacionalidad mensual + Crecimiento orgánico (~2.4% mensual compuesto)
           const estacionalidad = factorEstacionalPorMes[mIdx]
           const crecimiento = 1 + (i * 0.024)
-          let val = Math.round(totalSeguro * estacionalidad * crecimiento)
-          if (esPasado) {
-            val = Math.round(totalSeguro * 0.94)
-          } else if (esHoy) {
-            val = totalSeguro
-          }
+          let val = esHoy ? totalSeguro : Math.round(totalSeguro * estacionalidad * crecimiento)
 
           puntosInfo.push({
             index: i,
@@ -88,14 +82,10 @@ export const BentoSalesChart = ({
             etiqueta: label,
             etiquetaCorta: labelCorta,
             valor: val,
-            esPasado,
+            esPasado: false,
             esHoy,
             esFuturo,
-            tipo: esPasado
-              ? 'Histórico Real'
-              : esHoy
-              ? 'Cierre Actual (Hoy)'
-              : 'Estimación Modelo IA'
+            tipo: esHoy ? 'Cierre Actual (Hoy)' : 'Estimación Modelo IA'
           })
         }
         break
@@ -104,23 +94,22 @@ export const BentoSalesChart = ({
       case '6M': {
         factorEscala = 6.2
         cambioPeriodo = '+24.5% proyectado (6M)'
+        const mesFin6M = MESES[(mesHoyIdx + 6) % 12]
+        subtitulo = `Proyección semestral: Desde Hoy (${diaStr} de ${mesHoyNombre}) hasta el ${diaStr} de ${mesFin6M}`
 
         for (let i = 0; i <= 6; i++) {
-          const d = new Date(anioHoy, mesHoyIdx - 1 + i, diaHoy)
+          const d = new Date(anioHoy, mesHoyIdx + i, diaHoy)
           const mIdx = d.getMonth()
           const aStr = String(d.getFullYear()).slice(-2)
-          const esPasado = i === 0
-          const esHoy = i === 1
-          const esFuturo = i > 1
+          const esHoy = i === 0
+          const esFuturo = i > 0
 
           const label = esHoy
             ? `Hoy (${diaStr} ${MESES[mIdx]})`
             : `${diaStr} ${MESES[mIdx]} '${aStr}`
           const estacionalidad = factorEstacionalPorMes[mIdx]
           const crecimiento = 1 + (i * 0.022)
-          let val = Math.round(totalSeguro * estacionalidad * crecimiento)
-          if (esPasado) val = Math.round(totalSeguro * 0.94)
-          if (esHoy) val = totalSeguro
+          let val = esHoy ? totalSeguro : Math.round(totalSeguro * estacionalidad * crecimiento)
 
           puntosInfo.push({
             index: i,
@@ -128,14 +117,10 @@ export const BentoSalesChart = ({
             etiqueta: label,
             etiquetaCorta: `${diaStr} ${MESES[mIdx]}`,
             valor: val,
-            esPasado,
+            esPasado: false,
             esHoy,
             esFuturo,
-            tipo: esPasado
-              ? 'Histórico Real'
-              : esHoy
-              ? 'Cierre Actual (Hoy)'
-              : 'Estimación Modelo IA'
+            tipo: esHoy ? 'Cierre Actual (Hoy)' : 'Estimación Modelo IA'
           })
         }
         break
@@ -144,55 +129,42 @@ export const BentoSalesChart = ({
       case '3M': {
         factorEscala = 3.4
         cambioPeriodo = '+19.2% proyectado (3M)'
+        subtitulo = 'Proyección trimestral: Próximos 90 días con estimación IA'
 
         const offsets = [
-          { m: -1, d: diaHoy, tag: `${diaStr} ${mesAntNombre}`, pasado: true },
-          { m: -1, d: Math.min(28, diaHoy + 15), tag: `15 ${mesAntNombre}`, pasado: true },
-          { m: 0, d: diaHoy, tag: `Hoy (${diaStr} ${mesHoyNombre})`, hoy: true },
-          { m: 1, d: diaHoy, tag: `${diaStr} ${MESES[(mesHoyIdx + 1) % 12]}`, futuro: true },
-          { m: 2, d: diaHoy, tag: `${diaStr} ${MESES[(mesHoyIdx + 2) % 12]}`, futuro: true },
-          { m: 3, d: diaHoy, tag: `${diaStr} ${MESES[(mesHoyIdx + 3) % 12]}`, futuro: true }
+          { tag: `Hoy (${diaStr} ${mesHoyNombre})`, hoy: true, peso: 1.0 },
+          { tag: `+15 Días`, futuro: true, peso: 1.05 },
+          { tag: `+1 Mes (${MESES[(mesHoyIdx + 1) % 12]})`, futuro: true, peso: 1.12 },
+          { tag: `+45 Días`, futuro: true, peso: 1.16 },
+          { tag: `+2 Meses (${MESES[(mesHoyIdx + 2) % 12]})`, futuro: true, peso: 1.22 },
+          { tag: `+3 Meses (${MESES[(mesHoyIdx + 3) % 12]})`, futuro: true, peso: 1.28 }
         ]
 
-        puntosInfo = offsets.map((o, idx) => {
-          const d = new Date(anioHoy, mesHoyIdx + o.m, o.d)
-          const mIdx = d.getMonth()
-          const est = factorEstacionalPorMes[mIdx]
-          const crec = 1 + (idx * 0.02)
-          let val = Math.round(totalSeguro * est * crec)
-          if (o.pasado) val = Math.round(totalSeguro * (0.9 + idx * 0.05))
-          if (o.hoy) val = totalSeguro
-
-          return {
-            index: idx,
-            fecha: d,
-            etiqueta: o.tag,
-            etiquetaCorta: o.tag,
-            valor: val,
-            esPasado: !!o.pasado,
-            esHoy: !!o.hoy,
-            esFuturo: !!o.futuro,
-            tipo: o.pasado
-              ? 'Histórico Real'
-              : o.hoy
-              ? 'Cierre Actual (Hoy)'
-              : 'Estimación Modelo IA'
-          }
-        })
+        puntosInfo = offsets.map((o, idx) => ({
+          index: idx,
+          etiqueta: o.tag,
+          etiquetaCorta: o.tag,
+          valor: Math.round(totalSeguro * o.peso),
+          esPasado: false,
+          esHoy: !!o.hoy,
+          esFuturo: !!o.futuro,
+          tipo: o.hoy ? 'Cierre Actual (Hoy)' : 'Estimación Modelo IA'
+        }))
         break
       }
 
       case '1M': {
         factorEscala = 1.0
         cambioPeriodo = '+16.8% proyectado (1M)'
+        subtitulo = 'Proyección mensual: Próximos 30 días con estimación IA'
 
         const pasos1M = [
-          { label: `${diaStr} ${mesAntNombre}`, esPasado: true, peso: 0.9 },
-          { label: `15 ${mesAntNombre}`, esPasado: true, peso: 0.94 },
           { label: `Hoy (${diaStr} ${mesHoyNombre})`, esHoy: true, peso: 1.0 },
-          { label: `20 ${mesHoyNombre}`, esFuturo: true, peso: 1.08 },
-          { label: `1 Dic`, esFuturo: true, peso: 1.15 },
-          { label: `${diaStr} Dic`, esFuturo: true, peso: 1.22 }
+          { label: `+6 Días`, esFuturo: true, peso: 1.04 },
+          { label: `+12 Días`, esFuturo: true, peso: 1.08 },
+          { label: `+18 Días`, esFuturo: true, peso: 1.11 },
+          { label: `+24 Días`, esFuturo: true, peso: 1.15 },
+          { label: `+30 Días`, esFuturo: true, peso: 1.19 }
         ]
 
         puntosInfo = pasos1M.map((p, idx) => ({
@@ -200,14 +172,10 @@ export const BentoSalesChart = ({
           etiqueta: p.label,
           etiquetaCorta: p.label,
           valor: Math.round(totalSeguro * p.peso),
-          esPasado: !!p.esPasado,
+          esPasado: false,
           esHoy: !!p.esHoy,
           esFuturo: !!p.esFuturo,
-          tipo: p.esPasado
-            ? 'Histórico Real'
-            : p.esHoy
-            ? 'Cierre Actual (Hoy)'
-            : 'Estimación Modelo IA'
+          tipo: p.esHoy ? 'Cierre Actual (Hoy)' : 'Estimación Modelo IA'
         }))
         break
       }
@@ -215,14 +183,15 @@ export const BentoSalesChart = ({
       case '1S': {
         factorEscala = 0.28
         cambioPeriodo = '+14.2% proyectado (1S)'
+        subtitulo = 'Proyección semanal: Próximos 7 días'
 
         const pasos1S = [
-          { label: `${diaStr} ${mesAntNombre}`, esPasado: true, val: Math.round(totalSeguro * 0.22) },
-          { label: `15 ${mesAntNombre}`, esPasado: true, val: Math.round(totalSeguro * 0.24) },
-          { label: `Hoy (${diaStr} ${mesHoyNombre})`, esHoy: true, val: Math.round(totalSeguro * 0.28) },
+          { label: `Hoy`, esHoy: true, val: Math.round(totalSeguro * 0.24) },
+          { label: `+1 Día`, esFuturo: true, val: Math.round(totalSeguro * 0.26) },
+          { label: `+2 Días`, esFuturo: true, val: Math.round(totalSeguro * 0.28) },
           { label: `+3 Días`, esFuturo: true, val: Math.round(totalSeguro * 0.3) },
           { label: `+5 Días`, esFuturo: true, val: Math.round(totalSeguro * 0.32) },
-          { label: `+1 Sem`, esFuturo: true, val: Math.round(totalSeguro * 0.35) }
+          { label: `+7 Días`, esFuturo: true, val: Math.round(totalSeguro * 0.35) }
         ]
 
         puntosInfo = pasos1S.map((p, idx) => ({
@@ -230,14 +199,10 @@ export const BentoSalesChart = ({
           etiqueta: p.label,
           etiquetaCorta: p.label,
           valor: p.val,
-          esPasado: !!p.esPasado,
+          esPasado: false,
           esHoy: !!p.esHoy,
           esFuturo: !!p.esFuturo,
-          tipo: p.esPasado
-            ? 'Histórico Real'
-            : p.esHoy
-            ? 'Cierre Actual (Hoy)'
-            : 'Estimación Modelo IA'
+          tipo: p.esHoy ? 'Cierre Actual (Hoy)' : 'Estimación Modelo IA'
         }))
         break
       }
@@ -246,14 +211,15 @@ export const BentoSalesChart = ({
       default: {
         factorEscala = 0.045
         cambioPeriodo = '+8.4% proyectado (24h)'
+        subtitulo = 'Proyección diaria: Próximas 24 horas'
 
         const pasos1D = [
-          { label: `${diaStr} ${mesAntNombre}`, esPasado: true, val: Math.round(totalSeguro * 0.038) },
-          { label: `20 ${mesAntNombre}`, esPasado: true, val: Math.round(totalSeguro * 0.041) },
-          { label: `Hoy (${diaStr} ${mesHoyNombre})`, esHoy: true, val: Math.round(totalSeguro * 0.045) },
-          { label: `+8h`, esFuturo: true, val: Math.round(totalSeguro * 0.047) },
-          { label: `+16h`, esFuturo: true, val: Math.round(totalSeguro * 0.049) },
-          { label: `+24h`, esFuturo: true, val: Math.round(totalSeguro * 0.052) }
+          { label: `Ahora`, esHoy: true, val: Math.round(totalSeguro * 0.038) },
+          { label: `+4h`, esFuturo: true, val: Math.round(totalSeguro * 0.041) },
+          { label: `+8h`, esFuturo: true, val: Math.round(totalSeguro * 0.044) },
+          { label: `+12h`, esFuturo: true, val: Math.round(totalSeguro * 0.047) },
+          { label: `+18h`, esFuturo: true, val: Math.round(totalSeguro * 0.05) },
+          { label: `+24h`, esFuturo: true, val: Math.round(totalSeguro * 0.053) }
         ]
 
         puntosInfo = pasos1D.map((p, idx) => ({
@@ -261,14 +227,10 @@ export const BentoSalesChart = ({
           etiqueta: p.label,
           etiquetaCorta: p.label,
           valor: p.val,
-          esPasado: !!p.esPasado,
+          esPasado: false,
           esHoy: !!p.esHoy,
           esFuturo: !!p.esFuturo,
-          tipo: p.esPasado
-            ? 'Histórico Real'
-            : p.esHoy
-            ? 'Cierre Actual (Hoy)'
-            : 'Estimación Modelo IA'
+          tipo: p.esHoy ? 'Cierre Actual (Hoy)' : 'Estimación Modelo IA'
         }))
         break
       }
@@ -310,10 +272,10 @@ export const BentoSalesChart = ({
       pathLinea += ` C ${cpx1} ${cpy1}, ${cpx2} ${cpy2}, ${p1.x} ${p1.y}`
     }
 
-    const pathArea = `${pathLinea} L ${puntos[puntos.length - 1].x} 145 L ${puntos[0].x} 145 Z`
+    const pathArea = `${pathLinea} L ${puntos[puntos.length - 1].x} 142 L ${puntos[0].x} 142 Z`
 
     // Barras proporcionales de soporte en el fondo
-    const numBarras = 24
+    const numBarras = 25
     const stepBarra = (xFin - xInicio) / (numBarras - 1)
     const barras = Array.from({ length: numBarras }, (_, idx) => {
       const bx = Math.round(xInicio + idx * stepBarra)
@@ -329,20 +291,19 @@ export const BentoSalesChart = ({
       return { x: bx - 4, h, opacidad }
     })
 
-    // 3. Generación precisa de etiquetas para el eje X inferior:
-    // Cada etiqueta se asocia exactamente a la coordenada X de su punto correspondiente,
-    // garantizando que 'Hoy' quede 100% matemáticamente alineado justo debajo del punto azul.
-    let etiquetasEje = []
+    // Generación precisa de etiquetas para el eje X inferior (hitos espaciados con claridad total)
     if (timeRange === '1A') {
-      const anioSig = String(anioHoy + 1).slice(-2)
+      // 5 hitos trimestrales perfectamente distribuidos sin superposición
       const hitos1A = [
-        { idx: 0, texto: `${diaStr} ${mesAntNombre}`, alinear: 'left' },
-        { idx: 1, texto: `Hoy (${diaStr} ${mesHoyNombre})`, esHoy: true, alinear: 'center' },
-        { idx: 3, texto: `${diaStr} Ene`, alinear: 'center' },
-        { idx: 5, texto: `${diaStr} Mar`, alinear: 'center' },
-        { idx: 7, texto: `${diaStr} May`, alinear: 'center' },
-        { idx: 9, texto: `${diaStr} Jul`, alinear: 'center' },
-        { idx: 12, texto: `${diaStr} ${mesAntNombre} '${anioSig}`, alinear: 'right' }
+        { idx: 0, texto: `Hoy (${diaStr} ${mesHoyNombre})`, esHoy: true, alinear: 'left' },
+        { idx: 3, texto: `${diaStr} ${MESES[puntosInfo[3].fecha.getMonth()]}`, alinear: 'center' },
+        { idx: 6, texto: `${diaStr} ${MESES[puntosInfo[6].fecha.getMonth()]}`, alinear: 'center' },
+        { idx: 9, texto: `${diaStr} ${MESES[puntosInfo[9].fecha.getMonth()]}`, alinear: 'center' },
+        {
+          idx: 12,
+          texto: `${diaStr} ${MESES[puntosInfo[12].fecha.getMonth()]} '${String(puntosInfo[12].fecha.getFullYear()).slice(-2)}`,
+          alinear: 'right'
+        }
       ]
       etiquetasEje = hitos1A.map((h) => ({
         texto: h.texto,
@@ -350,25 +311,43 @@ export const BentoSalesChart = ({
         esHoy: !!h.esHoy,
         alinear: h.alinear
       }))
-    } else {
-      etiquetasEje = puntos.map((pt, i) => {
-        let alinear = 'center'
-        if (i === 0) alinear = 'left'
-        else if (i === puntos.length - 1) alinear = 'right'
-
-        return {
-          texto: pt.esHoy ? `Hoy (${diaStr} ${mesHoyNombre})` : pt.etiquetaCorta,
-          x: pt.x,
-          esHoy: pt.esHoy,
-          alinear
+    } else if (timeRange === '6M') {
+      const hitos6M = [
+        { idx: 0, texto: `Hoy (${diaStr} ${mesHoyNombre})`, esHoy: true, alinear: 'left' },
+        { idx: 2, texto: `${diaStr} ${MESES[puntosInfo[2].fecha.getMonth()]}`, alinear: 'center' },
+        { idx: 4, texto: `${diaStr} ${MESES[puntosInfo[4].fecha.getMonth()]}`, alinear: 'center' },
+        {
+          idx: 6,
+          texto: `${diaStr} ${MESES[puntosInfo[6].fecha.getMonth()]} '${String(puntosInfo[6].fecha.getFullYear()).slice(-2)}`,
+          alinear: 'right'
         }
-      })
+      ]
+      etiquetasEje = hitos6M.map((h) => ({
+        texto: h.texto,
+        x: puntos[h.idx].x,
+        esHoy: !!h.esHoy,
+        alinear: h.alinear
+      }))
+    } else {
+      // 3M, 1M, 1S, 1D: Hitos equitativos
+      const hitosOtros = [
+        { idx: 0, texto: puntos[0].etiqueta, esHoy: true, alinear: 'left' },
+        { idx: 2, texto: puntos[2].etiquetaCorta, alinear: 'center' },
+        { idx: 4, texto: puntos[4].etiquetaCorta, alinear: 'center' },
+        { idx: puntos.length - 1, texto: puntos[puntos.length - 1].etiquetaCorta, alinear: 'right' }
+      ]
+      etiquetasEje = hitosOtros.map((h) => ({
+        texto: h.texto,
+        x: puntos[h.idx].x,
+        esHoy: !!h.esHoy,
+        alinear: h.alinear
+      }))
     }
 
     return {
       diaStr,
-      mesAntNombre,
       mesHoyNombre,
+      subtitulo,
       totalPeriodo,
       cambioPeriodo,
       etiquetasEje,
@@ -380,7 +359,7 @@ export const BentoSalesChart = ({
   }, [baseTotal, timeRange])
 
   return (
-    <div className="bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 text-white rounded-[32px] p-6 sm:p-8 shadow-xl shadow-violet-500/15 space-y-6 relative overflow-hidden">
+    <div className="bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 text-white rounded-[32px] p-5 sm:p-7 shadow-xl shadow-violet-500/15 flex flex-col justify-between relative overflow-hidden">
       {/* Header de la tarjeta */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -402,9 +381,7 @@ export const BentoSalesChart = ({
           </div>
 
           <p className="text-[11px] text-violet-200 mt-1 font-medium">
-            {timeRange === '1A'
-              ? `Proyección anual: Desde el ${chartData.diaStr} de ${chartData.mesAntNombre} hasta el ${chartData.diaStr} de ${chartData.mesAntNombre} del próximo año`
-              : `Desde el ${chartData.diaStr} de ${chartData.mesAntNombre} con proyección estimada (${timeRange})`}
+            {chartData.subtitulo}
           </p>
         </div>
 
@@ -419,7 +396,7 @@ export const BentoSalesChart = ({
                   ? 'bg-white text-slate-900 shadow-sm'
                   : 'text-violet-200 hover:text-white'
               }`}
-              title={filtro === '1A' ? 'Proyección de 1 Año (Octubre a Octubre)' : `Estimar a ${filtro}`}
+              title={filtro === '1A' ? 'Proyección de 1 Año' : `Estimar a ${filtro}`}
             >
               {filtro}
             </button>
@@ -428,11 +405,11 @@ export const BentoSalesChart = ({
       </div>
 
       {/* Gráfico Vectorial Spline & Barras */}
-      <div className="h-52 w-full relative pt-4 select-none">
+      <div className="w-full relative flex flex-col select-none pt-3">
         {/* Tooltip flotante interactivo */}
         {hoveredPoint && (
           <div
-            className="absolute top-0 transform -translate-x-1/2 bg-slate-950/95 backdrop-blur-md text-white text-[11px] font-bold px-3.5 py-2 rounded-2xl shadow-2xl border border-white/20 pointer-events-none z-30 transition-all flex flex-col gap-1 min-w-[170px]"
+            className="absolute -top-3 transform -translate-x-1/2 bg-slate-950/95 backdrop-blur-md text-white text-[11px] font-bold px-3.5 py-2 rounded-2xl shadow-2xl border border-white/20 pointer-events-none z-30 transition-all flex flex-col gap-1 min-w-[170px]"
             style={{ left: `${Math.min(85, Math.max(15, (hoveredPoint.x / 600) * 100))}%` }}
           >
             <div className="flex items-center justify-between text-[10px] text-violet-300">
@@ -458,102 +435,104 @@ export const BentoSalesChart = ({
           </div>
         )}
 
-        <svg className="w-full h-full overflow-visible" viewBox="0 0 600 170" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.32" />
-              <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.0" />
-            </linearGradient>
-          </defs>
+        <div className="w-full h-44 sm:h-48 relative">
+          <svg className="w-full h-full overflow-visible" viewBox="0 0 600 155" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.32" />
+                <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.0" />
+              </linearGradient>
+            </defs>
 
-          {/* Barras de volumen dinámicas y proporcionadas */}
-          {chartData.barras.map((bar, idx) => (
-            <rect
-              key={idx}
-              x={bar.x}
-              y={140 - bar.h}
-              width="8"
-              height={bar.h}
-              rx="4"
-              fill="#FFFFFF"
-              opacity={bar.opacidad}
+            {/* Barras de volumen dinámicas y proporcionadas */}
+            {chartData.barras.map((bar, idx) => (
+              <rect
+                key={idx}
+                x={bar.x}
+                y={140 - bar.h}
+                width="8"
+                height={bar.h}
+                rx="4"
+                fill="#FFFFFF"
+                opacity={bar.opacidad}
+                className="transition-all duration-300"
+              />
+            ))}
+
+            {/* Área sombreada con degradado bajo la curva */}
+            <path
+              d={chartData.pathArea}
+              fill={`url(#${gradientId})`}
               className="transition-all duration-300"
             />
-          ))}
 
-          {/* Área sombreada con degradado bajo la curva */}
-          <path
-            d={chartData.pathArea}
-            fill={`url(#${gradientId})`}
-            className="transition-all duration-300"
-          />
+            {/* Línea continua Bézier suave */}
+            <path
+              d={chartData.pathLinea}
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              className="transition-all duration-300"
+            />
 
-          {/* Línea continua Bézier suave */}
-          <path
-            d={chartData.pathLinea}
-            fill="none"
-            stroke="#FFFFFF"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            className="transition-all duration-300"
-          />
+            {/* Hitos interactivos en la curva */}
+            {chartData.puntos.map((pt, idx) => {
+              const esPivoteHoy = pt.esHoy
+              const esFuturo = pt.esFuturo
+              const isHovered = hoveredPoint && hoveredPoint.x === pt.x
 
-          {/* Hitos interactivos en la curva */}
-          {chartData.puntos.map((pt, idx) => {
-            const esPivoteHoy = pt.esHoy
-            const esFuturo = pt.esFuturo
-            const isHovered = hoveredPoint && hoveredPoint.x === pt.x
+              return (
+                <g
+                  key={idx}
+                  className="cursor-pointer"
+                  onMouseEnter={() => setHoveredPoint(pt)}
+                  onMouseLeave={() => setHoveredPoint(null)}
+                >
+                  {/* Zona de detección para hover */}
+                  <circle cx={pt.x} cy={pt.y} r="16" fill="transparent" />
 
-            return (
-              <g
-                key={idx}
-                className="cursor-pointer"
-                onMouseEnter={() => setHoveredPoint(pt)}
-                onMouseLeave={() => setHoveredPoint(null)}
-              >
-                {/* Zona de detección para hover sin saltos */}
-                <circle cx={pt.x} cy={pt.y} r="16" fill="transparent" />
+                  {/* Halo para el punto del presente (Hoy) */}
+                  {esPivoteHoy && (
+                    <circle
+                      cx={pt.x}
+                      cy={pt.y}
+                      r={isHovered ? 12 : 9}
+                      fill="none"
+                      stroke="#38BDF8"
+                      strokeWidth={isHovered ? 2.5 : 2}
+                      opacity={isHovered ? 0.95 : 0.65}
+                      className="transition-all duration-200"
+                    />
+                  )}
 
-                {/* Halo para el punto del presente (Hoy) sin deformar coordenadas */}
-                {esPivoteHoy && (
+                  {/* Círculo externo del nodo */}
                   <circle
                     cx={pt.x}
                     cy={pt.y}
-                    r={isHovered ? 12 : 9}
-                    fill="none"
-                    stroke="#38BDF8"
-                    strokeWidth={isHovered ? 2.5 : 2}
-                    opacity={isHovered ? 0.95 : 0.65}
-                    className="transition-all duration-200"
+                    r={isHovered ? (esPivoteHoy ? 7.5 : 6) : (esPivoteHoy ? 5.5 : 4.2)}
+                    fill={esPivoteHoy ? '#38BDF8' : esFuturo ? '#FBBF24' : '#FFFFFF'}
+                    stroke={isHovered ? '#FFFFFF' : 'none'}
+                    strokeWidth={isHovered ? 1.5 : 0}
+                    className="transition-all duration-200 ease-out"
                   />
-                )}
 
-                {/* Círculo externo del nodo: ampliación suave concéntrica (sin desplazarse ni rodarse) */}
-                <circle
-                  cx={pt.x}
-                  cy={pt.y}
-                  r={isHovered ? (esPivoteHoy ? 7.5 : 6) : (esPivoteHoy ? 5.5 : 4.2)}
-                  fill={esPivoteHoy ? '#38BDF8' : esFuturo ? '#FBBF24' : '#FFFFFF'}
-                  stroke={isHovered ? '#FFFFFF' : 'none'}
-                  strokeWidth={isHovered ? 1.5 : 0}
-                  className="transition-all duration-200 ease-out"
-                />
-
-                {/* Núcleo interior concéntrico */}
-                <circle
-                  cx={pt.x}
-                  cy={pt.y}
-                  r={isHovered ? 2.5 : 1.8}
-                  fill="#7C3AED"
-                  className="transition-all duration-200 ease-out"
-                />
-              </g>
-            )
-          })}
-        </svg>
+                  {/* Núcleo interior concéntrico */}
+                  <circle
+                    cx={pt.x}
+                    cy={pt.y}
+                    r={isHovered ? 2.5 : 1.8}
+                    fill="#7C3AED"
+                    className="transition-all duration-200 ease-out"
+                  />
+                </g>
+              )
+            })}
+          </svg>
+        </div>
 
         {/* Etiquetas dinámicas de fechas en la base alineadas exactamente bajo cada nodo */}
-        <div className="relative w-full h-6 text-[11px] text-violet-200 font-mono pt-1 select-none pointer-events-none">
+        <div className="relative w-full h-6 mt-2 text-[11px] text-violet-200 font-mono select-none pointer-events-none">
           {chartData.etiquetasEje.map((etiq, idx) => {
             let transform = 'translateX(-50%)'
             if (etiq.alinear === 'left') {

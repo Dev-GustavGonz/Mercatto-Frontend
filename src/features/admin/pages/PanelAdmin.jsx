@@ -241,7 +241,7 @@ export const PanelAdmin = () => {
   ]
 
   return (
-    <div className="min-h-screen bg-[#F8F9FC] text-slate-900 p-3 sm:p-5 lg:p-7 flex flex-col lg:flex-row gap-5 font-sans">
+    <div className="min-h-screen bg-[#F8F9FC] text-slate-900 px-3 sm:px-5 lg:px-6 pt-2 sm:pt-3 lg:pt-3.5 pb-6 sm:pb-8 flex flex-col lg:flex-row gap-4 lg:gap-5 font-sans">
       
       {/* ============================================================== */}
       {/* 1. DOCK SIDEBAR VERTICAL (BLANCO CON ACENTOS MORADOS)          */}
@@ -268,7 +268,7 @@ export const PanelAdmin = () => {
 
       {/* Dock Cápsula Blanca */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-24 bg-white border border-slate-200/90 text-slate-700 p-3.5 flex flex-col items-center justify-between shadow-xl shadow-slate-200/50 transition-transform duration-300 rounded-r-[36px] lg:static lg:translate-x-0 lg:w-20 lg:min-h-[calc(100vh-3.5rem)] lg:rounded-[36px] ${
+        className={`fixed inset-y-0 left-0 z-50 w-24 bg-white border border-slate-200/90 text-slate-700 p-3.5 flex flex-col items-center justify-between shadow-xl shadow-slate-200/50 transition-transform duration-300 rounded-r-[36px] lg:static lg:translate-x-0 lg:w-20 lg:min-h-[calc(100vh-2rem)] lg:rounded-[36px] ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -352,10 +352,10 @@ export const PanelAdmin = () => {
       {/* ============================================================== */}
       {/* 2. ÁREA DE CONTENIDO PRINCIPAL                                */}
       {/* ============================================================== */}
-      <main className="flex-1 space-y-5 min-w-0">
+      <main className="flex-1 space-y-3.5 sm:space-y-4 min-w-0">
         
         {/* BARRA SUPERIOR (HEADER ROL SUPER ADMIN CON HERRAMIENTAS REALES) */}
-        <div className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/80 shadow-xs flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+        <div className="bg-white rounded-3xl py-3 px-4 sm:px-5 sm:py-3.5 border border-slate-200/80 shadow-xs flex flex-col xl:flex-row xl:items-center justify-between gap-4">
           
           {/* Título de Pestaña Activa + Badge de Super Admin */}
           <div className="min-w-0">
@@ -444,10 +444,10 @@ export const PanelAdmin = () => {
         {/* VISTA 1: BENTO GRID DASHBOARD (BLANCO & MORADO MERCATTO)      */}
         {/* ============================================================== */}
         {tab === 'resumen' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
             
             {/* COLUMNA IZQUIERDA BENTO (2 COLUMNAS) */}
-            <div className="lg:col-span-2 space-y-5">
+            <div className="lg:col-span-2 space-y-4 sm:space-y-5">
               
               {/* TARJETA HERO: RENDIMIENTO MARKETPLACE (DINÁMICA Y COHERENTE) */}
               <BentoSalesChart
