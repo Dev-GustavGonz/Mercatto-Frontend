@@ -302,12 +302,12 @@ export const PanelVendedor = () => {
 
       {/* Dock Cápsula Blanca con Acentos Morados */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-24 bg-white border border-slate-200/90 text-slate-700 p-3.5 flex flex-col items-center justify-between shadow-xl shadow-slate-200/50 transition-transform duration-300 rounded-r-[36px] lg:static lg:translate-x-0 lg:w-20 lg:min-h-[calc(100vh-2rem)] lg:rounded-[36px] ${
+        className={`fixed inset-y-0 left-0 z-50 w-24 bg-white border border-slate-200/90 text-slate-700 p-3.5 flex flex-col items-center shadow-xl shadow-slate-200/50 transition-transform duration-300 rounded-r-[36px] lg:sticky lg:top-3 lg:self-start lg:translate-x-0 lg:w-20 lg:h-[calc(100vh-1.75rem)] lg:max-h-[calc(100vh-1.75rem)] lg:rounded-[36px] ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {/* Top: Logo Isotipo Mercatto en Morado */}
-        <div className="flex flex-col items-center gap-4 pt-2">
+        <div className="flex flex-col items-center gap-3 pt-1 shrink-0">
           <Link 
             to="/" 
             className="w-12 h-12 rounded-2xl bg-violet-50 hover:bg-violet-100 text-violet-700 flex items-center justify-center transition-all hover:scale-105 shadow-xs"
@@ -319,7 +319,7 @@ export const PanelVendedor = () => {
         </div>
 
         {/* Center: Lista de Iconos Monocromáticos */}
-        <nav className="flex flex-col items-center gap-3 py-4 w-full">
+        <nav className="flex flex-col items-center gap-2 pt-3 w-full flex-1 overflow-y-auto no-scrollbar">
           {dockItems.map((item) => {
             const Icon = item.icon
             const activo = tab === item.id
@@ -355,7 +355,7 @@ export const PanelVendedor = () => {
         </nav>
 
         {/* Bottom: Ver Vitrina, Recargar y Salir */}
-        <div className="flex flex-col items-center gap-2.5 pb-2 pt-4 border-t border-slate-100 w-full">
+        <div className="flex flex-col items-center gap-2 pb-1 pt-3 border-t border-slate-100 w-full mt-auto shrink-0">
           {perfil?.id && (
             <Link
               to={`/tienda/${perfil.id}`}
