@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/useToast'
+import { useLanguage } from '@/hooks/useLanguage'
 import { mensajeService } from '@/features/mensajes'
 import { productoService } from '@/features/productos'
 import { websocketService as wsService } from '@/features/mensajes'
@@ -32,6 +33,8 @@ import {
 export const Mensajes = () => {
   const { usuario, actualizarUsuario } = useAuth()
   const { success, error: toastError, info } = useToast()
+  const { idioma, t } = useLanguage()
+  const isEn = idioma === 'EN'
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
 
@@ -152,7 +155,7 @@ export const Mensajes = () => {
         if (!existe) {
           setContactoActivo({ 
             id: parseInt(vendedorIdParam), 
-            nombre: 'Vendedor del Producto', 
+            nombre: isEn ? 'Product Seller' : 'Vendedor del Producto', 
             rol: 'VENDEDOR' 
           })
           setMensajes([])
@@ -305,7 +308,7 @@ export const Mensajes = () => {
     return (
       <div className="flex flex-col items-center justify-center p-24 space-y-4">
         <Loader2 className="animate-spin text-mercatto-accent" size={44} />
-        <p className="text-sm font-semibold text-slate-500">Cargando bandeja de mensajes...</p>
+        <p className="text-sm font-semibold text-slate-500">{t('cargando_mensajes') || (isEn ? 'Loading message inbox...' : 'Cargando bandeja de mensajes...')}</p>
       </div>
     )
   }
@@ -321,7 +324,7 @@ export const Mensajes = () => {
           <div className="flex items-center justify-between mb-2">
             <h2 className="font-black text-xl text-slate-800 dark:text-white flex items-center gap-2">
               <MessageSquare size={22} className="text-mercatto-accent" />
-              <span>Mensajes</span>
+              <span>{t('mensajes_titulo') || (isEn ? 'Messages' : 'Mensajes')}</span>
             </h2>
           </div>
           
@@ -332,14 +335,14 @@ export const Mensajes = () => {
                 <ShieldCheck size={16} />
               </div>
               <div>
-                <p className="text-[10px] text-slate-500 uppercase font-extrabold tracking-wider">Comunicación</p>
+                <p className="text-[10px] text-slate-500 uppercase font-extrabold tracking-wider">{t('comunicacion') || (isEn ? 'Communication' : 'Comunicación')}</p>
                 <p className="text-xs font-black text-slate-800 dark:text-white">
-                  Chat Ilimitado y Gratuito
+                  {t('chat_ilimitado') || (isEn ? 'Unlimited & Free Chat' : 'Chat Ilimitado y Gratuito')}
                 </p>
               </div>
             </div>
             <span className="text-[10px] bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 font-extrabold px-2 py-0.5 rounded-full">
-              Activo
+              {t('activo') || (isEn ? 'Active' : 'Activo')}
             </span>
           </div>
 
@@ -350,7 +353,11 @@ export const Mensajes = () => {
               type="text"
               value={busquedaContacto}
               onChange={(e) => setBusquedaContacto(e.target.value)}
-              placeholder={usuario?.rol === 'VENDEDOR' ? "Buscar clientes en chat..." : "Buscar contactos..."}
+              placeholder={
+                usuario?.rol === 'VENDEDOR' 
+                  ? (t('buscar_clientes_chat') || (isEn ? 'Search customers in chat...' : 'Buscar clientes en chat...')) 
+                  : (t('buscar_contactos') || (isEn ? 'Search contacts...' : 'Buscar contactos...'))
+              }
               className="w-full pl-9 pr-7 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-750 focus:outline-none focus:border-indigo-500 transition"
             />
             {busquedaContacto && (
@@ -369,11 +376,11 @@ export const Mensajes = () => {
           {contactos.length === 0 && !vendedorIdParam ? (
             <div className="text-center text-slate-400 p-10 space-y-2">
               <MessageSquare size={36} className="mx-auto opacity-30" />
-              <p className="text-sm">No tienes conversaciones activas.</p>
+              <p className="text-sm">{t('sin_conversaciones') || (isEn ? 'No active conversations.' : 'No tienes conversaciones activas.')}</p>
               <p className="text-xs text-slate-400">
                 {usuario?.rol === 'VENDEDOR' 
-                  ? 'Aquí aparecerán los clientes que te consulten desde tus productos.' 
-                  : 'Escríbele a un vendedor desde cualquier producto del catálogo.'}
+                  ? (t('sin_conversaciones_vendedor') || (isEn ? 'Customers who inquire about your products will appear here.' : 'Aquí aparecerán los clientes que te consulten desde tus productos.')) 
+                  : (t('sin_conversaciones_comprador') || (isEn ? 'Message a seller from any product in the catalog.' : 'Escríbele a un vendedor desde cualquier producto del catálogo.'))}
               </p>
             </div>
           ) : (
@@ -415,10 +422,10 @@ export const Mensajes = () => {
                           : c.usuario.nombre}
                       </h4>
                     </div>
-                    <p className="text-xs text-slate-500 truncate mt-0.5">{c.ultimoMensaje || 'Conversación iniciada'}</p>
+                    <p className="text-xs text-slate-500 truncate mt-0.5">{c.ultimoMensaje || (isEn ? 'Conversation started' : 'Conversación iniciada')}</p>
                     {usuario?.rol === 'ADMIN' && (
                       <span className="text-[10px] text-rose-500 font-semibold uppercase tracking-wider block mt-0.5">
-                        Supervisión Admin
+                        {isEn ? 'Admin Supervision' : 'Supervisión Admin'}
                       </span>
                     )}
                   </div>
@@ -452,8 +459,8 @@ export const Mensajes = () => {
                   <span className="text-[11px] font-semibold text-emerald-600 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                     {usuario?.rol === 'ADMIN' 
-                      ? '🛡️ Auditoría de Chat en Vivo (Super Administrador)' 
-                      : (contactoActivo.rol === 'VENDEDOR' ? 'Vendedor Verificado' : 'Cliente Comprador')}
+                      ? (isEn ? '🛡️ Live Chat Audit (Super Admin)' : '🛡️ Auditoría de Chat en Vivo (Super Administrador)') 
+                      : (contactoActivo.rol === 'VENDEDOR' ? (isEn ? 'Verified Seller' : 'Vendedor Verificado') : (isEn ? 'Buyer Customer' : 'Cliente Comprador'))}
                   </span>
                 </div>
               </div>
@@ -473,13 +480,13 @@ export const Mensajes = () => {
                   <div className="w-16 h-16 rounded-full bg-indigo-50 dark:bg-slate-800 text-indigo-600 flex items-center justify-center">
                     <MessageSquare size={32} />
                   </div>
-                  <h4 className="font-bold text-slate-800 dark:text-white">Conversación directa</h4>
+                  <h4 className="font-bold text-slate-800 dark:text-white">{t('conversacion_directa') || (isEn ? 'Direct conversation' : 'Conversación directa')}</h4>
                   <p className="text-xs text-slate-500 max-w-sm">
-                    Inicia el diálogo con <span className="font-bold text-slate-700 dark:text-slate-300">{contactoActivo.nombre}</span>.
+                    {isEn ? 'Start a conversation with' : 'Inicia el diálogo con'} <span className="font-bold text-slate-700 dark:text-slate-300">{contactoActivo.nombre}</span>.
                   </p>
                   {usuario?.rol === 'COMPRADOR' && (
                     <span className="inline-flex items-center gap-1.5 text-xs bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 px-3 py-1.5 rounded-full font-bold">
-                      <ShieldCheck size={13} /> Chat directo y gratuito con el vendedor.
+                      <ShieldCheck size={13} /> {isEn ? 'Direct and free chat with the seller.' : 'Chat directo y gratuito con el vendedor.'}
                     </span>
                   )}
                 </div>
@@ -517,7 +524,7 @@ export const Mensajes = () => {
                         )}
                         <p className="text-sm leading-relaxed whitespace-pre-wrap">{m.contenido}</p>
                         <span className={`text-[10px] mt-1.5 block text-right font-medium ${alinearDerecha ? 'text-white/80' : 'text-slate-400'}`}>
-                          {m.fechaEnvio ? new Date(m.fechaEnvio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Ahora'}
+                          {m.fechaEnvio ? new Date(m.fechaEnvio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : (isEn ? 'Just now' : 'Ahora')}
                         </span>
                       </div>
                     </div>
@@ -535,9 +542,11 @@ export const Mensajes = () => {
                     <Shield size={18} />
                   </div>
                   <div className="text-xs">
-                    <p className="font-bold text-slate-900 dark:text-white">Modo Auditoría / Solo Lectura</p>
+                    <p className="font-bold text-slate-900 dark:text-white">{isEn ? 'Audit Mode / Read Only' : 'Modo Auditoría / Solo Lectura'}</p>
                     <p className="text-[11px] text-slate-500">
-                      Como Administrador estás supervisando la conversación neutralmente para auditoría y resolución de disputas. No puedes intervenir en el chat privado.
+                      {isEn 
+                        ? 'As an Administrator you are neutrally supervising the conversation for dispute resolution and auditing. You cannot intervene in private chat.' 
+                        : 'Como Administrador estás supervisando la conversación neutralmente para auditoría y resolución de disputas. No puedes intervenir en el chat privado.'}
                     </p>
                   </div>
                 </div>
@@ -549,8 +558,8 @@ export const Mensajes = () => {
                     onChange={(e) => setNuevoMensaje(e.target.value)}
                     placeholder={
                       usuario?.rol === 'COMPRADOR' 
-                        ? `Escribe tu pregunta a ${contactoActivo.nombre}...` 
-                        : `Escribe tu respuesta al cliente...`
+                        ? (isEn ? `Write your question to ${contactoActivo.nombre}...` : `Escribe tu pregunta a ${contactoActivo.nombre}...`) 
+                        : (isEn ? 'Write your reply to the customer...' : 'Escribe tu respuesta al cliente...')
                     }
                     className="flex-1 bg-slate-100 dark:bg-slate-800 border border-transparent focus:border-indigo-500 focus:bg-white dark:focus:bg-slate-900 rounded-full px-5 py-3 text-sm outline-none transition"
                   />
@@ -571,9 +580,9 @@ export const Mensajes = () => {
             <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
               <MessageSquare size={38} className="opacity-30" />
             </div>
-            <h3 className="font-bold text-slate-700 dark:text-slate-300 text-lg">Bandeja de Mensajería</h3>
+            <h3 className="font-bold text-slate-700 dark:text-slate-300 text-lg">{t('bandeja_mensajeria') || (isEn ? 'Message Inbox' : 'Bandeja de Mensajería')}</h3>
             <p className="text-xs max-w-sm text-slate-500">
-              Selecciona una conversación del listado izquierdo para responder o coordinar ventas y entregas.
+              {t('selecciona_conversacion') || (isEn ? 'Select a conversation from the left to reply or coordinate sales and deliveries.' : 'Selecciona una conversación del listado izquierdo para responder o coordinar ventas y entregas.')}
             </p>
           </div>
         )}
