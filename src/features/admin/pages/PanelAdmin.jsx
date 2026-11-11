@@ -154,7 +154,7 @@ export const PanelAdmin = () => {
     } catch (e) {
       console.warn('Error en logout:', e)
     }
-    window.location.href = '/'
+    navigate('/')
   }
 
   if (loading) {

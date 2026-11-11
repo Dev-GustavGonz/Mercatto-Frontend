@@ -76,7 +76,7 @@ export const ProductCard = ({ producto, onContactClick }) => {
 
   return (
     <div 
-      onClick={() => navigate(`/producto/${producto.id}`)}
+      onClick={() => navigate(`/producto/${producto.id}`, { state: { productoPreview: producto } })}
       className="group bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-3 sm:p-4 transition-all duration-300 flex flex-col relative min-h-[360px] sm:h-[390px] border border-mercatto-border dark:border-slate-800 hover:border-mercatto-primary dark:hover:border-violet-700 shadow-xs hover:shadow-lg hover:shadow-violet-500/10 hover:-translate-y-1.5 cursor-pointer select-none"
     >
       {/* Insignias superiores flotantes */}

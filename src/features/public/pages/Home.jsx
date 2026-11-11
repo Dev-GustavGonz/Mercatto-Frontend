@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { productoService, ModalContactoVendedor, ProductGrid } from '@/features/productos'
+import { productoService } from '@/features/productos/services/productoService'
+import ModalContactoVendedor from '@/features/productos/components/ModalContactoVendedor'
+import ProductGrid from '@/features/productos/components/ProductGrid'
 import { tiendaService } from '@/features/tiendas/services/tiendaService'
 import { useCart } from '@/hooks/useCart'
 import { useFavorites } from '@/hooks/useFavorites'
@@ -30,20 +32,61 @@ import {
   ArrowUpRight
 } from 'lucide-react'
 
-export const Home = () => {
-  const cachedDest = apiCache.peekData('/productos/destacados')
-  const cachedNuev = apiCache.peekData('/productos/nuevos')
-  const cachedMasV = apiCache.peekData('/productos/mas-vendidos')
-  const cachedTiendas = apiCache.peekData('/tiendas')
-  const cachedCats = apiCache.peekData('/categorias/todas') || apiCache.peekData('/categorias')
-  const tieneCachePrevia = Boolean(cachedDest && cachedDest.length > 0)
+// Prioridad de membresía comercial garantizada: ELITE > PRO > STARTER
+const getPlanWeight = (prod, tiendasList) => {
+  let s = (prod?.vendedor?.tipoSuscripcion || prod?.vendedor?.plan || '').toUpperCase()
+  if (!s && (prod?.vendedor?.id || prod?.vendedorId) && Array.isArray(tiendasList)) {
+    const vId = prod?.vendedor?.id || prod?.vendedorId
+    const match = tiendasList.find((item) => String(item.id) === String(vId))
+    if (match) s = (match.tipoSuscripcion || match.plan || '').toUpperCase()
+  }
+  if (s === 'ELITE') return 3
+  if (s === 'PRO') return 2
+  return 1
+}
 
-  const [destacados, setDestacados] = useState(() => (Array.isArray(cachedDest) ? cachedDest : []))
-  const [nuevos, setNuevos] = useState(() => (Array.isArray(cachedNuev) ? cachedNuev : []))
-  const [masVendidos, setMasVendidos] = useState(() => (Array.isArray(cachedMasV) ? cachedMasV : []))
-  const [productosElite, setProductosElite] = useState([])
-  const [tiendas, setTiendas] = useState(() => (Array.isArray(cachedTiendas) ? cachedTiendas : []))
-  const [categorias, setCategorias] = useState(() => (Array.isArray(cachedCats) ? cachedCats : []))
+const buildUnifiedProductPool = (dest, listaGeneral, masVend, nuev, tiendasList) => {
+  return [
+    ...(Array.isArray(dest) ? dest : []),
+    ...(Array.isArray(listaGeneral) ? listaGeneral : []),
+    ...(Array.isArray(masVend) ? masVend : []),
+    ...(Array.isArray(nuev) ? nuev : [])
+  ]
+    .filter((p, idx, arr) => p && p.id && arr.findIndex((item) => item.id === p.id) === idx)
+    .sort((a, b) => {
+      const wB = getPlanWeight(b, tiendasList)
+      const wA = getPlanWeight(a, tiendasList)
+      if (wB !== wA) return wB - wA
+      if (b.destacado !== a.destacado) return (b.destacado ? 1 : 0) - (a.destacado ? 1 : 0)
+      return (b.totalVentas || 0) - (a.totalVentas || 0)
+    })
+}
+
+export const Home = () => {
+  const cachedDest = apiCache.peekExact('/productos/destacados')
+  const cachedNuev = apiCache.peekExact('/productos/nuevos')
+  const cachedMasV = apiCache.peekExact('/productos/mas-vendidos')
+  const cachedTiendas = apiCache.peekExact('/tiendas')
+  const cachedCats = apiCache.peekExact('/categorias/todas') || apiCache.peekExact('/categorias')
+  const cachedAllProds = apiCache.peekExact('/productos', { tamano: 50 })
+  const cachedEliteProds = apiCache.peekExact('/productos', { soloElite: true, tamano: 12 })
+
+  const initialTiendas = Array.isArray(cachedTiendas) ? cachedTiendas : []
+  const initialPool = buildUnifiedProductPool(
+    cachedDest,
+    cachedAllProds?.content,
+    cachedMasV,
+    cachedNuev,
+    initialTiendas
+  )
+  const tieneCachePrevia = initialPool.length > 0
+
+  const [destacados, setDestacados] = useState(() => initialPool)
+  const [nuevos, setNuevos] = useState(() => (Array.isArray(cachedNuev) && cachedNuev.length > 0 ? cachedNuev : initialPool.slice(0, 8)))
+  const [masVendidos, setMasVendidos] = useState(() => (Array.isArray(cachedMasV) && cachedMasV.length > 0 ? cachedMasV : initialPool))
+  const [productosElite, setProductosElite] = useState(() => (Array.isArray(cachedEliteProds?.content) ? cachedEliteProds.content : []))
+  const [tiendas, setTiendas] = useState(() => initialTiendas)
+  const [categorias, setCategorias] = useState(() => (Array.isArray(cachedCats) ? sortCategoriesHierarchically(cachedCats) : []))
   const [loading, setLoading] = useState(!tieneCachePrevia)
   const [productoContacto, setProductoContacto] = useState(null)
 
@@ -77,7 +120,7 @@ export const Home = () => {
           productoService.obtenerMasVendidos().catch(() => []),
           tiendaService.listarTiendas().catch(() => []),
           productoService
-            .listarTodasCategorias({ noCache: true, params: { _t: Date.now() } })
+            .listarTodasCategorias()
             .catch(() => productoService.listarCategorias().catch(() => [])),
           productoService.listar({ tamano: 50 }).catch(() => ({ content: [] })),
           productoService.listar({ soloElite: true, tamano: 12 }).catch(() => ({ content: [] }))
@@ -85,35 +128,8 @@ export const Home = () => {
         const listaGeneral = allProdsData?.content || []
         const listaElite = eliteData?.content || []
         setProductosElite(listaElite)
-        
-        // Prioridad de membresía comercial garantizada: ELITE > PRO > STARTER
-        const getPlanWeight = (prod) => {
-          let s = (prod?.vendedor?.tipoSuscripcion || prod?.vendedor?.plan || '').toUpperCase()
-          if (!s && (prod?.vendedor?.id || prod?.vendedorId) && Array.isArray(tiendasData)) {
-            const vId = prod?.vendedor?.id || prod?.vendedorId
-            const match = tiendasData.find(t => String(t.id) === String(vId))
-            if (match) s = (match.tipoSuscripcion || match.plan || '').toUpperCase()
-          }
-          if (s === 'ELITE') return 3
-          if (s === 'PRO') return 2
-          return 1
-        }
 
-        // Pool unificado de todos los productos disponibles garantizando prioridad absoluta a tiendas Élite
-        const poolCompleto = [
-          ...(Array.isArray(dest) ? dest : []),
-          ...(Array.isArray(listaGeneral) ? listaGeneral : []),
-          ...(Array.isArray(masVend) ? masVend : []),
-          ...(Array.isArray(nuev) ? nuev : [])
-        ]
-          .filter((p, idx, arr) => p && p.id && arr.findIndex(item => item.id === p.id) === idx)
-          .sort((a, b) => {
-            const wB = getPlanWeight(b)
-            const wA = getPlanWeight(a)
-            if (wB !== wA) return wB - wA
-            if (b.destacado !== a.destacado) return (b.destacado ? 1 : 0) - (a.destacado ? 1 : 0)
-            return (b.totalVentas || 0) - (a.totalVentas || 0)
-          })
+        const poolCompleto = buildUnifiedProductPool(dest, listaGeneral, masVend, nuev, tiendasData)
 
         setDestacados(poolCompleto)
         setNuevos(nuev && nuev.length > 0 ? nuev : poolCompleto.slice(0, 8))

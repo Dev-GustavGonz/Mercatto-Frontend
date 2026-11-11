@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { productoService } from '@/features/productos'
+import { apiCache } from '@/utils/apiCache'
 import ProductGrid from '../components/ProductGrid'
 import ProductFilters from '../components/ProductFilters'
 import Pagination from '@/components/common/Pagination'
@@ -8,12 +9,30 @@ import ModalContactoVendedor from '../components/ModalContactoVendedor'
 import { Crown, Sparkles } from 'lucide-react'
 import { useLanguage } from '@/hooks/useLanguage'
 
+const formatCatalogItems = (data, soloElite, orden) => {
+  let items = data?.content ? [...data.content] : []
+  if (soloElite) {
+    items = items.filter((p) => (p.vendedor?.tipoSuscripcion || p.vendedor?.plan || '').toUpperCase() === 'ELITE')
+  }
+  if (!orden || orden === 'recientes') {
+    items.sort((a, b) => {
+      const getPriority = (p) => {
+        const s = (p.vendedor?.tipoSuscripcion || p.vendedor?.plan || '').toUpperCase()
+        if (s === 'ELITE') return 3
+        if (s === 'PRO') return 2
+        return 1
+      }
+      const pDiff = getPriority(b) - getPriority(a)
+      if (pDiff !== 0) return pDiff
+      if (b.destacado !== a.destacado) return (b.destacado ? 1 : 0) - (a.destacado ? 1 : 0)
+      return (b.totalVentas || 0) - (a.totalVentas || 0)
+    })
+  }
+  return items
+}
+
 export const Catalogo = () => {
   const [searchParams, setSearchParams] = useSearchParams()
-  const [productos, setProductos] = useState([])
-  const [totalPages, setTotalPages] = useState(0)
-  const [totalElements, setTotalElements] = useState(0)
-  const [loading, setLoading] = useState(true)
   const [productoContacto, setProductoContacto] = useState(null)
   const { t, idioma } = useLanguage()
   const isEn = (idioma || '').toUpperCase() === 'EN'
@@ -27,53 +46,59 @@ export const Catalogo = () => {
   const precioMax = searchParams.get('precioMax') ? Number(searchParams.get('precioMax')) : null
   const soloElite = searchParams.get('soloElite') === 'true'
 
+  const queryParams = useMemo(() => ({
+    categoriaId,
+    marca: marca || null,
+    q: termino,
+    orden,
+    pagina,
+    precioMin,
+    precioMax,
+    soloElite: soloElite ? true : undefined,
+    tamano: 12,
+  }), [categoriaId, marca, termino, orden, pagina, precioMin, precioMax, soloElite])
+
+  const initialCached = apiCache.peekExact('/productos', queryParams)
+  const [productos, setProductos] = useState(() => (initialCached ? formatCatalogItems(initialCached, soloElite, orden) : []))
+  const [totalPages, setTotalPages] = useState(() => initialCached?.totalPages || 0)
+  const [totalElements, setTotalElements] = useState(() => initialCached?.totalElements ?? (initialCached?.content?.length || 0))
+  const [loading, setLoading] = useState(!initialCached)
+
   useEffect(() => {
-    const fetchProductos = async () => {
+    let activo = true
+    const cached = apiCache.peekExact('/productos', queryParams)
+    if (cached) {
+      const items = formatCatalogItems(cached, soloElite, orden)
+      setProductos(items)
+      setTotalPages(cached.totalPages || 0)
+      setTotalElements(cached.totalElements ?? items.length)
+      setLoading(false)
+    } else {
       setLoading(true)
+    }
+
+    const fetchProductos = async () => {
       try {
-        const data = await productoService.listar({
-          categoriaId,
-          marca: marca || null,
-          q: termino,
-          orden,
-          pagina,
-          precioMin,
-          precioMax,
-          soloElite: soloElite ? true : undefined,
-          tamano: 12,
-        })
-        let items = data.content || []
-        if (soloElite) {
-          items = items.filter((p) => (p.vendedor?.tipoSuscripcion || p.vendedor?.plan || '').toUpperCase() === 'ELITE')
-        }
-        // Si no hay un orden de precio o ventas explícito, priorizar por membresía: ÉLITE > PRO > STARTER
-        if (!orden || orden === 'recientes') {
-          items.sort((a, b) => {
-            const getPriority = (p) => {
-              const s = (p.vendedor?.tipoSuscripcion || p.vendedor?.plan || '').toUpperCase()
-              if (s === 'ELITE') return 3
-              if (s === 'PRO') return 2
-              return 1
-            }
-            const pDiff = getPriority(b) - getPriority(a)
-            if (pDiff !== 0) return pDiff
-            if (b.destacado !== a.destacado) return (b.destacado ? 1 : 0) - (a.destacado ? 1 : 0)
-            return (b.totalVentas || 0) - (a.totalVentas || 0)
-          })
-        }
+        const data = await productoService.listar(queryParams)
+        if (!activo) return
+        const items = formatCatalogItems(data, soloElite, orden)
         setProductos(items)
         setTotalPages(data.totalPages || 0)
         setTotalElements(data.totalElements ?? items.length)
       } catch {
+        if (!activo || cached) return
         setProductos([])
         setTotalPages(0)
         setTotalElements(0)
       } finally {
-        setLoading(false)
+        if (activo) setLoading(false)
       }
     }
     fetchProductos()
-  }, [categoriaId, marca, termino, orden, pagina, precioMin, precioMax, soloElite])
+    return () => {
+      activo = false
+    }
+  }, [queryParams, soloElite, orden])
 
   const handleCategoryChange = (catId) => {
     const next = new URLSearchParams(searchParams)

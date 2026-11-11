@@ -31,7 +31,7 @@ export const ProductFilters = ({
 
   useEffect(() => {
     productoService
-      .listarTodasCategorias({ noCache: true, params: { _t: Date.now() } })
+      .listarTodasCategorias()
       .then((data) => setCategorias(Array.isArray(data) ? data : []))
       .catch(() => {
         productoService.listarCategorias().then((data) => setCategorias(data || [])).catch(() => {})

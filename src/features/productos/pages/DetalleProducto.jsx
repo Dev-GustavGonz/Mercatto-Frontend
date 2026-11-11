@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, useNavigate, useLocation, Link } from 'react-router-dom'
 import { productoService } from '@/features/productos'
+import { apiCache } from '@/utils/apiCache'
 import { useCart } from '@/hooks/useCart'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/useToast'
@@ -18,10 +19,10 @@ import Spinner from '@/components/common/Spinner'
 import { ShoppingBag, Heart, MessageSquare, Store, ShieldCheck, Truck, RefreshCw, ChevronRight, CheckCircle2, Crown } from 'lucide-react'
 
 export const DetalleProducto = () => {
-  const { id } = useParams()
-  const [producto, setProducto] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [varianteSeleccionada, setVarianteSeleccionada] = useState(null)
+  const { id } = useParams(); const location = useLocation(); const initialCached = (id && (!isNaN(id) ? apiCache.peekExact(`/productos/${id}`) : apiCache.peekExact(`/productos/slug/${id}`))) || location.state?.productoPreview || (id && !isNaN(id) ? apiCache.findProductById(id) : null)
+  const [producto, setProducto] = useState(initialCached)
+  const [loading, setLoading] = useState(!initialCached)
+  const [varianteSeleccionada, setVarianteSeleccionada] = useState(() => (initialCached?.variantes?.length > 0 ? initialCached.variantes[0] : null))
   const [cantidad, setCantidad] = useState(1)
   const [modalContacto, setModalContacto] = useState(false)
 
@@ -35,7 +36,14 @@ export const DetalleProducto = () => {
   const [errorCarga, setErrorCarga] = useState(false)
 
   useEffect(() => {
-    setLoading(true)
+    const cached = (id && (!isNaN(id) ? apiCache.peekExact(`/productos/${id}`) : apiCache.peekExact(`/productos/slug/${id}`))) || location.state?.productoPreview || (id && !isNaN(id) ? apiCache.findProductById(id) : null)
+    if (cached) {
+      setProducto(cached)
+      setVarianteSeleccionada(cached.variantes?.length > 0 ? cached.variantes[0] : null)
+      setLoading(false)
+    } else {
+      setLoading(true)
+    }
     setErrorCarga(false)
 
     const fetchProducto = async () => {
@@ -52,7 +60,10 @@ export const DetalleProducto = () => {
         }
       } catch (err) {
         console.error('Error cargando producto:', err)
-        setErrorCarga(true)
+        setProducto((prev) => {
+          if (!prev) setErrorCarga(true)
+          return prev
+        })
       } finally {
         setLoading(false)
       }

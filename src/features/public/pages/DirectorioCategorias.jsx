@@ -54,7 +54,7 @@ export const DirectorioCategorias = () => {
   useEffect(() => {
     let activo = true
     productoService
-      .listarTodasCategorias({ noCache: true, params: { _t: Date.now() } })
+      .listarTodasCategorias()
       .then((data) => {
         if (activo) setCategorias(Array.isArray(data) ? data : [])
       })

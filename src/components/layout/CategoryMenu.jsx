@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { productoService } from '@/features/productos'
+import { productoService } from '@/features/productos/services/productoService'
 import { Grid, ChevronRight } from 'lucide-react'
 
 export const CategoryMenu = () => {

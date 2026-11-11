@@ -1,9 +1,13 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 export const ProductImages = ({ imagenes = [], titulo = 'Producto' }) => {
   const defaultImage = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=80'
   const lista = imagenes.length > 0 ? imagenes : [{ id: 0, url: defaultImage }]
   const [activa, setActiva] = useState(lista[0]?.url || defaultImage)
+
+  useEffect(() => {
+    setActiva(lista[0]?.url || defaultImage)
+  }, [imagenes])
 
   return (
     <div className="flex flex-col-reverse md:flex-row gap-4">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { Search, Loader2 } from 'lucide-react'
-import { productoService } from '@/features/productos'
+import { productoService } from '@/features/productos/services/productoService'
 
 export const SearchBar = ({ className = '', placeholder = 'Buscar productos...', onSearchSubmit }) => {
   const [termino, setTermino] = useState('')

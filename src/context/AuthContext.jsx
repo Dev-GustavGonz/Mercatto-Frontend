@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { authService } from '../features/auth'
+import { authService } from '../features/auth/services/authService'
 
 const AuthContext = createContext(null)
 
@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
     }
   })
   const [token, setToken] = useState(() => localStorage.getItem('mercatto_token') || null)
-  const [cargando, setCargando] = useState(true)
+  const [cargando, setCargando] = useState(() => !(localStorage.getItem('mercatto_token') && localStorage.getItem('mercatto_user')))
 
   useEffect(() => {
     const verificarSesion = async () => {

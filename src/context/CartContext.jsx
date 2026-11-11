@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { storage } from '@/utils/storage'
-import { pedidoService } from '../features/pedidos'
+import { pedidoService } from '../features/pedidos/services/pedidoService'
 import { useToast } from './ToastContext'
 import { useLanguage } from './LanguageContext'
 

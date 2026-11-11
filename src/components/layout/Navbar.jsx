@@ -8,8 +8,9 @@ import { useCart } from '@/hooks/useCart'
 import { useFavorites } from '@/hooks/useFavorites'
 import { useLanguage } from '@/hooks/useLanguage'
 import { sortCategoriesHierarchically, translateCategoryName } from '@/utils/categoryUtils'
-import { productoService } from '../../features/productos'
-import { tiendaService, vendedorService } from '../../features/tiendas'
+import { productoService } from '../../features/productos/services/productoService'
+import { tiendaService } from '../../features/tiendas/services/tiendaService'
+import { vendedorService } from '../../features/tiendas/services/vendedorService'
 import { apiCache } from '@/utils/apiCache'
 import SearchBar from './SearchBar'
 import MercattoLogo from '../common/MercattoLogo'
@@ -94,7 +95,7 @@ export const Navbar = () => {
     const cargarFiltros = async () => {
       try {
         const [cats, marcs] = await Promise.all([
-          productoService.listarTodasCategorias({ noCache: true, params: { _t: Date.now() } }).catch(() => productoService.listarCategorias().catch(() => [])),
+          productoService.listarTodasCategorias().catch(() => productoService.listarCategorias().catch(() => [])),
           tiendaService.listarMarcas().catch(() => [])
         ])
         setCategorias(sortCategoriesHierarchically(cats || []))
@@ -145,7 +146,7 @@ export const Navbar = () => {
     } catch (e) {
       console.warn('Error en logout:', e)
     }
-    window.location.href = '/'
+    navigate('/')
   }
 
   const esAdminOVendedor = esAdmin || esVendedor

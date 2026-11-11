@@ -9,8 +9,8 @@ import { getMediaUrl } from '@/utils/constants'
 import { useLanguage } from '@/hooks/useLanguage'
 
 export const DirectorioTiendas = () => {
-  const cachedTiendas = apiCache.peekData('/tiendas')
-  const cachedMarcas = apiCache.peekData('/tiendas/marcas')
+  const cachedTiendas = apiCache.peekExact('/tiendas')
+  const cachedMarcas = apiCache.peekExact('/tiendas/marcas')
   const tieneCache = Boolean(cachedTiendas && cachedTiendas.length > 0)
 
   const [tiendas, setTiendas] = useState(() => (Array.isArray(cachedTiendas) ? cachedTiendas : []))

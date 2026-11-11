@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { tiendaService } from '@/features/tiendas'
+import { apiCache } from '@/utils/apiCache'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/useToast'
 import { ProductGrid } from '@/features/productos'
@@ -30,64 +31,84 @@ export const VitrinaTienda = () => {
   const { autenticado } = useAuth()
   const { info, success } = useToast()
 
-  const [tienda, setTienda] = useState(null)
-  const [productos, setProductos] = useState([])
-  const [cargandoTienda, setCargandoTienda] = useState(true)
-  const [cargandoProductos, setCargandoProductos] = useState(true)
-
   // Filtros
   const [marcaSeleccionada, setMarcaSeleccionada] = useState('')
   const [busqueda, setBusqueda] = useState('')
   const [busquedaInput, setBusquedaInput] = useState('')
   const [orden, setOrden] = useState('recientes')
   const [pagina, setPagina] = useState(0)
-  const [totalPaginas, setTotalPaginas] = useState(0)
-  const [totalElementos, setTotalElementos] = useState(0)
+
+  const productParams = useMemo(() => {
+    const params = {
+      pagina,
+      tamano: 12,
+      orden,
+    }
+    if (marcaSeleccionada) params.marca = marcaSeleccionada
+    if (busqueda.trim()) params.q = busqueda.trim()
+    return params
+  }, [pagina, orden, marcaSeleccionada, busqueda])
+
+  const cachedTienda = id ? apiCache.peekExact(`/tiendas/${id}`) : null
+  const cachedProds = id ? apiCache.peekExact(`/tiendas/${id}/productos`, productParams) : null
+
+  const [tienda, setTienda] = useState(cachedTienda)
+  const [productos, setProductos] = useState(() => cachedProds?.content || [])
+  const [cargandoTienda, setCargandoTienda] = useState(!cachedTienda)
+  const [cargandoProductos, setCargandoProductos] = useState(!cachedProds)
+  const [totalPaginas, setTotalPaginas] = useState(() => cachedProds?.totalPages || 0)
+  const [totalElementos, setTotalElementos] = useState(() => cachedProds?.totalElements || 0)
   const [copiado, setCopiado] = useState(false)
 
-  // Cargar datos de la tienda
+  // Cargar datos de la tienda en paralelo (sin bloquear la carga de productos)
   useEffect(() => {
     cargarTienda()
   }, [id])
 
-  // Cargar productos de la tienda cuando cambian los filtros
+  // Cargar productos de la tienda inmediatamente y cuando cambian los filtros
   useEffect(() => {
-    if (tienda?.id) {
+    if (id) {
       cargarProductos()
     }
-  }, [id, marcaSeleccionada, busqueda, orden, pagina, tienda?.id])
+  }, [id, productParams])
 
   const cargarTienda = async () => {
-    try {
+    const cached = id ? apiCache.peekExact(`/tiendas/${id}`) : null
+    if (cached) {
+      setTienda(cached)
+      setCargandoTienda(false)
+    } else {
       setCargandoTienda(true)
+    }
+    try {
       const data = await tiendaService.obtenerTienda(id)
       setTienda(data)
     } catch (err) {
       console.error('Error al cargar vitrina:', err)
-      setTienda(null)
+      if (!cached) setTienda(null)
     } finally {
       setCargandoTienda(false)
     }
   }
 
   const cargarProductos = async () => {
-    try {
+    const cached = id ? apiCache.peekExact(`/tiendas/${id}/productos`, productParams) : null
+    if (cached) {
+      setProductos(cached.content || [])
+      setTotalPaginas(cached.totalPages || 0)
+      setTotalElementos(cached.totalElements || 0)
+      setCargandoProductos(false)
+    } else {
       setCargandoProductos(true)
-      const params = {
-        pagina,
-        tamano: 12,
-        orden,
-      }
-      if (marcaSeleccionada) params.marca = marcaSeleccionada
-      if (busqueda.trim()) params.q = busqueda.trim()
-
-      const data = await tiendaService.obtenerProductosTienda(id, params)
+    }
+    try {
+      const data = await tiendaService.obtenerProductosTienda(id, productParams)
       setProductos(data.content || [])
       setTotalPaginas(data.totalPages || 0)
       setTotalElementos(data.totalElements || 0)
     } catch (err) {
       console.error('Error al cargar productos de la tienda:', err)
-      setProductos([])
+      if (!cached) setProductos([])
     } finally {
       setCargandoProductos(false)
     }

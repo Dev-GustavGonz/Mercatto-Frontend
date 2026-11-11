@@ -41,7 +41,7 @@ export const Registro = () => {
 
     if (res?.exito) {
       success(isEn ? 'Account created with Google! Welcome to Mercatto.' : '¡Cuenta creada con Google! Bienvenido a Mercatto.')
-      window.location.replace('/')
+      navigate('/', { replace: true })
     } else {
       error(res?.mensaje || (isEn ? 'Could not continue with Google' : 'No se pudo continuar con Google'))
     }
@@ -126,7 +126,7 @@ export const Registro = () => {
         navigate('/login?registro=pendiente')
       } else {
         success(isEn ? 'Account created successfully! Welcome to Mercatto.' : '¡Cuenta creada con éxito! Bienvenido a Mercatto.')
-        window.location.replace('/')
+        navigate('/', { replace: true })
       }
     } else {
       error(res?.mensaje || (isEn ? 'Error creating account' : 'Error al crear la cuenta'))
@@ -147,14 +147,17 @@ export const Registro = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-violet-950/60 mix-blend-multiply pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950/95 pointer-events-none" />
 
-        {/* Logo oficial con colores originales en esquina y separación amplia con el slogan */}
+        {/* Botón Volver en esquina superior izquierda */}
         <div className="relative z-10 self-start">
-          <MercattoLogo 
-            variant="onDark"
-            size={42} 
-            showSlogan={true} 
-            sloganClassName="mt-3.5 text-xs sm:text-[13px] font-bold tracking-wide block"
-          />
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-white/15 backdrop-blur-md border border-white/20 hover:bg-white/25 transition-all cursor-pointer shadow-xs group"
+            title={isEn ? 'Back to home' : 'Volver a la página principal'}
+          >
+            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+            <span>{isEn ? 'Back' : 'Volver'}</span>
+          </button>
         </div>
 
         {/* Tarjeta de beneficios */}
@@ -241,16 +244,19 @@ export const Registro = () => {
         </div>
 
         {/* Barra superior exclusiva para Desktop */}
-        <div className="hidden lg:flex items-center justify-between gap-2 mb-4">
-          <button
-            type="button"
-            onClick={() => navigate('/')}
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/90 hover:bg-violet-50 dark:hover:bg-violet-950/40 hover:text-violet-600 dark:hover:text-violet-400 transition-all cursor-pointer border border-slate-200/80 dark:border-slate-700/80 shadow-xs group"
+        <div className="hidden lg:flex items-start justify-between gap-4 mb-4">
+          <Link
+            to="/"
+            className="inline-block"
             title={isEn ? 'Back to home' : 'Volver a la página principal'}
           >
-            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform text-violet-600 dark:text-violet-400" />
-            <span>{isEn ? 'Back' : 'Volver'}</span>
-          </button>
+            <MercattoLogo
+              variant="default"
+              size={36}
+              showSlogan={true}
+              sloganClassName="mt-2 text-xs font-bold tracking-wide block"
+            />
+          </Link>
 
           {/* Selector de idioma ES / EN */}
           <div className="flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200/70 dark:border-slate-700/70">

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { useAuth } from './AuthContext'
-import { productoService } from '../features/productos'
+import { productoService } from '../features/productos/services/productoService'
 
 const FavoritesContext = createContext(null)
 

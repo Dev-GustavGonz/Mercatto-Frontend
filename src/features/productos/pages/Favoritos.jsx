@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { productoService } from '@/features/productos'
 import ProductGrid from '../components/ProductGrid'
 import EmptyState from '@/components/common/EmptyState'
 import { Heart } from 'lucide-react'
 
 export const Favoritos = () => {
+  const navigate = useNavigate()
   const [favoritos, setFavoritos] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -32,7 +34,7 @@ export const Favoritos = () => {
           title="Tu lista de favoritos está vacía"
           description="Guarda los productos que más te gustan haciendo clic en el corazón para verlos después."
           actionLabel="Explorar Catálogo"
-          onAction={() => (window.location.href = '/catalogo')}
+          onAction={() => navigate('/catalogo')}
         />
       ) : (
         <ProductGrid productos={favoritos} loading={loading} />

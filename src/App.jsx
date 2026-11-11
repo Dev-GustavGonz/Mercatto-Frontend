@@ -11,22 +11,73 @@ import Footer from './components/layout/Footer'
 import Spinner from './components/common/Spinner'
 import ErrorBoundary from './components/common/ErrorBoundary'
 
-// General / Public Pages
-import { Home, DirectorioCategorias, AboutUs, NotFound, Terminos, Privacidad } from './features/public'
-
-// Domain / Feature Entities
-import { Login, Registro } from './features/auth'
-import { Catalogo, DetalleProducto, Categoria, Busqueda, Favoritos } from './features/productos'
-import { Carrito, Checkout, MisPedidos, PagoExitoso, PagoCancelado, CartDrawer, RastreoPedido } from './features/pedidos'
-import { DirectorioTiendas, VitrinaTienda } from './features/tiendas'
-import { Perfil } from './features/usuario'
-import { Mensajes } from './features/mensajes'
-import { PublicChatbot, CentroSoporte } from './features/soporte'
+// Landing page (eager para primer pintado inmediato sin cascada de chunks)
+import Home from './features/public/pages/Home'
+import CartDrawer from './features/pedidos/components/CartDrawer'
 import ScrollToTop from './components/common/ScrollToTop'
 
-// Carga perezosa (Code-Splitting) para paneles pesados
-const PanelAdmin = lazy(() => import('./features/admin/pages/PanelAdmin'))
-const PanelVendedor = lazy(() => import('./features/tiendas/pages/PanelVendedor'))
+// Loaders reutilizables para code-splitting y precarga en segundo plano
+const loadDirectorioCategorias = () => import('./features/public/pages/DirectorioCategorias')
+const loadAboutUs = () => import('./features/public/pages/AboutUs')
+const loadNotFound = () => import('./features/public/pages/NotFound')
+const loadTerminos = () => import('./features/public/pages/Terminos')
+const loadPrivacidad = () => import('./features/public/pages/Privacidad')
+
+const loadLogin = () => import('./features/auth/pages/Login')
+const loadRegistro = () => import('./features/auth/pages/Registro')
+
+const loadCatalogo = () => import('./features/productos/pages/Catalogo')
+const loadDetalleProducto = () => import('./features/productos/pages/DetalleProducto')
+const loadCategoria = () => import('./features/productos/pages/Categoria')
+const loadBusqueda = () => import('./features/productos/pages/Busqueda')
+const loadFavoritos = () => import('./features/productos/pages/Favoritos')
+
+const loadCarrito = () => import('./features/pedidos/pages/Carrito')
+const loadCheckout = () => import('./features/pedidos/pages/Checkout')
+const loadMisPedidos = () => import('./features/pedidos/pages/MisPedidos')
+const loadPagoExitoso = () => import('./features/pedidos/pages/PagoExitoso')
+const loadPagoCancelado = () => import('./features/pedidos/pages/PagoCancelado')
+const loadRastreoPedido = () => import('./features/pedidos/pages/RastreoPedido')
+
+const loadDirectorioTiendas = () => import('./features/tiendas/pages/DirectorioTiendas')
+const loadVitrinaTienda = () => import('./features/tiendas/pages/VitrinaTienda')
+const loadPerfil = () => import('./features/usuario/pages/Perfil')
+const loadMensajes = () => import('./features/mensajes/pages/Mensajes')
+const loadCentroSoporte = () => import('./features/soporte/pages/CentroSoporte')
+const loadPublicChatbot = () => import('./features/soporte/components/PublicChatbot')
+const loadPanelAdmin = () => import('./features/admin/pages/PanelAdmin')
+const loadPanelVendedor = () => import('./features/tiendas/pages/PanelVendedor')
+
+const DirectorioCategorias = lazy(loadDirectorioCategorias)
+const AboutUs = lazy(loadAboutUs)
+const NotFound = lazy(loadNotFound)
+const Terminos = lazy(loadTerminos)
+const Privacidad = lazy(loadPrivacidad)
+
+const Login = lazy(loadLogin)
+const Registro = lazy(loadRegistro)
+
+const Catalogo = lazy(loadCatalogo)
+const DetalleProducto = lazy(loadDetalleProducto)
+const Categoria = lazy(loadCategoria)
+const Busqueda = lazy(loadBusqueda)
+const Favoritos = lazy(loadFavoritos)
+
+const Carrito = lazy(loadCarrito)
+const Checkout = lazy(loadCheckout)
+const MisPedidos = lazy(loadMisPedidos)
+const PagoExitoso = lazy(loadPagoExitoso)
+const PagoCancelado = lazy(loadPagoCancelado)
+const RastreoPedido = lazy(loadRastreoPedido)
+
+const DirectorioTiendas = lazy(loadDirectorioTiendas)
+const VitrinaTienda = lazy(loadVitrinaTienda)
+const Perfil = lazy(loadPerfil)
+const Mensajes = lazy(loadMensajes)
+const CentroSoporte = lazy(loadCentroSoporte)
+const PublicChatbot = lazy(loadPublicChatbot)
+const PanelAdmin = lazy(loadPanelAdmin)
+const PanelVendedor = lazy(loadPanelVendedor)
 
 // Protected Route Wrapper for Vendor
 const RutaVendedor = ({ children }) => {
@@ -88,11 +139,36 @@ const AppLayout = () => {
     location.pathname.startsWith('/recuperar-password')
   const esHome = location.pathname === '/'
 
+  // Precargar en segundo plano las rutas más visitadas para que la navegación entre páginas sea instantánea
+  useEffect(() => {
+    const prefetchCoreRoutes = () => {
+      loadCatalogo()
+      loadDetalleProducto()
+      loadDirectorioCategorias()
+      loadDirectorioTiendas()
+      loadVitrinaTienda()
+      loadLogin()
+      loadRegistro()
+      loadPublicChatbot()
+    }
+
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      const id = window.requestIdleCallback(prefetchCoreRoutes, { timeout: 1500 })
+      return () => window.cancelIdleCallback(id)
+    }
+    const timer = setTimeout(prefetchCoreRoutes, 600)
+    return () => clearTimeout(timer)
+  }, [])
+
   return (
     <div className="min-h-screen flex flex-col bg-mercatto-bg dark:bg-slate-950 text-mercatto-text dark:text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
       {!esRutaPanel && !esRutaAuth && <Navbar />}
       <CartDrawer />
-      {!esRutaPanel && !esRutaAuth && <PublicChatbot />}
+      {!esRutaPanel && !esRutaAuth && (
+        <Suspense fallback={null}>
+          <PublicChatbot />
+        </Suspense>
+      )}
 
       <main className={esRutaPanel || esHome || esRutaAuth ? "flex-1 w-full" : "flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6"}>
         <Suspense fallback={

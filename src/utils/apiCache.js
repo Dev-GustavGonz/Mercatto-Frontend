@@ -21,7 +21,7 @@ class ApiCacheManager {
 
     // Reglas de TTL fresco (en milisegundos)
     this.ttlRules = [
-      { pattern: /^\/categorias/, ttl: 2 * 60 * 1000 },       // 2 minutos
+      { pattern: /^\/categorias/, ttl: 60 * 1000 },            // 1 minuto (SWR revalida en segundo plano)
       { pattern: /^\/tiendas\/marcas/, ttl: 30 * 60 * 1000 }, // 30 minutos
       { pattern: /^\/tiendas/, ttl: 10 * 60 * 1000 },          // 10 minutos
       { pattern: /^\/productos\/(destacados|mas-vendidos|nuevos)/, ttl: 10 * 60 * 1000 }, // 10 minutos
@@ -165,13 +165,29 @@ class ApiCacheManager {
   }
 
   /**
+   * Inspecciona síncronamente una respuesta exacta (url + params + idioma activo) para inicializar estado en 0ms.
+   */
+  peekExact(url, params = undefined) {
+    try {
+      const entry = this.getEntry({ url, params, method: 'GET' })
+      return entry?.response?.data ?? null
+    } catch {
+      return null
+    }
+  }
+
+  /**
    * Permite inspeccionar síncronamente datos cacheados para inicializar estado en 0ms
    */
   peekData(urlPattern) {
     try {
-      // 1. Revisar en memoria
+      const lang = (localStorage.getItem('mercatto_idioma') || 'es').toLowerCase()
+      const prefix = `GET:${urlPattern}?`
+      const suffix = `:${lang}`
+
+      // 1. Revisar en memoria con coincidencia exacta de ruta e idioma
       for (const [key, entry] of this.cache.entries()) {
-        if (key.includes(urlPattern) && entry?.response?.data) {
+        if (key.startsWith(prefix) && key.endsWith(suffix) && entry?.response?.data) {
           return entry.response.data
         }
       }
@@ -179,7 +195,7 @@ class ApiCacheManager {
       if (typeof window !== 'undefined' && window.localStorage) {
         for (let i = 0; i < localStorage.length; i++) {
           const k = localStorage.key(i)
-          if (k && k.startsWith(STORAGE_PREFIX) && k.includes(urlPattern)) {
+          if (k && k.startsWith(STORAGE_PREFIX + prefix) && k.endsWith(suffix)) {
             const raw = localStorage.getItem(k)
             if (raw) {
               const entry = JSON.parse(raw)
@@ -190,6 +206,27 @@ class ApiCacheManager {
       }
     } catch (e) {}
 
+    return null
+  }
+
+  /**
+   * Busca un producto por ID dentro de las listas de productos ya cacheadas en memoria
+   * para renderizar el detalle en 0ms mientras se revalida la ficha completa.
+   */
+  findProductById(id) {
+    const numId = Number(id)
+    if (!numId) return null
+    try {
+      const lang = (localStorage.getItem('mercatto_idioma') || 'es').toLowerCase()
+      for (const [key, entry] of this.cache.entries()) {
+        if (!key.startsWith('GET:/productos') || !key.endsWith(`:${lang}`)) continue
+        const data = entry?.response?.data
+        const list = Array.isArray(data) ? data : Array.isArray(data?.content) ? data.content : null
+        if (!list) continue
+        const found = list.find((p) => Number(p?.id) === numId)
+        if (found) return found
+      }
+    } catch {}
     return null
   }
 
