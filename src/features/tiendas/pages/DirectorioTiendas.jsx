@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { tiendaService } from '@/features/tiendas'
 import { apiCache } from '@/utils/apiCache'
-import { Store, Search, MapPin, Star, ShieldCheck, CheckCircle2, Package, Tag, ArrowRight, MessageSquare, Sparkles, Crown } from 'lucide-react'
+import { Store, Search, MapPin, Star, ShieldCheck, Tag, ArrowRight, MessageSquare, Sparkles, Crown } from 'lucide-react'
 import Spinner from '@/components/common/Spinner'
 import EmptyState from '@/components/common/EmptyState'
 import { getMediaUrl } from '@/utils/constants'
@@ -99,48 +99,21 @@ export const DirectorioTiendas = () => {
   })
 
   return (
-    <div className="space-y-10 pb-20 font-sans">
-      {/* Hero Banner Directorio */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-8 sm:p-12 shadow-xl border border-slate-800">
-        <div className="relative z-10 max-w-3xl space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-mercatto-surface0/20 text-indigo-300 text-xs font-semibold border border-indigo-400/30 backdrop-blur-sm">
-            <Sparkles size={14} className="text-amber-400" />
+    <div className="space-y-8 pb-20 font-sans">
+      {/* Encabezado limpio estilo claro */}
+      <div className="flex flex-wrap items-end justify-between gap-3 pb-4 border-b border-slate-200/80 dark:border-slate-800">
+        <div className="space-y-1.5">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-100 dark:bg-violet-950/80 text-[11px] font-extrabold tracking-widest uppercase text-violet-700 dark:text-violet-300">
+            <Sparkles size={12} />
             <span>{t('proveedores_certificados')}</span>
-          </div>
-
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white">
+          </span>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             {t('directorio_tiendas_titulo')}
           </h1>
-
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
             {t('directorio_tiendas_sub')}
           </p>
-
-          {/* Search bar inside banner */}
-          <div className="pt-2 flex flex-col sm:flex-row gap-3 max-w-xl">
-            <div className="relative flex-1">
-              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input
-                type="text"
-                placeholder={t('buscar_tiendas')}
-                value={busqueda}
-                onChange={(e) => setBusqueda(e.target.value)}
-                className="w-full pl-11 pr-4 py-3 bg-white/10 text-white placeholder-slate-400 rounded-2xl border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:bg-white/15 backdrop-blur-md text-sm transition"
-              />
-              {busqueda && (
-                <button
-                  onClick={() => setBusqueda('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-white"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-          </div>
         </div>
-
-        {/* Decorative background circle */}
-        <div className="absolute -right-20 -bottom-20 w-96 h-96 bg-mercatto-primary/20 rounded-full blur-3xl pointer-events-none" />
       </div>
 
       {/* Barra de Búsqueda de Tiendas y Filtros de Marcas */}
@@ -195,7 +168,7 @@ export const DirectorioTiendas = () => {
         </div>
 
         {/* Filtro interactivo por Nivel de Membresia / Plan */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none text-xs">
+        <div className="flex flex-wrap items-center gap-2 text-xs">
           <button
             onClick={() => setPlanFiltro('')}
             className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
@@ -259,7 +232,7 @@ export const DirectorioTiendas = () => {
               )}
             </div>
 
-            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+            <div className="flex flex-wrap items-center gap-2">
               <button
                 onClick={() => setMarcaFiltro('')}
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${

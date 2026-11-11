@@ -116,49 +116,23 @@ export const DirectorioCategorias = () => {
   }
 
   return (
-    <div className="space-y-10 pb-20 font-sans">
-      {/* Hero Banner Directorio de Categorías (estilo DirectorioTiendas) */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-8 sm:p-12 shadow-xl border border-slate-800">
-        <div className="relative z-10 max-w-3xl space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-mercatto-surface0/20 text-indigo-300 text-xs font-semibold border border-indigo-400/30 backdrop-blur-sm">
-            <Layers size={14} className="text-amber-400" />
+    <div className="space-y-8 pb-20 font-sans">
+      {/* Encabezado limpio estilo claro */}
+      <div className="flex flex-wrap items-end justify-between gap-3 pb-4 border-b border-slate-200/80 dark:border-slate-800">
+        <div className="space-y-1.5">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-100 dark:bg-violet-950/80 text-[11px] font-extrabold tracking-widest uppercase text-violet-700 dark:text-violet-300">
+            <Layers size={12} />
             <span>{isEn ? 'All Marketplace Categories' : 'Explora Mercatto por Categorías'}</span>
-          </div>
-
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white">
+          </span>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             {isEn ? 'Categories Directory' : 'Directorio de Categorías'}
           </h1>
-
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
             {isEn
-              ? 'Discover every category and subcategory available in our marketplace to find exactly what you need.'
-              : 'Explora todas las categorías y subcategorías registradas para encontrar exactamente lo que buscas.'}
+              ? 'Discover every category and subcategory available in our marketplace.'
+              : 'Explora todas las categorías y subcategorías registradas para encontrar lo que buscas.'}
           </p>
-
-          <div className="pt-2 flex flex-col sm:flex-row gap-3 max-w-xl">
-            <div className="relative flex-1">
-              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input
-                type="text"
-                placeholder={isEn ? 'Search categories...' : 'Buscar categorías o subcategorías...'}
-                value={busqueda}
-                onChange={(e) => setBusqueda(e.target.value)}
-                className="w-full pl-11 pr-9 py-3 bg-white/10 text-white placeholder-slate-400 rounded-2xl border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:bg-white/15 backdrop-blur-md text-sm transition"
-              />
-              {busqueda && (
-                <button
-                  type="button"
-                  onClick={() => setBusqueda('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-white cursor-pointer"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-          </div>
         </div>
-
-        <div className="absolute -right-20 -bottom-20 w-96 h-96 bg-mercatto-primary/20 rounded-full blur-3xl pointer-events-none" />
       </div>
 
       {/* Barra de Búsqueda y Filtros de Categorías */}
