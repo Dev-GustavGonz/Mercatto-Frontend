@@ -5,6 +5,8 @@ import { vendedorService } from '@/features/tiendas'
 import { useToast } from '@/hooks/useToast'
 import { Upload, Image as ImageIcon, Trash2, Camera } from 'lucide-react'
 import { getMediaUrl } from '@/utils/constants'
+import { prepararImagenParaSubida } from '@/utils/imageUpload'
+import { extractApiErrorMessage } from '@/utils/validators'
 
 export const VendorProfile = ({ perfil, onActualizado, onPerfilActualizado }) => {
   const [nombreTienda, setNombreTienda] = useState(perfil?.nombreTienda || '')
@@ -40,42 +42,57 @@ export const VendorProfile = ({ perfil, onActualizado, onPerfilActualizado }) =>
   const defaultPortada = 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1200&auto=format&fit=crop&q=80'
   const defaultLogo = 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=150&auto=format&fit=crop&q=80'
 
-  const handleSubirLogo = async (e) => {
+  const subirImagenTienda = async (
+    e,
+    { prefix, maxWidth, maxHeight, setUploading, setUrl, okMsg, failMsg }
+  ) => {
     const file = e.target.files?.[0]
+    e.target.value = ''
     if (!file) return
-    setSubiendoLogo(true)
+
+    setUploading(true)
     try {
-      const res = await vendedorService.subirImagen(file)
+      const prepared = await prepararImagenParaSubida(file, { prefix, maxWidth, maxHeight })
+      const res = await vendedorService.subirImagen(prepared)
       if (res?.url) {
-        setLogoUrl(res.url)
-        success('¡Logo subido exitosamente!')
+        setUrl(res.url)
+        success(okMsg)
+      } else {
+        error('El servidor no devolvió la URL de la imagen.')
       }
-    } catch {
-      error('Error al subir el logo')
+    } catch (err) {
+      error(err?.response ? extractApiErrorMessage(err, failMsg) : (err?.message || failMsg))
     } finally {
-      setSubiendoLogo(false)
+      setUploading(false)
     }
   }
 
-  const handleSubirPortada = async (e) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setSubiendoPortada(true)
-    try {
-      const res = await vendedorService.subirImagen(file)
-      if (res?.url) {
-        setPortadaUrl(res.url)
-        success('¡Portada subida exitosamente!')
-      }
-    } catch {
-      error('Error al subir la portada')
-    } finally {
-      setSubiendoPortada(false)
-    }
-  }
+  const handleSubirLogo = (e) =>
+    subirImagenTienda(e, {
+      prefix: 'logo',
+      maxWidth: 800,
+      maxHeight: 800,
+      setUploading: setSubiendoLogo,
+      setUrl: setLogoUrl,
+      okMsg: '¡Logo subido exitosamente!',
+      failMsg: 'Error al subir el logo',
+    })
+
+  const handleSubirPortada = (e) =>
+    subirImagenTienda(e, {
+      prefix: 'banner',
+      maxWidth: 1600,
+      maxHeight: 900,
+      setUploading: setSubiendoPortada,
+      setUrl: setPortadaUrl,
+      okMsg: '¡Portada subida exitosamente!',
+      failMsg: 'Error al subir la portada',
+    })
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (loading || subiendoLogo || subiendoPortada) return
+
     if (!nombreTienda.trim() || nombreTienda.trim().length < 3) {
       error('El nombre comercial de la tienda debe tener al menos 3 caracteres.')
       return
@@ -84,6 +101,11 @@ export const VendorProfile = ({ perfil, onActualizado, onPerfilActualizado }) =>
       error('Por favor ingresa una ciudad de despacho válida.')
       return
     }
+    if (logoUrl.trim().startsWith('data:') || portadaUrl.trim().startsWith('data:')) {
+      error('No pegues imágenes en Base64; usa "Subir archivo desde PC" o una URL https:// válida.')
+      return
+    }
+
     setLoading(true)
     try {
       await vendedorService.actualizarPerfil({
@@ -100,8 +122,7 @@ export const VendorProfile = ({ perfil, onActualizado, onPerfilActualizado }) =>
       if (onActualizado) onActualizado()
       if (onPerfilActualizado) onPerfilActualizado()
     } catch (err) {
-      const msg = err.response?.data?.mensaje || err.response?.data?.message || 'Error al actualizar datos de la tienda'
-      error(msg)
+      error(extractApiErrorMessage(err, 'Error al actualizar datos de la tienda'))
     } finally {
       setLoading(false)
     }

@@ -33,9 +33,10 @@ export const vendedorService = {
 
   subirImagen: async (file) => {
     const formData = new FormData()
-    formData.append('archivo', file)
+    formData.append('archivo', file, file.name || 'imagen.jpg')
     const res = await api.post('/productos/subir-imagen', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 60000,
     })
     return res.data
   },

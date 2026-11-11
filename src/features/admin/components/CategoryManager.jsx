@@ -7,6 +7,8 @@ import Modal from '@/components/common/Modal'
 import { useToast } from '@/hooks/useToast'
 import { getMediaUrl } from '@/utils/constants'
 import { sortCategoriesHierarchically } from '@/utils/categoryUtils'
+import { prepararImagenParaSubida } from '@/utils/imageUpload'
+import { extractApiErrorMessage } from '@/utils/validators'
 import { Plus, Trash2, Edit, Upload, Image as ImageIcon, X } from 'lucide-react'
 
 export const CategoryManager = () => {
@@ -64,19 +66,10 @@ export const CategoryManager = () => {
     e.target.value = ''
     if (!file) return
 
-    const tiposPermitidos = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
-    if (!tiposPermitidos.includes(file.type)) {
-      error('Solo se permiten imágenes en formato JPG, PNG, WEBP o GIF.')
-      return
-    }
-    if (file.size > 2 * 1024 * 1024) {
-      error('La imagen no debe superar los 2 MB.')
-      return
-    }
-
     setSubiendoImg(true)
     try {
-      const res = await productoService.subirImagen(file)
+      const prepared = await prepararImagenParaSubida(file, { prefix: 'cat', maxWidth: 1000, maxHeight: 1000 })
+      const res = await productoService.subirImagen(prepared)
       if (res?.url) {
         setImagenUrl(res.url)
         setPreviewError(false)
@@ -85,8 +78,7 @@ export const CategoryManager = () => {
         error('No se recibió la URL de la imagen subida.')
       }
     } catch (err) {
-      const msg = err.response?.data?.mensaje || err.response?.data?.message || 'Error al subir la imagen de la categoría'
-      error(msg)
+      error(err?.response ? extractApiErrorMessage(err, 'Error al subir la imagen de la categoría') : (err?.message || 'Error al subir la imagen de la categoría'))
     } finally {
       setSubiendoImg(false)
     }
@@ -269,7 +261,7 @@ export const CategoryManager = () => {
                 placeholder="O pega la URL de la imagen (https://... o /images/...)"
               />
               <p className="text-[10px] text-slate-400">
-                Formatos permitidos: JPG, PNG, WEBP o GIF (máx. 2 MB).
+                Formatos permitidos: JPG, PNG, WEBP o GIF (máx. 30 MB).
               </p>
             </div>
 

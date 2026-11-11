@@ -4,6 +4,8 @@ import Button from '@/components/common/Button'
 import { productoService } from '@/features/productos'
 import { tiendaService } from '@/features/tiendas'
 import { useToast } from '@/hooks/useToast'
+import { prepararImagenParaSubida } from '@/utils/imageUpload'
+import { extractApiErrorMessage } from '@/utils/validators'
 import { sortCategoriesHierarchically } from '@/utils/categoryUtils'
 import { Plus, Trash2, Upload, Tag, Check } from 'lucide-react'
 
@@ -139,16 +141,20 @@ export const ProductForm = ({ productoInicial = null, onGuardado, onCancelar }) 
 
   const handleFileUpload = async (e) => {
     const file = e.target.files?.[0]
+    e.target.value = ''
     if (!file) return
     setSubiendoImg(true)
     try {
-      const res = await productoService.subirImagen(file)
+      const prepared = await prepararImagenParaSubida(file, { prefix: 'prod', maxWidth: 1400, maxHeight: 1400 })
+      const res = await productoService.subirImagen(prepared)
       if (res?.url) {
         setImagenes([...imagenes.filter(Boolean), res.url])
         success('Imagen subida con éxito')
+      } else {
+        error('No se recibió la URL de la imagen subida.')
       }
-    } catch {
-      error('Error al subir la imagen')
+    } catch (err) {
+      error(err?.response ? extractApiErrorMessage(err, 'Error al subir la imagen') : (err?.message || 'Error al subir la imagen'))
     } finally {
       setSubiendoImg(false)
     }

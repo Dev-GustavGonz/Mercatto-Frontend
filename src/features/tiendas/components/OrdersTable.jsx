@@ -54,8 +54,8 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
       error('Por favor selecciona un archivo de imagen válido (JPG, PNG, WebP).')
       return
     }
-    if (file.size > 10 * 1024 * 1024) {
-      error('La imagen no debe superar los 10MB.')
+    if (file.size > 30 * 1024 * 1024) {
+      error('La imagen no debe superar los 30MB.')
       return
     }
     setArchivoEvidencia(file)
@@ -715,7 +715,7 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
                         📁 Subir desde Archivos / Galería
                       </span>
                       <span className="text-[10px] text-violet-600 dark:text-violet-400 mt-0.5">
-                        JPG, PNG, WebP (Máx. 10MB)
+                        JPG, PNG, WebP (Máx. 30MB)
                       </span>
                       <input
                         type="file"
