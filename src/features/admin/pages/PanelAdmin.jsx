@@ -14,6 +14,7 @@ import { useAuth } from '@/context/AuthContext'
 import { formatCurrency } from '@/utils/formatCurrency'
 import { getMediaUrl } from '@/utils/constants'
 import MercattoLogo from '@/components/common/MercattoLogo'
+import PanelDockSidebar from '@/components/layout/PanelDockSidebar'
 import {
   LayoutDashboard,
   Store,
@@ -34,9 +35,7 @@ import {
   DollarSign,
   TrendingUp,
   Headphones,
-  Settings,
-  LogOut,
-  Bell,
+  Settings,  Bell,
   Package,
   RefreshCw,
   Plus,
@@ -235,7 +234,7 @@ export const PanelAdmin = () => {
     { id: 'predictivo', label: 'IA Predictiva Admin', icon: TrendingUp, badge: 'IA' },
     { id: 'pedidos', label: 'Auditoría Pedidos', icon: ShoppingCart, badge: pedidos.length },
     { id: 'vendedores', label: 'Tiendas & Proveedores', icon: Store, badge: tiendasPendientes > 0 ? tiendasPendientes : null },
-    { id: 'categorias', label: 'Árbol Categorías', icon: Grid, badge: null },
+    { id: 'categorias', label: 'Categorías', icon: Grid, badge: null },
     { id: 'cupones', label: 'Cupones & Promos', icon: Tag, badge: null },
     { id: 'usuarios', label: 'Directorio Usuarios', icon: Users, badge: usuarios.length },
     { id: 'soporte', label: 'Tickets Soporte', icon: Headphones, badge: null },
@@ -269,87 +268,20 @@ export const PanelAdmin = () => {
       </div>
 
       {/* Dock Cápsula Blanca */}
-      <aside
-        className={`fixed inset-y-0 left-0 z-50 w-24 bg-white border border-slate-200/90 text-slate-700 p-3.5 flex flex-col items-center shadow-xl shadow-slate-200/50 transition-transform duration-300 rounded-r-[36px] lg:sticky lg:top-3 lg:self-start lg:translate-x-0 lg:w-20 lg:h-[calc(100vh-1.75rem)] lg:max-h-[calc(100vh-1.75rem)] lg:rounded-[36px] ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
-      >
-        {/* Top: Logo Isotipo Mercatto en Morado */}
-        <div className="flex flex-col items-center gap-3 pt-2 shrink-0">
-          <Link 
-            to="/" 
-            className="w-12 h-12 rounded-2xl bg-violet-50 hover:bg-violet-100 text-violet-700 flex items-center justify-center transition-all hover:scale-105 shadow-xs"
-            title="Ir al inicio de Mercatto"
-          >
-            <MercattoLogo size={28} showText={false} />
-          </Link>
-          <div className="w-8 h-[1px] bg-slate-100" />
-        </div>
-
-        {/* Center: Lista de Iconos Monocromáticos */}
-        <nav className="flex flex-col items-center gap-3 pt-7 sm:pt-9 w-full">
-          {dockItems.map((item) => {
-            const Icon = item.icon
-            const activo = tab === item.id
-            return (
-              <div key={item.id} className="relative group w-full flex justify-center">
-                <button
-                  onClick={() => {
-                    setTab(item.id)
-                    setSidebarOpen(false)
-                  }}
-                  className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200 cursor-pointer ${
-                    activo
-                      ? 'bg-violet-600 text-white shadow-md shadow-violet-500/25 scale-105'
-                      : 'text-slate-500 hover:text-violet-700 hover:bg-violet-50'
-                  }`}
-                  title={item.label}
-                >
-                  <Icon size={20} strokeWidth={activo ? 2.5 : 2} />
-                </button>
-
-                {/* Badge indicador discreto */}
-                {item.badge && (
-                  <span className="absolute top-1 right-2 w-2.5 h-2.5 rounded-full bg-violet-600 border-2 border-white" />
-                )}
-
-                {/* Tooltip flotante al pasar el cursor */}
-                <div className="absolute left-full ml-3 px-3 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 shadow-xl z-50 hidden lg:block">
-                  {item.label}
-                </div>
-              </div>
-            )
-          })}
-        </nav>
-
-        {/* Bottom: Ver Catálogo, Recargar y Salir */}
-        <div className="flex flex-col items-center gap-2.5 pb-2 pt-4 border-t border-slate-100 w-full mt-auto shrink-0">
-          <Link
-            to="/catalogo"
-            target="_blank"
-            className="w-11 h-11 rounded-2xl text-slate-400 hover:text-violet-700 hover:bg-violet-50 flex items-center justify-center transition-all"
-            title="Inspeccionar Catálogo Público"
-          >
-            <ShoppingBag size={18} />
-          </Link>
-
-          <button
-            onClick={cargarDatos}
-            className="w-11 h-11 rounded-2xl text-slate-400 hover:text-violet-700 hover:bg-violet-50 flex items-center justify-center transition-all cursor-pointer"
-            title="Sincronizar datos"
-          >
-            <RefreshCw size={18} />
-          </button>
-
-          <button
-            onClick={handleLogout}
-            className="w-11 h-11 rounded-2xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition-all cursor-pointer"
-            title="Cerrar sesión"
-          >
-            <LogOut size={18} />
-          </button>
-        </div>
-      </aside>
+      <PanelDockSidebar
+        dockItems={dockItems}
+        activeTab={tab}
+        onSelectTab={setTab}
+        sidebarOpen={sidebarOpen}
+        onCloseSidebar={() => setSidebarOpen(false)}
+        onSync={cargarDatos}
+        onLogout={handleLogout}
+        externalLink={{
+          to: '/catalogo',
+          title: 'Inspeccionar Catálogo Público',
+          icon: <ShoppingBag size={18} />,
+        }}
+      />
 
       {/* ============================================================== */}
       {/* 2. ÁREA DE CONTENIDO PRINCIPAL                                */}
@@ -368,7 +300,7 @@ export const PanelAdmin = () => {
                 {tab === 'predictivo' && 'Modelo Predictivo de Monetización'}
                 {tab === 'pedidos' && 'Auditoría Global de Pedidos'}
                 {tab === 'vendedores' && 'Aprobación y Control de Tiendas'}
-                {tab === 'categorias' && 'Gestión de Árbol de Categorías'}
+                {tab === 'categorias' && 'Gestión de Categorías'}
                 {tab === 'cupones' && 'Campañas de Descuento & Promociones'}
                 {tab === 'usuarios' && 'Directorio de Usuarios y Roles'}
                 {tab === 'soporte' && 'Tickets y Asistencia al Cliente'}

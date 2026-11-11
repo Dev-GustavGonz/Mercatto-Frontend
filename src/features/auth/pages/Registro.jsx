@@ -5,7 +5,14 @@ import { useToast } from '@/hooks/useToast'
 import { useLanguage } from '@/hooks/useLanguage'
 import GoogleLoginButton from '../components/GoogleLoginButton'
 import MercattoLogo from '@/components/common/MercattoLogo'
-import { User, Mail, Lock, Store, Building, MapPin, Eye, EyeOff, ArrowLeft, Sparkles, ShieldCheck, CheckCircle2, CreditCard } from 'lucide-react'
+import { User, Mail, Lock, Store, Building, MapPin, Eye, EyeOff, ArrowLeft, Sparkles, ShieldCheck, CheckCircle2, CreditCard, AlertCircle } from 'lucide-react'
+import {
+  validarNombreCompleto,
+  validarEmail,
+  validarPassword,
+  validarDatosVendedor,
+  extractApiErrorMessage,
+} from '@/utils/validators'
 
 export const Registro = () => {
   const [searchParams] = useSearchParams()
@@ -28,75 +35,113 @@ export const Registro = () => {
   const [cuentaBancaria, setCuentaBancaria] = useState('')
 
   const [loading, setLoading] = useState(false)
+  const [formError, setFormError] = useState(null)
   const { registro, loginGoogle } = useAuth()
   const { success, error, info } = useToast()
   const { t, idioma, cambiarIdioma } = useLanguage()
   const isEn = idioma === 'EN'
   const navigate = useNavigate()
 
-  const handleGoogle = async (credential) => {
-    setLoading(true)
-    const res = await loginGoogle(credential)
-    setLoading(false)
+  const reportError = (field, message) => {
+    setFormError({ field, message })
+    error(message)
+  }
 
-    if (res?.exito) {
-      success(isEn ? 'Account created with Google! Welcome to Mercatto.' : '¡Cuenta creada con Google! Bienvenido a Mercatto.')
-      navigate('/', { replace: true })
-    } else {
-      error(res?.mensaje || (isEn ? 'Could not continue with Google' : 'No se pudo continuar con Google'))
+  const clearFieldError = (field) => {
+    if (formError && (!field || formError.field === field || formError.field === 'general')) {
+      setFormError(null)
+    }
+  }
+
+  const detectarCampoBackend = (mensaje = '') => {
+    const lower = mensaje.toLowerCase()
+    if (lower.includes('correo') || lower.includes('email')) return 'email'
+    if (lower.includes('tienda') || lower.includes('store')) return 'nombreTienda'
+    if (lower.includes('nit') || lower.includes('cédula') || lower.includes('cedula')) return 'nitCedula'
+    if (lower.includes('contraseña') || lower.includes('password')) return 'password'
+    return 'general'
+  }
+
+  const handleGoogle = async (credential) => {
+    if (loading) return
+    setFormError(null)
+    setLoading(true)
+    try {
+      const res = await loginGoogle(credential)
+      if (res?.exito) {
+        success(isEn ? 'Account created with Google! Welcome to Mercatto.' : '¡Cuenta creada con Google! Bienvenido a Mercatto.')
+        navigate('/', { replace: true })
+      } else {
+        reportError(
+          'general',
+          res?.mensaje || (isEn ? 'Could not continue with Google' : 'No se pudo continuar con Google')
+        )
+      }
+    } catch (err) {
+      reportError(
+        'general',
+        extractApiErrorMessage(err, isEn ? 'Could not continue with Google' : 'No se pudo continuar con Google')
+      )
+    } finally {
+      setLoading(false)
     }
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (loading) return
 
-    if (!aceptaTerminos) {
-      error(isEn ? 'You must accept the Terms and Conditions' : 'Debes aceptar los Términos y Condiciones para continuar')
+    const nombreTrim = nombre.trim().replace(/\s+/g, ' ')
+    const emailTrim = email.trim().toLowerCase()
+
+    const nombreErr = validarNombreCompleto(nombreTrim, isEn)
+    if (nombreErr) {
+      reportError('nombre', nombreErr)
       return
     }
 
-    const nombreTrim = nombre.trim()
-    const emailTrim = email.trim()
-
-    if (!nombreTrim) {
-      error(isEn ? 'Please enter your full name' : 'Por favor ingresa tu nombre completo')
+    const emailErr = validarEmail(emailTrim, isEn)
+    if (emailErr) {
+      reportError('email', emailErr)
       return
     }
 
-    if (!emailTrim || !/\S+@\S+\.\S+/.test(emailTrim)) {
-      error(isEn ? 'Please enter a valid email address' : 'Por favor ingresa un correo electrónico válido')
-      return
-    }
-
-    if (password.length < 6) {
-      error(isEn ? 'Password must be at least 6 characters' : 'La contraseña debe tener al menos 6 caracteres')
+    const passErr = validarPassword(password, isEn)
+    if (passErr) {
+      reportError('password', passErr)
       return
     }
 
     if (password !== confirmPassword) {
-      error(isEn ? 'Passwords do not match' : 'Las contraseñas no coinciden. Por favor verifícalas.')
+      reportError(
+        'confirmPassword',
+        isEn ? 'Passwords do not match' : 'Las contraseñas no coinciden. Por favor verifícalas.'
+      )
       return
     }
 
     if (rol === 'VENDEDOR') {
-      if (!nombreTienda.trim()) {
-        error(isEn ? 'Please enter your store name' : 'Por favor ingresa el nombre de tu tienda')
-        return
-      }
-      if (!nitCedula.trim()) {
-        error(isEn ? 'Please enter your Tax ID / Citizen ID' : 'Por favor ingresa el NIT o Cédula de tu negocio')
-        return
-      }
-      if (!ciudad.trim()) {
-        error(isEn ? 'Please enter your city' : 'Por favor ingresa la ciudad de tu negocio en Colombia')
-        return
-      }
-      if (!cuentaBancaria.trim()) {
-        error(isEn ? 'Please enter your bank account or payout wallet for sales transactions' : 'Por favor ingresa la cuenta bancaria o Nequi para recibir las transacciones de ventas')
+      const vendorErr = validarDatosVendedor(
+        { nombreTienda, nitCedula, ciudad, banco, cuentaBancaria },
+        isEn
+      )
+      if (vendorErr) {
+        reportError(vendorErr.field, vendorErr.message)
         return
       }
     }
 
+    if (!aceptaTerminos) {
+      reportError(
+        'terminos',
+        isEn
+          ? 'You must accept the Terms and Conditions'
+          : 'Debes aceptar los Términos y Condiciones para continuar'
+      )
+      return
+    }
+
+    setFormError(null)
     setLoading(true)
 
     const payload = {
@@ -107,9 +152,9 @@ export const Registro = () => {
       vendedor:
         rol === 'VENDEDOR'
           ? {
-              nombreTienda: nombreTienda.trim(),
+              nombreTienda: nombreTienda.trim().replace(/\s+/g, ' '),
               nitCedula: nitCedula.trim(),
-              ciudad: ciudad.trim(),
+              ciudad: ciudad.trim().replace(/\s+/g, ' '),
               banco: banco.trim(),
               cuentaBancaria: cuentaBancaria.trim(),
               tipo: 'PERSONA_NATURAL',
@@ -117,19 +162,26 @@ export const Registro = () => {
           : undefined,
     }
 
-    const res = await registro(payload)
-    setLoading(false)
+    try {
+      const res = await registro(payload)
 
-    if (res?.exito) {
-      if (rol === 'VENDEDOR') {
-        success(isEn ? 'Store registered! Check your email to verify your account.' : '¡Tienda registrada! Verifica tu correo o ingresa para comenzar.')
-        navigate('/login?registro=pendiente')
+      if (res?.exito) {
+        if (rol === 'VENDEDOR') {
+          success(isEn ? 'Store registered! Check your email to verify your account.' : '¡Tienda registrada! Verifica tu correo o ingresa para comenzar.')
+          navigate('/login?registro=pendiente')
+        } else {
+          success(isEn ? 'Account created successfully! Welcome to Mercatto.' : '¡Cuenta creada con éxito! Bienvenido a Mercatto.')
+          navigate('/', { replace: true })
+        }
       } else {
-        success(isEn ? 'Account created successfully! Welcome to Mercatto.' : '¡Cuenta creada con éxito! Bienvenido a Mercatto.')
-        navigate('/', { replace: true })
+        const msg = res?.mensaje || (isEn ? 'Error creating account' : 'Error al crear la cuenta')
+        reportError(detectarCampoBackend(msg), msg)
       }
-    } else {
-      error(res?.mensaje || (isEn ? 'Error creating account' : 'Error al crear la cuenta'))
+    } catch (err) {
+      const msg = extractApiErrorMessage(err, isEn ? 'Error creating account' : 'Error al crear la cuenta')
+      reportError(detectarCampoBackend(msg), msg)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -305,7 +357,10 @@ export const Registro = () => {
           <div className="grid grid-cols-2 gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 mb-5 border border-slate-200/70 dark:border-slate-700/70">
             <button
               type="button"
-              onClick={() => setRol('COMPRADOR')}
+              onClick={() => {
+                setRol('COMPRADOR')
+                setFormError(null)
+              }}
               className={`py-2.5 px-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap ${
                 rol === 'COMPRADOR'
                   ? 'bg-white dark:bg-slate-900 text-violet-600 dark:text-violet-400 shadow-sm border border-slate-200/80 dark:border-slate-700'
@@ -318,7 +373,10 @@ export const Registro = () => {
 
             <button
               type="button"
-              onClick={() => setRol('VENDEDOR')}
+              onClick={() => {
+                setRol('VENDEDOR')
+                setFormError(null)
+              }}
               className={`py-2.5 px-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap ${
                 rol === 'VENDEDOR'
                   ? 'bg-violet-600 text-white shadow-md shadow-violet-500/25 border border-violet-500'
@@ -330,7 +388,17 @@ export const Registro = () => {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-3.5">
+          <form onSubmit={handleSubmit} noValidate className="space-y-3.5">
+            {formError?.message && (
+              <div
+                role="alert"
+                className="flex items-start gap-2.5 rounded-2xl border border-rose-200 dark:border-rose-800/70 bg-rose-50 dark:bg-rose-950/50 px-3.5 py-2.5 text-xs font-semibold text-rose-700 dark:text-rose-300"
+              >
+                <AlertCircle size={16} className="shrink-0 mt-0.5 text-rose-600 dark:text-rose-400" />
+                <span>{formError.message}</span>
+              </div>
+            )}
+
             {/* Nombre Completo */}
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
@@ -343,11 +411,18 @@ export const Registro = () => {
                 <input
                   type="text"
                   value={nombre}
-                  onChange={(e) => setNombre(e.target.value)}
+                  onChange={(e) => {
+                    setNombre(e.target.value)
+                    clearFieldError('nombre')
+                  }}
                   placeholder={isEn ? 'e.g. John Doe' : 'Ej: John Doe'}
                   required
                   autoComplete="name"
-                  className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/90 bg-slate-50/70 dark:bg-slate-800/60 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-violet-600 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15 transition-all"
+                  className={`w-full rounded-2xl border bg-slate-50/70 dark:bg-slate-800/60 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 transition-all ${
+                    formError?.field === 'nombre'
+                      ? 'border-rose-500 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20'
+                      : 'border-slate-200 dark:border-slate-700/90 focus:border-violet-600 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15'
+                  }`}
                 />
               </div>
             </div>
@@ -364,11 +439,18 @@ export const Registro = () => {
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value)
+                    clearFieldError('email')
+                  }}
                   placeholder={t('correo_placeholder') || (isEn ? 'example@mercatto.com' : 'ejemplo@mercatto.com')}
                   required
                   autoComplete="email"
-                  className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/90 bg-slate-50/70 dark:bg-slate-800/60 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-violet-600 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15 transition-all"
+                  className={`w-full rounded-2xl border bg-slate-50/70 dark:bg-slate-800/60 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 transition-all ${
+                    formError?.field === 'email'
+                      ? 'border-rose-500 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20'
+                      : 'border-slate-200 dark:border-slate-700/90 focus:border-violet-600 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15'
+                  }`}
                 />
               </div>
             </div>
@@ -386,12 +468,19 @@ export const Registro = () => {
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value)
+                      clearFieldError('password')
+                    }}
                     placeholder="••••••••"
                     required
                     minLength={6}
                     autoComplete="new-password"
-                    className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/90 bg-slate-50/70 dark:bg-slate-800/60 pl-10 pr-10 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-violet-600 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15 transition-all"
+                    className={`w-full rounded-2xl border bg-slate-50/70 dark:bg-slate-800/60 pl-10 pr-10 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 transition-all ${
+                      formError?.field === 'password'
+                        ? 'border-rose-500 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20'
+                        : 'border-slate-200 dark:border-slate-700/90 focus:border-violet-600 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15'
+                    }`}
                   />
                   <button
                     type="button"
@@ -415,12 +504,19 @@ export const Registro = () => {
                   <input
                     type={showConfirmPassword ? 'text' : 'password'}
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    onChange={(e) => {
+                      setConfirmPassword(e.target.value)
+                      clearFieldError('confirmPassword')
+                    }}
                     placeholder="••••••••"
                     required
                     minLength={6}
                     autoComplete="new-password"
-                    className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/90 bg-slate-50/70 dark:bg-slate-800/60 pl-10 pr-10 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-violet-600 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15 transition-all"
+                    className={`w-full rounded-2xl border bg-slate-50/70 dark:bg-slate-800/60 pl-10 pr-10 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 transition-all ${
+                      formError?.field === 'confirmPassword'
+                        ? 'border-rose-500 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20'
+                        : 'border-slate-200 dark:border-slate-700/90 focus:border-violet-600 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15'
+                    }`}
                   />
                   <button
                     type="button"
@@ -453,10 +549,17 @@ export const Registro = () => {
                     <input
                       type="text"
                       value={nombreTienda}
-                      onChange={(e) => setNombreTienda(e.target.value)}
+                      onChange={(e) => {
+                        setNombreTienda(e.target.value)
+                        clearFieldError('nombreTienda')
+                      }}
                       placeholder={isEn ? 'e.g. Alien Tech Colombia' : 'Ej: Alien Tech Colombia'}
                       required
-                      className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 pl-10 pr-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-500/20"
+                      className={`w-full rounded-xl border bg-white dark:bg-slate-900 pl-10 pr-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:outline-none ${
+                        formError?.field === 'nombreTienda'
+                          ? 'border-rose-500 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20'
+                          : 'border-slate-300 dark:border-slate-700 focus:border-violet-600 focus:ring-2 focus:ring-violet-500/20'
+                      }`}
                     />
                   </div>
                 </div>
@@ -473,10 +576,17 @@ export const Registro = () => {
                       <input
                         type="text"
                         value={nitCedula}
-                        onChange={(e) => setNitCedula(e.target.value)}
+                        onChange={(e) => {
+                          setNitCedula(e.target.value)
+                          clearFieldError('nitCedula')
+                        }}
                         placeholder="Ej: 900.123.456-7"
                         required
-                        className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 pl-10 pr-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-500/20"
+                        className={`w-full rounded-xl border bg-white dark:bg-slate-900 pl-10 pr-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:outline-none ${
+                          formError?.field === 'nitCedula'
+                            ? 'border-rose-500 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20'
+                            : 'border-slate-300 dark:border-slate-700 focus:border-violet-600 focus:ring-2 focus:ring-violet-500/20'
+                        }`}
                       />
                     </div>
                   </div>
@@ -492,10 +602,17 @@ export const Registro = () => {
                       <input
                         type="text"
                         value={ciudad}
-                        onChange={(e) => setCiudad(e.target.value)}
+                        onChange={(e) => {
+                          setCiudad(e.target.value)
+                          clearFieldError('ciudad')
+                        }}
                         placeholder="Ej: Bogotá, Medellín, Cali"
                         required
-                        className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 pl-10 pr-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-500/20"
+                        className={`w-full rounded-xl border bg-white dark:bg-slate-900 pl-10 pr-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:outline-none ${
+                          formError?.field === 'ciudad'
+                            ? 'border-rose-500 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20'
+                            : 'border-slate-300 dark:border-slate-700 focus:border-violet-600 focus:ring-2 focus:ring-violet-500/20'
+                        }`}
                       />
                     </div>
                   </div>
@@ -515,7 +632,10 @@ export const Registro = () => {
                       </label>
                       <select
                         value={banco}
-                        onChange={(e) => setBanco(e.target.value)}
+                        onChange={(e) => {
+                          setBanco(e.target.value)
+                          clearFieldError('banco')
+                        }}
                         className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-500/20 cursor-pointer"
                       >
                         <option value="Bancolombia">Bancolombia (Ahorros/Corriente)</option>
@@ -537,10 +657,17 @@ export const Registro = () => {
                       <input
                         type="text"
                         value={cuentaBancaria}
-                        onChange={(e) => setCuentaBancaria(e.target.value)}
+                        onChange={(e) => {
+                          setCuentaBancaria(e.target.value)
+                          clearFieldError('cuentaBancaria')
+                        }}
                         placeholder={isEn ? 'e.g. 123-456789-00 or 3001234567' : 'Ej: 123-456789-00 o 3001234567'}
                         required
-                        className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-sm font-mono text-slate-900 dark:text-slate-100 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-500/20"
+                        className={`w-full rounded-xl border bg-white dark:bg-slate-900 px-3.5 py-2.5 text-sm font-mono text-slate-900 dark:text-slate-100 focus:outline-none ${
+                          formError?.field === 'cuentaBancaria'
+                            ? 'border-rose-500 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20'
+                            : 'border-slate-300 dark:border-slate-700 focus:border-violet-600 focus:ring-2 focus:ring-violet-500/20'
+                        }`}
                       />
                     </div>
                   </div>
@@ -554,7 +681,10 @@ export const Registro = () => {
                 <input
                   type="checkbox"
                   checked={aceptaTerminos}
-                  onChange={(e) => setAceptaTerminos(e.target.checked)}
+                  onChange={(e) => {
+                    setAceptaTerminos(e.target.checked)
+                    clearFieldError('terminos')
+                  }}
                   className="w-4 h-4 rounded-md border-slate-300 text-violet-600 focus:ring-violet-500 cursor-pointer"
                 />
                 <span>

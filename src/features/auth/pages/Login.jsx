@@ -5,7 +5,8 @@ import { useToast } from '@/hooks/useToast'
 import { useLanguage } from '@/hooks/useLanguage'
 import GoogleLoginButton from '../components/GoogleLoginButton'
 import MercattoLogo from '@/components/common/MercattoLogo'
-import { Mail, Lock, LogIn, Eye, EyeOff, ArrowLeft, Sparkles, ShieldCheck } from 'lucide-react'
+import { Mail, Lock, LogIn, Eye, EyeOff, ArrowLeft, Sparkles, ShieldCheck, AlertCircle } from 'lucide-react'
+import { validarEmail, extractApiErrorMessage } from '@/utils/validators'
 
 export const Login = () => {
   const [email, setEmail] = useState('')
@@ -13,6 +14,7 @@ export const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [recordarme, setRecordarme] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [formError, setFormError] = useState('')
   const { login, loginGoogle } = useAuth()
   const { success, error } = useToast()
   const { t, idioma, cambiarIdioma } = useLanguage()
@@ -34,45 +36,78 @@ export const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (loading) return
 
-    const emailTrim = email.trim()
-    if (!emailTrim) {
-      error(isEn ? 'Please enter your email address' : 'Por favor ingresa tu correo electrónico')
-      return
-    }
-
-    if (!/\S+@\S+\.\S+/.test(emailTrim)) {
-      error(isEn ? 'Invalid email format' : 'El formato del correo electrónico no es válido')
+    const emailTrim = email.trim().toLowerCase()
+    const emailErr = validarEmail(emailTrim, isEn)
+    if (emailErr) {
+      setFormError(emailErr)
+      error(emailErr)
       return
     }
 
     if (!password) {
-      error(isEn ? 'Please enter your password' : 'Por favor ingresa tu contraseña')
+      const msg = isEn ? 'Please enter your password' : 'Por favor ingresa tu contraseña'
+      setFormError(msg)
+      error(msg)
       return
     }
 
+    setFormError('')
     setLoading(true)
-    const res = await login(emailTrim, password, recordarme)
-    setLoading(false)
-
-    if (res?.exito) {
-      success(isEn ? 'Welcome back to Mercatto!' : '¡Bienvenido de vuelta a Mercatto!')
-      irSegunRol(res)
-    } else {
-      error(res?.mensaje || (isEn ? 'Login failed. Check your credentials.' : 'Error al iniciar sesión. Verifica tus credenciales.'))
+    try {
+      const res = await login(emailTrim, password, recordarme)
+      if (res?.exito) {
+        success(isEn ? 'Welcome back to Mercatto!' : '¡Bienvenido de vuelta a Mercatto!')
+        irSegunRol(res)
+      } else {
+        const msg =
+          res?.mensaje ||
+          (isEn
+            ? 'Login failed. Check your credentials.'
+            : 'Error al iniciar sesión. Verifica tus credenciales.')
+        setFormError(msg)
+        error(msg)
+      }
+    } catch (err) {
+      const msg = extractApiErrorMessage(
+        err,
+        isEn
+          ? 'Login failed. Check your credentials.'
+          : 'Error al iniciar sesión. Verifica tus credenciales.'
+      )
+      setFormError(msg)
+      error(msg)
+    } finally {
+      setLoading(false)
     }
   }
 
   const handleGoogle = async (credential) => {
+    if (loading) return
+    setFormError('')
     setLoading(true)
-    const res = await loginGoogle(credential)
-    setLoading(false)
-
-    if (res?.exito) {
-      success(isEn ? 'Welcome to Mercatto!' : '¡Bienvenido a Mercatto!')
-      irSegunRol(res)
-    } else {
-      error(res?.mensaje || (isEn ? 'Could not sign in with Google' : 'No se pudo iniciar sesión con Google'))
+    try {
+      const res = await loginGoogle(credential)
+      if (res?.exito) {
+        success(isEn ? 'Welcome to Mercatto!' : '¡Bienvenido a Mercatto!')
+        irSegunRol(res)
+      } else {
+        const msg =
+          res?.mensaje ||
+          (isEn ? 'Could not sign in with Google' : 'No se pudo iniciar sesión con Google')
+        setFormError(msg)
+        error(msg)
+      }
+    } catch (err) {
+      const msg = extractApiErrorMessage(
+        err,
+        isEn ? 'Could not sign in with Google' : 'No se pudo iniciar sesión con Google'
+      )
+      setFormError(msg)
+      error(msg)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -238,7 +273,17 @@ export const Login = () => {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} noValidate className="space-y-4">
+            {formError && (
+              <div
+                role="alert"
+                className="flex items-start gap-2.5 rounded-2xl border border-rose-200 dark:border-rose-800/70 bg-rose-50 dark:bg-rose-950/50 px-3.5 py-2.5 text-xs font-semibold text-rose-700 dark:text-rose-300"
+              >
+                <AlertCircle size={16} className="shrink-0 mt-0.5 text-rose-600 dark:text-rose-400" />
+                <span>{formError}</span>
+              </div>
+            )}
+
             {/* Campo Correo */}
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">
@@ -251,7 +296,10 @@ export const Login = () => {
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value)
+                    if (formError) setFormError('')
+                  }}
                   placeholder={t('correo_placeholder') || (isEn ? 'example@mercatto.com' : 'ejemplo@mercatto.com')}
                   required
                   autoComplete="email"
@@ -272,7 +320,10 @@ export const Login = () => {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value)
+                    if (formError) setFormError('')
+                  }}
                   placeholder="••••••••"
                   required
                   autoComplete="current-password"

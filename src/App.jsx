@@ -127,6 +127,49 @@ const RutaProtegida = ({ children }) => {
   return children
 }
 
+const CORE_ROUTE_LOADERS = [
+  loadCatalogo,
+  loadDetalleProducto,
+  loadCategoria,
+  loadBusqueda,
+  loadDirectorioCategorias,
+  loadDirectorioTiendas,
+  loadVitrinaTienda,
+  loadLogin,
+  loadRegistro,
+  loadPublicChatbot,
+]
+
+const SECONDARY_ROUTE_LOADERS = [
+  loadAboutUs,
+  loadCentroSoporte,
+  loadCarrito,
+  loadRastreoPedido,
+  loadFavoritos,
+  loadCheckout,
+  loadMisPedidos,
+  loadPerfil,
+  loadMensajes,
+  loadPagoExitoso,
+  loadPagoCancelado,
+  loadTerminos,
+  loadPrivacidad,
+  loadPanelAdmin,
+  loadPanelVendedor,
+  loadNotFound,
+]
+
+let routesPrefetchStarted = false
+
+const scheduleIdle = (cb, fallbackDelay = 250, timeout = 1200) => {
+  if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+    const id = window.requestIdleCallback(cb, { timeout })
+    return () => window.cancelIdleCallback(id)
+  }
+  const timer = setTimeout(cb, fallbackDelay)
+  return () => clearTimeout(timer)
+}
+
 const AppLayout = () => {
   const location = useLocation()
   const esRutaPanel =
@@ -139,26 +182,61 @@ const AppLayout = () => {
     location.pathname.startsWith('/recuperar-password')
   const esHome = location.pathname === '/'
 
-  // Precargar en segundo plano las rutas más visitadas para que la navegación entre páginas sea instantánea
+  // Al abrir el Home (o iniciar la app), precargar en segundo plano todas las páginas para que navegar entre rutas sea instantáneo
   useEffect(() => {
-    const prefetchCoreRoutes = () => {
-      loadCatalogo()
-      loadDetalleProducto()
-      loadDirectorioCategorias()
-      loadDirectorioTiendas()
-      loadVitrinaTienda()
-      loadLogin()
-      loadRegistro()
-      loadPublicChatbot()
+    if (routesPrefetchStarted) return
+
+    let cancelled = false
+    let completed = false
+    const cleanups = []
+
+    const prefetchGroup = (loaders) =>
+      Promise.allSettled(
+        loaders.map((loader) => {
+          try {
+            return loader().catch(() => {})
+          } catch {
+            return Promise.resolve()
+          }
+        })
+      )
+
+    const startPrefetch = () => {
+      if (cancelled) return
+      routesPrefetchStarted = true
+      prefetchGroup(CORE_ROUTE_LOADERS).then(() => {
+        if (cancelled) return
+        // Cargar el resto en segundo lote cuando el hilo principal esté libre (priorizando Home sin bloquear el pintado)
+        const batchSize = 5
+        const runBatch = (offset) => {
+          if (cancelled) return
+          if (offset >= SECONDARY_ROUTE_LOADERS.length) {
+            completed = true
+            return
+          }
+          const slice = SECONDARY_ROUTE_LOADERS.slice(offset, offset + batchSize)
+          const cancelNext = scheduleIdle(
+            () => {
+              prefetchGroup(slice).then(() => runBatch(offset + batchSize))
+            },
+            esHome ? 150 : 350,
+            1500
+          )
+          cleanups.push(cancelNext)
+        }
+        runBatch(0)
+      })
     }
 
-    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      const id = window.requestIdleCallback(prefetchCoreRoutes, { timeout: 1500 })
-      return () => window.cancelIdleCallback(id)
+    const cancelInitial = scheduleIdle(startPrefetch, esHome ? 200 : 500, 1200)
+    cleanups.push(cancelInitial)
+
+    return () => {
+      cancelled = true
+      if (!completed) routesPrefetchStarted = false
+      cleanups.forEach((fn) => fn && fn())
     }
-    const timer = setTimeout(prefetchCoreRoutes, 600)
-    return () => clearTimeout(timer)
-  }, [])
+  }, [esHome])
 
   return (
     <div className="min-h-screen flex flex-col bg-mercatto-bg dark:bg-slate-950 text-mercatto-text dark:text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">

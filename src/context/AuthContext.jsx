@@ -64,15 +64,25 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   const login = async (email, password, recordarme = false) => {
-    const res = await authService.login(email, password, recordarme)
-    if (res?.exito && res?.accessToken) {
-      localStorage.setItem('mercatto_token', res.accessToken)
-      localStorage.setItem('mercatto_user', JSON.stringify(res.usuario))
-      setToken(res.accessToken)
-      setUsuario(res.usuario)
-      return { exito: true, usuario: res.usuario }
+    try {
+      const res = await authService.login(email, password, recordarme)
+      if (res?.exito && res?.accessToken) {
+        localStorage.setItem('mercatto_token', res.accessToken)
+        localStorage.setItem('mercatto_user', JSON.stringify(res.usuario))
+        setToken(res.accessToken)
+        setUsuario(res.usuario)
+        return { exito: true, usuario: res.usuario }
+      }
+      return { exito: false, mensaje: res?.mensaje || 'Error al iniciar sesión', pendiente: res?.pendiente }
+    } catch (err) {
+      const data = err?.response?.data
+      return {
+        exito: false,
+        mensaje: data?.mensaje || data?.message || 'Error al iniciar sesión. Verifica tus credenciales.',
+        pendiente: Boolean(data?.pendiente),
+        status: err?.response?.status,
+      }
     }
-    return { exito: false, mensaje: res?.mensaje || 'Error al iniciar sesión', pendiente: res?.pendiente }
   }
 
   const loginGoogle = async (credential) => {
@@ -89,24 +99,34 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       return {
         exito: false,
-        mensaje: err?.response?.data?.mensaje || 'No se pudo iniciar sesión con Google',
+        mensaje: err?.response?.data?.mensaje || err?.response?.data?.message || 'No se pudo iniciar sesión con Google',
       }
     }
   }
 
   const registro = async (datos) => {
-    const res = await authService.registro(datos)
-    if (res?.exito && res?.accessToken) {
-      localStorage.setItem('mercatto_token', res.accessToken)
-      localStorage.setItem('mercatto_user', JSON.stringify(res.usuario))
-      setToken(res.accessToken)
-      setUsuario(res.usuario)
-      return { exito: true, usuario: res.usuario }
-    }
-    return {
-      exito: res?.exito || false,
-      mensaje: res?.mensaje || 'Error en el registro',
-      pendiente: res?.pendiente || false,
+    try {
+      const res = await authService.registro(datos)
+      if (res?.exito && res?.accessToken) {
+        localStorage.setItem('mercatto_token', res.accessToken)
+        localStorage.setItem('mercatto_user', JSON.stringify(res.usuario))
+        setToken(res.accessToken)
+        setUsuario(res.usuario)
+        return { exito: true, usuario: res.usuario }
+      }
+      return {
+        exito: res?.exito || false,
+        mensaje: res?.mensaje || 'Error en el registro',
+        pendiente: res?.pendiente || false,
+      }
+    } catch (err) {
+      const data = err?.response?.data
+      return {
+        exito: false,
+        mensaje: data?.mensaje || data?.message || 'Error en el registro. Verifica tus datos e inténtalo de nuevo.',
+        pendiente: Boolean(data?.pendiente),
+        status: err?.response?.status,
+      }
     }
   }
 
