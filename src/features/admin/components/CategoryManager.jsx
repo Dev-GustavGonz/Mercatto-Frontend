@@ -6,6 +6,7 @@ import Input from '@/components/common/Input'
 import Modal from '@/components/common/Modal'
 import { useToast } from '@/hooks/useToast'
 import { getMediaUrl } from '@/utils/constants'
+import { sortCategoriesHierarchically } from '@/utils/categoryUtils'
 import { Plus, Trash2, Edit, Upload, Image as ImageIcon, X } from 'lucide-react'
 
 export const CategoryManager = () => {
@@ -26,9 +27,9 @@ export const CategoryManager = () => {
   const cargar = () => {
     adminService
       .listarCategorias()
-      .then((data) => setCategorias(Array.isArray(data) ? data : []))
+      .then((data) => setCategorias(sortCategoriesHierarchically(Array.isArray(data) ? data : [])))
       .catch(() => {
-        productoService.listarCategorias().then((data) => setCategorias(data || [])).catch(() => {})
+        productoService.listarCategorias().then((data) => setCategorias(sortCategoriesHierarchically(data || []))).catch(() => {})
       })
   }
 

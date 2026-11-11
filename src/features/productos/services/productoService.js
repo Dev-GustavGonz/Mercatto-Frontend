@@ -43,8 +43,13 @@ export const productoService = {
     return res.data
   },
 
-  listarCategorias: async () => {
-    const res = await api.get('/categorias')
+  listarCategorias: async (config = {}) => {
+    const res = await api.get('/categorias', config)
+    return res.data
+  },
+
+  listarTodasCategorias: async (config = {}) => {
+    const res = await api.get('/categorias/todas', config)
     return res.data
   },
 

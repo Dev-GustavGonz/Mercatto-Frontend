@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { productoService } from '@/features/productos'
 import { tiendaService } from '@/features/tiendas'
 import Button from '@/components/common/Button'
 import { Filter, RotateCcw, Tag, Layers, ChevronDown, ChevronUp, Crown } from 'lucide-react'
 import { useLanguage } from '@/hooks/useLanguage'
-import { translateCategoryName } from '@/utils/categoryUtils'
+import { sortCategoriesHierarchically, translateCategoryName } from '@/utils/categoryUtils'
 import { apiCache } from '@/utils/apiCache'
 
 export const ProductFilters = ({
@@ -20,7 +20,9 @@ export const ProductFilters = ({
   onSoloEliteChange,
   onReset,
 }) => {
-  const [categorias, setCategorias] = useState(() => apiCache.peekData('/categorias') || [])
+  const [categorias, setCategorias] = useState(
+    () => apiCache.peekData('/categorias/todas') || apiCache.peekData('/categorias') || []
+  )
   const [marcas, setMarcas] = useState(() => apiCache.peekData('/tiendas/marcas') || [])
   const [precioMin, setPrecioMin] = useState(priceRange.min || '')
   const [precioMax, setPrecioMax] = useState(priceRange.max || '')
@@ -28,9 +30,16 @@ export const ProductFilters = ({
   const [mobileOpen, setMobileOpen] = useState(false)
 
   useEffect(() => {
-    productoService.listarCategorias().then((data) => setCategorias(data || [])).catch(() => {})
+    productoService
+      .listarTodasCategorias({ noCache: true, params: { _t: Date.now() } })
+      .then((data) => setCategorias(Array.isArray(data) ? data : []))
+      .catch(() => {
+        productoService.listarCategorias().then((data) => setCategorias(data || [])).catch(() => {})
+      })
     tiendaService.listarMarcas().then((data) => setMarcas(data || [])).catch(() => {})
   }, [])
+
+  const categoriasOrdenadas = useMemo(() => sortCategoriesHierarchically(categorias), [categorias])
 
   const handleApplyPrice = (e) => {
     e.preventDefault()
@@ -132,9 +141,9 @@ export const ProductFilters = ({
       <div>
         <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-1">
           <Layers size={13} className="text-indigo-500" />
-          <span>{t('categorias')} ({categorias.length})</span>
+          <span>{t('categorias')} ({categoriasOrdenadas.length})</span>
         </label>
-        <div className="space-y-1 max-h-52 overflow-y-auto pr-1">
+        <div className="space-y-1 max-h-72 overflow-y-auto pr-1">
           <button
             onClick={() => onCategoryChange(null)}
             className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
@@ -145,17 +154,22 @@ export const ProductFilters = ({
           >
             {t('todas_las_categorias')}
           </button>
-          {categorias.map((cat) => (
+          {categoriasOrdenadas.map((cat) => (
             <button
               key={cat.id}
               onClick={() => onCategoryChange(cat.id)}
-              className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
+              className={`w-full text-left py-1.5 pr-3 rounded-lg transition cursor-pointer flex items-center gap-1.5 ${
+                cat._depth > 0 ? 'pl-6 text-[11px]' : 'px-3 text-xs'
+              } ${
                 String(selectedCategory) === String(cat.id)
                   ? 'bg-indigo-50 dark:bg-indigo-950/40 text-mercatto-primary font-bold'
-                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+                  : 'font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
               }`}
             >
-              {translateCategoryName(cat.nombre, (idioma || '').toUpperCase() === 'EN')}
+              {cat._depth > 0 && <span className="text-slate-400 shrink-0">↳</span>}
+              <span className="truncate">
+                {translateCategoryName(cat.nombre, (idioma || '').toUpperCase() === 'EN')}
+              </span>
             </button>
           ))}
         </div>

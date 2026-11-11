@@ -4,6 +4,7 @@ import Button from '@/components/common/Button'
 import { productoService } from '@/features/productos'
 import { tiendaService } from '@/features/tiendas'
 import { useToast } from '@/hooks/useToast'
+import { sortCategoriesHierarchically } from '@/utils/categoryUtils'
 import { Plus, Trash2, Upload, Tag, Check } from 'lucide-react'
 
 export const ProductForm = ({ productoInicial = null, onGuardado, onCancelar }) => {
@@ -46,7 +47,15 @@ export const ProductForm = ({ productoInicial = null, onGuardado, onCancelar }) 
   const { success, error } = useToast()
 
   useEffect(() => {
-    productoService.listarCategorias().then((data) => setCategorias(data || [])).catch(() => {})
+    productoService
+      .listarTodasCategorias({ noCache: true, params: { _t: Date.now() } })
+      .then((data) => setCategorias(sortCategoriesHierarchically(Array.isArray(data) ? data : [])))
+      .catch(() => {
+        productoService
+          .listarCategorias()
+          .then((data) => setCategorias(sortCategoriesHierarchically(data || [])))
+          .catch(() => {})
+      })
     tiendaService
       .listarMarcas({ noCache: true, params: { _t: Date.now() } })
       .then((data) => {
@@ -298,7 +307,7 @@ export const ProductForm = ({ productoInicial = null, onGuardado, onCancelar }) 
             <option value="">Selecciona una categoría...</option>
             {categorias.map((c) => (
               <option key={c.id} value={c.id}>
-                {c.nombre}
+                {c._depth > 0 ? `${'— '.repeat(c._depth)}${c.nombre}${c._parentName ? ` (${c._parentName})` : ''}` : c.nombre}
               </option>
             ))}
           </select>

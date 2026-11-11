@@ -21,7 +21,7 @@ class ApiCacheManager {
 
     // Reglas de TTL fresco (en milisegundos)
     this.ttlRules = [
-      { pattern: /^\/categorias/, ttl: 30 * 60 * 1000 },      // 30 minutos
+      { pattern: /^\/categorias/, ttl: 2 * 60 * 1000 },       // 2 minutos
       { pattern: /^\/tiendas\/marcas/, ttl: 30 * 60 * 1000 }, // 30 minutos
       { pattern: /^\/tiendas/, ttl: 10 * 60 * 1000 },          // 10 minutos
       { pattern: /^\/productos\/(destacados|mas-vendidos|nuevos)/, ttl: 10 * 60 * 1000 }, // 10 minutos
@@ -189,17 +189,6 @@ class ApiCacheManager {
         }
       }
     } catch (e) {}
-
-    // Fallback inicial ultrarrápido para categorías estándar
-    if (urlPattern && urlPattern.includes('/categorias')) {
-      return [
-        { id: 1, nombre: 'Hogar & Muebles', slug: 'hogar-muebles', icono: 'Home' },
-        { id: 2, nombre: 'Tecnología & Electrónica', slug: 'tecnologia-electronica', icono: 'Laptop' },
-        { id: 3, nombre: 'Moda & Calzado', slug: 'moda-calzado', icono: 'Shirt' },
-        { id: 4, nombre: 'Deportes & Fitness', slug: 'deportes-fitness', icono: 'Activity' },
-        { id: 5, nombre: 'Belleza & Cuidado Personal', slug: 'belleza-cuidado', icono: 'Sparkles' }
-      ]
-    }
 
     return null
   }

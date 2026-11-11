@@ -6,7 +6,9 @@ import { useCart } from '@/hooks/useCart'
 import { useFavorites } from '@/hooks/useFavorites'
 import { useLanguage } from '@/hooks/useLanguage'
 import { apiCache } from '@/utils/apiCache'
+import { sortCategoriesHierarchically } from '@/utils/categoryUtils'
 import Spinner from '@/components/common/Spinner'
+import Pagination from '@/components/common/Pagination'
 
 // Componentes del diseño Showcase Bento 2026
 import BentoGridHeroShowcase from '../components/BentoGridHeroShowcase'
@@ -34,7 +36,7 @@ export const Home = () => {
   const cachedNuev = apiCache.peekData('/productos/nuevos')
   const cachedMasV = apiCache.peekData('/productos/mas-vendidos')
   const cachedTiendas = apiCache.peekData('/tiendas')
-  const cachedCats = apiCache.peekData('/categorias')
+  const cachedCats = apiCache.peekData('/categorias/todas') || apiCache.peekData('/categorias')
   const tieneCachePrevia = Boolean(cachedDest && cachedDest.length > 0)
 
   const [destacados, setDestacados] = useState(() => (Array.isArray(cachedDest) ? cachedDest : []))
@@ -51,6 +53,9 @@ export const Home = () => {
   const { t, idioma } = useLanguage()
   const navigate = useNavigate()
   const tiendasScrollRef = useRef(null)
+  const todosProductosRef = useRef(null)
+  const [paginaHome, setPaginaHome] = useState(0)
+  const PRODUCTOS_POR_PAGINA_HOME = 12
 
   const isEn = idioma === 'EN'
 
@@ -73,7 +78,9 @@ export const Home = () => {
           productoService.obtenerNuevos().catch(() => []),
           productoService.obtenerMasVendidos().catch(() => []),
           tiendaService.listarTiendas().catch(() => []),
-          productoService.listarCategorias().catch(() => []),
+          productoService
+            .listarTodasCategorias({ noCache: true, params: { _t: Date.now() } })
+            .catch(() => productoService.listarCategorias().catch(() => [])),
           productoService.listar({ tamano: 50 }).catch(() => ({ content: [] })),
           productoService.listar({ soloElite: true, tamano: 12 }).catch(() => ({ content: [] }))
         ])
@@ -118,7 +125,7 @@ export const Home = () => {
           : [...poolCompleto].sort((a, b) => (b.totalVentas || 0) - (a.totalVentas || 0))
         setMasVendidos(listaVendidos)
         setTiendas(tiendasData || [])
-        setCategorias(catsData || [])
+        setCategorias(sortCategoriesHierarchically(catsData || []))
       } catch (err) {
         console.error('Error cargando datos del home:', err)
       } finally {
@@ -218,38 +225,54 @@ export const Home = () => {
         {/* ========================================================= */}
         {/* 7. TODOS LOS PRODUCTOS DISPONIBLES EN MERCATTO            */}
         {/* ========================================================= */}
-        {destacados.length > 0 && (
-          <section className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-slate-200/80 dark:border-slate-800 pb-4">
-              <div className="space-y-1">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-100 dark:bg-violet-950/80 text-[11px] font-extrabold tracking-widest uppercase text-violet-700 dark:text-violet-300">
-                  <Sparkles size={12} />
-                  <span>{t('todos_los_productos') || 'Catálogo de Artículos'}</span>
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                  Todos los <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600">Productos</span>
-                </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                  Explora todos los artículos disponibles de vendedores oficiales en Colombia
-                </p>
+        {destacados.length > 0 && (() => {
+          const totalPaginasHome = Math.ceil(destacados.length / PRODUCTOS_POR_PAGINA_HOME)
+          const paginaSegura = Math.min(paginaHome, Math.max(0, totalPaginasHome - 1))
+          const inicio = paginaSegura * PRODUCTOS_POR_PAGINA_HOME
+          const productosPagina = destacados.slice(inicio, inicio + PRODUCTOS_POR_PAGINA_HOME)
+
+          return (
+            <section ref={todosProductosRef} className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-slate-200/80 dark:border-slate-800 pb-4">
+                <div className="space-y-1">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-100 dark:bg-violet-950/80 text-[11px] font-extrabold tracking-widest uppercase text-violet-700 dark:text-violet-300">
+                    <Sparkles size={12} />
+                    <span>{t('todos_los_productos') || 'Catálogo de Artículos'}</span>
+                  </span>
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                    Todos los <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600">Productos</span>
+                  </h2>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                    Explora todos los artículos disponibles de vendedores oficiales en Colombia
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => navigate('/catalogo')}
+                  className="self-start sm:self-auto inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-950 dark:bg-white text-white dark:text-slate-950 hover:bg-violet-600 dark:hover:bg-violet-500 hover:text-white dark:hover:text-white font-bold text-xs uppercase tracking-wider transition shadow-sm cursor-pointer"
+                >
+                  <span>{t('ver_todo_catalogo')}</span>
+                  <ArrowRight size={14} />
+                </button>
               </div>
 
-              <button
-                onClick={() => navigate('/catalogo')}
-                className="self-start sm:self-auto inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-950 dark:bg-white text-white dark:text-slate-950 hover:bg-violet-600 dark:hover:bg-violet-500 hover:text-white dark:hover:text-white font-bold text-xs uppercase tracking-wider transition shadow-sm cursor-pointer"
-              >
-                <span>{t('ver_todo_catalogo')}</span>
-                <ArrowRight size={14} />
-              </button>
-            </div>
+              <ProductGrid 
+                productos={productosPagina} 
+                loading={false}
+                onContactClick={(prod) => setProductoContacto(prod)}
+              />
 
-            <ProductGrid 
-              productos={destacados} 
-              loading={false}
-              onContactClick={(prod) => setProductoContacto(prod)}
-            />
-          </section>
-        )}
+              <Pagination
+                currentPage={paginaSegura}
+                totalPages={totalPaginasHome}
+                onPageChange={(nuevaPagina) => {
+                  setPaginaHome(nuevaPagina)
+                  todosProductosRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                }}
+              />
+            </section>
+          )
+        })()}
 
         {/* ========================================================= */}
         {/* 8. SECCIÓN TIENDAS OFICIALES VERIFICADAS EN COLOMBIA      */}

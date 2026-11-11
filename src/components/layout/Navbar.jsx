@@ -7,7 +7,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { useCart } from '@/hooks/useCart'
 import { useFavorites } from '@/hooks/useFavorites'
 import { useLanguage } from '@/hooks/useLanguage'
-import { translateCategoryName } from '@/utils/categoryUtils'
+import { sortCategoriesHierarchically, translateCategoryName } from '@/utils/categoryUtils'
 import { productoService } from '../../features/productos'
 import { tiendaService, vendedorService } from '../../features/tiendas'
 import { apiCache } from '@/utils/apiCache'
@@ -46,7 +46,7 @@ export const Navbar = () => {
   const [dropdownUser, setDropdownUser] = useState(false)
   const [dropdownLang, setDropdownLang] = useState(false)
   const [dropdownShop, setDropdownShop] = useState(false)
-  const [categorias, setCategorias] = useState(() => apiCache.peekData('/categorias') || [])
+  const [categorias, setCategorias] = useState(() => sortCategoriesHierarchically(apiCache.peekData('/categorias/todas') || apiCache.peekData('/categorias') || []))
   const [marcas, setMarcas] = useState(() => apiCache.peekData('/tiendas/marcas') || [])
   const [menuMobile, setMenuMobile] = useState(false)
   const location = useLocation()
@@ -94,10 +94,10 @@ export const Navbar = () => {
     const cargarFiltros = async () => {
       try {
         const [cats, marcs] = await Promise.all([
-          productoService.listarCategorias().catch(() => []),
+          productoService.listarTodasCategorias({ noCache: true, params: { _t: Date.now() } }).catch(() => productoService.listarCategorias().catch(() => [])),
           tiendaService.listarMarcas().catch(() => [])
         ])
-        setCategorias(cats || [])
+        setCategorias(sortCategoriesHierarchically(cats || []))
         setMarcas(marcs || [])
       } catch {
         // Fallback silencioso
@@ -228,7 +228,7 @@ export const Navbar = () => {
                         </span>
                         <div className="space-y-1 max-h-48 overflow-y-auto pr-1">
                           {categorias && categorias.length > 0 ? (
-                            categorias.slice(0, 5).map((cat) => (
+                            categorias.map((cat) => (
                               <Link
                                 key={cat.id}
                                 to={`/catalogo?categoriaId=${cat.id}`}
@@ -762,7 +762,7 @@ export const Navbar = () => {
                   <span>{t('categorias')}</span>
                 </span>
                 <div className="flex flex-wrap gap-1.5">
-                  {categorias.slice(0, 6).map((cat) => (
+                  {categorias.map((cat) => (
                     <Link
                       key={cat.id}
                       to={`/catalogo?categoriaId=${cat.id}`}
