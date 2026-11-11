@@ -3,10 +3,12 @@ export const SERVER_URL = API_BASE_URL.replace(/\/api\/?$/, '')
 
 export const getMediaUrl = (url, fallback) => {
   if (!url || typeof url !== 'string') return fallback || ''
-  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:') || url.startsWith('/images/')) {
-    return url
+  const trimmed = url.trim()
+  if (!trimmed || trimmed.startsWith('blob:')) return fallback || ''
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('data:') || trimmed.startsWith('/images/')) {
+    return trimmed
   }
-  const cleanPath = url.startsWith('/') ? url : `/${url}`
+  const cleanPath = trimmed.startsWith('/') ? trimmed : `/${trimmed}`
   return `${SERVER_URL}${cleanPath}`
 }
 

@@ -1,13 +1,13 @@
 import api from '@/utils/api'
 
 export const tiendaService = {
-  listarTiendas: async () => {
-    const res = await api.get('/tiendas')
+  listarTiendas: async (config = {}) => {
+    const res = await api.get('/tiendas', config)
     return res.data
   },
 
-  obtenerTienda: async (id) => {
-    const res = await api.get(`/tiendas/${id}`)
+  obtenerTienda: async (id, config = {}) => {
+    const res = await api.get(`/tiendas/${id}`, config)
     return res.data
   },
 

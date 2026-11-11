@@ -8,6 +8,7 @@ import { useCart } from '@/hooks/useCart'
 import { useFavorites } from '@/hooks/useFavorites'
 import { useLanguage } from '@/hooks/useLanguage'
 import { apiCache } from '@/utils/apiCache'
+import { getMediaUrl } from '@/utils/constants'
 import { sortCategoriesHierarchically } from '@/utils/categoryUtils'
 import Spinner from '@/components/common/Spinner'
 import Pagination from '@/components/common/Pagination'
@@ -89,6 +90,11 @@ export const Home = () => {
   const [categorias, setCategorias] = useState(() => (Array.isArray(cachedCats) ? sortCategoriesHierarchically(cachedCats) : []))
   const [loading, setLoading] = useState(!tieneCachePrevia)
   const [productoContacto, setProductoContacto] = useState(null)
+  const [failedStoreMedia, setFailedStoreMedia] = useState({})
+
+  const markStoreMediaFailed = (mediaKey) => {
+    setFailedStoreMedia((prev) => (prev[mediaKey] ? prev : { ...prev, [mediaKey]: true }))
+  }
 
   const { agregarItem } = useCart()
   const { toggleFavoriteId, favoriteIds } = useFavorites()
@@ -118,7 +124,7 @@ export const Home = () => {
           productoService.obtenerDestacados().catch(() => []),
           productoService.obtenerNuevos().catch(() => []),
           productoService.obtenerMasVendidos().catch(() => []),
-          tiendaService.listarTiendas().catch(() => []),
+          tiendaService.listarTiendas({ forceRefresh: true }).catch(() => initialTiendas),
           productoService
             .listarTodasCategorias()
             .catch(() => productoService.listarCategorias().catch(() => [])),
@@ -311,7 +317,16 @@ export const Home = () => {
             {/* Cuadrícula limpia de tiendas destacadas (sin scrollbar) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               {tiendasMostradas.slice(0, 4).map((tItem, idx) => {
-                const coverImg = tItem.portadaUrl || tItem.bannerUrl || coverDefaults[idx % coverDefaults.length]
+                const defaultCover = coverDefaults[idx % coverDefaults.length]
+                const rawCover = tItem.portadaUrl || tItem.bannerUrl || ''
+                const resolvedCover = getMediaUrl(rawCover, defaultCover) || defaultCover
+                const bannerKey = `banner:${tItem.id}:${resolvedCover}`
+                const coverImg = failedStoreMedia[bannerKey] ? defaultCover : resolvedCover
+
+                const resolvedLogo = getMediaUrl(tItem.logoUrl)
+                const logoKey = `logo:${tItem.id}:${resolvedLogo}`
+                const showLogoImg = Boolean(resolvedLogo) && !failedStoreMedia[logoKey]
+
                 return (
                   <div
                     key={tItem.id}
@@ -323,6 +338,7 @@ export const Home = () => {
                       <img
                         src={coverImg}
                         alt={tItem.nombreTienda}
+                        onError={() => markStoreMediaFailed(bannerKey)}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
@@ -332,8 +348,13 @@ export const Home = () => {
                       <div className="flex items-end justify-between -mt-7 mb-2">
                         <div className="relative">
                           <div className="w-14 h-14 rounded-2xl border-2 border-white dark:border-slate-900 shadow-md overflow-hidden bg-slate-900 shrink-0">
-                            {tItem.logoUrl ? (
-                              <img src={tItem.logoUrl} alt={tItem.nombreTienda} className="w-full h-full object-cover" />
+                            {showLogoImg ? (
+                              <img
+                                src={resolvedLogo}
+                                alt={tItem.nombreTienda}
+                                onError={() => markStoreMediaFailed(logoKey)}
+                                className="w-full h-full object-cover"
+                              />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center font-black text-white text-sm bg-gradient-to-br from-violet-600 to-indigo-600">
                                 {tItem.nombreTienda?.charAt(0) || 'T'}

@@ -69,15 +69,16 @@ api.interceptors.response.use(
 // Wrapper transparente para peticiones GET con caché inteligente persistente (SWR) y deduplicación
 const originalGet = api.get.bind(api)
 api.get = async (url, config = {}) => {
-  const reqConfig = { ...config, url, method: 'GET' }
+  const { forceRefresh = false, ...axiosConfig } = config
+  const reqConfig = { ...axiosConfig, url, method: 'GET' }
 
   // 1. Si la petición no es cacheable (rutas privadas, tokens, config.noCache), ejecutar directo a red
   if (!apiCache.isCacheable(reqConfig)) {
-    return originalGet(url, config)
+    return originalGet(url, axiosConfig)
   }
 
-  // 2. Comprobar si existe en caché persistente o memoria
-  const cachedEntry = apiCache.getEntry(reqConfig)
+  // 2. Comprobar si existe en caché persistente o memoria (salvo que forceRefresh esté activo)
+  const cachedEntry = forceRefresh ? null : apiCache.getEntry(reqConfig)
   if (cachedEntry) {
     // Si la caché está fresca (TTL no expirado), responder en 0ms
     if (!cachedEntry.isStale) {
@@ -88,7 +89,7 @@ api.get = async (url, config = {}) => {
     // y disparar una actualización silenciosa en segundo plano
     const key = apiCache.generateKey(reqConfig)
     if (!apiCache.inFlightRequests.has(key)) {
-      const backgroundPromise = originalGet(url, config)
+      const backgroundPromise = originalGet(url, axiosConfig)
         .then((freshResponse) => {
           apiCache.set(reqConfig, freshResponse)
           return freshResponse
@@ -105,12 +106,23 @@ api.get = async (url, config = {}) => {
 
   // 3. Deduplicación de peticiones concurrentes idénticas
   const key = apiCache.generateKey(reqConfig)
-  if (apiCache.inFlightRequests.has(key)) {
+  if (!forceRefresh && apiCache.inFlightRequests.has(key)) {
     return apiCache.inFlightRequests.get(key)
   }
 
   // 4. Disparar petición real a la red y almacenar en caché
-  const requestPromise = originalGet(url, config)
+  const networkConfig = forceRefresh
+    ? {
+        ...axiosConfig,
+        headers: {
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
+          ...axiosConfig.headers,
+        },
+      }
+    : axiosConfig
+
+  const requestPromise = originalGet(url, networkConfig)
     .then((response) => {
       apiCache.set(reqConfig, response)
       return response

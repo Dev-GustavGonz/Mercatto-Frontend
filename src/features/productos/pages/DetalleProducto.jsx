@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom'
 import { productoService } from '@/features/productos'
 import { apiCache } from '@/utils/apiCache'
+import { getMediaUrl } from '@/utils/constants'
 import { useCart } from '@/hooks/useCart'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/useToast'
@@ -183,8 +184,15 @@ export const DetalleProducto = () => {
               title="Ver vitrina completa y catálogo de esta tienda"
             >
               <div className="w-10 h-10 rounded-xl bg-mercatto-primary text-white flex items-center justify-center font-bold text-sm shadow-sm group-hover/vendor:scale-105 transition-transform overflow-hidden">
-                {producto.vendedor?.logoUrl ? (
-                  <img src={producto.vendedor.logoUrl} alt={producto.vendedor.nombreTienda} className="w-full h-full object-cover" />
+                {getMediaUrl(producto.vendedor?.logoUrl) ? (
+                  <img
+                    src={getMediaUrl(producto.vendedor.logoUrl)}
+                    alt={producto.vendedor.nombreTienda}
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none'
+                    }}
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   <Store size={18} />
                 )}

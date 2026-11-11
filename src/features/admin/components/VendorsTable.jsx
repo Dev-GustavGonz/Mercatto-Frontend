@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { adminService } from '@/features/admin'
 import Modal from '@/components/common/Modal'
+import { getMediaUrl } from '@/utils/constants'
 import { useToast } from '@/hooks/useToast'
 import { Check, X, ShieldAlert, Search, Eye, Building2, MapPin, Phone, CreditCard } from 'lucide-react'
 
@@ -187,8 +188,15 @@ export const VendorsTable = ({ vendedores = [], onActualizado }) => {
         <div className="space-y-4 text-xs">
           <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700">
             <div className="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg overflow-hidden shrink-0">
-              {vendedorSeleccionado.logoUrl ? (
-                <img src={vendedorSeleccionado.logoUrl} alt={vendedorSeleccionado.nombreTienda} className="w-full h-full object-cover" />
+              {getMediaUrl(vendedorSeleccionado.logoUrl) ? (
+                <img
+                  src={getMediaUrl(vendedorSeleccionado.logoUrl)}
+                  alt={vendedorSeleccionado.nombreTienda}
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none'
+                  }}
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <Building2 size={24} />
               )}

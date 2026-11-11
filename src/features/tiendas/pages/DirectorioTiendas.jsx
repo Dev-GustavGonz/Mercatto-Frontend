@@ -314,6 +314,10 @@ export const DirectorioTiendas = () => {
                   <img
                     src={getMediaUrl(portadaElegida, portadasColeccion[0])}
                     alt={tienda.nombreTienda}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null
+                      e.currentTarget.src = portadasColeccion[idx % portadasColeccion.length]
+                    }}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-900/20 to-black/30" />
@@ -333,6 +337,10 @@ export const DirectorioTiendas = () => {
                       <img
                         src={getMediaUrl(tienda.logoUrl, 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=150&auto=format&fit=crop&q=80')}
                         alt={tienda.nombreTienda}
+                        onError={(e) => {
+                          e.currentTarget.onerror = null
+                          e.currentTarget.src = 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=150&auto=format&fit=crop&q=80'
+                        }}
                         className="w-full h-full object-cover rounded-xl"
                       />
                     </div>

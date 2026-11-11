@@ -209,6 +209,10 @@ export const VitrinaTienda = () => {
           <img
             src={getMediaUrl(portadaElegida, 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1400&auto=format&fit=crop&q=80')}
             alt={tienda.nombreTienda}
+            onError={(e) => {
+              e.currentTarget.onerror = null
+              e.currentTarget.src = 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1400&auto=format&fit=crop&q=80'
+            }}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-black/30" />
@@ -237,6 +241,10 @@ export const VitrinaTienda = () => {
                 <img
                   src={getMediaUrl(tienda.logoUrl, logoDefault)}
                   alt={tienda.nombreTienda}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null
+                    e.currentTarget.src = logoDefault
+                  }}
                   className="w-full h-full object-cover rounded-2xl"
                 />
               </div>
