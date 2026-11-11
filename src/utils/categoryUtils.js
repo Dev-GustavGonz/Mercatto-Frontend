@@ -82,3 +82,37 @@ export const sortCategoriesHierarchically = (categorias = []) => {
 
   return ordered
 }
+
+const CATEGORY_VISUAL_PRESETS = {
+  1:  { iconKey: 'Laptop',         imagen: '/images/bento/laptop.png',                                                            badgeKey: 'badge_flagship' },
+  2:  { iconKey: 'Shirt',          imagen: '/images/bento/sneaker.png',                                                           badgeKey: 'badge_tendencia' },
+  3:  { iconKey: 'Home',           imagen: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&auto=format&fit=crop&q=80', badgeKey: 'badge_confort' },
+  4:  { iconKey: 'Activity',       imagen: '/images/bento/smartwatch.png',                                                        badgeKey: 'badge_pro_fitness' },
+  5:  { iconKey: 'Sparkles',       imagen: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&auto=format&fit=crop&q=80', badgeKey: 'badge_cuidado' },
+  6:  { iconKey: 'Wrench',         imagen: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=600&auto=format&fit=crop&q=80', badgeKey: 'badge_taller' },
+  7:  { iconKey: 'Smartphone',     imagen: '/images/bento/smartphone.png',                                                        badgeKey: 'badge_flagship' },
+  8:  { iconKey: 'Laptop',         imagen: '/images/bento/headphones.png',                                                        badgeKey: 'badge_flagship' },
+  9:  { iconKey: 'Footprints',     imagen: '/images/bento/sneaker.png',                                                           badgeKey: 'badge_tendencia' },
+  10: { iconKey: 'Utensils',       imagen: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&auto=format&fit=crop&q=80', badgeKey: 'badge_confort' },
+  11: { iconKey: 'ShoppingBasket', imagen: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&auto=format&fit=crop&q=80', badgeKey: 'badge_oficial' },
+}
+
+/**
+ * Resuelve metadatos visuales (icono, imagen de respaldo y badge) priorizando el nombre real.
+ */
+export const resolveCategoryVisualMeta = (cat) => {
+  const nombre = (cat?.nombre || '').toLowerCase()
+  if (nombre.includes('celular') || nombre.includes('phone') || nombre.includes('smart')) return CATEGORY_VISUAL_PRESETS[7]
+  if (nombre.includes('computador') || nombre.includes('laptop') || nombre.includes('audifono') || nombre.includes('audio')) return CATEGORY_VISUAL_PRESETS[8]
+  if (nombre.includes('calzado') || nombre.includes('zapato') || nombre.includes('tenis')) return CATEGORY_VISUAL_PRESETS[9]
+  if (nombre.includes('cocina') || nombre.includes('menaje')) return CATEGORY_VISUAL_PRESETS[10]
+  if (nombre.includes('supermercado') || nombre.includes('alimento') || nombre.includes('mercado')) return CATEGORY_VISUAL_PRESETS[11]
+  if (nombre.includes('tecno') || nombre.includes('elect')) return CATEGORY_VISUAL_PRESETS[1]
+  if (nombre.includes('moda') || nombre.includes('ropa')) return CATEGORY_VISUAL_PRESETS[2]
+  if (nombre.includes('hogar') || nombre.includes('mueble')) return CATEGORY_VISUAL_PRESETS[3]
+  if (nombre.includes('deporte') || nombre.includes('fitness')) return CATEGORY_VISUAL_PRESETS[4]
+  if (nombre.includes('belleza') || nombre.includes('cuidado')) return CATEGORY_VISUAL_PRESETS[5]
+  if (nombre.includes('herramienta') || nombre.includes('industria')) return CATEGORY_VISUAL_PRESETS[6]
+  if (cat?.id && CATEGORY_VISUAL_PRESETS[cat.id]) return CATEGORY_VISUAL_PRESETS[cat.id]
+  return { iconKey: 'Sparkles', imagen: '/images/bento/laptop.png', badgeKey: 'badge_oficial' }
+}

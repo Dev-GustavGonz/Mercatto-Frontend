@@ -296,6 +296,16 @@ export const Navbar = () => {
             {/* 2. Opciones SOLO para Compradores / Usuarios Generales */}
             {/* 2. Opciones de Exploración Oficial */}
             <Link 
+              to="/categorias" 
+              className={`px-3.5 py-1.5 rounded-full transition-all ${
+                location.pathname.startsWith('/categoria')
+                  ? 'text-emerald-800 bg-emerald-50/90 font-bold'
+                  : 'hover:text-slate-950 hover:bg-slate-100/80'
+              }`}
+            >
+              {t('categorias')}
+            </Link>
+            <Link 
               to="/tiendas" 
               className={`px-3.5 py-1.5 rounded-full transition-all ${
                 location.pathname.startsWith('/tienda')
@@ -658,7 +668,19 @@ export const Navbar = () => {
           />
 
           {/* 2. Accesos Principales de Navegación */}
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
+            <Link 
+              to="/categorias" 
+              onClick={() => setMenuMobile(false)} 
+              className={`flex flex-col items-center justify-center p-2.5 rounded-2xl border transition text-center ${
+                location.pathname.startsWith('/categoria') 
+                  ? 'bg-violet-50 dark:bg-violet-950/60 border-violet-300 dark:border-violet-700 text-violet-700 dark:text-violet-300 font-bold' 
+                  : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+              }`}
+            >
+              <Layers size={18} className="text-emerald-600 mb-1" />
+              <span className="text-xs font-bold leading-none truncate max-w-full">{t('categorias')}</span>
+            </Link>
             <Link 
               to="/" 
               onClick={() => setMenuMobile(false)} 

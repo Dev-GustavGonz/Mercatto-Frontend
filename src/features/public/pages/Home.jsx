@@ -22,13 +22,12 @@ import {
   Truck, 
   CreditCard, 
   BadgeCheck, 
-  ChevronLeft, 
-  ChevronRight,
   Flame,
   CheckCircle2,
   Sparkles,
   Star,
-  ArrowRight
+  ArrowRight,
+  ArrowUpRight
 } from 'lucide-react'
 
 export const Home = () => {
@@ -52,7 +51,6 @@ export const Home = () => {
   const { toggleFavoriteId, favoriteIds } = useFavorites()
   const { t, idioma } = useLanguage()
   const navigate = useNavigate()
-  const tiendasScrollRef = useRef(null)
   const todosProductosRef = useRef(null)
   const [paginaHome, setPaginaHome] = useState(0)
   const PRODUCTOS_POR_PAGINA_HOME = 12
@@ -134,14 +132,6 @@ export const Home = () => {
     }
     cargarDatos()
   }, [])
-
-  // Desplazamiento horizontal para el carrusel de tiendas oficiales
-  const scrollTiendas = (direccion) => {
-    if (tiendasScrollRef.current) {
-      const offset = direccion === 'left' ? -320 : 320
-      tiendasScrollRef.current.scrollBy({ left: offset, behavior: 'smooth' })
-    }
-  }
 
   // Pantalla de carga hasta que respondan los artículos reales (solo si no hay caché previa)
   if (loading && destacados.length === 0) {
@@ -278,8 +268,8 @@ export const Home = () => {
         {/* 8. SECCIÓN TIENDAS OFICIALES VERIFICADAS EN COLOMBIA      */}
         {/* ========================================================= */}
         {tiendasMostradas.length > 0 && (
-          <section className="space-y-5 overflow-hidden">
-            <div className="flex items-end justify-between">
+          <section className="space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <div className="space-y-1">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-100 dark:bg-violet-950/80 text-[11px] font-extrabold tracking-widest uppercase text-violet-700 dark:text-violet-300">
                   <Sparkles size={12} />
@@ -293,36 +283,24 @@ export const Home = () => {
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => scrollTiendas('left')}
-                  className="w-10 h-10 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-violet-400 text-slate-600 dark:text-slate-300 hover:text-violet-600 flex items-center justify-center shadow-xs transition cursor-pointer"
-                  title="Anterior"
-                >
-                  <ChevronLeft size={18} />
-                </button>
-                <button
-                  onClick={() => scrollTiendas('right')}
-                  className="w-10 h-10 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-violet-400 text-slate-600 dark:text-slate-300 hover:text-violet-600 flex items-center justify-center shadow-xs transition cursor-pointer"
-                  title="Siguiente"
-                >
-                  <ChevronRight size={18} />
-                </button>
-              </div>
+              <button
+                onClick={() => navigate('/tiendas')}
+                className="self-start sm:self-auto inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-violet-400 text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-violet-600 transition cursor-pointer shadow-xs"
+              >
+                <span>{isEn ? 'View all stores' : 'Ver todas las tiendas'}</span>
+                <ArrowUpRight size={14} />
+              </button>
             </div>
 
-            {/* Carrusel horizontal de tiendas */}
-            <div
-              ref={tiendasScrollRef}
-              className="flex gap-5 overflow-x-auto pb-4 pt-1 scrollbar-none -mr-4 sm:-mr-6 lg:-mr-8 pr-12 sm:pr-16"
-            >
-              {tiendasMostradas.map((tItem, idx) => {
+            {/* Cuadrícula limpia de tiendas destacadas (sin scrollbar) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {tiendasMostradas.slice(0, 4).map((tItem, idx) => {
                 const coverImg = tItem.portadaUrl || tItem.bannerUrl || coverDefaults[idx % coverDefaults.length]
                 return (
                   <div
                     key={tItem.id}
                     onClick={() => navigate(`/tienda/${tItem.id}`)}
-                    className="w-72 sm:w-80 shrink-0 bg-white dark:bg-slate-900 rounded-[28px] sm:rounded-[30px] border border-slate-200/90 dark:border-slate-800 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col justify-between cursor-pointer group select-none"
+                    className="bg-white dark:bg-slate-900 rounded-[28px] sm:rounded-[30px] border border-slate-200/90 dark:border-slate-800 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col justify-between cursor-pointer group select-none"
                   >
                     {/* Banner de la tienda amplio y 100% visible */}
                     <div className="h-36 sm:h-40 w-full relative overflow-hidden bg-slate-100 dark:bg-slate-800">

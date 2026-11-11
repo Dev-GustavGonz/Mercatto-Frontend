@@ -12,7 +12,7 @@ import Spinner from './components/common/Spinner'
 import ErrorBoundary from './components/common/ErrorBoundary'
 
 // General / Public Pages
-import { Home, AboutUs, NotFound, Terminos, Privacidad } from './features/public'
+import { Home, DirectorioCategorias, AboutUs, NotFound, Terminos, Privacidad } from './features/public'
 
 // Domain / Feature Entities
 import { Login, Registro } from './features/auth'
@@ -105,6 +105,7 @@ const AppLayout = () => {
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<AboutUs />} />
             <Route path="/catalogo" element={<Catalogo />} />
+            <Route path="/categorias" element={<DirectorioCategorias />} />
             <Route path="/categoria/:id" element={<Categoria />} />
             <Route path="/buscar" element={<Busqueda />} />
             <Route path="/tiendas" element={<DirectorioTiendas />} />

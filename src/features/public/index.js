@@ -1,4 +1,5 @@
 export { default as Home } from './pages/Home'
+export { default as DirectorioCategorias } from './pages/DirectorioCategorias'
 export { default as AboutUs } from './pages/AboutUs'
 export { default as NotFound } from './pages/NotFound'
 export { default as Terminos } from './pages/Terminos'
