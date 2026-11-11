@@ -5,7 +5,7 @@ import { useToast } from '@/hooks/useToast'
 import { useLanguage } from '@/hooks/useLanguage'
 import GoogleLoginButton from '../components/GoogleLoginButton'
 import MercattoLogo from '@/components/common/MercattoLogo'
-import { Mail, Lock, LogIn, Eye, EyeOff, ArrowLeft, Sparkles, ShieldCheck } from 'lucide-react'
+import { Mail, Lock, LogIn, Eye, EyeOff, ArrowLeft, Sparkles, ShieldCheck, Globe } from 'lucide-react'
 
 export const Login = () => {
   const [email, setEmail] = useState('')
@@ -15,7 +15,7 @@ export const Login = () => {
   const [loading, setLoading] = useState(false)
   const { login, loginGoogle } = useAuth()
   const { success, error } = useToast()
-  const { t, idioma } = useLanguage()
+  const { t, idioma, cambiarIdioma } = useLanguage()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const redirectUrl = searchParams.get('redirect') || '/'
@@ -78,25 +78,26 @@ export const Login = () => {
   return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-12 bg-white dark:bg-slate-950">
       
-      {/* Columna Izquierda: Ocupa toda la altura de la pantalla en desktop */}
-      <div className="lg:col-span-5 xl:col-span-5 relative hidden lg:flex flex-col justify-between p-8 xl:p-12 min-h-screen bg-slate-950 text-white overflow-hidden">
-        {/* Imagen de fondo e-commerce con iluminación violeta limpia sin personas */}
+      {/* Columna Izquierda: Sticky y fixed-height para evitar estiramiento */}
+      <div className="lg:col-span-5 xl:col-span-5 relative hidden lg:flex flex-col justify-between p-6 lg:p-8 xl:p-10 min-h-screen lg:h-screen lg:sticky lg:top-0 bg-slate-950 text-white overflow-hidden">
+        {/* Imagen de fondo e-commerce con object-cover y h-full */}
         <img 
           src="/images/login-ecommerce.jpg" 
           alt="Mercatto Marketplace" 
           className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.75] contrast-110"
         />
 
-        {/* Gradientes para asegurar tono de marca Mercatto y máxima legibilidad */}
+        {/* Gradientes de marca Mercatto */}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-violet-950/60 mix-blend-multiply pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950/95 pointer-events-none" />
 
-        {/* Logo oficial con colores originales directamente sobre el fondo sin caja blanca */}
-        <div className="relative z-10 self-start pt-2">
+        {/* Logo oficial con colores originales bien en la esquina y con separación amplia con el slogan */}
+        <div className="relative z-10 self-start">
           <MercattoLogo 
             variant="onDark"
             size={42} 
             showSlogan={true} 
+            sloganClassName="mt-3.5 text-xs sm:text-[13px] font-bold tracking-wide block"
           />
         </div>
 
@@ -120,24 +121,54 @@ export const Login = () => {
         </div>
       </div>
 
-      {/* Columna Derecha: Ocupa toda la altura de la pantalla y centra el formulario */}
+      {/* Columna Derecha: Formulario con selector de idioma arriba a la izquierda */}
       <div className="lg:col-span-7 xl:col-span-7 min-h-screen flex flex-col justify-between p-6 sm:p-10 lg:p-12 xl:p-16 overflow-y-auto bg-white dark:bg-slate-900">
         
-        {/* Barra superior con botón volver al inicio */}
+        {/* Barra superior: Selector de idioma y botón volver */}
         <div className="flex items-center justify-between mb-4">
-          <button
-            type="button"
-            onClick={() => navigate('/')}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/90 hover:bg-violet-50 dark:hover:bg-violet-950/40 hover:text-violet-600 dark:hover:text-violet-400 transition-all cursor-pointer border border-slate-200/80 dark:border-slate-700/80 shadow-xs group"
-            title="Volver a la página principal"
-          >
-            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform text-violet-600 dark:text-violet-400" />
-            <span>{idioma === 'EN' ? 'Back to home' : 'Volver al inicio'}</span>
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => navigate('/')}
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/90 hover:bg-violet-50 dark:hover:bg-violet-950/40 hover:text-violet-600 dark:hover:text-violet-400 transition-all cursor-pointer border border-slate-200/80 dark:border-slate-700/80 shadow-xs group"
+              title="Volver a la página principal"
+            >
+              <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform text-violet-600 dark:text-violet-400" />
+              <span>{idioma === 'EN' ? 'Back' : 'Volver'}</span>
+            </button>
 
-          {/* Logo en versión móvil con colores originales */}
+            {/* Selector de idioma arriba a la izquierda */}
+            <div className="flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200/70 dark:border-slate-700/70">
+              <button
+                type="button"
+                onClick={() => cambiarIdioma('es')}
+                className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
+                  idioma === 'ES'
+                    ? 'bg-white dark:bg-slate-900 text-violet-600 dark:text-violet-400 shadow-xs'
+                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                }`}
+                title="Cambiar a Español"
+              >
+                ES
+              </button>
+              <button
+                type="button"
+                onClick={() => cambiarIdioma('en')}
+                className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
+                  idioma === 'EN'
+                    ? 'bg-white dark:bg-slate-900 text-violet-600 dark:text-violet-400 shadow-xs'
+                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                }`}
+                title="Switch to English"
+              >
+                EN
+              </button>
+            </div>
+          </div>
+
+          {/* Logo en versión móvil */}
           <div className="lg:hidden">
-            <MercattoLogo size={26} showSlogan={true} sloganClassName="text-[10px]" />
+            <MercattoLogo size={26} showSlogan={true} sloganClassName="mt-2 text-[10px]" />
           </div>
         </div>
 
