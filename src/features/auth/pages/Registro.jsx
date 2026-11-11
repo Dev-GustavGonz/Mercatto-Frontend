@@ -5,7 +5,7 @@ import { useToast } from '@/hooks/useToast'
 import { useLanguage } from '@/hooks/useLanguage'
 import GoogleLoginButton from '../components/GoogleLoginButton'
 import MercattoLogo from '@/components/common/MercattoLogo'
-import { User, Mail, Lock, Store, Building, MapPin, Eye, EyeOff, ArrowLeft, Sparkles, ShieldCheck, CheckCircle2, Globe } from 'lucide-react'
+import { User, Mail, Lock, Store, Building, MapPin, Eye, EyeOff, ArrowLeft, Sparkles, ShieldCheck, CheckCircle2, CreditCard } from 'lucide-react'
 
 export const Registro = () => {
   const [searchParams] = useSearchParams()
@@ -24,11 +24,14 @@ export const Registro = () => {
   const [nombreTienda, setNombreTienda] = useState('')
   const [nitCedula, setNitCedula] = useState('')
   const [ciudad, setCiudad] = useState('')
+  const [banco, setBanco] = useState('Bancolombia')
+  const [cuentaBancaria, setCuentaBancaria] = useState('')
 
   const [loading, setLoading] = useState(false)
   const { registro, loginGoogle } = useAuth()
   const { success, error, info } = useToast()
   const { t, idioma, cambiarIdioma } = useLanguage()
+  const isEn = idioma === 'EN'
   const navigate = useNavigate()
 
   const handleGoogle = async (credential) => {
@@ -37,10 +40,10 @@ export const Registro = () => {
     setLoading(false)
 
     if (res?.exito) {
-      success(idioma === 'EN' ? 'Account created with Google! Welcome to Mercatto.' : '¡Cuenta creada con Google! Bienvenido a Mercatto.')
+      success(isEn ? 'Account created with Google! Welcome to Mercatto.' : '¡Cuenta creada con Google! Bienvenido a Mercatto.')
       window.location.replace('/')
     } else {
-      error(res?.mensaje || (idioma === 'EN' ? 'Could not continue with Google' : 'No se pudo continuar con Google'))
+      error(res?.mensaje || (isEn ? 'Could not continue with Google' : 'No se pudo continuar con Google'))
     }
   }
 
@@ -48,7 +51,7 @@ export const Registro = () => {
     e.preventDefault()
 
     if (!aceptaTerminos) {
-      error(idioma === 'EN' ? 'You must accept the Terms and Conditions' : 'Debes aceptar los Términos y Condiciones para continuar')
+      error(isEn ? 'You must accept the Terms and Conditions' : 'Debes aceptar los Términos y Condiciones para continuar')
       return
     }
 
@@ -56,36 +59,40 @@ export const Registro = () => {
     const emailTrim = email.trim()
 
     if (!nombreTrim) {
-      error(idioma === 'EN' ? 'Please enter your full name' : 'Por favor ingresa tu nombre completo')
+      error(isEn ? 'Please enter your full name' : 'Por favor ingresa tu nombre completo')
       return
     }
 
     if (!emailTrim || !/\S+@\S+\.\S+/.test(emailTrim)) {
-      error(idioma === 'EN' ? 'Please enter a valid email address' : 'Por favor ingresa un correo electrónico válido')
+      error(isEn ? 'Please enter a valid email address' : 'Por favor ingresa un correo electrónico válido')
       return
     }
 
     if (password.length < 6) {
-      error(idioma === 'EN' ? 'Password must be at least 6 characters' : 'La contraseña debe tener al menos 6 caracteres')
+      error(isEn ? 'Password must be at least 6 characters' : 'La contraseña debe tener al menos 6 caracteres')
       return
     }
 
     if (password !== confirmPassword) {
-      error(idioma === 'EN' ? 'Passwords do not match' : 'Las contraseñas no coinciden. Por favor verifícalas.')
+      error(isEn ? 'Passwords do not match' : 'Las contraseñas no coinciden. Por favor verifícalas.')
       return
     }
 
     if (rol === 'VENDEDOR') {
       if (!nombreTienda.trim()) {
-        error(idioma === 'EN' ? 'Please enter your store name' : 'Por favor ingresa el nombre de tu tienda')
+        error(isEn ? 'Please enter your store name' : 'Por favor ingresa el nombre de tu tienda')
         return
       }
       if (!nitCedula.trim()) {
-        error(idioma === 'EN' ? 'Please enter your Tax ID / Citizen ID' : 'Por favor ingresa el NIT o Cédula de tu negocio')
+        error(isEn ? 'Please enter your Tax ID / Citizen ID' : 'Por favor ingresa el NIT o Cédula de tu negocio')
         return
       }
       if (!ciudad.trim()) {
-        error(idioma === 'EN' ? 'Please enter your city' : 'Por favor ingresa la ciudad de tu negocio en Colombia')
+        error(isEn ? 'Please enter your city' : 'Por favor ingresa la ciudad de tu negocio en Colombia')
+        return
+      }
+      if (!cuentaBancaria.trim()) {
+        error(isEn ? 'Please enter your bank account or payout wallet for sales transactions' : 'Por favor ingresa la cuenta bancaria o Nequi para recibir las transacciones de ventas')
         return
       }
     }
@@ -103,6 +110,8 @@ export const Registro = () => {
               nombreTienda: nombreTienda.trim(),
               nitCedula: nitCedula.trim(),
               ciudad: ciudad.trim(),
+              banco: banco.trim(),
+              cuentaBancaria: cuentaBancaria.trim(),
               tipo: 'PERSONA_NATURAL',
             }
           : undefined,
@@ -113,34 +122,32 @@ export const Registro = () => {
 
     if (res?.exito) {
       if (rol === 'VENDEDOR') {
-        success(idioma === 'EN' ? 'Store registered! Check your email to verify your account.' : '¡Tienda registrada! Verifica tu correo o ingresa para comenzar.')
+        success(isEn ? 'Store registered! Check your email to verify your account.' : '¡Tienda registrada! Verifica tu correo o ingresa para comenzar.')
         navigate('/login?registro=pendiente')
       } else {
-        success(idioma === 'EN' ? 'Account created successfully! Welcome to Mercatto.' : '¡Cuenta creada con éxito! Bienvenido a Mercatto.')
+        success(isEn ? 'Account created successfully! Welcome to Mercatto.' : '¡Cuenta creada con éxito! Bienvenido a Mercatto.')
         window.location.replace('/')
       }
     } else {
-      error(res?.mensaje || (idioma === 'EN' ? 'Error creating account' : 'Error al crear la cuenta'))
+      error(res?.mensaje || (isEn ? 'Error creating account' : 'Error al crear la cuenta'))
     }
   }
 
   return (
-    <div className="min-h-screen w-full lg:grid lg:grid-cols-12 bg-white dark:bg-slate-950">
+    <div className="min-h-screen lg:h-screen lg:overflow-hidden w-full lg:grid lg:grid-cols-12 bg-white dark:bg-slate-950">
       
-      {/* Columna Izquierda: Sticky y fixed-height para evitar estiramiento al abrir tienda */}
-      <div className="lg:col-span-5 xl:col-span-5 relative hidden lg:flex flex-col justify-between p-6 lg:p-8 xl:p-10 min-h-screen lg:h-screen lg:sticky lg:top-0 bg-slate-950 text-white overflow-hidden">
-        {/* Imagen de fondo e-commerce con object-cover y sin estirarse */}
+      {/* Columna Izquierda: Fija en desktop */}
+      <div className="lg:col-span-5 xl:col-span-5 relative hidden lg:flex flex-col justify-between p-6 lg:p-8 xl:p-10 h-screen bg-slate-950 text-white overflow-hidden">
         <img 
           src="/images/login-ecommerce.jpg" 
           alt="Mercatto Marketplace" 
           className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.75] contrast-110"
         />
 
-        {/* Gradientes de marca Mercatto */}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-violet-950/60 mix-blend-multiply pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950/95 pointer-events-none" />
 
-        {/* Logo oficial con colores originales bien en la esquina y con separación amplia con el slogan */}
+        {/* Logo oficial con colores originales en esquina y separación amplia con el slogan */}
         <div className="relative z-10 self-start">
           <MercattoLogo 
             variant="onDark"
@@ -150,90 +157,92 @@ export const Registro = () => {
           />
         </div>
 
-        {/* Tarjeta de beneficios en la parte inferior */}
+        {/* Tarjeta de beneficios */}
         <div className="relative z-10 space-y-3 bg-slate-950/80 backdrop-blur-md p-6 rounded-3xl border border-white/15 shadow-2xl">
           <div className="flex items-center gap-2 text-violet-300 font-bold text-xs uppercase tracking-wider">
             <Sparkles size={15} className="text-violet-400" />
-            <span>{rol === 'VENDEDOR' ? 'Panel de Vendedores Oficial' : 'Tu marketplace favorito'}</span>
+            <span>{rol === 'VENDEDOR' ? (isEn ? 'Official Merchant Platform' : 'Panel de Vendedores Oficial') : (isEn ? 'Your Favorite Marketplace' : 'Tu marketplace favorito')}</span>
           </div>
           <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
             {rol === 'VENDEDOR'
-              ? 'Abre tu vitrina virtual y comienza a vender productos verificados con alcance nacional y analítica de ventas.'
-              : 'Únete gratis a Mercatto y accede a miles de productos de confianza con pagos seguros y entregas ágiles.'}
+              ? (isEn
+                  ? 'Open your store window and sell verified products with nationwide reach and real-time sales payouts.'
+                  : 'Abre tu vitrina virtual y comienza a vender productos verificados con alcance nacional y liquidación de transacciones en tiempo real.')
+              : (isEn
+                  ? 'Join Mercatto for free and access thousands of trusted products with fast deliveries and secure payments.'
+                  : 'Únete gratis a Mercatto y accede a miles de productos de confianza con pagos seguros y entregas ágiles.')}
           </p>
           <div className="flex items-center gap-4 pt-2 text-[11px] text-slate-300 font-semibold border-t border-white/10">
             <div className="flex items-center gap-1.5">
               <ShieldCheck size={14} className="text-emerald-400" />
-              <span>Pagos Wompi</span>
+              <span>{isEn ? 'Wompi Payouts' : 'Pagos Wompi'}</span>
             </div>
             <span className="text-white/30">•</span>
-            <div>Envíos a todo el país</div>
+            <div>{isEn ? 'Direct deliveries' : 'Envíos a todo el país'}</div>
           </div>
         </div>
       </div>
 
-      {/* Columna Derecha: Formulario con selector de idioma arriba a la izquierda */}
-      <div className="lg:col-span-7 xl:col-span-7 min-h-screen flex flex-col justify-between p-6 sm:p-10 lg:p-12 xl:p-16 overflow-y-auto bg-white dark:bg-slate-900">
+      {/* Columna Derecha */}
+      <div className="lg:col-span-7 xl:col-span-7 min-h-screen lg:h-screen lg:overflow-y-auto flex flex-col justify-between p-5 sm:p-10 lg:p-12 xl:p-16 bg-white dark:bg-slate-900">
         
-        {/* Barra superior: Selector de idioma y botón volver */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
+        {/* Barra superior limpia para móvil y escritorio: Volver a la izquierda, Idioma a la derecha */}
+        <div className="flex items-center justify-between gap-2 mb-4">
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/90 hover:bg-violet-50 dark:hover:bg-violet-950/40 hover:text-violet-600 dark:hover:text-violet-400 transition-all cursor-pointer border border-slate-200/80 dark:border-slate-700/80 shadow-xs group"
+            title={isEn ? 'Back to home' : 'Volver a la página principal'}
+          >
+            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform text-violet-600 dark:text-violet-400" />
+            <span>{isEn ? 'Back' : 'Volver'}</span>
+          </button>
+
+          {/* Selector de idioma ES / EN */}
+          <div className="flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200/70 dark:border-slate-700/70">
             <button
               type="button"
-              onClick={() => navigate('/')}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/90 hover:bg-violet-50 dark:hover:bg-violet-950/40 hover:text-violet-600 dark:hover:text-violet-400 transition-all cursor-pointer border border-slate-200/80 dark:border-slate-700/80 shadow-xs group"
-              title="Volver a la página principal"
+              onClick={() => cambiarIdioma('es')}
+              className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
+                !isEn
+                  ? 'bg-white dark:bg-slate-900 text-violet-600 dark:text-violet-400 shadow-xs'
+                  : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+              }`}
+              title="Cambiar a Español"
             >
-              <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform text-violet-600 dark:text-violet-400" />
-              <span>{idioma === 'EN' ? 'Back' : 'Volver'}</span>
+              ES
             </button>
-
-            {/* Selector de idioma arriba a la izquierda */}
-            <div className="flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200/70 dark:border-slate-700/70">
-              <button
-                type="button"
-                onClick={() => cambiarIdioma('es')}
-                className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
-                  idioma === 'ES'
-                    ? 'bg-white dark:bg-slate-900 text-violet-600 dark:text-violet-400 shadow-xs'
-                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-                }`}
-                title="Cambiar a Español"
-              >
-                ES
-              </button>
-              <button
-                type="button"
-                onClick={() => cambiarIdioma('en')}
-                className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
-                  idioma === 'EN'
-                    ? 'bg-white dark:bg-slate-900 text-violet-600 dark:text-violet-400 shadow-xs'
-                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-                }`}
-                title="Switch to English"
-              >
-                EN
-              </button>
-            </div>
-          </div>
-
-          {/* Logo en versión móvil */}
-          <div className="lg:hidden">
-            <MercattoLogo size={26} showSlogan={true} sloganClassName="mt-2 text-[10px]" />
+            <button
+              type="button"
+              onClick={() => cambiarIdioma('en')}
+              className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
+                isEn
+                  ? 'bg-white dark:bg-slate-900 text-violet-600 dark:text-violet-400 shadow-xs'
+                  : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+              }`}
+              title="Switch to English"
+            >
+              EN
+            </button>
           </div>
         </div>
 
         {/* Contenedor central del formulario */}
-        <div className="w-full max-w-lg mx-auto my-auto py-4">
+        <div className="w-full max-w-lg mx-auto my-auto py-3">
+          {/* Logo en versión móvil, limpio y con colores oficiales */}
+          <div className="lg:hidden mb-6">
+            <MercattoLogo size={32} showSlogan={true} sloganClassName="mt-2 text-[11px]" />
+          </div>
+
           <div className="space-y-1.5 mb-5">
             <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-              {idioma === 'EN' ? 'Create an Account' : 'Crear una Cuenta'}
+              {isEn ? 'Create an Account' : 'Crear una Cuenta'}
               <span className="text-violet-600">.</span>
             </h1>
             <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
               {rol === 'VENDEDOR' 
-                ? 'Registra tu negocio oficial y empieza a vender en Mercatto.' 
-                : 'Regístrate para comprar y rastrear tus pedidos.'}
+                ? (isEn ? 'Register your official store and start selling on Mercatto.' : 'Registra tu negocio oficial y empieza a vender en Mercatto.')
+                : (isEn ? 'Sign up to shop and track your orders nationwide.' : 'Regístrate para comprar y rastrear tus pedidos.')}
             </p>
           </div>
 
@@ -242,27 +251,27 @@ export const Registro = () => {
             <button
               type="button"
               onClick={() => setRol('COMPRADOR')}
-              className={`py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+              className={`py-2.5 px-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer text-center ${
                 rol === 'COMPRADOR'
                   ? 'bg-white dark:bg-slate-900 text-violet-600 dark:text-violet-400 shadow-sm border border-slate-200/80 dark:border-slate-700'
                   : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
               }`}
             >
-              <User size={15} />
-              <span>{t('quiero_comprar') || 'Quiero Comprar'}</span>
+              <User size={15} className="shrink-0" />
+              <span className="truncate">{t('quiero_comprar') || (isEn ? 'I want to buy' : 'Quiero Comprar')}</span>
             </button>
 
             <button
               type="button"
               onClick={() => setRol('VENDEDOR')}
-              className={`py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+              className={`py-2.5 px-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer text-center ${
                 rol === 'VENDEDOR'
                   ? 'bg-violet-600 text-white shadow-md shadow-violet-500/25 border border-violet-500'
                   : 'text-slate-500 hover:text-violet-600 dark:hover:text-violet-300'
               }`}
             >
-              <Store size={15} />
-              <span>{t('quiero_vender') || 'Quiero abrir tienda y vender'}</span>
+              <Store size={15} className="shrink-0" />
+              <span className="truncate">{isEn ? 'Open store & sell' : 'Quiero abrir tienda y vender'}</span>
             </button>
           </div>
 
@@ -270,7 +279,7 @@ export const Registro = () => {
             {/* Nombre Completo */}
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
-                {t('nombre_completo') || 'Nombre Completo'}
+                {t('nombre_completo') || (isEn ? 'Full Name' : 'Nombre Completo')}
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-violet-600 transition-colors">
@@ -280,7 +289,7 @@ export const Registro = () => {
                   type="text"
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
-                  placeholder="Ej: John Doe"
+                  placeholder={isEn ? 'e.g. John Doe' : 'Ej: John Doe'}
                   required
                   autoComplete="name"
                   className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/90 bg-slate-50/70 dark:bg-slate-800/60 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-violet-600 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15 transition-all"
@@ -291,7 +300,7 @@ export const Registro = () => {
             {/* Correo Electrónico */}
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
-                {t('correo_electronico') || 'Correo Electrónico'}
+                {t('correo_electronico') || (isEn ? 'Email Address' : 'Correo Electrónico')}
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-violet-600 transition-colors">
@@ -301,7 +310,7 @@ export const Registro = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t('correo_placeholder') || 'ejemplo@mercatto.com'}
+                  placeholder={t('correo_placeholder') || (isEn ? 'example@mercatto.com' : 'ejemplo@mercatto.com')}
                   required
                   autoComplete="email"
                   className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/90 bg-slate-50/70 dark:bg-slate-800/60 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-violet-600 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15 transition-all"
@@ -313,7 +322,7 @@ export const Registro = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
-                  {t('contrasena') || 'Contraseña'}
+                  {t('contrasena') || (isEn ? 'Password' : 'Contraseña')}
                 </label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-violet-600 transition-colors">
@@ -333,7 +342,7 @@ export const Registro = () => {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
-                    title={showPassword ? 'Ocultar' : 'Ver'}
+                    title={showPassword ? (isEn ? 'Hide' : 'Ocultar') : (isEn ? 'Show' : 'Ver')}
                   >
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
@@ -342,7 +351,7 @@ export const Registro = () => {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
-                  {t('confirmar_contrasena') || 'Confirmar'}
+                  {t('confirmar_contrasena') || (isEn ? 'Confirm' : 'Confirmar')}
                 </label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-violet-600 transition-colors">
@@ -362,7 +371,7 @@ export const Registro = () => {
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
-                    title={showConfirmPassword ? 'Ocultar' : 'Ver'}
+                    title={showConfirmPassword ? (isEn ? 'Hide' : 'Ocultar') : (isEn ? 'Show' : 'Ver')}
                   >
                     {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
@@ -370,17 +379,17 @@ export const Registro = () => {
               </div>
             </div>
 
-            {/* Datos del Negocio para Vendedores en tonos violeta/índigo acordes (SIN NARANJA) */}
+            {/* Datos del Negocio y Cuenta para Liquidaciones (VENDEDOR) */}
             {rol === 'VENDEDOR' && (
               <div className="p-4 rounded-2xl bg-violet-50/60 dark:bg-slate-800/80 border border-violet-200/80 dark:border-violet-800/50 space-y-3">
                 <div className="flex items-center gap-2 text-xs font-bold text-violet-900 dark:text-violet-300 uppercase tracking-wider">
                   <Store size={15} className="text-violet-600 dark:text-violet-400" />
-                  <span>{idioma === 'EN' ? 'Store & Business Information' : 'Datos del Negocio / Tienda Oficial'}</span>
+                  <span>{isEn ? 'Store & Business Information' : 'Datos del Negocio / Tienda Oficial'}</span>
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    {idioma === 'EN' ? 'Store Name' : 'Nombre de tu Tienda Virtual'}
+                    {isEn ? 'Store Name' : 'Nombre de tu Tienda Virtual'}
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -390,7 +399,7 @@ export const Registro = () => {
                       type="text"
                       value={nombreTienda}
                       onChange={(e) => setNombreTienda(e.target.value)}
-                      placeholder="Ej: Alien Tech Colombia"
+                      placeholder={isEn ? 'e.g. Alien Tech Colombia' : 'Ej: Alien Tech Colombia'}
                       required
                       className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 pl-10 pr-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-500/20"
                     />
@@ -400,7 +409,7 @@ export const Registro = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                      {idioma === 'EN' ? 'Tax ID / National ID' : 'NIT o Cédula'}
+                      {isEn ? 'Tax ID / Citizen ID' : 'NIT o Cédula'}
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -419,7 +428,7 @@ export const Registro = () => {
 
                   <div>
                     <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                      {idioma === 'EN' ? 'City in Colombia' : 'Ciudad en Colombia'}
+                      {isEn ? 'City in Colombia' : 'Ciudad en Colombia'}
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -432,6 +441,51 @@ export const Registro = () => {
                         placeholder="Ej: Bogotá, Medellín, Cali"
                         required
                         className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 pl-10 pr-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-500/20"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Cuenta para transacciones y liquidaciones de ventas */}
+                <div className="pt-2 border-t border-violet-200/60 dark:border-violet-800/40">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-violet-900 dark:text-violet-300 mb-2">
+                    <CreditCard size={14} className="text-violet-600 dark:text-violet-400" />
+                    <span>{isEn ? 'Payout Account for Sales' : 'Cuenta para Transacciones y Liquidaciones'}</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                        {isEn ? 'Bank / Wallet' : 'Entidad Bancaria o Billetera'}
+                      </label>
+                      <select
+                        value={banco}
+                        onChange={(e) => setBanco(e.target.value)}
+                        className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-500/20 cursor-pointer"
+                      >
+                        <option value="Bancolombia">Bancolombia (Ahorros/Corriente)</option>
+                        <option value="Nequi">Nequi</option>
+                        <option value="Daviplata">Daviplata</option>
+                        <option value="Davivienda">Davivienda</option>
+                        <option value="BBVA">BBVA Colombia</option>
+                        <option value="Banco de Bogota">Banco de Bogotá</option>
+                        <option value="Banco de Occidente">Banco de Occidente</option>
+                        <option value="Scotiabank Colpatria">Scotiabank Colpatria</option>
+                        <option value="Otro">Otro Banco Nacional</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                        {isEn ? 'Account / Mobile Number' : 'Número de Cuenta o Celular Nequi'}
+                      </label>
+                      <input
+                        type="text"
+                        value={cuentaBancaria}
+                        onChange={(e) => setCuentaBancaria(e.target.value)}
+                        placeholder={isEn ? 'e.g. 123-456789-00 or 3001234567' : 'Ej: 123-456789-00 o 3001234567'}
+                        required
+                        className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-sm font-mono text-slate-900 dark:text-slate-100 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-500/20"
                       />
                     </div>
                   </div>
@@ -449,15 +503,15 @@ export const Registro = () => {
                   className="w-4 h-4 rounded-md border-slate-300 text-violet-600 focus:ring-violet-500 cursor-pointer"
                 />
                 <span>
-                  {idioma === 'EN' ? 'I agree to the ' : 'Acepto los '}
+                  {isEn ? 'I agree to the ' : 'Acepto los '}
                   <Link to="/terminos" target="_blank" className="font-bold underline text-slate-900 dark:text-white hover:text-violet-600">
-                    {idioma === 'EN' ? 'Terms & Condition' : 'Términos y Condiciones'}
+                    {isEn ? 'Terms & Conditions' : 'Términos y Condiciones'}
                   </Link>
                 </span>
               </label>
             </div>
 
-            {/* Botón Principal con el gradiente oficial de Mercatto (SIN NARANJA) */}
+            {/* Botón Principal */}
             <button
               type="submit"
               disabled={loading}
@@ -469,15 +523,15 @@ export const Registro = () => {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                   </svg>
-                  <span>Cargando...</span>
+                  <span>{isEn ? 'Loading...' : 'Cargando...'}</span>
                 </span>
               ) : (
                 <>
                   <CheckCircle2 size={18} />
                   <span>
                     {rol === 'VENDEDOR'
-                      ? (idioma === 'EN' ? 'Submit Store Application' : 'Enviar Solicitud de Tienda')
-                      : (idioma === 'EN' ? 'Create Account' : 'Crear Cuenta')}
+                      ? (isEn ? 'Submit Store Application' : 'Enviar Solicitud de Tienda')
+                      : (isEn ? 'Create Account' : 'Crear Cuenta')}
                   </span>
                 </>
               )}
@@ -492,7 +546,7 @@ export const Registro = () => {
                   <div className="w-full border-t border-slate-200 dark:border-slate-800" />
                 </div>
                 <span className="relative bg-white dark:bg-slate-900 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                  {t('o_continua_con') || 'o continúa con'}
+                  {t('o_continua_con') || (isEn ? 'or continue with' : 'o continúa con')}
                 </span>
               </div>
 
@@ -503,11 +557,11 @@ export const Registro = () => {
           )}
         </div>
 
-        {/* Sección Inferior: "¿Ya tienes cuenta? Inicia sesión" */}
+        {/* Sección Inferior */}
         <div className="text-center pt-5 text-sm text-slate-600 dark:text-slate-400 font-medium border-t border-slate-100 dark:border-slate-800/80">
-          {t('ya_tienes_cuenta') || '¿Ya tienes una cuenta?'}{' '}
+          {t('ya_tienes_cuenta') || (isEn ? 'Already have an account?' : '¿Ya tienes una cuenta?')}{' '}
           <Link to="/login" className="font-black text-violet-600 dark:text-violet-400 hover:text-violet-700 hover:underline ml-1">
-            {t('iniciar_sesion') || 'Inicia sesión aquí'}
+            {t('iniciar_sesion') || (isEn ? 'Log in here' : 'Inicia sesión aquí')}
           </Link>
         </div>
 
