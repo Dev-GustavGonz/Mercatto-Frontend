@@ -12,6 +12,7 @@ import Modal from '@/components/common/Modal'
 import { useToast } from '@/hooks/useToast'
 import { useAuth } from '@/context/AuthContext'
 import { formatCurrency } from '@/utils/formatCurrency'
+import { getMediaUrl } from '@/utils/constants'
 import MercattoLogo from '@/components/common/MercattoLogo'
 import {
   LayoutDashboard,
@@ -46,7 +47,8 @@ import {
   AlertCircle,
   Trash2,
   Zap,
-  Crown
+  Crown,
+  Camera
 } from 'lucide-react'
 
 export const PanelAdmin = () => {
@@ -774,7 +776,9 @@ export const PanelAdmin = () => {
                     <th className="p-4 text-emerald-600">Comisión según Plan</th>
                     <th className="p-4">Estado Tienda</th>
                     <th className="p-4">Guía / Despacho</th>
+
                     <th className="p-4">Fecha</th>
+                    <th className="p-4">Evidencia Entrega</th>
                     <th className="p-4 text-right">Auditoría</th>
                   </tr>
                 </thead>
@@ -839,6 +843,38 @@ export const PanelAdmin = () => {
                         </td>
                         <td className="p-4 text-slate-400">
                           {p.fechaCreacion ? new Date(p.fechaCreacion).toLocaleDateString('es-CO') : '-'}
+                        </td>
+                        <td className="p-4">
+                          {p.evidenciaEntregaUrl ? (
+                            <div className="flex items-center gap-2">
+                              <button
+                                type="button"
+                                onClick={() => setPedidoDetalleModal(p)}
+                                className="w-10 h-10 rounded-xl overflow-hidden border border-emerald-200 bg-emerald-50 hover:ring-2 hover:ring-emerald-400 transition shrink-0 cursor-pointer"
+                                title="Ver evidencia de entrega en auditoría"
+                              >
+                                <img
+                                  src={getMediaUrl(p.evidenciaEntregaUrl)}
+                                  alt={`Evidencia pedido ${p.codigo}`}
+                                  className="w-full h-full object-cover"
+                                />
+                              </button>
+                              <a
+                                href={getMediaUrl(p.evidenciaEntregaUrl)}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-[10px] border border-emerald-200 transition whitespace-nowrap"
+                                title="Abrir imagen original"
+                              >
+                                <Camera size={11} />
+                                <span>Ver foto</span>
+                              </a>
+                            </div>
+                          ) : (
+                            <span className="text-[11px] text-slate-400 italic">
+                              {p.estado === 'ENTREGADO' ? 'Sin imagen' : 'Pendiente'}
+                            </span>
+                          )}
                         </td>
                         <td className="p-4 text-right">
                           <button
@@ -1183,6 +1219,42 @@ export const PanelAdmin = () => {
                 </p>
               )}
             </div>
+
+            {/* Evidencia Fotográfica de Entrega subida por el Vendedor */}
+            {pedidoDetalleModal.evidenciaEntregaUrl ? (
+              <div className="bg-emerald-50/80 p-4 rounded-2xl border border-emerald-200 space-y-2.5 shadow-2xs">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-bold text-emerald-800 flex items-center gap-1.5 text-xs">
+                    <Camera size={15} className="text-emerald-600 shrink-0" />
+                    <span>Evidencia de Entrega Cargada por el Vendedor:</span>
+                  </span>
+                  <a
+                    href={getMediaUrl(pedidoDetalleModal.evidenciaEntregaUrl)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[11px] font-bold text-emerald-700 hover:text-emerald-900 underline flex items-center gap-1 shrink-0"
+                  >
+                    <span>Ver foto original</span>
+                    <ExternalLink size={11} />
+                  </a>
+                </div>
+                <div className="rounded-xl overflow-hidden border border-emerald-200 bg-white max-h-64 flex items-center justify-center p-1.5 shadow-inner">
+                  <img
+                    src={getMediaUrl(pedidoDetalleModal.evidenciaEntregaUrl)}
+                    alt={`Evidencia de entrega del pedido ${pedidoDetalleModal.codigo}`}
+                    className="max-h-60 w-auto object-contain rounded-lg"
+                  />
+                </div>
+                <p className="text-[11px] text-emerald-700 italic">
+                  Imagen registrada por la tienda al confirmar la entrega del pedido.
+                </p>
+              </div>
+            ) : pedidoDetalleModal.estado === 'ENTREGADO' ? (
+              <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-[11px] flex items-center gap-2">
+                <AlertCircle size={14} className="text-amber-600 shrink-0" />
+                <span>Este pedido figura como ENTREGADO sin evidencia fotográfica adjunta.</span>
+              </div>
+            ) : null}
 
             {pedidoDetalleModal.items && pedidoDetalleModal.items.length > 0 && (
               <div className="divide-y divide-slate-100 max-h-48 overflow-y-auto">

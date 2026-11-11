@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '@/hooks/useLanguage'
+import { getMediaUrl } from '@/utils/constants'
 import { 
   Laptop, 
   Smartphone, 
@@ -64,7 +65,7 @@ export const CategoriesShowcase = ({ categorias = [] }) => {
       return categorias.map((cat) => {
         const meta = resolverMeta(cat)
         const imagenFinal = (cat.imagenUrl && cat.imagenUrl.trim() !== '' && !cat.imagenUrl.includes('photo-1541643600914')) 
-          ? cat.imagenUrl 
+          ? getMediaUrl(cat.imagenUrl, meta.imagen) 
           : meta.imagen
         return {
           id: cat.id,

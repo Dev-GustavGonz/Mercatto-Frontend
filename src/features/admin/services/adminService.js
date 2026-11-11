@@ -51,6 +51,11 @@ export const adminService = {
     return res.data
   },
 
+  listarCategorias: async () => {
+    const res = await api.get('/categorias/todas', { noCache: true, params: { _t: Date.now() } })
+    return res.data
+  },
+
   crearCategoria: async (datos, padreId = null) => {
     const res = await api.post('/categorias', datos, { params: { padreId } })
     return res.data

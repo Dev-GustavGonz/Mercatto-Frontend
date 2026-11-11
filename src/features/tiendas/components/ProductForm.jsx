@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import Input from '@/components/common/Input'
 import Button from '@/components/common/Button'
 import { productoService } from '@/features/productos'
+import { tiendaService } from '@/features/tiendas'
 import { useToast } from '@/hooks/useToast'
-import { Plus, Trash2, Upload } from 'lucide-react'
+import { Plus, Trash2, Upload, Tag, Check } from 'lucide-react'
 
 export const ProductForm = ({ productoInicial = null, onGuardado, onCancelar }) => {
   const [titulo, setTitulo] = useState(productoInicial?.titulo || '')
@@ -36,13 +37,88 @@ export const ProductForm = ({ productoInicial = null, onGuardado, onCancelar }) 
     })) || []
   )
   const [categorias, setCategorias] = useState([])
+  const [marcasRegistradas, setMarcasRegistradas] = useState([])
+  const [mostrarSugerenciasMarca, setMostrarSugerenciasMarca] = useState(false)
+  const [indiceSugerencia, setIndiceSugerencia] = useState(-1)
+  const marcaBoxRef = useRef(null)
   const [loading, setLoading] = useState(false)
   const [subiendoImg, setSubiendoImg] = useState(false)
   const { success, error } = useToast()
 
   useEffect(() => {
     productoService.listarCategorias().then((data) => setCategorias(data || [])).catch(() => {})
+    tiendaService
+      .listarMarcas({ noCache: true, params: { _t: Date.now() } })
+      .then((data) => {
+        if (!Array.isArray(data)) return
+        const vistas = new Set()
+        const unicas = []
+        for (const m of data) {
+          const limpia = typeof m === 'string' ? m.trim() : ''
+          if (!limpia) continue
+          const clave = limpia.toLowerCase()
+          if (!vistas.has(clave)) {
+            vistas.add(clave)
+            unicas.push(limpia)
+          }
+        }
+        setMarcasRegistradas(unicas)
+      })
+      .catch(() => {})
   }, [])
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (marcaBoxRef.current && !marcaBoxRef.current.contains(e.target)) {
+        setMostrarSugerenciasMarca(false)
+        setIndiceSugerencia(-1)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const sugerenciasMarca = useMemo(() => {
+    const query = marca.trim().toLowerCase()
+    if (!query) return marcasRegistradas.slice(0, 10)
+    const empiezan = []
+    const contienen = []
+    for (const m of marcasRegistradas) {
+      const lower = m.toLowerCase()
+      if (lower.startsWith(query)) empiezan.push(m)
+      else if (lower.includes(query)) contienen.push(m)
+    }
+    return [...empiezan, ...contienen].slice(0, 10)
+  }, [marca, marcasRegistradas])
+
+  const seleccionarMarca = (nombreMarca) => {
+    setMarca(nombreMarca)
+    setMostrarSugerenciasMarca(false)
+    setIndiceSugerencia(-1)
+  }
+
+  const handleMarcaKeyDown = (e) => {
+    if (!mostrarSugerenciasMarca || sugerenciasMarca.length === 0) {
+      if (e.key === 'ArrowDown' && sugerenciasMarca.length > 0) {
+        setMostrarSugerenciasMarca(true)
+        setIndiceSugerencia(0)
+      }
+      return
+    }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      setIndiceSugerencia((prev) => (prev + 1) % sugerenciasMarca.length)
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      setIndiceSugerencia((prev) => (prev <= 0 ? sugerenciasMarca.length - 1 : prev - 1))
+    } else if (e.key === 'Enter' && indiceSugerencia >= 0) {
+      e.preventDefault()
+      seleccionarMarca(sugerenciasMarca[indiceSugerencia])
+    } else if (e.key === 'Escape') {
+      setMostrarSugerenciasMarca(false)
+      setIndiceSugerencia(-1)
+    }
+  }
 
   const handleAddImageUrl = () => setImagenes([...imagenes, ''])
   const handleRemoveImage = (idx) => setImagenes(imagenes.filter((_, i) => i !== idx))
@@ -266,12 +342,54 @@ export const ProductForm = ({ productoInicial = null, onGuardado, onCancelar }) 
           onChange={(e) => setStock(e.target.value)}
           required
         />
-        <Input
-          label="Marca"
-          placeholder="Ej: Sony, Samsung, Genérica"
-          value={marca}
-          onChange={(e) => setMarca(e.target.value)}
-        />
+        <div ref={marcaBoxRef} className="relative">
+          <Input
+            label="Marca"
+            placeholder="Ej: Sony, Samsung, Genérica"
+            value={marca}
+            autoComplete="off"
+            onFocus={() => setMostrarSugerenciasMarca(true)}
+            onChange={(e) => {
+              setMarca(e.target.value)
+              setMostrarSugerenciasMarca(true)
+              setIndiceSugerencia(-1)
+            }}
+            onKeyDown={handleMarcaKeyDown}
+          />
+          {mostrarSugerenciasMarca && sugerenciasMarca.length > 0 && (
+            <div className="absolute left-0 right-0 top-full mt-1 z-30 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg overflow-hidden">
+              <div className="px-3 py-1.5 bg-slate-50 dark:bg-slate-800/70 border-b border-slate-100 dark:border-slate-800 text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                <Tag size={11} className="text-violet-500" />
+                <span>Marcas registradas</span>
+              </div>
+              <ul className="max-h-44 overflow-y-auto py-1">
+                {sugerenciasMarca.map((m, idx) => {
+                  const esExacta = m.toLowerCase() === marca.trim().toLowerCase()
+                  const resaltada = idx === indiceSugerencia
+                  return (
+                    <li key={m}>
+                      <button
+                        type="button"
+                        onMouseDown={(e) => {
+                          e.preventDefault()
+                          seleccionarMarca(m)
+                        }}
+                        className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between transition cursor-pointer ${
+                          resaltada
+                            ? 'bg-violet-50 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300 font-bold'
+                            : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'
+                        }`}
+                      >
+                        <span className="truncate">{m}</span>
+                        {esExacta && <Check size={13} className="text-emerald-600 shrink-0" />}
+                      </button>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Imágenes */}

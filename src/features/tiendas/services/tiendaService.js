@@ -16,8 +16,8 @@ export const tiendaService = {
     return res.data
   },
 
-  listarMarcas: async () => {
-    const res = await api.get('/tiendas/marcas')
+  listarMarcas: async (config = {}) => {
+    const res = await api.get('/tiendas/marcas', config)
     return res.data
   },
 }
