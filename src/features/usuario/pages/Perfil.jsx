@@ -6,6 +6,7 @@ import { direccionService } from '@/features/usuario'
 import { usuarioService } from '@/features/usuario'
 import Button from '@/components/common/Button'
 import Input from '@/components/common/Input'
+import { prepararImagenParaSubida, formatearErrorImagen } from '@/utils/imageUpload'
 import { User, MapPin, Plus, Trash2, Edit2, Shield, Camera, X, Check, Headphones } from 'lucide-react'
 
 export const Perfil = () => {
@@ -92,23 +93,22 @@ export const Perfil = () => {
   }
 
   const handleSubirFoto = async (e) => {
-    const file = e.target.files[0]
+    const file = e.target.files?.[0]
+    e.target.value = ''
     if (!file) return
 
-    if (file.size > 5 * 1024 * 1024) {
-      error('La imagen no debe superar los 5MB')
-      return
-    }
-
     try {
-      info('Subiendo foto...')
-      const res = await usuarioService.subirFotoPerfil(file)
+      info('Optimizando y subiendo foto...')
+      const prepared = await prepararImagenParaSubida(file, { prefix: 'avatar', maxWidth: 800, maxHeight: 800 })
+      const res = await usuarioService.subirFotoPerfil(prepared)
       if (res.exito) {
         actualizarUsuario(res.usuario)
         success('Foto actualizada')
+      } else {
+        error(res?.mensaje || 'No se pudo actualizar la foto de perfil.')
       }
     } catch (err) {
-      error('No se pudo subir la foto')
+      error(formatearErrorImagen(err, 'No se pudo subir la foto de perfil.'))
     }
   }
 

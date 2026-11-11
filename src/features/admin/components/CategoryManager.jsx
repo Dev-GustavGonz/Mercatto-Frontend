@@ -7,8 +7,7 @@ import Modal from '@/components/common/Modal'
 import { useToast } from '@/hooks/useToast'
 import { getMediaUrl } from '@/utils/constants'
 import { sortCategoriesHierarchically } from '@/utils/categoryUtils'
-import { prepararImagenParaSubida } from '@/utils/imageUpload'
-import { extractApiErrorMessage } from '@/utils/validators'
+import { prepararImagenParaSubida, formatearErrorImagen } from '@/utils/imageUpload'
 import { Plus, Trash2, Edit, Upload, Image as ImageIcon, X } from 'lucide-react'
 
 export const CategoryManager = () => {
@@ -78,7 +77,7 @@ export const CategoryManager = () => {
         error('No se recibió la URL de la imagen subida.')
       }
     } catch (err) {
-      error(err?.response ? extractApiErrorMessage(err, 'Error al subir la imagen de la categoría') : (err?.message || 'Error al subir la imagen de la categoría'))
+      error(formatearErrorImagen(err, 'No se pudo subir la imagen de la categoría.'))
     } finally {
       setSubiendoImg(false)
     }

@@ -4,8 +4,7 @@ import Button from '@/components/common/Button'
 import { productoService } from '@/features/productos'
 import { tiendaService } from '@/features/tiendas'
 import { useToast } from '@/hooks/useToast'
-import { prepararImagenParaSubida } from '@/utils/imageUpload'
-import { extractApiErrorMessage } from '@/utils/validators'
+import { prepararImagenParaSubida, formatearErrorImagen } from '@/utils/imageUpload'
 import { sortCategoriesHierarchically } from '@/utils/categoryUtils'
 import { Plus, Trash2, Upload, Tag, Check } from 'lucide-react'
 
@@ -154,7 +153,7 @@ export const ProductForm = ({ productoInicial = null, onGuardado, onCancelar }) 
         error('No se recibió la URL de la imagen subida.')
       }
     } catch (err) {
-      error(err?.response ? extractApiErrorMessage(err, 'Error al subir la imagen') : (err?.message || 'Error al subir la imagen'))
+      error(formatearErrorImagen(err, 'No se pudo subir la imagen del producto.'))
     } finally {
       setSubiendoImg(false)
     }
