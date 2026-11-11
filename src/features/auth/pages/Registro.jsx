@@ -140,15 +140,13 @@ export const Registro = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-violet-950/60 mix-blend-multiply pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950/95 pointer-events-none" />
 
-        {/* Logo oficial con colores originales en tarjeta limpia y nítida */}
-        <div className="relative z-10 self-start">
-          <div className="p-4 sm:p-5 rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-2xl border border-white/80 dark:border-slate-800">
-            <MercattoLogo 
-              size={34} 
-              showSlogan={true} 
-              sloganClassName="text-violet-600 dark:text-violet-400 text-xs font-bold mt-0.5 block tracking-wide" 
-            />
-          </div>
+        {/* Logo oficial con colores originales directamente sobre el fondo sin caja blanca */}
+        <div className="relative z-10 self-start pt-2">
+          <MercattoLogo 
+            variant="onDark"
+            size={42} 
+            showSlogan={true} 
+          />
         </div>
 
         {/* Tarjeta de beneficios en la parte inferior */}
