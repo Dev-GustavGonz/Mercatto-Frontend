@@ -123,10 +123,64 @@ export const Login = () => {
       </div>
 
       {/* Columna Derecha */}
-      <div className="lg:col-span-7 xl:col-span-7 min-h-screen lg:h-screen lg:overflow-y-auto flex flex-col justify-between p-5 sm:p-10 lg:p-12 xl:p-16 bg-white dark:bg-slate-900">
+      <div className="lg:col-span-7 xl:col-span-7 min-h-screen lg:h-screen lg:overflow-y-auto flex flex-col justify-between p-0 lg:p-12 xl:p-16 bg-white dark:bg-slate-900">
         
-        {/* Barra superior limpia para móvil y escritorio: Volver a la izquierda, Idioma a la derecha */}
-        <div className="flex items-center justify-between gap-2 mb-4">
+        {/* Hero Banner exclusivo para Móvil: coherente con desktop */}
+        <div className="lg:hidden relative w-full h-44 sm:h-52 flex flex-col justify-between p-5 bg-slate-950 text-white overflow-hidden rounded-b-[2rem] shadow-lg shrink-0">
+          <img 
+            src="/images/login-ecommerce.jpg" 
+            alt="Mercatto Marketplace" 
+            className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.75] contrast-110"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-violet-950/50 mix-blend-multiply pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-transparent to-slate-950/90 pointer-events-none" />
+
+          {/* Barra superior móvil dentro del banner */}
+          <div className="relative z-10 flex items-center justify-between">
+            <button
+              type="button"
+              onClick={() => navigate('/')}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-white bg-white/15 backdrop-blur-md border border-white/20 hover:bg-white/25 transition-all cursor-pointer"
+            >
+              <ArrowLeft size={15} />
+              <span>{isEn ? 'Back' : 'Volver'}</span>
+            </button>
+
+            <div className="flex items-center p-1 bg-white/15 backdrop-blur-md rounded-xl border border-white/20">
+              <button
+                type="button"
+                onClick={() => cambiarIdioma('es')}
+                className={`px-2.5 py-0.5 rounded-lg text-[11px] font-extrabold transition-all cursor-pointer ${
+                  !isEn ? 'bg-white text-violet-700 shadow-xs' : 'text-white/80 hover:text-white'
+                }`}
+              >
+                ES
+              </button>
+              <button
+                type="button"
+                onClick={() => cambiarIdioma('en')}
+                className={`px-2.5 py-0.5 rounded-lg text-[11px] font-extrabold transition-all cursor-pointer ${
+                  isEn ? 'bg-white text-violet-700 shadow-xs' : 'text-white/80 hover:text-white'
+                }`}
+              >
+                EN
+              </button>
+            </div>
+          </div>
+
+          {/* Logo coherente centrado/alineado en el banner móvil */}
+          <div className="relative z-10 self-start">
+            <MercattoLogo 
+              variant="onDark" 
+              size={32} 
+              showSlogan={true} 
+              sloganClassName="mt-2 text-[11px] font-bold tracking-wide block" 
+            />
+          </div>
+        </div>
+
+        {/* Barra superior exclusiva para Desktop */}
+        <div className="hidden lg:flex items-center justify-between gap-2 mb-4">
           <button
             type="button"
             onClick={() => navigate('/')}
@@ -167,12 +221,7 @@ export const Login = () => {
         </div>
 
         {/* Contenedor central del formulario */}
-        <div className="w-full max-w-lg mx-auto my-auto py-4">
-          {/* Logo en versión móvil, limpio y con colores oficiales */}
-          <div className="lg:hidden mb-6">
-            <MercattoLogo size={32} showSlogan={true} sloganClassName="mt-2 text-[11px]" />
-          </div>
-
+        <div className="w-full max-w-lg mx-auto my-auto px-5 py-6 sm:px-10 sm:py-8 lg:p-0">
           <div className="space-y-1.5 mb-6">
             <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
               {t('iniciar_sesion') || (isEn ? 'Log in' : 'Iniciar sesión')}
@@ -293,7 +342,7 @@ export const Login = () => {
         </div>
 
         {/* Sección Inferior */}
-        <div className="pt-6 border-t border-slate-100 dark:border-slate-800/80 text-center space-y-2">
+        <div className="px-5 pb-6 pt-5 sm:px-10 lg:px-0 lg:pb-0 border-t border-slate-100 dark:border-slate-800/80 text-center space-y-2">
           <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">
             {isEn ? "Don't have an account? " : "¿No tienes una cuenta? "}
             <Link
