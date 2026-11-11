@@ -125,110 +125,110 @@ export const Registro = () => {
   }
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-3 sm:p-6 lg:p-8 bg-slate-100/70 dark:bg-slate-950 relative overflow-hidden">
-      {/* Resplandores ambientales de fondo */}
-      <div className="absolute -top-32 -left-32 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-violet-50/70 via-slate-50 to-indigo-50/60 dark:from-slate-950 dark:via-slate-900 dark:to-violet-950/40 relative overflow-hidden">
+      {/* Resplandores ambientales de fondo con gradientes suaves */}
+      <div className="absolute -top-36 -left-36 w-96 h-96 bg-violet-400/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-36 -right-36 w-96 h-96 bg-fuchsia-400/15 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Tarjeta principal ampliada con estilo split-card inspirado en la referencia */}
-      <div className="w-full max-w-6xl xl:max-w-7xl bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl shadow-violet-500/10 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-6 lg:p-8 transition-all relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch min-h-[660px] xl:min-h-[720px]">
+      {/* Tarjeta principal con profundidad, sombras ricas y bordes redondeados */}
+      <div className="w-full max-w-5xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[2.5rem] shadow-[0_25px_70px_-15px_rgba(118,85,214,0.18)] border border-slate-200/80 dark:border-slate-800 p-4 sm:p-6 md:p-7 transition-all relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-stretch">
           
-          {/* Columna Izquierda: Showcase visual estético con halo de luz y marca Mercatto */}
-          <div className="lg:col-span-5 relative hidden lg:flex flex-col justify-between overflow-hidden rounded-[2rem] p-8 xl:p-10 min-h-[660px] bg-slate-950 text-white shadow-inner">
-            {/* Imagen de fondo estética con halo */}
+          {/* Columna Izquierda: Banner visual de compras con Mercatto y su eslogan oficial */}
+          <div className="lg:col-span-5 relative hidden lg:flex flex-col justify-between overflow-hidden rounded-[2rem] p-8 min-h-[640px] bg-slate-950 text-white shadow-2xl">
+            {/* Imagen de compras y lifestyle de alta calidad */}
             <img 
-              src="/images/login-hero.jpg" 
+              src="/images/login-shopping.jpg" 
               alt="Mercatto Experience" 
-              className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.85] contrast-105"
+              className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.88] contrast-105 transition-transform duration-700 hover:scale-105"
             />
 
-            {/* Capas de gradientes para legibilidad */}
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-violet-950/50 mix-blend-multiply pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-transparent to-slate-950/95 pointer-events-none" />
+            {/* Capas de gradientes para legibilidad y elegancia */}
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/45 to-violet-950/50 mix-blend-multiply pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-transparent to-slate-950/90 pointer-events-none" />
 
-            {/* Halo de luz holográfico de fondo */}
-            <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-              <div className="w-64 h-64 rounded-full border border-violet-400/30 shadow-[0_0_100px_rgba(139,92,246,0.45)] rotate-[-12deg]" />
-              <div className="absolute inset-0 w-64 h-64 rounded-full border border-pink-400/25 blur-[1px] rotate-[22deg]" />
+            {/* Cabecera del Banner: Logo oficial Mercatto con su eslogan justo debajo */}
+            <div className="relative z-10 p-5 rounded-2xl bg-slate-950/50 backdrop-blur-md border border-white/15 shadow-lg">
+              <MercattoLogo 
+                variant="white" 
+                size={36} 
+                showSlogan={true} 
+                sloganClassName="text-violet-200 text-xs font-semibold mt-1 block tracking-wide" 
+              />
             </div>
 
-            {/* Logo de Mercatto en la parte superior del banner */}
-            <div className="relative z-10 flex flex-col items-center justify-center pt-2">
-              <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-lg shadow-violet-500/20 transition-transform hover:scale-105">
-                <MercattoLogo showText={false} size={34} className="text-white drop-shadow-md" />
+            {/* Chip flotante central */}
+            <div className="relative z-10 self-start">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/25 text-white text-xs font-bold shadow-md">
+                <span className="text-amber-300">★ 4.9</span>
+                <span>{rol === 'VENDEDOR' ? 'Panel de Ventas Oficial' : 'Comunidad de Compradores'}</span>
               </div>
-              <span className="mt-2.5 text-xs font-bold tracking-widest uppercase text-white/90">
-                Mercatto Oficial
-              </span>
             </div>
 
             {/* Tarjeta de cristal en la parte inferior */}
-            <div className="relative z-10 space-y-3 bg-slate-950/70 backdrop-blur-md p-6 rounded-2xl border border-white/15 shadow-xl">
+            <div className="relative z-10 space-y-3 bg-slate-950/75 backdrop-blur-md p-6 rounded-2xl border border-white/15 shadow-xl">
               <div className="flex items-center gap-2 text-violet-300 font-bold text-xs uppercase tracking-wider">
                 <Sparkles size={15} className="text-violet-400" />
-                <span>{rol === 'VENDEDOR' ? 'Impulsa tu negocio' : 'Tu marketplace favorito'}</span>
+                <span>{rol === 'VENDEDOR' ? 'Impulsa tu negocio' : 'Únete a Mercatto'}</span>
               </div>
-              <p className="text-sm text-slate-200 leading-relaxed font-medium">
+              <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
                 {rol === 'VENDEDOR'
-                  ? 'Abre tu vitrina virtual y comienza a vender productos verificados con alcance nacional y panel de analítica integrado.'
-                  : 'Crea tu cuenta gratis en Mercatto y accede a miles de productos de tiendas de confianza con pagos protegidos.'}
+                  ? 'Abre tu vitrina virtual y comienza a vender productos verificados con alcance nacional y analítica en tiempo real.'
+                  : 'Crea tu cuenta gratis en minutos y descubre miles de marcas con entregas rápidas y pagos seguros.'}
               </p>
-              <div className="flex items-center gap-4 pt-2 text-xs text-slate-300 font-semibold border-t border-white/10">
+              <div className="flex items-center gap-4 pt-2 text-[11px] text-slate-300 font-semibold border-t border-white/10">
                 <div className="flex items-center gap-1.5">
-                  <ShieldCheck size={15} className="text-emerald-400" />
+                  <ShieldCheck size={14} className="text-emerald-400" />
                   <span>Pagos Wompi</span>
                 </div>
                 <span className="text-white/30">•</span>
-                <div>Envíos directos</div>
+                <div>Envíos a todo el país</div>
               </div>
             </div>
           </div>
 
           {/* Columna Derecha: Formulario limpio y moderno */}
-          <div className="lg:col-span-7 flex flex-col justify-between px-3 py-4 sm:px-8 sm:py-6 lg:px-10 xl:px-12">
+          <div className="lg:col-span-7 flex flex-col justify-between px-2 sm:px-6 md:px-8 py-2 sm:py-4">
             <div>
-              {/* Barra Superior con Botón de Retroceso destacado y Logo */}
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+              {/* Barra Superior con botón para retroceder */}
+              <div className="flex items-center justify-between mb-5">
                 <button
                   type="button"
                   onClick={() => navigate('/')}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all cursor-pointer group shadow-xs hover:border-slate-300"
-                  title="Volver a la tienda"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/90 hover:bg-violet-50 dark:hover:bg-violet-950/40 hover:text-violet-600 dark:hover:text-violet-400 transition-all cursor-pointer border border-slate-200/80 dark:border-slate-700/80 shadow-xs group"
+                  title="Volver a la página principal"
                 >
                   <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform text-violet-600 dark:text-violet-400" />
-                  <span>{idioma === 'EN' ? 'Back to store' : 'Volver al inicio'}</span>
+                  <span>{idioma === 'EN' ? 'Back to home' : 'Volver al inicio'}</span>
                 </button>
 
-                <Link to="/" className="inline-flex items-center transition-transform hover:scale-105" title="Ir a Mercatto">
-                  <MercattoLogo size={28} showSlogan={false} />
-                </Link>
+                {/* En móviles mostramos el logo Mercatto con su eslogan */}
+                <div className="lg:hidden">
+                  <MercattoLogo size={26} showSlogan={true} sloganClassName="text-[10px]" />
+                </div>
               </div>
 
-              {/* Título y enlace a Iniciar Sesión (Estilo exacto a la primera imagen) */}
-              <div className="space-y-2 mb-6">
-                <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              {/* Título y subtítulo */}
+              <div className="space-y-1.5 mb-5">
+                <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
                   {idioma === 'EN' ? 'Create an Account' : 'Crear una Cuenta'}
+                  <span className="text-violet-600">.</span>
                 </h1>
-                <p className="text-sm text-slate-500 dark:text-slate-400">
-                  {idioma === 'EN' ? 'Already have an account? ' : '¿Ya tienes una cuenta? '}
-                  <Link
-                    to="/login"
-                    className="font-bold text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 underline underline-offset-4 transition-colors"
-                  >
-                    {idioma === 'EN' ? 'Log in' : 'Inicia sesión'}
-                  </Link>
+                <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
+                  {rol === 'VENDEDOR' 
+                    ? 'Registra tu negocio y empieza a vender hoy mismo.' 
+                    : 'Regístrate para comprar y rastrear tus pedidos.'}
                 </p>
               </div>
 
-              {/* Selector de Rol estilizado en píldoras */}
-              <div className="grid grid-cols-2 gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 mb-5">
+              {/* Selector de Rol estilizado en píldoras con profundidad */}
+              <div className="grid grid-cols-2 gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 mb-5 border border-slate-200/60 dark:border-slate-700/60">
                 <button
                   type="button"
                   onClick={() => setRol('COMPRADOR')}
                   className={`py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
                     rol === 'COMPRADOR'
-                      ? 'bg-white dark:bg-slate-900 text-violet-600 dark:text-violet-400 shadow-sm'
+                      ? 'bg-white dark:bg-slate-900 text-violet-600 dark:text-violet-400 shadow-sm border border-slate-200/70 dark:border-slate-700'
                       : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
                   }`}
                 >
@@ -241,7 +241,7 @@ export const Registro = () => {
                   onClick={() => setRol('VENDEDOR')}
                   className={`py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
                     rol === 'VENDEDOR'
-                      ? 'bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-sm'
+                      ? 'bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-sm border border-slate-200/70 dark:border-slate-700'
                       : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
                   }`}
                 >
@@ -251,14 +251,14 @@ export const Registro = () => {
               </div>
 
               {/* Formulario de Registro */}
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-3.5">
                 {/* Nombre Completo */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
                     {t('nombre_completo') || 'Nombre Completo'}
                   </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                  <div className="relative group">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-violet-600 transition-colors">
                       <User size={18} />
                     </div>
                     <input
@@ -268,18 +268,18 @@ export const Registro = () => {
                       placeholder="Ej: John Doe"
                       required
                       autoComplete="name"
-                      className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/60 pl-11 pr-4 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-slate-900 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 transition-all"
+                      className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/90 bg-slate-50/60 dark:bg-slate-800/60 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-violet-600 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15 transition-all"
                     />
                   </div>
                 </div>
 
                 {/* Correo Electrónico */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
                     {t('correo_electronico') || 'Correo Electrónico'}
                   </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                  <div className="relative group">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-violet-600 transition-colors">
                       <Mail size={18} />
                     </div>
                     <input
@@ -289,20 +289,20 @@ export const Registro = () => {
                       placeholder={t('correo_placeholder') || 'ejemplo@mercatto.com'}
                       required
                       autoComplete="email"
-                      className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/60 pl-11 pr-4 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-slate-900 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 transition-all"
+                      className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/90 bg-slate-50/60 dark:bg-slate-800/60 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-violet-600 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15 transition-all"
                     />
                   </div>
                 </div>
 
                 {/* Contraseña & Confirmación en grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
                       {t('contrasena') || 'Contraseña'}
                     </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                        <Lock size={18} />
+                    <div className="relative group">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-violet-600 transition-colors">
+                        <Lock size={16} />
                       </div>
                       <input
                         type={showPassword ? 'text' : 'password'}
@@ -312,26 +312,26 @@ export const Registro = () => {
                         required
                         minLength={6}
                         autoComplete="new-password"
-                        className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/60 pl-11 pr-11 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-slate-900 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 transition-all"
+                        className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/90 bg-slate-50/60 dark:bg-slate-800/60 pl-10 pr-10 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-violet-600 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15 transition-all"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
                         title={showPassword ? 'Ocultar' : 'Ver'}
                       >
-                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                       </button>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">
-                      {t('confirmar_contrasena') || 'Confirmar Contraseña'}
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
+                      {t('confirmar_contrasena') || 'Confirmar'}
                     </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                        <Lock size={18} />
+                    <div className="relative group">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-violet-600 transition-colors">
+                        <Lock size={16} />
                       </div>
                       <input
                         type={showConfirmPassword ? 'text' : 'password'}
@@ -341,15 +341,15 @@ export const Registro = () => {
                         required
                         minLength={6}
                         autoComplete="new-password"
-                        className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/60 pl-11 pr-11 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-slate-900 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 transition-all"
+                        className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/90 bg-slate-50/60 dark:bg-slate-800/60 pl-10 pr-10 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-violet-600 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15 transition-all"
                       />
                       <button
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
                         title={showConfirmPassword ? 'Ocultar' : 'Ver'}
                       >
-                        {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                       </button>
                     </div>
                   </div>
@@ -357,7 +357,7 @@ export const Registro = () => {
 
                 {/* Campos exclusivos para Vendedores */}
                 {rol === 'VENDEDOR' && (
-                  <div className="p-4 sm:p-5 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 space-y-3.5 animate-fadeIn">
+                  <div className="p-4 rounded-2xl bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 space-y-3">
                     <div className="flex items-center gap-2 text-xs font-bold text-amber-900 dark:text-amber-300 uppercase tracking-wider">
                       <Store size={15} />
                       <span>{idioma === 'EN' ? 'Store & Business Information' : 'Datos del Negocio / Tienda Oficial'}</span>
@@ -424,8 +424,8 @@ export const Registro = () => {
                   </div>
                 )}
 
-                {/* Checkbox Términos (Idéntico al de la imagen de referencia) */}
-                <div className="pt-1">
+                {/* Checkbox Términos */}
+                <div className="pt-0.5">
                   <label className="flex items-center gap-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer select-none">
                     <input
                       type="checkbox"
@@ -442,14 +442,14 @@ export const Registro = () => {
                   </label>
                 </div>
 
-                {/* Botón Principal (Pill oscuro / violeta acorde a la referencia y marca) */}
+                {/* Botón Principal con gradiente y sombra */}
                 <button
                   type="submit"
                   disabled={loading}
-                  className={`w-full py-4 px-6 rounded-full font-bold text-sm tracking-wide text-white transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-2 shadow-lg ${
+                  className={`w-full py-3.5 px-6 rounded-2xl font-bold text-sm tracking-wide text-white transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-2 shadow-lg hover:-translate-y-0.5 active:translate-y-0 ${
                     rol === 'VENDEDOR'
-                      ? 'bg-amber-600 hover:bg-amber-700 shadow-amber-600/25'
-                      : 'bg-slate-950 hover:bg-violet-700 dark:bg-violet-600 dark:hover:bg-violet-500 shadow-slate-950/15 dark:shadow-violet-600/30'
+                      ? 'bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 shadow-amber-600/30'
+                      : 'bg-gradient-to-r from-violet-600 via-indigo-600 to-violet-700 hover:from-violet-700 hover:to-indigo-700 shadow-violet-500/30'
                   }`}
                 >
                   {loading ? (
@@ -476,12 +476,12 @@ export const Registro = () => {
               {/* Registro con Google para Compradores */}
               {rol === 'COMPRADOR' && (
                 <>
-                  <div className="relative my-6 text-center">
+                  <div className="relative my-4 text-center">
                     <div className="absolute inset-0 flex items-center">
                       <div className="w-full border-t border-slate-200 dark:border-slate-800" />
                     </div>
-                    <span className="relative bg-white dark:bg-slate-900 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                      or
+                    <span className="relative bg-white dark:bg-slate-900 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                      {t('o_continua_con') || 'o continúa con'}
                     </span>
                   </div>
 
@@ -492,11 +492,11 @@ export const Registro = () => {
               )}
             </div>
 
-            {/* Enlace final a Login */}
-            <div className="text-center pt-6 text-xs text-slate-500 dark:text-slate-400 font-medium border-t border-slate-100 dark:border-slate-800/80 mt-6">
+            {/* Sección Inferior: "¿Ya tienes cuenta? Inicia sesión" en el lugar solicitado */}
+            <div className="text-center pt-5 text-sm text-slate-600 dark:text-slate-400 font-medium border-t border-slate-100 dark:border-slate-800/80 mt-5">
               {t('ya_tienes_cuenta') || '¿Ya tienes una cuenta?'}{' '}
-              <Link to="/login" className="font-bold text-violet-600 dark:text-violet-400 hover:underline">
-                {t('iniciar_sesion') || 'Iniciar sesión'}
+              <Link to="/login" className="font-black text-violet-600 dark:text-violet-400 hover:text-violet-700 hover:underline ml-1">
+                {t('iniciar_sesion') || 'Inicia sesión aquí'}
               </Link>
             </div>
 
