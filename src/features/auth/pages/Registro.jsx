@@ -125,385 +125,365 @@ export const Registro = () => {
   }
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-violet-50/70 via-slate-50 to-indigo-50/60 dark:from-slate-950 dark:via-slate-900 dark:to-violet-950/40 relative overflow-hidden">
-      {/* Resplandores ambientales de fondo con gradientes suaves */}
-      <div className="absolute -top-36 -left-36 w-96 h-96 bg-violet-400/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-36 -right-36 w-96 h-96 bg-fuchsia-400/15 rounded-full blur-3xl pointer-events-none" />
+    <div className="min-h-screen w-full lg:grid lg:grid-cols-12 bg-white dark:bg-slate-950">
+      
+      {/* Columna Izquierda: Ocupa toda la altura de la pantalla en desktop */}
+      <div className="lg:col-span-5 xl:col-span-5 relative hidden lg:flex flex-col justify-between p-8 xl:p-12 min-h-screen bg-slate-950 text-white overflow-hidden">
+        {/* Imagen de fondo e-commerce con iluminación violeta limpia sin personas */}
+        <img 
+          src="/images/login-ecommerce.jpg" 
+          alt="Mercatto Marketplace" 
+          className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.75] contrast-110"
+        />
 
-      {/* Tarjeta principal con profundidad, sombras ricas y bordes redondeados */}
-      <div className="w-full max-w-5xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[2.5rem] shadow-[0_25px_70px_-15px_rgba(118,85,214,0.18)] border border-slate-200/80 dark:border-slate-800 p-4 sm:p-6 md:p-7 transition-all relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-stretch">
-          
-          {/* Columna Izquierda: Banner visual de compras con Mercatto y su eslogan oficial */}
-          <div className="lg:col-span-5 relative hidden lg:flex flex-col justify-between overflow-hidden rounded-[2rem] p-8 min-h-[640px] bg-slate-950 text-white shadow-2xl">
-            {/* Imagen de compras y lifestyle de alta calidad */}
-            <img 
-              src="/images/login-shopping.jpg" 
-              alt="Mercatto Experience" 
-              className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.88] contrast-105 transition-transform duration-700 hover:scale-105"
+        {/* Gradientes para asegurar tono de marca Mercatto y máxima legibilidad */}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-violet-950/60 mix-blend-multiply pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950/95 pointer-events-none" />
+
+        {/* Logo oficial con colores originales en tarjeta limpia y nítida */}
+        <div className="relative z-10 self-start">
+          <div className="p-4 sm:p-5 rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-2xl border border-white/80 dark:border-slate-800">
+            <MercattoLogo 
+              size={34} 
+              showSlogan={true} 
+              sloganClassName="text-violet-600 dark:text-violet-400 text-xs font-bold mt-0.5 block tracking-wide" 
             />
+          </div>
+        </div>
 
-            {/* Capas de gradientes para legibilidad y elegancia */}
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/45 to-violet-950/50 mix-blend-multiply pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-transparent to-slate-950/90 pointer-events-none" />
-
-            {/* Cabecera del Banner: Logo oficial Mercatto con su eslogan justo debajo */}
-            <div className="relative z-10 p-5 rounded-2xl bg-slate-950/50 backdrop-blur-md border border-white/15 shadow-lg">
-              <MercattoLogo 
-                variant="white" 
-                size={36} 
-                showSlogan={true} 
-                sloganClassName="text-violet-200 text-xs font-semibold mt-1 block tracking-wide" 
-              />
+        {/* Tarjeta de beneficios en la parte inferior */}
+        <div className="relative z-10 space-y-3 bg-slate-950/80 backdrop-blur-md p-6 rounded-3xl border border-white/15 shadow-2xl">
+          <div className="flex items-center gap-2 text-violet-300 font-bold text-xs uppercase tracking-wider">
+            <Sparkles size={15} className="text-violet-400" />
+            <span>{rol === 'VENDEDOR' ? 'Panel de Vendedores Oficial' : 'Tu marketplace favorito'}</span>
+          </div>
+          <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
+            {rol === 'VENDEDOR'
+              ? 'Abre tu vitrina virtual y comienza a vender productos verificados con alcance nacional y analítica de ventas.'
+              : 'Únete gratis a Mercatto y accede a miles de productos de confianza con pagos seguros y entregas ágiles.'}
+          </p>
+          <div className="flex items-center gap-4 pt-2 text-[11px] text-slate-300 font-semibold border-t border-white/10">
+            <div className="flex items-center gap-1.5">
+              <ShieldCheck size={14} className="text-emerald-400" />
+              <span>Pagos Wompi</span>
             </div>
+            <span className="text-white/30">•</span>
+            <div>Envíos a todo el país</div>
+          </div>
+        </div>
+      </div>
 
-            {/* Chip flotante central */}
-            <div className="relative z-10 self-start">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/25 text-white text-xs font-bold shadow-md">
-                <span className="text-amber-300">★ 4.9</span>
-                <span>{rol === 'VENDEDOR' ? 'Panel de Ventas Oficial' : 'Comunidad de Compradores'}</span>
-              </div>
-            </div>
+      {/* Columna Derecha: Ocupa toda la altura de la pantalla y centra el formulario */}
+      <div className="lg:col-span-7 xl:col-span-7 min-h-screen flex flex-col justify-between p-6 sm:p-10 lg:p-12 xl:p-16 overflow-y-auto bg-white dark:bg-slate-900">
+        
+        {/* Barra superior con botón volver al inicio */}
+        <div className="flex items-center justify-between mb-4">
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/90 hover:bg-violet-50 dark:hover:bg-violet-950/40 hover:text-violet-600 dark:hover:text-violet-400 transition-all cursor-pointer border border-slate-200/80 dark:border-slate-700/80 shadow-xs group"
+            title="Volver a la página principal"
+          >
+            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform text-violet-600 dark:text-violet-400" />
+            <span>{idioma === 'EN' ? 'Back to home' : 'Volver al inicio'}</span>
+          </button>
 
-            {/* Tarjeta de cristal en la parte inferior */}
-            <div className="relative z-10 space-y-3 bg-slate-950/75 backdrop-blur-md p-6 rounded-2xl border border-white/15 shadow-xl">
-              <div className="flex items-center gap-2 text-violet-300 font-bold text-xs uppercase tracking-wider">
-                <Sparkles size={15} className="text-violet-400" />
-                <span>{rol === 'VENDEDOR' ? 'Impulsa tu negocio' : 'Únete a Mercatto'}</span>
-              </div>
-              <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
-                {rol === 'VENDEDOR'
-                  ? 'Abre tu vitrina virtual y comienza a vender productos verificados con alcance nacional y analítica en tiempo real.'
-                  : 'Crea tu cuenta gratis en minutos y descubre miles de marcas con entregas rápidas y pagos seguros.'}
-              </p>
-              <div className="flex items-center gap-4 pt-2 text-[11px] text-slate-300 font-semibold border-t border-white/10">
-                <div className="flex items-center gap-1.5">
-                  <ShieldCheck size={14} className="text-emerald-400" />
-                  <span>Pagos Wompi</span>
-                </div>
-                <span className="text-white/30">•</span>
-                <div>Envíos a todo el país</div>
-              </div>
-            </div>
+          {/* Logo en versión móvil con colores originales */}
+          <div className="lg:hidden">
+            <MercattoLogo size={26} showSlogan={true} sloganClassName="text-[10px]" />
+          </div>
+        </div>
+
+        {/* Contenedor central del formulario */}
+        <div className="w-full max-w-lg mx-auto my-auto py-4">
+          <div className="space-y-1.5 mb-5">
+            <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+              {idioma === 'EN' ? 'Create an Account' : 'Crear una Cuenta'}
+              <span className="text-violet-600">.</span>
+            </h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
+              {rol === 'VENDEDOR' 
+                ? 'Registra tu negocio oficial y empieza a vender en Mercatto.' 
+                : 'Regístrate para comprar y rastrear tus pedidos.'}
+            </p>
           </div>
 
-          {/* Columna Derecha: Formulario limpio y moderno */}
-          <div className="lg:col-span-7 flex flex-col justify-between px-2 sm:px-6 md:px-8 py-2 sm:py-4">
-            <div>
-              {/* Barra Superior con botón para retroceder */}
-              <div className="flex items-center justify-between mb-5">
-                <button
-                  type="button"
-                  onClick={() => navigate('/')}
-                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/90 hover:bg-violet-50 dark:hover:bg-violet-950/40 hover:text-violet-600 dark:hover:text-violet-400 transition-all cursor-pointer border border-slate-200/80 dark:border-slate-700/80 shadow-xs group"
-                  title="Volver a la página principal"
-                >
-                  <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform text-violet-600 dark:text-violet-400" />
-                  <span>{idioma === 'EN' ? 'Back to home' : 'Volver al inicio'}</span>
-                </button>
+          {/* Selector de Rol estilizado 100% acorde a los colores del proyecto (SIN NARANJA) */}
+          <div className="grid grid-cols-2 gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 mb-5 border border-slate-200/70 dark:border-slate-700/70">
+            <button
+              type="button"
+              onClick={() => setRol('COMPRADOR')}
+              className={`py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                rol === 'COMPRADOR'
+                  ? 'bg-white dark:bg-slate-900 text-violet-600 dark:text-violet-400 shadow-sm border border-slate-200/80 dark:border-slate-700'
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+              }`}
+            >
+              <User size={15} />
+              <span>{t('quiero_comprar') || 'Quiero Comprar'}</span>
+            </button>
 
-                {/* En móviles mostramos el logo Mercatto con su eslogan */}
-                <div className="lg:hidden">
-                  <MercattoLogo size={26} showSlogan={true} sloganClassName="text-[10px]" />
+            <button
+              type="button"
+              onClick={() => setRol('VENDEDOR')}
+              className={`py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                rol === 'VENDEDOR'
+                  ? 'bg-violet-600 text-white shadow-md shadow-violet-500/25 border border-violet-500'
+                  : 'text-slate-500 hover:text-violet-600 dark:hover:text-violet-300'
+              }`}
+            >
+              <Store size={15} />
+              <span>{t('quiero_vender') || 'Quiero abrir tienda y vender'}</span>
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-3.5">
+            {/* Nombre Completo */}
+            <div>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
+                {t('nombre_completo') || 'Nombre Completo'}
+              </label>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-violet-600 transition-colors">
+                  <User size={18} />
+                </div>
+                <input
+                  type="text"
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                  placeholder="Ej: John Doe"
+                  required
+                  autoComplete="name"
+                  className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/90 bg-slate-50/70 dark:bg-slate-800/60 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-violet-600 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15 transition-all"
+                />
+              </div>
+            </div>
+
+            {/* Correo Electrónico */}
+            <div>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
+                {t('correo_electronico') || 'Correo Electrónico'}
+              </label>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-violet-600 transition-colors">
+                  <Mail size={18} />
+                </div>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={t('correo_placeholder') || 'ejemplo@mercatto.com'}
+                  required
+                  autoComplete="email"
+                  className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/90 bg-slate-50/70 dark:bg-slate-800/60 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-violet-600 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15 transition-all"
+                />
+              </div>
+            </div>
+
+            {/* Contraseña & Confirmación en grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
+                  {t('contrasena') || 'Contraseña'}
+                </label>
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-violet-600 transition-colors">
+                    <Lock size={16} />
+                  </div>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    minLength={6}
+                    autoComplete="new-password"
+                    className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/90 bg-slate-50/70 dark:bg-slate-800/60 pl-10 pr-10 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-violet-600 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15 transition-all"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
+                    title={showPassword ? 'Ocultar' : 'Ver'}
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
                 </div>
               </div>
 
-              {/* Título y subtítulo */}
-              <div className="space-y-1.5 mb-5">
-                <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-                  {idioma === 'EN' ? 'Create an Account' : 'Crear una Cuenta'}
-                  <span className="text-violet-600">.</span>
-                </h1>
-                <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
-                  {rol === 'VENDEDOR' 
-                    ? 'Registra tu negocio y empieza a vender hoy mismo.' 
-                    : 'Regístrate para comprar y rastrear tus pedidos.'}
-                </p>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
+                  {t('confirmar_contrasena') || 'Confirmar'}
+                </label>
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-violet-600 transition-colors">
+                    <Lock size={16} />
+                  </div>
+                  <input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    minLength={6}
+                    autoComplete="new-password"
+                    className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/90 bg-slate-50/70 dark:bg-slate-800/60 pl-10 pr-10 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-violet-600 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15 transition-all"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
+                    title={showConfirmPassword ? 'Ocultar' : 'Ver'}
+                  >
+                    {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
               </div>
+            </div>
 
-              {/* Selector de Rol estilizado en píldoras con profundidad */}
-              <div className="grid grid-cols-2 gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 mb-5 border border-slate-200/60 dark:border-slate-700/60">
-                <button
-                  type="button"
-                  onClick={() => setRol('COMPRADOR')}
-                  className={`py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                    rol === 'COMPRADOR'
-                      ? 'bg-white dark:bg-slate-900 text-violet-600 dark:text-violet-400 shadow-sm border border-slate-200/70 dark:border-slate-700'
-                      : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
-                  }`}
-                >
-                  <User size={15} />
-                  <span>{t('quiero_comprar') || 'Quiero Comprar'}</span>
-                </button>
+            {/* Datos del Negocio para Vendedores en tonos violeta/índigo acordes (SIN NARANJA) */}
+            {rol === 'VENDEDOR' && (
+              <div className="p-4 rounded-2xl bg-violet-50/60 dark:bg-slate-800/80 border border-violet-200/80 dark:border-violet-800/50 space-y-3">
+                <div className="flex items-center gap-2 text-xs font-bold text-violet-900 dark:text-violet-300 uppercase tracking-wider">
+                  <Store size={15} className="text-violet-600 dark:text-violet-400" />
+                  <span>{idioma === 'EN' ? 'Store & Business Information' : 'Datos del Negocio / Tienda Oficial'}</span>
+                </div>
 
-                <button
-                  type="button"
-                  onClick={() => setRol('VENDEDOR')}
-                  className={`py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                    rol === 'VENDEDOR'
-                      ? 'bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-sm border border-slate-200/70 dark:border-slate-700'
-                      : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
-                  }`}
-                >
-                  <Store size={15} />
-                  <span>{t('quiero_vender') || 'Quiero Vender'}</span>
-                </button>
-              </div>
-
-              {/* Formulario de Registro */}
-              <form onSubmit={handleSubmit} className="space-y-3.5">
-                {/* Nombre Completo */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
-                    {t('nombre_completo') || 'Nombre Completo'}
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    {idioma === 'EN' ? 'Store Name' : 'Nombre de tu Tienda Virtual'}
                   </label>
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-violet-600 transition-colors">
-                      <User size={18} />
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                      <Store size={16} />
                     </div>
                     <input
                       type="text"
-                      value={nombre}
-                      onChange={(e) => setNombre(e.target.value)}
-                      placeholder="Ej: John Doe"
+                      value={nombreTienda}
+                      onChange={(e) => setNombreTienda(e.target.value)}
+                      placeholder="Ej: Alien Tech Colombia"
                       required
-                      autoComplete="name"
-                      className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/90 bg-slate-50/60 dark:bg-slate-800/60 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-violet-600 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15 transition-all"
+                      className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 pl-10 pr-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-500/20"
                     />
                   </div>
                 </div>
 
-                {/* Correo Electrónico */}
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
-                    {t('correo_electronico') || 'Correo Electrónico'}
-                  </label>
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-violet-600 transition-colors">
-                      <Mail size={18} />
-                    </div>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder={t('correo_placeholder') || 'ejemplo@mercatto.com'}
-                      required
-                      autoComplete="email"
-                      className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/90 bg-slate-50/60 dark:bg-slate-800/60 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-violet-600 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15 transition-all"
-                    />
-                  </div>
-                </div>
-
-                {/* Contraseña & Confirmación en grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
-                      {t('contrasena') || 'Contraseña'}
+                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      {idioma === 'EN' ? 'Tax ID / National ID' : 'NIT o Cédula'}
                     </label>
-                    <div className="relative group">
-                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-violet-600 transition-colors">
-                        <Lock size={16} />
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <Building size={16} />
                       </div>
                       <input
-                        type={showPassword ? 'text' : 'password'}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="••••••••"
+                        type="text"
+                        value={nitCedula}
+                        onChange={(e) => setNitCedula(e.target.value)}
+                        placeholder="Ej: 900.123.456-7"
                         required
-                        minLength={6}
-                        autoComplete="new-password"
-                        className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/90 bg-slate-50/60 dark:bg-slate-800/60 pl-10 pr-10 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-violet-600 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15 transition-all"
+                        className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 pl-10 pr-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-500/20"
                       />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
-                        title={showPassword ? 'Ocultar' : 'Ver'}
-                      >
-                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                      </button>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wider">
-                      {t('confirmar_contrasena') || 'Confirmar'}
+                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      {idioma === 'EN' ? 'City in Colombia' : 'Ciudad en Colombia'}
                     </label>
-                    <div className="relative group">
-                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-violet-600 transition-colors">
-                        <Lock size={16} />
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <MapPin size={16} />
                       </div>
                       <input
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="••••••••"
+                        type="text"
+                        value={ciudad}
+                        onChange={(e) => setCiudad(e.target.value)}
+                        placeholder="Ej: Bogotá, Medellín, Cali"
                         required
-                        minLength={6}
-                        autoComplete="new-password"
-                        className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/90 bg-slate-50/60 dark:bg-slate-800/60 pl-10 pr-10 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 shadow-inner-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-violet-600 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15 transition-all"
+                        className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 pl-10 pr-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-500/20"
                       />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
-                        title={showConfirmPassword ? 'Ocultar' : 'Ver'}
-                      >
-                        {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                      </button>
                     </div>
                   </div>
                 </div>
+              </div>
+            )}
 
-                {/* Campos exclusivos para Vendedores */}
-                {rol === 'VENDEDOR' && (
-                  <div className="p-4 rounded-2xl bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 space-y-3">
-                    <div className="flex items-center gap-2 text-xs font-bold text-amber-900 dark:text-amber-300 uppercase tracking-wider">
-                      <Store size={15} />
-                      <span>{idioma === 'EN' ? 'Store & Business Information' : 'Datos del Negocio / Tienda Oficial'}</span>
-                    </div>
+            {/* Checkbox Términos */}
+            <div className="pt-0.5">
+              <label className="flex items-center gap-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={aceptaTerminos}
+                  onChange={(e) => setAceptaTerminos(e.target.checked)}
+                  className="w-4 h-4 rounded-md border-slate-300 text-violet-600 focus:ring-violet-500 cursor-pointer"
+                />
+                <span>
+                  {idioma === 'EN' ? 'I agree to the ' : 'Acepto los '}
+                  <Link to="/terminos" target="_blank" className="font-bold underline text-slate-900 dark:text-white hover:text-violet-600">
+                    {idioma === 'EN' ? 'Terms & Condition' : 'Términos y Condiciones'}
+                  </Link>
+                </span>
+              </label>
+            </div>
 
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                        {idioma === 'EN' ? 'Store Name' : 'Nombre de tu Tienda Virtual'}
-                      </label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                          <Store size={16} />
-                        </div>
-                        <input
-                          type="text"
-                          value={nombreTienda}
-                          onChange={(e) => setNombreTienda(e.target.value)}
-                          placeholder="Ej: Alien Tech Colombia"
-                          required
-                          className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 pl-10 pr-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                          {idioma === 'EN' ? 'Tax ID / National ID' : 'NIT o Cédula'}
-                        </label>
-                        <div className="relative">
-                          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                            <Building size={16} />
-                          </div>
-                          <input
-                            type="text"
-                            value={nitCedula}
-                            onChange={(e) => setNitCedula(e.target.value)}
-                            placeholder="Ej: 900.123.456-7"
-                            required
-                            className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 pl-10 pr-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                          {idioma === 'EN' ? 'City in Colombia' : 'Ciudad en Colombia'}
-                        </label>
-                        <div className="relative">
-                          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                            <MapPin size={16} />
-                          </div>
-                          <input
-                            type="text"
-                            value={ciudad}
-                            onChange={(e) => setCiudad(e.target.value)}
-                            placeholder="Ej: Bogotá, Medellín, Cali"
-                            required
-                            className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 pl-10 pr-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Checkbox Términos */}
-                <div className="pt-0.5">
-                  <label className="flex items-center gap-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      checked={aceptaTerminos}
-                      onChange={(e) => setAceptaTerminos(e.target.checked)}
-                      className="w-4 h-4 rounded-md border-slate-300 text-violet-600 focus:ring-violet-500 cursor-pointer"
-                    />
-                    <span>
-                      {idioma === 'EN' ? 'I agree to the ' : 'Acepto los '}
-                      <Link to="/terminos" target="_blank" className="font-bold underline text-slate-900 dark:text-white hover:text-violet-600">
-                        {idioma === 'EN' ? 'Terms & Condition' : 'Términos y Condiciones'}
-                      </Link>
-                    </span>
-                  </label>
-                </div>
-
-                {/* Botón Principal con gradiente y sombra */}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className={`w-full py-3.5 px-6 rounded-2xl font-bold text-sm tracking-wide text-white transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-2 shadow-lg hover:-translate-y-0.5 active:translate-y-0 ${
-                    rol === 'VENDEDOR'
-                      ? 'bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 shadow-amber-600/30'
-                      : 'bg-gradient-to-r from-violet-600 via-indigo-600 to-violet-700 hover:from-violet-700 hover:to-indigo-700 shadow-violet-500/30'
-                  }`}
-                >
-                  {loading ? (
-                    <span className="flex items-center gap-2">
-                      <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24" fill="none">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                      </svg>
-                      <span>Cargando...</span>
-                    </span>
-                  ) : (
-                    <>
-                      <CheckCircle2 size={18} />
-                      <span>
-                        {rol === 'VENDEDOR'
-                          ? (idioma === 'EN' ? 'Submit Store Application' : 'Enviar Solicitud de Tienda')
-                          : (idioma === 'EN' ? 'Create Account' : 'Crear Cuenta')}
-                      </span>
-                    </>
-                  )}
-                </button>
-              </form>
-
-              {/* Registro con Google para Compradores */}
-              {rol === 'COMPRADOR' && (
+            {/* Botón Principal con el gradiente oficial de Mercatto (SIN NARANJA) */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-4 px-6 rounded-2xl font-bold text-sm tracking-wide text-white bg-gradient-to-r from-violet-600 via-indigo-600 to-violet-700 hover:from-violet-700 hover:to-indigo-700 shadow-lg shadow-violet-500/30 hover:shadow-xl hover:shadow-violet-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+            >
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                  </svg>
+                  <span>Cargando...</span>
+                </span>
+              ) : (
                 <>
-                  <div className="relative my-4 text-center">
-                    <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-slate-200 dark:border-slate-800" />
-                    </div>
-                    <span className="relative bg-white dark:bg-slate-900 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                      {t('o_continua_con') || 'o continúa con'}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-center w-full">
-                    <GoogleLoginButton onCredential={handleGoogle} texto="signup_with" />
-                  </div>
+                  <CheckCircle2 size={18} />
+                  <span>
+                    {rol === 'VENDEDOR'
+                      ? (idioma === 'EN' ? 'Submit Store Application' : 'Enviar Solicitud de Tienda')
+                      : (idioma === 'EN' ? 'Create Account' : 'Crear Cuenta')}
+                  </span>
                 </>
               )}
-            </div>
+            </button>
+          </form>
 
-            {/* Sección Inferior: "¿Ya tienes cuenta? Inicia sesión" en el lugar solicitado */}
-            <div className="text-center pt-5 text-sm text-slate-600 dark:text-slate-400 font-medium border-t border-slate-100 dark:border-slate-800/80 mt-5">
-              {t('ya_tienes_cuenta') || '¿Ya tienes una cuenta?'}{' '}
-              <Link to="/login" className="font-black text-violet-600 dark:text-violet-400 hover:text-violet-700 hover:underline ml-1">
-                {t('iniciar_sesion') || 'Inicia sesión aquí'}
-              </Link>
-            </div>
+          {/* Registro con Google para Compradores */}
+          {rol === 'COMPRADOR' && (
+            <>
+              <div className="relative my-4 text-center">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+                </div>
+                <span className="relative bg-white dark:bg-slate-900 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                  {t('o_continua_con') || 'o continúa con'}
+                </span>
+              </div>
 
-          </div>
-
+              <div className="flex justify-center w-full">
+                <GoogleLoginButton onCredential={handleGoogle} texto="signup_with" />
+              </div>
+            </>
+          )}
         </div>
+
+        {/* Sección Inferior: "¿Ya tienes cuenta? Inicia sesión" */}
+        <div className="text-center pt-5 text-sm text-slate-600 dark:text-slate-400 font-medium border-t border-slate-100 dark:border-slate-800/80">
+          {t('ya_tienes_cuenta') || '¿Ya tienes una cuenta?'}{' '}
+          <Link to="/login" className="font-black text-violet-600 dark:text-violet-400 hover:text-violet-700 hover:underline ml-1">
+            {t('iniciar_sesion') || 'Inicia sesión aquí'}
+          </Link>
+        </div>
+
       </div>
+
     </div>
   )
 }
