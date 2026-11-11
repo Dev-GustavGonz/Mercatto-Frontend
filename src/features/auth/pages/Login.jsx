@@ -76,13 +76,17 @@ export const Login = () => {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto py-6 sm:py-10 md:py-14 px-4 sm:px-6">
-      {/* Tarjeta principal con bordes redondeados y estilo split-card inspirado en el diseño */}
-      <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl shadow-violet-500/10 border border-slate-100 dark:border-slate-800/80 p-3 sm:p-5 md:p-6 transition-all">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+    <div className="min-h-screen w-full flex items-center justify-center p-3 sm:p-6 lg:p-8 bg-slate-100/70 dark:bg-slate-950 relative overflow-hidden">
+      {/* Resplandores ambientales de fondo */}
+      <div className="absolute -top-32 -left-32 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+
+      {/* Tarjeta principal ampliada con bordes redondeados y estilo split-card */}
+      <div className="w-full max-w-6xl xl:max-w-7xl bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl shadow-violet-500/10 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-6 lg:p-8 transition-all relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch min-h-[640px] xl:min-h-[700px]">
           
           {/* Columna Izquierda: Showcase visual estético con halo de luz y marca Mercatto */}
-          <div className="lg:col-span-5 relative hidden md:flex flex-col justify-between overflow-hidden rounded-[2rem] p-6 lg:p-8 min-h-[580px] bg-slate-950 text-white shadow-inner">
+          <div className="lg:col-span-5 relative hidden lg:flex flex-col justify-between overflow-hidden rounded-[2rem] p-8 xl:p-10 min-h-[640px] bg-slate-950 text-white shadow-inner">
             {/* Imagen de fondo estética con filtro de color acorde a Mercatto */}
             <img 
               src="/images/login-hero.jpg" 
@@ -90,65 +94,67 @@ export const Login = () => {
               className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.88] contrast-105"
             />
 
-            {/* Capas de gradientes para asegurar legibilidad y tonos violetas oficiales */}
+            {/* Capas de gradientes para legibilidad y tono violeta de la marca */}
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-violet-950/50 mix-blend-multiply pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 via-transparent to-slate-950/90 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-transparent to-slate-950/95 pointer-events-none" />
 
-            {/* Halo de luz holográfico de fondo (inspirado en la iluminación de la referencia) */}
+            {/* Halo de luz holográfico de fondo */}
             <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-              <div className="w-60 h-60 rounded-full border border-violet-400/30 shadow-[0_0_90px_rgba(139,92,246,0.4)] rotate-[-12deg]" />
-              <div className="absolute inset-0 w-60 h-60 rounded-full border border-pink-400/25 blur-[1px] rotate-[22deg]" />
+              <div className="w-64 h-64 rounded-full border border-violet-400/30 shadow-[0_0_100px_rgba(139,92,246,0.45)] rotate-[-12deg]" />
+              <div className="absolute inset-0 w-64 h-64 rounded-full border border-pink-400/25 blur-[1px] rotate-[22deg]" />
             </div>
 
             {/* Logo de Mercatto en la parte superior del banner */}
             <div className="relative z-10 flex flex-col items-center justify-center pt-2">
-              <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-lg shadow-violet-500/20 transition-transform hover:scale-105">
-                <MercattoLogo showText={false} size={30} className="text-white drop-shadow-md" />
+              <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-lg shadow-violet-500/20 transition-transform hover:scale-105">
+                <MercattoLogo showText={false} size={34} className="text-white drop-shadow-md" />
               </div>
-              <span className="mt-2 text-[11px] font-bold tracking-widest uppercase text-white/90">
-                Mercatto
+              <span className="mt-2.5 text-xs font-bold tracking-widest uppercase text-white/90">
+                Mercatto Oficial
               </span>
             </div>
 
             {/* Tarjeta de cristal en la parte inferior */}
-            <div className="relative z-10 space-y-3 bg-slate-950/65 backdrop-blur-md p-5 rounded-2xl border border-white/15 shadow-xl">
-              <div className="flex items-center gap-1.5 text-violet-300 font-bold text-xs uppercase tracking-wider">
-                <Sparkles size={14} className="text-violet-400" />
+            <div className="relative z-10 space-y-3 bg-slate-950/70 backdrop-blur-md p-6 rounded-2xl border border-white/15 shadow-xl">
+              <div className="flex items-center gap-2 text-violet-300 font-bold text-xs uppercase tracking-wider">
+                <Sparkles size={15} className="text-violet-400" />
                 <span>Del barrio a tu pantalla</span>
               </div>
-              <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
-                Conecta con tiendas oficiales, marcas verificadas y miles de productos con envíos ágiles y protegidos.
+              <p className="text-sm text-slate-200 leading-relaxed font-medium">
+                Conecta con tiendas oficiales, marcas verificadas y miles de productos con envíos ágiles y compras protegidas.
               </p>
-              <div className="flex items-center gap-4 pt-2 text-[11px] text-slate-300 font-semibold border-t border-white/10">
+              <div className="flex items-center gap-4 pt-2 text-xs text-slate-300 font-semibold border-t border-white/10">
                 <div className="flex items-center gap-1.5">
-                  <ShieldCheck size={14} className="text-emerald-400" />
+                  <ShieldCheck size={15} className="text-emerald-400" />
                   <span>100% Protegido</span>
                 </div>
                 <span className="text-white/30">•</span>
-                <div>Envíos directos</div>
+                <div>Envíos directos a todo el país</div>
               </div>
             </div>
           </div>
 
-          {/* Columna Derecha: Formulario limpio y moderno */}
-          <div className="lg:col-span-7 flex flex-col justify-between px-4 py-4 sm:px-8 sm:py-6 lg:px-10">
+          {/* Columna Derecha: Formulario limpio y espacioso */}
+          <div className="lg:col-span-7 flex flex-col justify-between px-3 py-4 sm:px-8 sm:py-6 lg:px-10 xl:px-12">
             <div>
-              {/* Botón Volver & Logo móvil */}
-              <div className="flex items-center justify-between mb-6">
+              {/* Barra Superior con Botón de Retroceso destacado y Logo */}
+              <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
-                  onClick={() => navigate(-1)}
-                  className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer group"
-                  title="Volver"
+                  onClick={() => navigate('/')}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all cursor-pointer group shadow-xs hover:border-slate-300"
+                  title="Volver a la tienda"
                 >
-                  <ArrowLeft size={18} className="group-hover:-translate-x-0.5 transition-transform" />
+                  <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform text-violet-600 dark:text-violet-400" />
+                  <span>{idioma === 'EN' ? 'Back to store' : 'Volver al inicio'}</span>
                 </button>
-                <div className="md:hidden">
-                  <MercattoLogo size={24} showSlogan={false} />
-                </div>
+
+                <Link to="/" className="inline-flex items-center transition-transform hover:scale-105" title="Ir a Mercatto">
+                  <MercattoLogo size={28} showSlogan={false} />
+                </Link>
               </div>
 
-              {/* Título y enlace a Registro (Exacto al estilo de la referencia) */}
+              {/* Título y enlace a Registro */}
               <div className="space-y-2 mb-8">
                 <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                   {t('iniciar_sesion') || 'Iniciar sesión'}
@@ -168,7 +174,7 @@ export const Login = () => {
               <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Campo Correo */}
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">
                     {t('correo_electronico') || 'Correo Electrónico'}
                   </label>
                   <div className="relative">
@@ -182,14 +188,14 @@ export const Login = () => {
                       placeholder={t('correo_placeholder') || 'ejemplo@mercatto.com'}
                       required
                       autoComplete="email"
-                      className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/60 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-slate-900 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 transition-all"
+                      className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/60 pl-11 pr-4 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-slate-900 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 transition-all"
                     />
                   </div>
                 </div>
 
                 {/* Campo Contraseña */}
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">
                     {t('contrasena') || 'Contraseña'}
                   </label>
                   <div className="relative">
@@ -203,7 +209,7 @@ export const Login = () => {
                       placeholder="••••••••"
                       required
                       autoComplete="current-password"
-                      className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/60 pl-11 pr-11 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-slate-900 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 transition-all"
+                      className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/60 pl-11 pr-11 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-slate-900 dark:focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 transition-all"
                     />
                     <button
                       type="button"
@@ -239,7 +245,7 @@ export const Login = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3.5 px-6 rounded-full font-bold text-sm tracking-wide text-white bg-slate-950 hover:bg-violet-700 dark:bg-violet-600 dark:hover:bg-violet-500 shadow-lg shadow-slate-950/15 dark:shadow-violet-600/30 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+                  className="w-full py-4 px-6 rounded-full font-bold text-sm tracking-wide text-white bg-slate-950 hover:bg-violet-700 dark:bg-violet-600 dark:hover:bg-violet-500 shadow-lg shadow-slate-950/15 dark:shadow-violet-600/30 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-3"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">

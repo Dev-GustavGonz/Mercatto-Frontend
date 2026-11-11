@@ -82,15 +82,19 @@ const AppLayout = () => {
     location.pathname.startsWith('/admin') ||
     location.pathname.startsWith('/panel-vendedor') ||
     location.pathname.startsWith('/vendedor')
+  const esRutaAuth =
+    location.pathname === '/login' ||
+    location.pathname === '/registro' ||
+    location.pathname.startsWith('/recuperar-password')
   const esHome = location.pathname === '/'
 
   return (
     <div className="min-h-screen flex flex-col bg-mercatto-bg dark:bg-slate-950 text-mercatto-text dark:text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
-      {!esRutaPanel && <Navbar />}
+      {!esRutaPanel && !esRutaAuth && <Navbar />}
       <CartDrawer />
-      {!esRutaPanel && <PublicChatbot />}
+      {!esRutaPanel && !esRutaAuth && <PublicChatbot />}
 
-      <main className={esRutaPanel || esHome ? "flex-1 w-full" : "flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6"}>
+      <main className={esRutaPanel || esHome || esRutaAuth ? "flex-1 w-full" : "flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6"}>
         <Suspense fallback={
           <div className="min-h-[50vh] flex items-center justify-center">
             <Spinner size="lg" />
@@ -185,7 +189,7 @@ const AppLayout = () => {
         </Suspense>
       </main>
 
-      {!esRutaPanel && <Footer />}
+      {!esRutaPanel && !esRutaAuth && <Footer />}
     </div>
   )
 }
