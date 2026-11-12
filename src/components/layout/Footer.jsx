@@ -1,12 +1,78 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useLanguage } from '@/hooks/useLanguage'
 import MercattoLogo from '@/components/common/MercattoLogo'
+
+const AMERICAS_POLYGONS = [
+  // Norteamérica
+  [
+    [-165, 65], [-140, 70], [-95, 70], [-60, 55], [-55, 47], [-70, 42],
+    [-80, 32], [-81, 25], [-83, 29], [-90, 29], [-97, 26], [-96, 19],
+    [-88, 21], [-87, 18], [-92, 15], [-105, 20], [-112, 29], [-117, 32],
+    [-124, 42], [-125, 49], [-135, 58], [-165, 65],
+  ],
+  // Centroamérica
+  [
+    [-92, 15], [-88, 16], [-83, 15], [-83, 10], [-78, 9], [-79, 8],
+    [-85, 10], [-90, 14], [-92, 15],
+  ],
+  // Suramérica
+  [
+    [-78, 9], [-75, 11], [-71, 12], [-62, 10], [-50, 1], [-35, -6],
+    [-38, -14], [-40, -22], [-48, -28], [-54, -34], [-63, -41], [-68, -54],
+    [-73, -53], [-75, -42], [-71, -30], [-70, -18], [-78, -12], [-81, -5],
+    [-79, 2], [-78, 9],
+  ],
+  // Caribe
+  [
+    [-84, 22], [-75, 20], [-74, 21], [-83, 23], [-84, 22],
+  ],
+]
+
+const pointInPolygon = (x, y, poly) => {
+  let inside = false
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const xi = poly[i][0], yi = poly[i][1]
+    const xj = poly[j][0], yj = poly[j][1]
+    const intersect = yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi
+    if (intersect) inside = !inside
+  }
+  return inside
+}
 
 export const Footer = () => {
   const { idioma, t } = useLanguage()
   const isEn = idioma === 'EN'
   const location = useLocation()
+
+  const globeDots = useMemo(() => {
+    const cx0 = 215
+    const cy0 = 125
+    const rMax = 112
+    const scale = 1.95
+    const lon0 = -76
+    const lat0 = 12
+    const dots = []
+
+    for (let px = cx0 - rMax; px <= cx0 + rMax; px += 6.5) {
+      for (let py = cy0 - rMax; py <= cy0 + rMax; py += 6.5) {
+        const dx = px - cx0
+        const dy = py - cy0
+        if (dx * dx + dy * dy > rMax * rMax) continue
+        const lon = lon0 + dx / scale
+        const lat = lat0 - dy / scale
+        const inLand = AMERICAS_POLYGONS.some((poly) => pointInPolygon(lon, lat, poly))
+        if (inLand) {
+          dots.push({ x: +px.toFixed(1), y: +py.toFixed(1) })
+        }
+      }
+    }
+    return dots
+  }, [])
+
+  // Coordenadas exactas de Cartagena de Indias (-75.48, 10.39)
+  const cartagenaX = 215 + (-75.48 - -76) * 1.95
+  const cartagenaY = 125 - (10.39 - 12) * 1.95
 
   // Ocultar footer en las rutas de paneles de administración y vendedor
   if (
@@ -26,41 +92,60 @@ export const Footer = () => {
           <div className="absolute -left-20 -bottom-24 w-80 h-80 bg-violet-600/20 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute right-0 top-0 w-96 h-full bg-gradient-to-l from-violet-500/[0.06] to-transparent pointer-events-none" />
 
-          {/* Gráfica decorativa de puntos en el lado derecho */}
+          {/* Gráfica tipo mapamundi de puntos con ubicación de Cartagena marcada */}
           <svg
             aria-hidden="true"
-            viewBox="0 0 360 220"
-            className="hidden md:block absolute right-4 top-1/2 -translate-y-1/2 w-[320px] lg:w-[380px] h-auto opacity-85 pointer-events-none select-none"
+            viewBox="0 0 360 250"
+            className="hidden md:block absolute right-4 top-1/2 -translate-y-1/2 w-[310px] lg:w-[360px] h-auto pointer-events-none select-none"
           >
             <defs>
               <linearGradient id="footerArcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.6" />
-                <stop offset="50%" stopColor="#38BDF8" stopOpacity="0.4" />
-                <stop offset="100%" stopColor="#F59E0B" stopOpacity="0.5" />
+                <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.7" />
+                <stop offset="50%" stopColor="#38BDF8" stopOpacity="0.5" />
+                <stop offset="100%" stopColor="#F59E0B" stopOpacity="0.6" />
               </linearGradient>
+              <radialGradient id="cartagenaGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#A78BFA" stopOpacity="0.45" />
+                <stop offset="100%" stopColor="#A78BFA" stopOpacity="0" />
+              </radialGradient>
             </defs>
-            <circle cx="215" cy="125" r="118" fill="none" stroke="url(#footerArcGrad)" strokeWidth="1.2" />
-            {Array.from({ length: 14 }).map((_, row) =>
-              Array.from({ length: 18 }).map((__, col) => {
-                const cx = 125 + col * 11
-                const cy = 22 + row * 12
-                const dx = cx - 215
-                const dy = cy - 125
-                const dist = Math.sqrt(dx * dx + dy * dy)
-                if (dist > 110 || (row + col) % 3 === 0) return null
-                const isHighlight = (row === 4 && col === 9) || (row === 6 && col === 12) || (row === 8 && col === 7)
-                return (
-                  <circle
-                    key={`${row}-${col}`}
-                    cx={cx}
-                    cy={cy}
-                    r={isHighlight ? 2.8 : 1.3}
-                    fill={isHighlight ? '#FFFFFF' : '#CBD5E1'}
-                    opacity={isHighlight ? 0.95 : 0.45}
-                  />
-                )
-              })
-            )}
+
+            {/* Contorno del globo */}
+            <circle cx="215" cy="125" r="116" fill="#090712" fillOpacity="0.55" stroke="url(#footerArcGrad)" strokeWidth="1.3" />
+            <ellipse cx="215" cy="125" rx="116" ry="38" fill="none" stroke="#FFFFFF" strokeOpacity="0.06" strokeWidth="0.8" strokeDasharray="3 4" />
+            <ellipse cx="215" cy="125" rx="48" ry="116" fill="none" stroke="#FFFFFF" strokeOpacity="0.06" strokeWidth="0.8" strokeDasharray="3 4" />
+
+            {/* Puntos del continente americano */}
+            {globeDots.map((dot, idx) => (
+              <circle
+                key={idx}
+                cx={dot.x}
+                cy={dot.y}
+                r="1.35"
+                fill="#E2E8F0"
+                opacity="0.7"
+              />
+            ))}
+
+            {/* Resplandor y pin de Cartagena de Indias */}
+            <circle cx={cartagenaX} cy={cartagenaY} r="22" fill="url(#cartagenaGlow)" />
+            <circle cx={cartagenaX} cy={cartagenaY} r="10" fill="none" stroke="#A78BFA" strokeWidth="1.2" opacity="0.65" />
+            <path
+              d={`M ${cartagenaX} ${cartagenaY - 2} C ${cartagenaX - 5.5} ${cartagenaY - 9}, ${cartagenaX - 6} ${cartagenaY - 14.5}, ${cartagenaX} ${cartagenaY - 14.5} C ${cartagenaX + 6} ${cartagenaY - 14.5}, ${cartagenaX + 5.5} ${cartagenaY - 9}, ${cartagenaX} ${cartagenaY - 2} Z`}
+              fill="#8B5CF6"
+              stroke="#FFFFFF"
+              strokeWidth="1.3"
+            />
+            <circle cx={cartagenaX} cy={cartagenaY - 10.5} r="2" fill="#FFFFFF" />
+            <circle cx={cartagenaX} cy={cartagenaY} r="2.6" fill="#38BDF8" stroke="#FFFFFF" strokeWidth="1" />
+
+            {/* Etiqueta Cartagena */}
+            <g transform={`translate(${cartagenaX + 11}, ${cartagenaY - 11})`}>
+              <rect x="0" y="-10" width="66" height="19" rx="9.5" fill="#1E1B2E" stroke="#8B5CF6" strokeOpacity="0.65" strokeWidth="1" />
+              <text x="33" y="3" textAnchor="middle" fill="#FFFFFF" fontSize="9.5" fontWeight="700" fontFamily="sans-serif">
+                Cartagena
+              </text>
+            </g>
           </svg>
 
           <div className="relative z-10 max-w-xl space-y-4">
