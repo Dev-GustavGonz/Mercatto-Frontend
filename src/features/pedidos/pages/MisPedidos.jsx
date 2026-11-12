@@ -1217,8 +1217,15 @@ export const MisPedidos = () => {
                       type="button"
                       onClick={() => {
                         const raw = p.evidenciaEntregaUrl || ''
+                        let foto = ''
+                        try {
+                          foto = localStorage.getItem(`mercatto_evidencia_${p.codigo}`) || localStorage.getItem(`mercatto_evidencia_${p.id}`)
+                        } catch (_) {}
+                        if (!foto) {
+                          foto = getMediaUrl(raw)
+                        }
                         setModalEvidencia({
-                          url: getMediaUrl(raw),
+                          url: foto,
                           rawUrl: raw,
                           codigo: p.codigo,
                           fallbackTried: false,

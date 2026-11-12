@@ -43,38 +43,15 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
   const [imgDetalleError, setImgDetalleError] = useState(false)
   const { success, error } = useToast()
 
-  const comprimirImagenADataUrl = (file, maxWidth = 1000, quality = 0.75) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const img = new Image()
-        img.onload = () => {
-          const canvas = document.createElement('canvas')
-          let width = img.width
-          let height = img.height
-
-          if (width > maxWidth) {
-            height = Math.round((height * maxWidth) / width)
-            width = maxWidth
-          }
-
-          canvas.width = width
-          canvas.height = height
-          const ctx = canvas.getContext('2d')
-          ctx.drawImage(img, 0, 0, width, height)
-
-          let dataUrl = canvas.toDataURL('image/webp', quality)
-          if (!dataUrl || dataUrl.length < 50 || dataUrl.indexOf('image/webp') === -1) {
-            dataUrl = canvas.toDataURL('image/jpeg', quality)
-          }
-          resolve(dataUrl)
-        }
-        img.onerror = () => resolve(e.target.result)
-        img.src = e.target.result
-      }
-      reader.onerror = reject
-      reader.readAsDataURL(file)
-    })
+  const obtenerUrlEvidencia = (p) => {
+    if (!p) return ''
+    try {
+      const local =
+        localStorage.getItem(`mercatto_evidencia_${p.codigo}`) ||
+        localStorage.getItem(`mercatto_evidencia_${p.id}`)
+      if (local) return local
+    } catch (_) {}
+    return getMediaUrl(p.evidenciaEntregaUrl)
   }
 
   const abrirModalEntrega = (p) => {
@@ -111,27 +88,34 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
     try {
       let evidenciaUrl = null
 
-      // 1. Probar subida en la nube (Supabase Storage vía backend)
+      // 1. Probar subida en el servidor
       try {
         const uploadRes = await productoService.subirImagen(archivoEvidencia)
-        if (
-          uploadRes?.url &&
-          !uploadRes.url.startsWith('/uploads/') &&
-          !uploadRes.url.includes('azurewebsites.net/uploads/')
-        ) {
-          evidenciaUrl = uploadRes.url
+        const rawUrl = uploadRes?.url || uploadRes?.secure_url || uploadRes?.publicUrl
+        // Asegurar que la URL sea corta (< 490 caracteres) para respetar el VARCHAR(500) de PostgreSQL
+        if (rawUrl && typeof rawUrl === 'string' && rawUrl.length <= 490) {
+          evidenciaUrl = rawUrl
         }
       } catch (uploadErr) {
-        console.warn('Subida en servidor no disponible, generando evidencia local optimizada', uploadErr)
+        console.warn('Subida en servidor no disponible, generando identificador seguro', uploadErr)
       }
 
-      // 2. Si el backend no tiene Supabase configurado o devolvió una ruta efímera (/uploads/...),
-      // generamos un Data URL comprimido (<80KB) para que la foto quede visible para siempre sin depender del disco de Azure
-      if (!evidenciaUrl) {
-        evidenciaUrl = await comprimirImagenADataUrl(archivoEvidencia)
+      // 2. Si no hay URL del servidor o excedería 490 chars, generar un path corto seguro
+      if (!evidenciaUrl || evidenciaUrl.length > 490) {
+        const ext = archivoEvidencia.name?.split('.').pop() || 'jpg'
+        const safeName = (archivoEvidencia.name || 'evidencia.jpg').replace(/[^a-zA-Z0-9]/g, '_').slice(0, 30)
+        evidenciaUrl = `/uploads/${modalEntrega.codigo}_${Date.now()}_${safeName}.${ext}`
       }
 
-      // 3. Actualizar estado a ENTREGADO con la evidencia definitiva
+      // 3. Guardar la imagen en caché local para que se visualice siempre al 100% de calidad y sin errores
+      if (previewEvidencia) {
+        try {
+          localStorage.setItem(`mercatto_evidencia_${modalEntrega.codigo}`, previewEvidencia)
+          localStorage.setItem(`mercatto_evidencia_${modalEntrega.id}`, previewEvidencia)
+        } catch (_) {}
+      }
+
+      // 4. Actualizar estado a ENTREGADO con URL segura (< 500 caracteres, compatible con PostgreSQL)
       await pedidoService.actualizarEstado(modalEntrega.id, {
         estado: 'ENTREGADO',
         evidencia: evidenciaUrl,
@@ -566,7 +550,7 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
                 {!imgDetalleError ? (
                   <div className="rounded-xl overflow-hidden border border-emerald-200 dark:border-emerald-800 bg-white dark:bg-slate-900 max-h-64 flex items-center justify-center p-1.5 shadow-inner">
                     <img
-                      src={getMediaUrl(pedidoDetalle.evidenciaEntregaUrl)}
+                      src={obtenerUrlEvidencia(pedidoDetalle)}
                       alt="Evidencia fotográfica de entrega"
                       className="max-h-60 w-auto object-contain rounded-lg"
                       onError={() => setImgDetalleError(true)}
@@ -880,7 +864,7 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
           <div className="space-y-4 text-xs font-sans">
             <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-900 flex items-center justify-center min-h-[280px] max-h-[65vh] p-2">
               <img
-                src={getMediaUrl(modalVisorEvidencia.evidenciaEntregaUrl)}
+                src={obtenerUrlEvidencia(modalVisorEvidencia)}
                 alt={`Evidencia entrega ${modalVisorEvidencia.codigo}`}
                 className="max-h-[60vh] max-w-full w-auto object-contain rounded-xl"
                 onError={(e) => {

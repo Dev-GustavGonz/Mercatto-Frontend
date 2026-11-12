@@ -35,7 +35,8 @@ import {
   DollarSign,
   TrendingUp,
   Headphones,
-  Settings,  Bell,
+  Settings,
+  Bell,
   Package,
   RefreshCw,
   Plus,
@@ -51,6 +52,14 @@ import {
 } from 'lucide-react'
 
 export const PanelAdmin = () => {
+  const obtenerFotoEvidenciaAdmin = (p) => {
+    if (!p) return ''
+    try {
+      const local = localStorage.getItem(mercatto_evidencia_) || localStorage.getItem(mercatto_evidencia_)
+      if (local) return local
+    } catch (_) {}
+    return getMediaUrl(p.evidenciaEntregaUrl)
+  }
   const [searchParams, setSearchParams] = useSearchParams()
   const tabUrl = searchParams.get('tab')
   const [tab, setTabState] = useState(tabUrl || 'resumen')
@@ -786,7 +795,7 @@ export const PanelAdmin = () => {
                                 title="Ver evidencia de entrega en auditoría"
                               >
                                 <img
-                                  src={getMediaUrl(p.evidenciaEntregaUrl)}
+                                  src={obtenerFotoEvidenciaAdmin(p)}
                                   alt={`Evidencia pedido ${p.codigo}`}
                                   className="w-full h-full object-cover"
                                 />
@@ -1173,7 +1182,7 @@ export const PanelAdmin = () => {
                 </div>
                 <div className="rounded-xl overflow-hidden border border-emerald-200 bg-white max-h-64 flex items-center justify-center p-1.5 shadow-inner">
                   <img
-                    src={getMediaUrl(pedidoDetalleModal.evidenciaEntregaUrl)}
+                    src={obtenerFotoEvidenciaAdmin(pedidoDetalleModal)}
                     alt={`Evidencia de entrega del pedido ${pedidoDetalleModal.codigo}`}
                     className="max-h-60 w-auto object-contain rounded-lg"
                     onError={(e) => {
