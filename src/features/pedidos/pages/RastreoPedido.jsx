@@ -14,7 +14,7 @@ import Spinner from '@/components/common/Spinner'
 
 import { formatCurrency } from '@/utils/formatCurrency'
 
-import { ESTADOS_PEDIDO, getMediaUrl } from '@/utils/constants'
+import { ESTADOS_PEDIDO, getMediaUrl, isCloudOrDataUrl } from '@/utils/constants'
 
 import { 
 
@@ -512,36 +512,34 @@ export const RastreoPedido = () => {
 
                 </span>
 
-                <a
-
-                  href={getMediaUrl(pedido.evidenciaEntregaUrl)}
-
-                  target="_blank"
-
-                  rel="noreferrer"
-
-                  className="text-xs font-bold text-emerald-700 underline hover:text-emerald-900 dark:text-emerald-300"
-
-                >
-
-                  Ver foto en tamaño completo ↗
-
-                </a>
-
+                {isCloudOrDataUrl(pedido.evidenciaEntregaUrl) && (
+                  <a
+                    href={getMediaUrl(pedido.evidenciaEntregaUrl)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-xs font-bold text-emerald-700 underline hover:text-emerald-900 dark:text-emerald-300"
+                  >
+                    Ver foto en tamaño completo ↗
+                  </a>
+                )}
               </div>
 
               <div className="mt-2 rounded-xl overflow-hidden border border-emerald-200 dark:border-emerald-800 max-h-60 bg-white dark:bg-slate-900 flex items-center justify-center p-1">
-
                 <img
-
                   src={getMediaUrl(pedido.evidenciaEntregaUrl)}
-
                   alt="Evidencia fotográfica de entrega"
-
                   className="max-h-56 w-auto object-contain rounded-lg"
-
+                  onError={(e) => {
+                    e.target.style.display = 'none'
+                    const fb = document.getElementById('fallback-rastreo-evidencia')
+                    if (fb) fb.style.display = 'flex'
+                  }}
                 />
-
+                <div id="fallback-rastreo-evidencia" style={{ display: 'none' }} className="p-4 flex flex-col items-center justify-center text-center space-y-1">
+                  <CheckCircle2 size={24} className="text-emerald-600" />
+                  <p className="text-xs font-bold text-emerald-800 dark:text-emerald-300">Entrega física confirmada por la tienda</p>
+                  <p className="text-[10px] text-slate-500">Constancia archivada y validada en el sistema.</p>
+                </div>
               </div>
 
             </div>

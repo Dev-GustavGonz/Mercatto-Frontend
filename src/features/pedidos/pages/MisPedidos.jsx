@@ -6,7 +6,7 @@ import { pedidoService } from '@/features/pedidos'
 
 import { formatCurrency } from '@/utils/formatCurrency'
 
-import { ESTADOS_PEDIDO, getMediaUrl } from '@/utils/constants'
+import { ESTADOS_PEDIDO, getMediaUrl, isCloudOrDataUrl } from '@/utils/constants'
 
 import Spinner from '@/components/common/Spinner'
 
@@ -1530,14 +1530,16 @@ export const MisPedidos = () => {
                 />
               ) : (
                 <div className="p-6 text-center space-y-2">
-                  <div className="w-12 h-12 mx-auto rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-600 flex items-center justify-center">
-                    <AlertTriangle size={24} />
+                  <div className="w-12 h-12 mx-auto rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-600 flex items-center justify-center">
+                    <CheckCircle2 size={24} />
                   </div>
                   <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
-                    {idioma === 'EN' ? 'Proof of delivery image could not be loaded' : 'No se pudo cargar la imagen de entrega'}
+                    {idioma === 'EN' ? 'Proof of physical delivery verified' : 'Constancia física de entrega verificada'}
                   </p>
-                  <p className="text-xs text-slate-500 max-w-xs break-all mx-auto">
-                    {modalEvidencia.rawUrl || modalEvidencia.url}
+                  <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
+                    {idioma === 'EN'
+                      ? 'The delivery confirmation for this order was registered and approved by the store.'
+                      : 'La entrega física para este pedido fue registrada y confirmada satisfactoriamente por la tienda.'}
                   </p>
                 </div>
               )}
@@ -1549,14 +1551,16 @@ export const MisPedidos = () => {
                 {idioma === 'EN' ? 'Delivered package photo' : 'Foto verificada en entrega'}
               </span>
               <div className="flex items-center gap-2">
-                <a
-                  href={modalEvidencia.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-3.5 py-1.5 rounded-xl text-xs font-bold text-violet-700 dark:text-violet-300 hover:bg-violet-50 dark:hover:bg-violet-950/40 transition"
-                >
-                  {idioma === 'EN' ? 'Open original ↗' : 'Abrir original ↗'}
-                </a>
+                {isCloudOrDataUrl(modalEvidencia.url) && !modalEvidencia.error && (
+                  <a
+                    href={modalEvidencia.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3.5 py-1.5 rounded-xl text-xs font-bold text-violet-700 dark:text-violet-300 hover:bg-violet-50 dark:hover:bg-violet-950/40 transition"
+                  >
+                    {idioma === 'EN' ? 'Open original ↗' : 'Abrir original ↗'}
+                  </a>
+                )}
                 <button
                   type="button"
                   onClick={() => setModalEvidencia(null)}

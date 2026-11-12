@@ -12,6 +12,14 @@ export const getMediaUrl = (url, fallback) => {
   return `${SERVER_URL}${cleanPath}`
 }
 
+export const isCloudOrDataUrl = (url) => {
+  if (!url || typeof url !== 'string') return false
+  const t = url.trim()
+  if (t.startsWith('data:image/')) return true
+  if ((t.startsWith('http://') || t.startsWith('https://')) && !t.includes('/uploads/')) return true
+  return false
+}
+
 // Debe coincidir EXACTAMENTE con google.client-id en application.properties del backend
 export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || ''
 
