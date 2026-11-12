@@ -1215,10 +1215,16 @@ export const MisPedidos = () => {
 
                     <button
                       type="button"
-                      onClick={() => setModalEvidencia({
-                        url: getMediaUrl(p.evidenciaEntregaUrl),
-                        codigo: p.codigo,
-                      })}
+                      onClick={() => {
+                        const raw = p.evidenciaEntregaUrl || ''
+                        setModalEvidencia({
+                          url: getMediaUrl(raw),
+                          rawUrl: raw,
+                          codigo: p.codigo,
+                          fallbackTried: false,
+                          error: false,
+                        })
+                      }}
                       className="font-bold underline text-emerald-700 hover:text-emerald-900 dark:text-emerald-300 shrink-0 cursor-pointer"
                     >
                       {idioma === 'EN' ? 'View Photo ↗' : 'Ver Foto ↗'}
@@ -1503,16 +1509,38 @@ export const MisPedidos = () => {
               </button>
             </div>
 
-            <div className="p-4 bg-slate-50 dark:bg-slate-950 flex items-center justify-center min-h-[260px] max-h-[65vh] overflow-hidden">
-              <img
-                src={modalEvidencia.url}
-                alt={`Evidencia entrega ${modalEvidencia.codigo}`}
-                className="max-h-[58vh] max-w-full w-auto object-contain rounded-2xl shadow-md border border-slate-200 dark:border-slate-800"
-                onError={(e) => {
-                  e.currentTarget.onerror = null
-                  e.currentTarget.src = 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=800'
-                }}
-              />
+            <div className="p-4 bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center min-h-[260px] max-h-[65vh] overflow-hidden">
+              {!modalEvidencia.error ? (
+                <img
+                  src={modalEvidencia.url}
+                  alt={`Evidencia entrega ${modalEvidencia.codigo}`}
+                  className="max-h-[58vh] max-w-full w-auto object-contain rounded-2xl shadow-md border border-slate-200 dark:border-slate-800"
+                  onError={() => {
+                    if (!modalEvidencia.fallbackTried && modalEvidencia.rawUrl) {
+                      const cleanRaw = (modalEvidencia.rawUrl.startsWith('/') ? modalEvidencia.rawUrl : `/${modalEvidencia.rawUrl}`).replace(/\\/g, '/')
+                      setModalEvidencia((prev) => ({
+                        ...prev,
+                        url: cleanRaw,
+                        fallbackTried: true,
+                      }))
+                    } else {
+                      setModalEvidencia((prev) => ({ ...prev, error: true }))
+                    }
+                  }}
+                />
+              ) : (
+                <div className="p-6 text-center space-y-2">
+                  <div className="w-12 h-12 mx-auto rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-600 flex items-center justify-center">
+                    <AlertTriangle size={24} />
+                  </div>
+                  <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                    {idioma === 'EN' ? 'Proof of delivery image could not be loaded' : 'No se pudo cargar la imagen de entrega'}
+                  </p>
+                  <p className="text-xs text-slate-500 max-w-xs break-all mx-auto">
+                    {modalEvidencia.rawUrl || modalEvidencia.url}
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3 bg-white dark:bg-slate-900">

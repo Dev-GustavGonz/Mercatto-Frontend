@@ -8,7 +8,7 @@ export const getMediaUrl = (url, fallback) => {
   if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('data:') || trimmed.startsWith('/images/')) {
     return trimmed
   }
-  const cleanPath = trimmed.startsWith('/') ? trimmed : `/${trimmed}`
+  const cleanPath = (trimmed.startsWith('/') ? trimmed : `/${trimmed}`).replace(/\\/g, '/')
   return `${SERVER_URL}${cleanPath}`
 }
 
