@@ -156,18 +156,17 @@ export const BentoSalesChart = ({
       }
 
       case '1M': {
-        const prevMonthDate = new Date(anioHoy, mesHoyIdx - 1, 1)
-        const prevMonthIdx = prevMonthDate.getMonth()
-        const prevYear = prevMonthDate.getFullYear()
-        const prevMonthName = MESES[prevMonthIdx]
-        const prevYearShort = String(prevYear).slice(-2)
-        const daysInPrevMonth = new Date(prevYear, prevMonthIdx + 1, 0).getDate()
+        const fechaFin = new Date(anioHoy, mesHoyIdx, diaHoy, 23, 59, 59, 999)
+        const daysInPrevMonth = new Date(anioHoy, mesHoyIdx, 0).getDate()
+        const diaInicio = Math.min(diaHoy, daysInPrevMonth)
+        const fechaInicio = new Date(anioHoy, mesHoyIdx - 1, diaInicio, 0, 0, 0, 0)
+        const labelInicio = `${fechaInicio.getDate()} ${MESES[fechaInicio.getMonth()]}`
 
-        etiquetaBadge = `Mes Anterior (${prevMonthName})`
-        subtitulo = `Mes anterior: 1 al ${daysInPrevMonth} de ${prevMonthName} '${prevYearShort} (ventas reales registradas)`
+        etiquetaBadge = `Mes Anterior (${labelInicio} – Hoy)`
+        subtitulo = `Último mes: Desde el ${fechaInicio.getDate()} de ${MESES[fechaInicio.getMonth()]} hasta Hoy (${diaStr} de ${mesHoyNombre}) (ventas reales)`
 
         const safePedidosList = Array.isArray(pedidos) ? pedidos : []
-        const pedidosMesAnterior = sinDatos
+        const pedidosUltimoMes = sinDatos
           ? []
           : safePedidosList.filter((p) => {
               const estado = (p?.estado || '').toUpperCase()
@@ -175,43 +174,44 @@ export const BentoSalesChart = ({
               const rawFecha = p?.fechaCreacion || p?.createdAt || p?.fecha
               if (!rawFecha) return false
               const d = new Date(rawFecha)
-              return !isNaN(d.getTime()) && d.getMonth() === prevMonthIdx && d.getFullYear() === prevYear
+              return !isNaN(d.getTime()) && d >= fechaInicio && d <= fechaFin
             })
 
-        const tramos = [
-          { start: 1, end: 5, label: `1–5 ${prevMonthName}`, corta: `1 ${prevMonthName}` },
-          { start: 6, end: 10, label: `6–10 ${prevMonthName}`, corta: `8 ${prevMonthName}` },
-          { start: 11, end: 15, label: `11–15 ${prevMonthName}`, corta: `15 ${prevMonthName}` },
-          { start: 16, end: 20, label: `16–20 ${prevMonthName}`, corta: `20 ${prevMonthName}` },
-          { start: 21, end: 25, label: `21–25 ${prevMonthName}`, corta: `25 ${prevMonthName}` },
-          { start: 26, end: daysInPrevMonth, label: `26–${daysInPrevMonth} ${prevMonthName}`, corta: `${daysInPrevMonth} ${prevMonthName}` },
-        ]
+        const numTramos = 6
+        const inicioMs = fechaInicio.getTime()
+        const spanMs = fechaFin.getTime() - inicioMs
 
-        puntosInfo = tramos.map((t, idx) => {
-          const val = pedidosMesAnterior
+        puntosInfo = Array.from({ length: numTramos }, (_, idx) => {
+          const tramoStartMs = inicioMs + (spanMs * idx) / numTramos
+          const tramoEndMs = idx === numTramos - 1 ? fechaFin.getTime() : inicioMs + (spanMs * (idx + 1)) / numTramos
+          const fechaPunto = idx === numTramos - 1 ? fechaFin : new Date(tramoStartMs)
+          const labelFecha = `${fechaPunto.getDate()} ${MESES[fechaPunto.getMonth()]}`
+          const esUltimo = idx === numTramos - 1
+
+          const val = pedidosUltimoMes
             .filter((p) => {
-              const dia = new Date(p.fechaCreacion || p.createdAt || p.fecha).getDate()
-              return dia >= t.start && dia <= t.end
+              const t = new Date(p.fechaCreacion || p.createdAt || p.fecha).getTime()
+              return t >= tramoStartMs && (idx === numTramos - 1 ? t <= tramoEndMs : t < tramoEndMs)
             })
             .reduce((acc, p) => acc + (Number(p.total) || 0), 0)
 
           return {
             index: idx,
-            etiqueta: t.label,
-            etiquetaCorta: t.corta,
+            etiqueta: esUltimo ? `Hoy (${diaStr} ${mesHoyNombre})` : labelFecha,
+            etiquetaCorta: esUltimo ? `Hoy (${diaStr} ${mesHoyNombre})` : labelFecha,
             valor: Math.round(val),
-            esPasado: true,
-            esHoy: false,
+            esPasado: !esUltimo,
+            esHoy: esUltimo,
             esFuturo: false,
-            tipo: `Real (${prevMonthName})`
+            tipo: esUltimo ? 'Cierre Actual (Hoy)' : 'Venta Real'
           }
         })
 
         totalMesAnterior = puntosInfo.reduce((acc, p) => acc + p.valor, 0)
         cambioPeriodo =
           totalMesAnterior > 0
-            ? `${pedidosMesAnterior.length} ${pedidosMesAnterior.length === 1 ? 'pedido' : 'pedidos'} (${prevMonthName})`
-            : `Sin ventas en ${prevMonthName}`
+            ? `${pedidosUltimoMes.length} ${pedidosUltimoMes.length === 1 ? 'pedido' : 'pedidos'} (último mes)`
+            : `Sin ventas desde ${labelInicio}`
         break
       }
 
@@ -380,7 +380,7 @@ export const BentoSalesChart = ({
         { idx: 0, texto: timeRange === '1M' ? puntos[0].etiquetaCorta : puntos[0].etiqueta, esHoy: timeRange !== '1M', alinear: 'left' },
         { idx: 2, texto: puntos[2].etiquetaCorta, alinear: 'center' },
         { idx: 4, texto: puntos[4].etiquetaCorta, alinear: 'center' },
-        { idx: puntos.length - 1, texto: puntos[puntos.length - 1].etiquetaCorta, alinear: 'right' }
+        { idx: puntos.length - 1, texto: puntos[puntos.length - 1].etiquetaCorta, esHoy: timeRange === '1M', alinear: 'right' }
       ]
       etiquetasEje = hitosOtros.map((h) => ({
         texto: h.texto,
