@@ -20,10 +20,12 @@ import {
   DollarSign,
   ShieldCheck,
   RotateCcw,
+  RotateCw,
   RefreshCw,
   Camera,
   UploadCloud,
-  FileCheck2
+  FileCheck2,
+  Edit2
 } from 'lucide-react'
 
 export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
@@ -163,12 +165,53 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
     }
   }, [])
 
-  const abrirModalEntrega = (p) => {
+  const rotarFoto = () => {
+    if (!previewEvidencia || rotando) return
+    setRotando(true)
+    try {
+      const img = new Image()
+      img.crossOrigin = 'anonymous'
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        canvas.width = img.height
+        canvas.height = img.width
+        const ctx = canvas.getContext('2d')
+        ctx.translate(canvas.width / 2, canvas.height / 2)
+        ctx.rotate((90 * Math.PI) / 180)
+        ctx.drawImage(img, -img.width / 2, -img.height / 2)
+
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.88)
+        setPreviewEvidencia(dataUrl)
+
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const file = new File([blob], `evidencia_rotada_${Date.now()}.jpg`, { type: 'image/jpeg' })
+            setArchivoEvidencia(file)
+          }
+          setRotando(false)
+        }, 'image/jpeg', 0.88)
+      }
+      img.onerror = () => setRotando(false)
+      img.src = previewEvidencia
+    } catch (_) {
+      setRotando(false)
+    }
+  }
+
+  const abrirModalEntrega = (p, esEdicion = false) => {
     detenerCamara()
-    setModalEntrega(p)
-    setArchivoEvidencia(null)
-    setPreviewEvidencia(null)
+    const modoEdicion = esEdicion || p.estado === 'ENTREGADO'
+    setModalEntrega({ ...p, esEdicion: modoEdicion })
     setCamaraError(null)
+
+    if (modoEdicion) {
+      const fotoActual = obtenerUrlEvidencia(p)
+      setPreviewEvidencia(fotoActual || null)
+      setArchivoEvidencia(null)
+    } else {
+      setArchivoEvidencia(null)
+      setPreviewEvidencia(null)
+    }
   }
 
   const cerrarModalEntrega = () => {
@@ -198,7 +241,7 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
 
   const handleConfirmarEntregaConEvidencia = async (e) => {
     e.preventDefault()
-    if (!archivoEvidencia) {
+    if (!previewEvidencia && !archivoEvidencia) {
       error('Es obligatorio adjuntar una foto o imagen como evidencia de la entrega.')
       return
     }
@@ -207,26 +250,27 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
     try {
       let evidenciaUrl = null
 
-      // 1. Probar subida en el servidor
-      try {
-        const uploadRes = await productoService.subirImagen(archivoEvidencia)
-        const rawUrl = uploadRes?.url || uploadRes?.secure_url || uploadRes?.publicUrl
-        // Asegurar que la URL sea corta (< 490 caracteres) para respetar el VARCHAR(500) de PostgreSQL
-        if (rawUrl && typeof rawUrl === 'string' && rawUrl.length <= 490) {
-          evidenciaUrl = rawUrl
+      // 1. Probar subida si se adjuntó o modificó un archivo
+      if (archivoEvidencia) {
+        try {
+          const uploadRes = await productoService.subirImagen(archivoEvidencia)
+          const rawUrl = uploadRes?.url || uploadRes?.secure_url || uploadRes?.publicUrl
+          if (rawUrl && typeof rawUrl === 'string' && rawUrl.length <= 490) {
+            evidenciaUrl = rawUrl
+          }
+        } catch (uploadErr) {
+          console.warn('Subida en servidor no disponible, generando identificador seguro', uploadErr)
         }
-      } catch (uploadErr) {
-        console.warn('Subida en servidor no disponible, generando identificador seguro', uploadErr)
       }
 
-      // 2. Si no hay URL del servidor o excedería 490 chars, generar un path corto seguro
+      // 2. Si no hay URL del servidor o ya existía foto previa
       if (!evidenciaUrl || evidenciaUrl.length > 490) {
-        const ext = archivoEvidencia.name?.split('.').pop() || 'jpg'
-        const safeName = (archivoEvidencia.name || 'evidencia.jpg').replace(/[^a-zA-Z0-9]/g, '_').slice(0, 30)
+        const ext = archivoEvidencia?.name?.split('.').pop() || 'jpg'
+        const safeName = (archivoEvidencia?.name || 'evidencia.jpg').replace(/[^a-zA-Z0-9]/g, '_').slice(0, 30)
         evidenciaUrl = `/uploads/${modalEntrega.codigo}_${Date.now()}_${safeName}.${ext}`
       }
 
-      // 3. Guardar la imagen en caché local para que se visualice siempre al 100% de calidad y sin errores
+      // 3. Guardar en caché local para que se visualice siempre al 100% de calidad y sin errores
       if (previewEvidencia) {
         try {
           localStorage.setItem(`mercatto_evidencia_${modalEntrega.codigo}`, previewEvidencia)
@@ -241,16 +285,18 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
         evidenciaEntregaUrl: evidenciaUrl
       })
 
-      success(`¡Pedido ${modalEntrega.codigo} marcado como ENTREGADO y evidencia registrada con éxito!`)
-      setModalEntrega(null)
-      setArchivoEvidencia(null)
-      setPreviewEvidencia(null)
+      const mensajeExito = modalEntrega.esEdicion
+        ? `¡Foto de evidencia del pedido ${modalEntrega.codigo} actualizada con éxito!`
+        : `¡Pedido ${modalEntrega.codigo} marcado como ENTREGADO y evidencia registrada con éxito!`
+      success(mensajeExito)
+
+      cerrarModalEntrega()
       if (pedidoDetalle && pedidoDetalle.id === modalEntrega.id) {
         setPedidoDetalle({ ...pedidoDetalle, estado: 'ENTREGADO', evidenciaEntregaUrl: evidenciaUrl })
       }
       if (onPedidoActualizado) onPedidoActualizado()
     } catch (err) {
-      const msg = err.response?.data?.mensaje || err.response?.data?.message || 'Error al registrar la entrega del pedido'
+      const msg = err.response?.data?.mensaje || err.response?.data?.message || 'Error al guardar la evidencia del pedido'
       error(msg)
     } finally {
       setSubiendoEvidencia(false)
@@ -525,6 +571,14 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
                                 <Camera size={13} />
                               </button>
                             )}
+                            <button
+                              type="button"
+                              onClick={() => abrirModalEntrega(p, true)}
+                              title="Editar o cambiar foto de evidencia de entrega"
+                              className="p-1 rounded-md text-slate-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-950/40 transition cursor-pointer"
+                            >
+                              <Edit2 size={13} />
+                            </button>
                           </div>
                         )}
 
@@ -657,14 +711,29 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
                     <CheckCircle2 size={16} className="text-emerald-600" />
                     <span>Evidencia de Entrega Registrada por la Tienda:</span>
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => setModalVisorEvidencia(pedidoDetalle)}
-                    className="text-[11px] font-bold text-emerald-700 hover:text-emerald-900 dark:text-emerald-300 underline flex items-center gap-1 cursor-pointer"
-                  >
-                    <span>Ver foto completa</span>
-                    <span>↗</span>
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setModalVisorEvidencia(pedidoDetalle)}
+                      className="text-[11px] font-bold text-emerald-700 hover:text-emerald-900 dark:text-emerald-300 underline flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>Ver foto</span>
+                      <span>↗</span>
+                    </button>
+                    <span className="text-emerald-300 dark:text-emerald-700">|</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const p = pedidoDetalle
+                        abrirModalEntrega(p, true)
+                      }}
+                      className="text-[11px] font-bold text-violet-700 hover:text-violet-900 dark:text-violet-300 underline flex items-center gap-1 cursor-pointer"
+                      title="Editar o reemplazar foto de entrega"
+                    >
+                      <Edit2 size={12} />
+                      <span>Editar foto</span>
+                    </button>
+                  </div>
                 </div>
                 {!imgDetalleError ? (
                   <div className="rounded-xl overflow-hidden border border-emerald-200 dark:border-emerald-800 bg-white dark:bg-slate-900 max-h-64 flex items-center justify-center p-1.5 shadow-inner">
@@ -842,21 +911,23 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
         </Modal>
       )}
 
-      {/* Modal Confirmar Entrega con Evidencia Requerida */}
+      {/* Modal Confirmar o Editar Entrega con Evidencia Requerida */}
       {modalEntrega && (
         <Modal
           isOpen={true}
           onClose={() => !subiendoEvidencia && cerrarModalEntrega()}
-          title={`Evidencia de Entrega: Pedido ${modalEntrega.codigo}`}
+          title={modalEntrega.esEdicion ? `Editar Evidencia de Entrega: Pedido ${modalEntrega.codigo}` : `Evidencia de Entrega: Pedido ${modalEntrega.codigo}`}
         >
           <form onSubmit={handleConfirmarEntregaConEvidencia} className="space-y-4 text-xs font-sans">
             <div className="p-3.5 rounded-2xl bg-violet-50 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-900/40 space-y-1">
               <span className="font-bold text-violet-900 dark:text-violet-200 flex items-center gap-1.5">
                 <FileCheck2 size={15} className="text-violet-600" />
-                <span>Requisito obligatorio para liquidar fondos:</span>
+                <span>{modalEntrega.esEdicion ? 'Modificación de constancia de entrega:' : 'Requisito obligatorio para liquidar fondos:'}</span>
               </span>
               <p className="text-violet-700 dark:text-violet-300 text-[11px] leading-relaxed">
-                Para marcar el pedido como <strong>ENTREGADO</strong> y liberar los fondos de la venta a tu tienda, debes adjuntar una foto o imagen como evidencia (ejemplo: foto del cliente recibiendo el paquete, producto entregado en el domicilio o remito firmado).
+                {modalEntrega.esEdicion
+                  ? 'Puedes tomar una nueva foto con la cámara, rotarla 90° o subir una nueva imagen para actualizar la evidencia guardada.'
+                  : 'Para marcar el pedido como ENTREGADO y liberar los fondos de la venta a tu tienda, debes adjuntar una foto o imagen como evidencia (ejemplo: foto del cliente recibiendo el paquete, producto entregado en el domicilio o remito firmado).'}
               </p>
             </div>
 
@@ -985,21 +1056,32 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
                   </div>
                 </div>
               ) : (
-                /* CASO 3: Foto ya capturada o seleccionada */
-                <div className="space-y-2">
-                  <div className="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-black/5 dark:bg-slate-800 flex items-center justify-center max-h-56">
+                /* CASO 3: Foto capturada, seleccionada o en edición con barra de herramientas */
+                <div className="space-y-3">
+                  <div className="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-black/5 dark:bg-slate-800 flex items-center justify-center max-h-60 p-1">
                     <img
                       src={previewEvidencia}
                       alt="Vista previa evidencia"
-                      className="max-h-56 w-auto object-contain"
+                      className="max-h-56 w-auto object-contain rounded-xl transition-all"
                     />
                   </div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-500 dark:text-slate-400 truncate max-w-xs flex items-center gap-1">
-                      <CheckCircle2 size={13} className="text-emerald-500 shrink-0" />
-                      <span>{archivoEvidencia?.name || 'Foto capturada con la cámara'}</span>
-                    </span>
-                    <div className="flex items-center gap-2">
+
+                  {/* Barra de herramientas para EDITAR la imagen */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      {/* Botón Rotar 90 grados */}
+                      <button
+                        type="button"
+                        onClick={rotarFoto}
+                        disabled={rotando}
+                        className="px-2.5 py-1.5 rounded-xl bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-600 font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1 cursor-pointer transition shadow-2xs"
+                        title="Girar imagen 90° en sentido horario"
+                      >
+                        <RotateCw size={13} className={rotando ? 'animate-spin' : ''} />
+                        <span>Rotar 90°</span>
+                      </button>
+
+                      {/* Botón Tomar otra con cámara */}
                       <button
                         type="button"
                         onClick={() => {
@@ -1007,22 +1089,37 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
                           setPreviewEvidencia(null)
                           iniciarCamara('environment')
                         }}
-                        className="text-emerald-700 dark:text-emerald-400 hover:underline font-bold text-[11px] cursor-pointer"
+                        className="px-2.5 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-bold flex items-center gap-1 cursor-pointer hover:bg-emerald-100 transition shadow-2xs"
+                        title="Tomar nueva foto con la cámara"
                       >
-                        Tomar otra foto
+                        <Camera size={13} />
+                        <span>Nueva foto</span>
                       </button>
-                      <span className="text-slate-300">|</span>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setArchivoEvidencia(null)
-                          setPreviewEvidencia(null)
-                        }}
-                        className="text-rose-600 hover:underline font-bold text-[11px] cursor-pointer"
-                      >
-                        Eliminar
-                      </button>
+
+                      {/* Botón Cambiar archivo */}
+                      <label className="px-2.5 py-1.5 rounded-xl bg-violet-50 dark:bg-violet-950/40 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-800 font-bold flex items-center gap-1 cursor-pointer hover:bg-violet-100 transition shadow-2xs">
+                        <UploadCloud size={13} />
+                        <span>Elegir archivo</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleSeleccionarEvidencia}
+                          className="hidden"
+                        />
+                      </label>
                     </div>
+
+                    {/* Botón Quitar */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setArchivoEvidencia(null)
+                        setPreviewEvidencia(null)
+                      }}
+                      className="text-rose-600 hover:text-rose-700 font-bold text-[11px] cursor-pointer hover:underline px-1.5"
+                    >
+                      Quitar
+                    </button>
                   </div>
                 </div>
               )}
@@ -1038,15 +1135,15 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
               </Button>
               <button
                 type="submit"
-                disabled={!archivoEvidencia || subiendoEvidencia}
+                disabled={(!previewEvidencia && !archivoEvidencia) || subiendoEvidencia}
                 className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-xs flex items-center gap-1.5 transition cursor-pointer shadow-sm"
               >
                 {subiendoEvidencia ? (
-                  <span>Subiendo evidencia y confirmando...</span>
+                  <span>Guardando evidencia...</span>
                 ) : (
                   <>
                     <CheckCircle2 size={14} />
-                    <span>Confirmar Entrega y Liberar Pago</span>
+                    <span>{modalEntrega.esEdicion ? 'Guardar Cambios de Evidencia' : 'Confirmar Entrega y Liberar Pago'}</span>
                   </>
                 )}
               </button>
@@ -1087,18 +1184,33 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
               </div>
             </div>
 
-            <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+            <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 gap-2 flex-wrap">
               <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold">
                 <CheckCircle2 size={14} />
                 <span>Constancia de entrega física</span>
               </span>
-              <button
-                type="button"
-                onClick={() => setModalVisorEvidencia(null)}
-                className="px-4 py-1.5 rounded-xl bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 font-bold cursor-pointer hover:opacity-90 transition"
-              >
-                Cerrar
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const p = modalVisorEvidencia
+                    setModalVisorEvidencia(null)
+                    abrirModalEntrega(p, true)
+                  }}
+                  className="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer flex items-center gap-1.5"
+                  title="Editar o reemplazar foto de evidencia"
+                >
+                  <Edit2 size={12} />
+                  <span>Editar foto</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setModalVisorEvidencia(null)}
+                  className="px-4 py-1.5 rounded-xl bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 font-bold cursor-pointer hover:opacity-90 transition"
+                >
+                  Cerrar
+                </button>
+              </div>
             </div>
           </div>
         </Modal>
