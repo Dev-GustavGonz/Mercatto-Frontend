@@ -156,62 +156,44 @@ export const BentoSalesChart = ({
       }
 
       case '1M': {
-        const fechaFin = new Date(anioHoy, mesHoyIdx, diaHoy, 23, 59, 59, 999)
-        const daysInPrevMonth = new Date(anioHoy, mesHoyIdx, 0).getDate()
-        const diaInicio = Math.min(diaHoy, daysInPrevMonth)
-        const fechaInicio = new Date(anioHoy, mesHoyIdx - 1, diaInicio, 0, 0, 0, 0)
-        const labelInicio = `${fechaInicio.getDate()} ${MESES[fechaInicio.getMonth()]}`
+        // Proyección mensual: Desde HOY en adelante hasta 1 mes en el futuro
+        factorEscala = 1.08
+        cambioPeriodo = '+28.4% proyectado (1 Mes)'
+        const mesSiguienteIdx = (mesHoyIdx + 1) % 12
+        const mesSiguienteNombre = MESES[mesSiguienteIdx]
+        subtitulo = `Proyección mensual: Desde Hoy (${diaStr} de ${mesHoyNombre}) hasta el ${diaStr} de ${mesSiguienteNombre} (estimación IA)`
+        etiquetaBadge = 'Modelo Predictivo IA'
 
-        etiquetaBadge = `Mes Anterior (${labelInicio} – Hoy)`
-        subtitulo = `Último mes: Desde el ${fechaInicio.getDate()} de ${MESES[fechaInicio.getMonth()]} hasta Hoy (${diaStr} de ${mesHoyNombre}) (ventas reales)`
+        // 7 hitos secuenciales desde Hoy en adelante
+        const diasPasos = [0, 5, 10, 15, 20, 25, 30]
+        puntosInfo = diasPasos.map((offsetDias, idx) => {
+          const d = new Date(anioHoy, mesHoyIdx, diaHoy + offsetDias)
+          const esHoy = idx === 0
+          const esFuturo = idx > 0
+          const mIdx = d.getMonth()
+          const dNum = d.getDate()
+          const label = esHoy
+            ? `Hoy (${diaStr} ${mesHoyNombre})`
+            : `${dNum} ${MESES[mIdx]}`
 
-        const safePedidosList = Array.isArray(pedidos) ? pedidos : []
-        const pedidosUltimoMes = sinDatos
-          ? []
-          : safePedidosList.filter((p) => {
-              const estado = (p?.estado || '').toUpperCase()
-              if (estado === 'CANCELADO' || estado === 'REEMBOLSADO') return false
-              const rawFecha = p?.fechaCreacion || p?.createdAt || p?.fecha
-              if (!rawFecha) return false
-              const d = new Date(rawFecha)
-              return !isNaN(d.getTime()) && d >= fechaInicio && d <= fechaFin
-            })
-
-        const numTramos = 6
-        const inicioMs = fechaInicio.getTime()
-        const spanMs = fechaFin.getTime() - inicioMs
-
-        puntosInfo = Array.from({ length: numTramos }, (_, idx) => {
-          const tramoStartMs = inicioMs + (spanMs * idx) / numTramos
-          const tramoEndMs = idx === numTramos - 1 ? fechaFin.getTime() : inicioMs + (spanMs * (idx + 1)) / numTramos
-          const fechaPunto = idx === numTramos - 1 ? fechaFin : new Date(tramoStartMs)
-          const labelFecha = `${fechaPunto.getDate()} ${MESES[fechaPunto.getMonth()]}`
-          const esUltimo = idx === numTramos - 1
-
-          const val = pedidosUltimoMes
-            .filter((p) => {
-              const t = new Date(p.fechaCreacion || p.createdAt || p.fecha).getTime()
-              return t >= tramoStartMs && (idx === numTramos - 1 ? t <= tramoEndMs : t < tramoEndMs)
-            })
-            .reduce((acc, p) => acc + (Number(p.total) || 0), 0)
+          const factorCrecimiento = 1 + (idx * 0.024)
+          const factorEstacional = factorEstacionalPorMes[mIdx]
+          const val = esHoy
+            ? totalSeguro
+            : Math.round(totalSeguro * factorEstacional * factorCrecimiento)
 
           return {
             index: idx,
-            etiqueta: esUltimo ? `Hoy (${diaStr} ${mesHoyNombre})` : labelFecha,
-            etiquetaCorta: esUltimo ? `Hoy (${diaStr} ${mesHoyNombre})` : labelFecha,
-            valor: Math.round(val),
-            esPasado: !esUltimo,
-            esHoy: esUltimo,
-            esFuturo: false,
-            tipo: esUltimo ? 'Cierre Actual (Hoy)' : 'Venta Real'
+            fecha: d,
+            etiqueta: label,
+            etiquetaCorta: label,
+            valor: val,
+            esPasado: false,
+            esHoy,
+            esFuturo,
+            tipo: esHoy ? 'Cierre Actual (Hoy)' : 'Estimación Modelo IA'
           }
         })
-
-        totalMesAnterior = puntosInfo.reduce((acc, p) => acc + p.valor, 0)
-        cambioPeriodo =
-          totalMesAnterior > 0
-            ? `${pedidosUltimoMes.length} ${pedidosUltimoMes.length === 1 ? 'pedido' : 'pedidos'} (último mes)`
-            : `Sin ventas desde ${labelInicio}`
         break
       }
 
@@ -271,15 +253,13 @@ export const BentoSalesChart = ({
       }
     }
 
-    // Volumen monetario del período seleccionado (0 si es tienda nueva sin productos/ventas)
+    // Volumen monetario del período seleccionado: Estimación desde hoy en adelante (0 si es tienda nueva sin productos/ventas)
     const totalPeriodo =
-      timeRange === '1M'
-        ? totalMesAnterior
-        : totalSeguro > 0
+      totalSeguro > 0
         ? Math.round(totalSeguro * factorEscala)
         : 0
 
-    if (timeRange !== '1M' && totalSeguro === 0) {
+    if (totalSeguro === 0) {
       cambioPeriodo = 'Sin datos aún'
       subtitulo = 'Publica productos y registra ventas para habilitar estimaciones'
     }
@@ -375,12 +355,12 @@ export const BentoSalesChart = ({
         alinear: h.alinear
       }))
     } else {
-      // 3M, 1M, 1S, 1D: Hitos equitativos
+      // 3M, 1M, 1S, 1D: Hitos equitativos proyectados desde Hoy hacia adelante
       const hitosOtros = [
-        { idx: 0, texto: timeRange === '1M' ? puntos[0].etiquetaCorta : puntos[0].etiqueta, esHoy: timeRange !== '1M', alinear: 'left' },
-        { idx: 2, texto: puntos[2].etiquetaCorta, alinear: 'center' },
-        { idx: 4, texto: puntos[4].etiquetaCorta, alinear: 'center' },
-        { idx: puntos.length - 1, texto: puntos[puntos.length - 1].etiquetaCorta, esHoy: timeRange === '1M', alinear: 'right' }
+        { idx: 0, texto: puntos[0].etiquetaCorta || puntos[0].etiqueta, esHoy: true, alinear: 'left' },
+        { idx: Math.max(1, Math.floor((puntos.length - 1) * 0.33)), texto: puntos[Math.max(1, Math.floor((puntos.length - 1) * 0.33))].etiquetaCorta, alinear: 'center' },
+        { idx: Math.min(puntos.length - 2, Math.floor((puntos.length - 1) * 0.66)), texto: puntos[Math.min(puntos.length - 2, Math.floor((puntos.length - 1) * 0.66))].etiquetaCorta, alinear: 'center' },
+        { idx: puntos.length - 1, texto: puntos[puntos.length - 1].etiquetaCorta, esHoy: false, alinear: 'right' }
       ]
       etiquetasEje = hitosOtros.map((h) => ({
         texto: h.texto,
@@ -445,7 +425,7 @@ export const BentoSalesChart = ({
               }`}
               title={
                 filtro === '1M'
-                  ? 'Mes anterior (ventas reales)'
+                  ? 'Proyección a 1 Mes (Desde hoy en adelante)'
                   : filtro === '1A'
                   ? 'Proyección de 1 Año'
                   : `Estimar a ${filtro}`
