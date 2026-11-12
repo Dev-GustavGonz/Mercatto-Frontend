@@ -190,7 +190,6 @@ export const Footer = () => {
               <div className="text-xs sm:text-[13px] text-slate-400 leading-relaxed space-y-0.5">
                 <p>Cartagena de Indias</p>
                 <p>Bolívar, Colombia</p>
-                <p>{isEn ? 'Mon - Sat: 8:00 AM - 6:00 PM' : 'Lun - Sáb: 8:00 AM - 6:00 PM'}</p>
               </div>
 
               <div className="flex flex-wrap gap-8 pt-1">
