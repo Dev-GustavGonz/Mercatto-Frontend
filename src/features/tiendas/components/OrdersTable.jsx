@@ -338,7 +338,7 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
                             </span>
                             {p.evidenciaEntregaUrl && (
                               <a
-                                href={p.evidenciaEntregaUrl}
+                                href={getMediaUrl(p.evidenciaEntregaUrl)}
                                 target="_blank"
                                 rel="noreferrer"
                                 title="Ver evidencia fotográfica de entrega"
