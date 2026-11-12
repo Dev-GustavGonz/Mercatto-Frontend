@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { formatCurrency } from '@/utils/formatCurrency'
 import { ESTADOS_PEDIDO, getMediaUrl } from '@/utils/constants'
 import Button from '@/components/common/Button'
@@ -20,6 +20,7 @@ import {
   DollarSign,
   ShieldCheck,
   RotateCcw,
+  RefreshCw,
   Camera,
   UploadCloud,
   FileCheck2
@@ -41,6 +42,11 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
   const [subiendoEvidencia, setSubiendoEvidencia] = useState(false)
   const [modalVisorEvidencia, setModalVisorEvidencia] = useState(null)
   const [imgDetalleError, setImgDetalleError] = useState(false)
+  const [camaraActiva, setCamaraActiva] = useState(false)
+  const [camaraError, setCamaraError] = useState(null)
+  const [facingMode, setFacingMode] = useState('environment')
+  const videoRef = useRef(null)
+  const streamRef = useRef(null)
   const { success, error } = useToast()
 
   const obtenerUrlEvidencia = (p) => {
@@ -54,10 +60,123 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
     return getMediaUrl(p.evidenciaEntregaUrl)
   }
 
+  const detenerCamara = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => {
+        try {
+          track.stop()
+        } catch (_) {}
+      })
+      streamRef.current = null
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null
+    }
+    setCamaraActiva(false)
+  }
+
+  const iniciarCamara = async (mode = facingMode) => {
+    setCamaraError(null)
+    detenerCamara()
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('Tu navegador no soporta acceso directo a la cámara. Usa la opción de subir archivo.')
+      }
+
+      let stream = null
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: mode },
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+          },
+          audio: false,
+        })
+      } catch (_) {
+        // Fallback a cualquier cámara disponible (e.g. webcam en laptops/PCs)
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false,
+        })
+      }
+
+      streamRef.current = stream
+      setCamaraActiva(true)
+
+      setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream
+          videoRef.current.play().catch(console.error)
+        }
+      }, 100)
+    } catch (err) {
+      console.error('Error al iniciar cámara:', err)
+      let msg = 'No se pudo acceder a la cámara.'
+      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+        msg = 'Permiso denegado. Permite el acceso a la cámara en los permisos de tu navegador.'
+      } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+        msg = 'No se encontró ninguna cámara conectada en tu equipo.'
+      } else if (err.message) {
+        msg = err.message
+      }
+      setCamaraError(msg)
+      setCamaraActiva(false)
+    }
+  }
+
+  const cambiarCamara = () => {
+    const nextMode = facingMode === 'environment' ? 'user' : 'environment'
+    setFacingMode(nextMode)
+    iniciarCamara(nextMode)
+  }
+
+  const capturarFoto = () => {
+    if (!videoRef.current) return
+    const video = videoRef.current
+    const w = video.videoWidth || 1280
+    const h = video.videoHeight || 720
+
+    const canvas = document.createElement('canvas')
+    canvas.width = w
+    canvas.height = h
+    const ctx = canvas.getContext('2d')
+
+    ctx.drawImage(video, 0, 0, w, h)
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.85)
+
+    setPreviewEvidencia(dataUrl)
+
+    canvas.toBlob((blob) => {
+      if (blob) {
+        const file = new File([blob], `evidencia_camara_${Date.now()}.jpg`, { type: 'image/jpeg' })
+        setArchivoEvidencia(file)
+      }
+    }, 'image/jpeg', 0.85)
+
+    detenerCamara()
+  }
+
+  useEffect(() => {
+    return () => {
+      detenerCamara()
+    }
+  }, [])
+
   const abrirModalEntrega = (p) => {
+    detenerCamara()
     setModalEntrega(p)
     setArchivoEvidencia(null)
     setPreviewEvidencia(null)
+    setCamaraError(null)
+  }
+
+  const cerrarModalEntrega = () => {
+    detenerCamara()
+    setModalEntrega(null)
+    setArchivoEvidencia(null)
+    setPreviewEvidencia(null)
+    setCamaraError(null)
   }
 
   const handleSeleccionarEvidencia = (e) => {
@@ -727,7 +846,7 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
       {modalEntrega && (
         <Modal
           isOpen={true}
-          onClose={() => !subiendoEvidencia && setModalEntrega(null)}
+          onClose={() => !subiendoEvidencia && cerrarModalEntrega()}
           title={`Evidencia de Entrega: Pedido ${modalEntrega.codigo}`}
         >
           <form onSubmit={handleConfirmarEntregaConEvidencia} className="space-y-4 text-xs font-sans">
@@ -756,39 +875,105 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
                 Foto o Comprobante de Entrega <span className="text-rose-500">*</span>
               </label>
 
-              {!previewEvidencia ? (
+              {/* Alerta si ocurre un problema al encender la cámara */}
+              {camaraError && (
+                <div className="mb-3 p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 text-xs flex items-start gap-2">
+                  <AlertTriangle size={16} className="text-amber-600 shrink-0 mt-0.5" />
+                  <div className="space-y-1">
+                    <p className="font-bold">{camaraError}</p>
+                    <p className="text-[11px] text-amber-700 dark:text-amber-300">
+                      Puedes seleccionar una foto guardada usando la opción "Subir desde Archivos".
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* CASO 1: Cámara en vivo activa para tomar la foto directamente */}
+              {camaraActiva ? (
+                <div className="space-y-3">
+                  <div className="relative rounded-2xl overflow-hidden bg-black aspect-video sm:h-72 flex items-center justify-center border-2 border-emerald-500 shadow-lg">
+                    <video
+                      ref={videoRef}
+                      playsInline
+                      autoPlay
+                      muted
+                      className="w-full h-full object-cover"
+                    />
+
+                    {/* Marco visor de enfoque */}
+                    <div className="absolute inset-4 border-2 border-dashed border-white/40 rounded-xl pointer-events-none flex items-center justify-center">
+                      <span className="text-[10px] text-white/90 bg-black/50 px-2.5 py-1 rounded-full backdrop-blur-xs font-medium">
+                        Enfoca el paquete o cliente recibiendo
+                      </span>
+                    </div>
+
+                    {/* Indicador en vivo */}
+                    <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-600/90 text-white text-[10px] font-bold shadow-xs">
+                      <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                      <span>CÁMARA EN VIVO</span>
+                    </div>
+
+                    {/* Botón cambiar cámara si el dispositivo tiene frontal/trasera */}
+                    <button
+                      type="button"
+                      onClick={cambiarCamara}
+                      className="absolute top-3 right-3 p-2 rounded-full bg-black/60 hover:bg-black/80 text-white backdrop-blur-xs transition cursor-pointer"
+                      title="Girar cámara (Frontal / Trasera)"
+                    >
+                      <RefreshCw size={15} />
+                    </button>
+                  </div>
+
+                  {/* Acciones de la cámara */}
+                  <div className="flex items-center justify-center gap-3 pt-1">
+                    <button
+                      type="button"
+                      onClick={detenerCamara}
+                      className="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold transition cursor-pointer"
+                    >
+                      Cancelar cámara
+                    </button>
+                    <button
+                      type="button"
+                      onClick={capturarFoto}
+                      className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-2 shadow-md transition cursor-pointer hover:scale-[1.02] active:scale-95"
+                    >
+                      <Camera size={16} />
+                      <span>📸 Tomar Foto Ahora</span>
+                    </button>
+                  </div>
+                </div>
+              ) : !previewEvidencia ? (
+                /* CASO 2: Opciones de carga: Cámara en vivo o Archivo */
                 <div className="space-y-3">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {/* Botón Tomar Foto con Cámara */}
-                    <label className="border-2 border-dashed border-emerald-300 dark:border-emerald-700 hover:border-emerald-500 rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer transition bg-emerald-50/40 dark:bg-emerald-950/20 group">
-                      <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-2 group-hover:scale-105 transition">
-                        <Camera size={20} />
+                    {/* Botón Tomar Foto con Cámara (Abre la cámara web o del móvil en vivo) */}
+                    <button
+                      type="button"
+                      onClick={() => iniciarCamara('environment')}
+                      className="border-2 border-dashed border-emerald-400 dark:border-emerald-700 hover:border-emerald-600 rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer transition bg-emerald-50/50 dark:bg-emerald-950/20 group hover:shadow-xs text-left"
+                    >
+                      <div className="w-11 h-11 rounded-full bg-emerald-100 dark:bg-emerald-900/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-2 group-hover:scale-110 transition shadow-xs">
+                        <Camera size={22} />
                       </div>
                       <span className="font-bold text-emerald-900 dark:text-emerald-200 text-xs text-center">
                         📷 Tomar Foto con la Cámara
                       </span>
-                      <span className="text-[10px] text-emerald-600 dark:text-emerald-400 mt-0.5">
-                        Abre la cámara de tu celular/PC
+                      <span className="text-[10px] text-emerald-600 dark:text-emerald-400 mt-0.5 text-center">
+                        Abre la cámara en vivo para disparar
                       </span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        capture="environment"
-                        onChange={handleSeleccionarEvidencia}
-                        className="hidden"
-                      />
-                    </label>
+                    </button>
 
                     {/* Botón Subir Archivo o Galería */}
-                    <label className="border-2 border-dashed border-violet-300 dark:border-violet-700 hover:border-violet-500 rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer transition bg-violet-50/40 dark:bg-violet-950/20 group">
-                      <div className="w-10 h-10 rounded-full bg-violet-100 dark:bg-violet-900/60 flex items-center justify-center text-violet-600 dark:text-violet-400 mb-2 group-hover:scale-105 transition">
-                        <UploadCloud size={20} />
+                    <label className="border-2 border-dashed border-violet-300 dark:border-violet-700 hover:border-violet-500 rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer transition bg-violet-50/40 dark:bg-violet-950/20 group hover:shadow-xs">
+                      <div className="w-11 h-11 rounded-full bg-violet-100 dark:bg-violet-900/60 flex items-center justify-center text-violet-600 dark:text-violet-400 mb-2 group-hover:scale-110 transition shadow-xs">
+                        <UploadCloud size={22} />
                       </div>
                       <span className="font-bold text-violet-900 dark:text-violet-200 text-xs text-center">
                         📁 Subir desde Archivos / Galería
                       </span>
-                      <span className="text-[10px] text-violet-600 dark:text-violet-400 mt-0.5">
-                        JPG, PNG, WebP (Máx. 30MB)
+                      <span className="text-[10px] text-violet-600 dark:text-violet-400 mt-0.5 text-center">
+                        JPG, PNG, WebP (Foto guardada)
                       </span>
                       <input
                         type="file"
@@ -800,6 +985,7 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
                   </div>
                 </div>
               ) : (
+                /* CASO 3: Foto ya capturada o seleccionada */
                 <div className="space-y-2">
                   <div className="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-black/5 dark:bg-slate-800 flex items-center justify-center max-h-56">
                     <img
@@ -809,19 +995,34 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
                     />
                   </div>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-500 dark:text-slate-400 truncate max-w-xs">
-                      {archivoEvidencia?.name || 'Imagen seleccionada'}
+                    <span className="text-slate-500 dark:text-slate-400 truncate max-w-xs flex items-center gap-1">
+                      <CheckCircle2 size={13} className="text-emerald-500 shrink-0" />
+                      <span>{archivoEvidencia?.name || 'Foto capturada con la cámara'}</span>
                     </span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setArchivoEvidencia(null)
-                        setPreviewEvidencia(null)
-                      }}
-                      className="text-rose-600 hover:underline font-bold text-[11px] cursor-pointer"
-                    >
-                      Cambiar foto
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setArchivoEvidencia(null)
+                          setPreviewEvidencia(null)
+                          iniciarCamara('environment')
+                        }}
+                        className="text-emerald-700 dark:text-emerald-400 hover:underline font-bold text-[11px] cursor-pointer"
+                      >
+                        Tomar otra foto
+                      </button>
+                      <span className="text-slate-300">|</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setArchivoEvidencia(null)
+                          setPreviewEvidencia(null)
+                        }}
+                        className="text-rose-600 hover:underline font-bold text-[11px] cursor-pointer"
+                      >
+                        Eliminar
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
@@ -830,7 +1031,7 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
             <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
               <Button
                 variant="outline"
-                onClick={() => setModalEntrega(null)}
+                onClick={cerrarModalEntrega}
                 disabled={subiendoEvidencia}
               >
                 Cancelar
