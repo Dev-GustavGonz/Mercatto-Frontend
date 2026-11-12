@@ -2,6 +2,7 @@
  * productUtils.js
  * Utilidades para normalización y resolución de imágenes de productos de la base de datos.
  */
+import { getMediaUrl } from '@/utils/constants'
 
 export const resolveProductImage = (prod) => {
   if (!prod) return '/images/bento/headphones.png'
@@ -9,18 +10,18 @@ export const resolveProductImage = (prod) => {
   // 1. Imagen principal o primera imagen del arreglo de imagenes
   if (prod.imagenes && Array.isArray(prod.imagenes) && prod.imagenes.length > 0) {
     const principal = prod.imagenes.find(i => i.principal || i.esPrincipal)
-    if (principal?.url && principal.url.trim() !== '') return principal.url
-    if (prod.imagenes[0]?.url && prod.imagenes[0].url.trim() !== '') return prod.imagenes[0].url
+    if (principal?.url && principal.url.trim() !== '') return getMediaUrl(principal.url, '/images/bento/headphones.png')
+    if (prod.imagenes[0]?.url && prod.imagenes[0].url.trim() !== '') return getMediaUrl(prod.imagenes[0].url, '/images/bento/headphones.png')
   }
 
   // 2. Propiedad imagenUrl directa
   if (prod.imagenUrl && typeof prod.imagenUrl === 'string' && prod.imagenUrl.trim() !== '') {
-    return prod.imagenUrl
+    return getMediaUrl(prod.imagenUrl, '/images/bento/headphones.png')
   }
 
   // 3. Propiedad imagen directa
   if (prod.imagen && typeof prod.imagen === 'string' && prod.imagen.trim() !== '') {
-    return prod.imagen
+    return getMediaUrl(prod.imagen, '/images/bento/headphones.png')
   }
 
   // 4. Mapeo contextual por título o categoría para que NUNCA aparezca rota

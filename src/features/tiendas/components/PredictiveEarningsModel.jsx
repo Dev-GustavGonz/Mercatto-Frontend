@@ -38,10 +38,11 @@ export const PredictiveEarningsModel = ({
   // Variables predictoras base basadas en la tienda real
   const safeProductos = Array.isArray(productos) ? productos : []
   const safePedidos = Array.isArray(pedidos) ? pedidos : []
-  const totalProds = safeProductos.length || 3
-  const totalPeds = safePedidos.length || 2
+  const sinDatosTienda = safeProductos.length === 0 && safePedidos.length === 0
+  const totalProds = safeProductos.length
+  const totalPeds = safePedidos.length
 
-  // Ticket promedio calculado a partir de pedidos o catálogo
+  // Ticket promedio calculado a partir de pedidos o catálogo (0 si la tienda es nueva)
   const ticketInicial = useMemo(() => {
     if (safePedidos.length > 0) {
       const sum = safePedidos.reduce((acc, p) => acc + (p.total || 0), 0)
@@ -51,11 +52,13 @@ export const PredictiveEarningsModel = ({
       const sum = safeProductos.reduce((acc, p) => acc + (p.precioOferta || p.precio || 0), 0)
       return Math.round(sum / safeProductos.length)
     }
-    return 120000
+    return 0
   }, [safePedidos, safeProductos])
 
   const [ticketPromedio, setTicketPromedio] = useState(ticketInicial)
-  const [comprasEstimadasInput, setComprasEstimadasInput] = useState(Math.max(10, totalProds * 3 + totalPeds * 2))
+  const [comprasEstimadasInput, setComprasEstimadasInput] = useState(
+    sinDatosTienda ? 0 : Math.max(10, totalProds * 3 + totalPeds * 2)
+  )
 
   useEffect(() => {
     if (perfil?.tipoSuscripcion) {
@@ -75,7 +78,8 @@ export const PredictiveEarningsModel = ({
 
   // Cálculo en 2 etapas:
   // Etapa 1: Valor total estimado
-  const comprasEfectivas = Math.max(1, Math.round(comprasEstimadasInput * factorEscenario))
+  const comprasEfectivas =
+    comprasEstimadasInput > 0 ? Math.max(1, Math.round(comprasEstimadasInput * factorEscenario)) : 0
   const valorTotalVentas = Math.round(comprasEfectivas * ticketPromedio)
 
   // Etapa 2: Regla de negocio del proyecto de aula: resultado = valor - porcentaje

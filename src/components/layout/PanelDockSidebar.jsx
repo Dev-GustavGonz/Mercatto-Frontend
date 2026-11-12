@@ -90,7 +90,7 @@ export const PanelDockSidebar = ({
                     }`}
                   >
                     {Icon && <Icon size={19} strokeWidth={activo ? 2.5 : 2} />}
-                    {item.badge && (
+                    {Boolean(item.badge) && (
                       <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-violet-600 border-2 border-white" />
                     )}
                   </button>

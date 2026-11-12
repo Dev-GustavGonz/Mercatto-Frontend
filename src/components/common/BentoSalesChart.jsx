@@ -6,9 +6,10 @@ const MESES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'O
 
 export const BentoSalesChart = ({
   titulo = 'Rendimiento de Ventas',
-  baseTotal = 48500000,
+  baseTotal = 0,
   pedidos = [],
-  timeRange = '1A',
+  sinDatos = false,
+  timeRange = '1M',
   onTimeRangeChange,
   gradientId = 'bentoSalesChartGrad'
 }) => {
@@ -22,13 +23,12 @@ export const BentoSalesChart = ({
     const anioHoy = ahora.getFullYear()
     const diaStr = diaHoy
     const mesHoyNombre = MESES[mesHoyIdx]
-    const anioSig = String(anioHoy + 1).slice(-2)
 
-    // Base monetaria mensual de ventas
+    // Base monetaria mensual de ventas (0 si no hay productos/ventas, sin inventar cifras)
     const totalSeguro =
-      Number(baseTotal) && !isNaN(Number(baseTotal)) && Number(baseTotal) > 0
+      !sinDatos && Number(baseTotal) && !isNaN(Number(baseTotal)) && Number(baseTotal) > 0
         ? Number(baseTotal)
-        : 48500000
+        : 0
 
     // Factores estacionales comerciales de Colombia (0=Ene, ..., 11=Dic)
     const factorEstacionalPorMes = [
@@ -51,6 +51,8 @@ export const BentoSalesChart = ({
     let cambioPeriodo = '+28.4% Modelo IA'
     let subtitulo = `Proyección anual: Desde Hoy (${diaStr} de ${mesHoyNombre}) hasta el ${diaStr} de ${mesHoyNombre} del próximo año`
     let etiquetasEje = []
+    let totalMesAnterior = 0
+    let etiquetaBadge = 'Modelo Predictivo IA'
 
     switch (timeRange) {
       case '1A': {
@@ -154,29 +156,62 @@ export const BentoSalesChart = ({
       }
 
       case '1M': {
-        factorEscala = 1.0
-        cambioPeriodo = '+16.8% proyectado (1M)'
-        subtitulo = 'Proyección mensual: Próximos 30 días con estimación IA'
+        const prevMonthDate = new Date(anioHoy, mesHoyIdx - 1, 1)
+        const prevMonthIdx = prevMonthDate.getMonth()
+        const prevYear = prevMonthDate.getFullYear()
+        const prevMonthName = MESES[prevMonthIdx]
+        const prevYearShort = String(prevYear).slice(-2)
+        const daysInPrevMonth = new Date(prevYear, prevMonthIdx + 1, 0).getDate()
 
-        const pasos1M = [
-          { label: `Hoy (${diaStr} ${mesHoyNombre})`, esHoy: true, peso: 1.0 },
-          { label: `+6 Días`, esFuturo: true, peso: 1.04 },
-          { label: `+12 Días`, esFuturo: true, peso: 1.08 },
-          { label: `+18 Días`, esFuturo: true, peso: 1.11 },
-          { label: `+24 Días`, esFuturo: true, peso: 1.15 },
-          { label: `+30 Días`, esFuturo: true, peso: 1.19 }
+        etiquetaBadge = `Mes Anterior (${prevMonthName})`
+        subtitulo = `Mes anterior: 1 al ${daysInPrevMonth} de ${prevMonthName} '${prevYearShort} (ventas reales registradas)`
+
+        const safePedidosList = Array.isArray(pedidos) ? pedidos : []
+        const pedidosMesAnterior = sinDatos
+          ? []
+          : safePedidosList.filter((p) => {
+              const estado = (p?.estado || '').toUpperCase()
+              if (estado === 'CANCELADO' || estado === 'REEMBOLSADO') return false
+              const rawFecha = p?.fechaCreacion || p?.createdAt || p?.fecha
+              if (!rawFecha) return false
+              const d = new Date(rawFecha)
+              return !isNaN(d.getTime()) && d.getMonth() === prevMonthIdx && d.getFullYear() === prevYear
+            })
+
+        const tramos = [
+          { start: 1, end: 5, label: `1–5 ${prevMonthName}`, corta: `1 ${prevMonthName}` },
+          { start: 6, end: 10, label: `6–10 ${prevMonthName}`, corta: `8 ${prevMonthName}` },
+          { start: 11, end: 15, label: `11–15 ${prevMonthName}`, corta: `15 ${prevMonthName}` },
+          { start: 16, end: 20, label: `16–20 ${prevMonthName}`, corta: `20 ${prevMonthName}` },
+          { start: 21, end: 25, label: `21–25 ${prevMonthName}`, corta: `25 ${prevMonthName}` },
+          { start: 26, end: daysInPrevMonth, label: `26–${daysInPrevMonth} ${prevMonthName}`, corta: `${daysInPrevMonth} ${prevMonthName}` },
         ]
 
-        puntosInfo = pasos1M.map((p, idx) => ({
-          index: idx,
-          etiqueta: p.label,
-          etiquetaCorta: p.label,
-          valor: Math.round(totalSeguro * p.peso),
-          esPasado: false,
-          esHoy: !!p.esHoy,
-          esFuturo: !!p.esFuturo,
-          tipo: p.esHoy ? 'Cierre Actual (Hoy)' : 'Estimación Modelo IA'
-        }))
+        puntosInfo = tramos.map((t, idx) => {
+          const val = pedidosMesAnterior
+            .filter((p) => {
+              const dia = new Date(p.fechaCreacion || p.createdAt || p.fecha).getDate()
+              return dia >= t.start && dia <= t.end
+            })
+            .reduce((acc, p) => acc + (Number(p.total) || 0), 0)
+
+          return {
+            index: idx,
+            etiqueta: t.label,
+            etiquetaCorta: t.corta,
+            valor: Math.round(val),
+            esPasado: true,
+            esHoy: false,
+            esFuturo: false,
+            tipo: `Real (${prevMonthName})`
+          }
+        })
+
+        totalMesAnterior = puntosInfo.reduce((acc, p) => acc + p.valor, 0)
+        cambioPeriodo =
+          totalMesAnterior > 0
+            ? `${pedidosMesAnterior.length} ${pedidosMesAnterior.length === 1 ? 'pedido' : 'pedidos'} (${prevMonthName})`
+            : `Sin ventas en ${prevMonthName}`
         break
       }
 
@@ -236,13 +271,24 @@ export const BentoSalesChart = ({
       }
     }
 
-    // Volumen monetario proyectado del período seleccionado
-    const totalPeriodo = Math.max(100000, Math.round(totalSeguro * factorEscala))
+    // Volumen monetario del período seleccionado (0 si es tienda nueva sin productos/ventas)
+    const totalPeriodo =
+      timeRange === '1M'
+        ? totalMesAnterior
+        : totalSeguro > 0
+        ? Math.round(totalSeguro * factorEscala)
+        : 0
+
+    if (timeRange !== '1M' && totalSeguro === 0) {
+      cambioPeriodo = 'Sin datos aún'
+      subtitulo = 'Publica productos y registra ventas para habilitar estimaciones'
+    }
 
     // Asignación de coordenadas vectoriales en SVG
     const numPuntos = puntosInfo.length
     const valores = puntosInfo.map((p) => p.valor)
-    const maxValor = Math.max(...valores, 1) * 1.15
+    const maxRaw = Math.max(...valores, 0)
+    const maxValor = maxRaw > 0 ? maxRaw * 1.15 : 1
     const baseY = 135
     const alturaGrafica = 95
     const xInicio = 32
@@ -251,7 +297,7 @@ export const BentoSalesChart = ({
 
     const puntos = puntosInfo.map((p, i) => {
       const x = Math.round(xInicio + i * stepX)
-      const ratio = Math.min(1, Math.max(0.1, p.valor / maxValor))
+      const ratio = maxRaw > 0 ? Math.min(1, Math.max(0.1, p.valor / maxValor)) : 0.04
       const y = Math.round(baseY - ratio * alturaGrafica)
       return {
         ...p,
@@ -331,7 +377,7 @@ export const BentoSalesChart = ({
     } else {
       // 3M, 1M, 1S, 1D: Hitos equitativos
       const hitosOtros = [
-        { idx: 0, texto: puntos[0].etiqueta, esHoy: true, alinear: 'left' },
+        { idx: 0, texto: timeRange === '1M' ? puntos[0].etiquetaCorta : puntos[0].etiqueta, esHoy: timeRange !== '1M', alinear: 'left' },
         { idx: 2, texto: puntos[2].etiquetaCorta, alinear: 'center' },
         { idx: 4, texto: puntos[4].etiquetaCorta, alinear: 'center' },
         { idx: puntos.length - 1, texto: puntos[puntos.length - 1].etiquetaCorta, alinear: 'right' }
@@ -350,13 +396,14 @@ export const BentoSalesChart = ({
       subtitulo,
       totalPeriodo,
       cambioPeriodo,
+      etiquetaBadge,
       etiquetasEje,
       puntos,
       pathLinea,
       pathArea,
       barras
     }
-  }, [baseTotal, timeRange])
+  }, [baseTotal, pedidos, sinDatos, timeRange])
 
   return (
     <div className="bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 text-white rounded-[32px] p-5 sm:p-7 shadow-xl shadow-violet-500/15 flex flex-col justify-between relative overflow-hidden">
@@ -367,7 +414,7 @@ export const BentoSalesChart = ({
             <h3 className="text-sm font-semibold text-violet-100">{titulo}</h3>
             <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/15 text-white border border-white/20">
               <Sparkles size={11} className="text-amber-300" />
-              <span>Modelo Predictivo IA</span>
+              <span>{chartData.etiquetaBadge}</span>
             </span>
           </div>
 
@@ -396,7 +443,13 @@ export const BentoSalesChart = ({
                   ? 'bg-white text-slate-900 shadow-sm'
                   : 'text-violet-200 hover:text-white'
               }`}
-              title={filtro === '1A' ? 'Proyección de 1 Año' : `Estimar a ${filtro}`}
+              title={
+                filtro === '1M'
+                  ? 'Mes anterior (ventas reales)'
+                  : filtro === '1A'
+                  ? 'Proyección de 1 Año'
+                  : `Estimar a ${filtro}`
+              }
             >
               {filtro}
             </button>

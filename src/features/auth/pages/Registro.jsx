@@ -30,7 +30,6 @@ export const Registro = () => {
   // Campos Vendedor
   const [nombreTienda, setNombreTienda] = useState('')
   const [nitCedula, setNitCedula] = useState('')
-  const [ciudad, setCiudad] = useState('')
   const [banco, setBanco] = useState('Bancolombia')
   const [cuentaBancaria, setCuentaBancaria] = useState('')
 
@@ -122,7 +121,7 @@ export const Registro = () => {
 
     if (rol === 'VENDEDOR') {
       const vendorErr = validarDatosVendedor(
-        { nombreTienda, nitCedula, ciudad, banco, cuentaBancaria },
+        { nombreTienda, nitCedula, banco, cuentaBancaria },
         isEn
       )
       if (vendorErr) {
@@ -154,7 +153,7 @@ export const Registro = () => {
           ? {
               nombreTienda: nombreTienda.trim().replace(/\s+/g, ' '),
               nitCedula: nitCedula.trim(),
-              ciudad: ciudad.trim().replace(/\s+/g, ' '),
+              ciudad: 'Cartagena de Indias',
               banco: banco.trim(),
               cuentaBancaria: cuentaBancaria.trim(),
               tipo: 'PERSONA_NATURAL',
@@ -564,57 +563,29 @@ export const Registro = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                      {isEn ? 'Tax ID / Citizen ID' : 'NIT o Cédula'}
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <Building size={16} />
-                      </div>
-                      <input
-                        type="text"
-                        value={nitCedula}
-                        onChange={(e) => {
-                          setNitCedula(e.target.value)
-                          clearFieldError('nitCedula')
-                        }}
-                        placeholder="Ej: 900.123.456-7"
-                        required
-                        className={`w-full rounded-xl border bg-white dark:bg-slate-900 pl-10 pr-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:outline-none ${
-                          formError?.field === 'nitCedula'
-                            ? 'border-rose-500 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20'
-                            : 'border-slate-300 dark:border-slate-700 focus:border-violet-600 focus:ring-2 focus:ring-violet-500/20'
-                        }`}
-                      />
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    {isEn ? 'Tax ID / Citizen ID' : 'NIT o Cédula'}
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                      <Building size={16} />
                     </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                      {isEn ? 'City in Colombia' : 'Ciudad en Colombia'}
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <MapPin size={16} />
-                      </div>
-                      <input
-                        type="text"
-                        value={ciudad}
-                        onChange={(e) => {
-                          setCiudad(e.target.value)
-                          clearFieldError('ciudad')
-                        }}
-                        placeholder="Ej: Bogotá, Medellín, Cali"
-                        required
-                        className={`w-full rounded-xl border bg-white dark:bg-slate-900 pl-10 pr-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:outline-none ${
-                          formError?.field === 'ciudad'
-                            ? 'border-rose-500 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20'
-                            : 'border-slate-300 dark:border-slate-700 focus:border-violet-600 focus:ring-2 focus:ring-violet-500/20'
-                        }`}
-                      />
-                    </div>
+                    <input
+                      type="text"
+                      value={nitCedula}
+                      onChange={(e) => {
+                        setNitCedula(e.target.value)
+                        clearFieldError('nitCedula')
+                      }}
+                      placeholder="Ej: 900.123.456-7"
+                      required
+                      className={`w-full rounded-xl border bg-white dark:bg-slate-900 pl-10 pr-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:outline-none ${
+                        formError?.field === 'nitCedula'
+                          ? 'border-rose-500 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20'
+                          : 'border-slate-300 dark:border-slate-700 focus:border-violet-600 focus:ring-2 focus:ring-violet-500/20'
+                      }`}
+                    />
                   </div>
                 </div>
 

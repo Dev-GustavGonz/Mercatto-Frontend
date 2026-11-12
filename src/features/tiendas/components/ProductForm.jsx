@@ -4,7 +4,8 @@ import Button from '@/components/common/Button'
 import { productoService } from '@/features/productos'
 import { tiendaService } from '@/features/tiendas'
 import { useToast } from '@/hooks/useToast'
-import { prepararImagenParaSubida, formatearErrorImagen } from '@/utils/imageUpload'
+import { prepararImagenParaSubida, formatearErrorImagen, validarUrlImagen } from '@/utils/imageUpload'
+import { getMediaUrl } from '@/utils/constants'
 import { sortCategoriesHierarchically } from '@/utils/categoryUtils'
 import { Plus, Trash2, Upload, Tag, Check } from 'lucide-react'
 
@@ -222,6 +223,14 @@ export const ProductForm = ({ productoInicial = null, onGuardado, onCancelar }) 
       return
     }
 
+    for (let i = 0; i < imagenesValidas.length; i++) {
+      const urlErr = validarUrlImagen(imagenesValidas[i], `la imagen ${i + 1}`)
+      if (urlErr) {
+        error(urlErr)
+        return
+      }
+    }
+
     // Validar variantes si existen
     for (let i = 0; i < variantes.length; i++) {
       const v = variantes[i]
@@ -420,7 +429,19 @@ export const ProductForm = ({ productoInicial = null, onGuardado, onCancelar }) 
         </div>
 
         {imagenes.map((url, idx) => (
-          <div key={idx} className="flex gap-2">
+          <div key={idx} className="flex items-center gap-2">
+            {url && url.trim() && (
+              <div className="w-10 h-10 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 overflow-hidden shrink-0 flex items-center justify-center">
+                <img
+                  src={getMediaUrl(url)}
+                  alt={`Vista previa ${idx + 1}`}
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none'
+                  }}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            )}
             <input
               type="text"
               placeholder="https://ejemplo.com/foto.jpg"

@@ -118,6 +118,10 @@ export const ProductCard = ({ producto, onContactClick }) => {
         <img
           src={imagenPrincipal}
           alt={producto.titulo}
+          onError={(e) => {
+            e.currentTarget.onerror = null
+            e.currentTarget.src = '/images/bento/headphones.png'
+          }}
           className="max-h-full max-w-full object-contain rounded-xl group-hover:scale-108 transition-transform duration-500 drop-shadow-sm mix-blend-multiply dark:mix-blend-normal"
           loading="lazy"
         />

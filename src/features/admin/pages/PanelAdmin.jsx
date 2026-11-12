@@ -66,7 +66,7 @@ export const PanelAdmin = () => {
     setSearchParams({ tab: nuevoTab })
   }
 
-  const [timeRange, setTimeRange] = useState('1A')
+  const [timeRange, setTimeRange] = useState('1M')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [stats, setStats] = useState({})
   const [vendedores, setVendedores] = useState([])
@@ -201,7 +201,7 @@ export const PanelAdmin = () => {
     }
   })
 
-  const totalVentasMercado = liquidacionesPorTienda.reduce((acc, v) => acc + (v.ventasBrutas || 0), 0) || (stats.ingresosTotales || 48500000)
+  const totalVentasMercado = liquidacionesPorTienda.reduce((acc, v) => acc + (v.ventasBrutas || 0), 0) || (stats.ingresosTotales || 0)
   const totalComisionesVentasAdmin = liquidacionesPorTienda.reduce((acc, v) => acc + (v.comisionRetenida || 0), 0) || Math.round(totalVentasMercado * 0.065)
   const totalSuscripcionesPlanes = liquidacionesPorTienda.reduce((acc, v) => acc + (v.cuotaMensual || 0), 0)
   const gananciaTotalAdmin = totalComisionesVentasAdmin + totalSuscripcionesPlanes

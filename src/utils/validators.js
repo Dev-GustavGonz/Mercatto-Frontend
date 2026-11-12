@@ -127,15 +127,7 @@ export const validarDatosVendedor = (
   }
 
   const ciudadTrim = (ciudad || '').trim().replace(/\s+/g, ' ')
-  if (!ciudadTrim) {
-    return {
-      field: 'ciudad',
-      message: isEn
-        ? 'Please enter your city'
-        : 'Por favor ingresa la ciudad de tu negocio en Colombia',
-    }
-  }
-  if (!CITY_REGEX.test(ciudadTrim) || !NAME_HAS_LETTER_REGEX.test(ciudadTrim)) {
+  if (ciudadTrim && (!CITY_REGEX.test(ciudadTrim) || !NAME_HAS_LETTER_REGEX.test(ciudadTrim))) {
     return {
       field: 'ciudad',
       message: isEn

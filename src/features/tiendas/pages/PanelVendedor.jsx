@@ -64,7 +64,7 @@ export const PanelVendedor = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const tab = searchParams.get('tab') || 'resumen'
 
-  const [timeRange, setTimeRange] = useState('1A')
+  const [timeRange, setTimeRange] = useState('1M')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [stats, setStats] = useState({})
   const [perfil, setPerfil] = useState(null)
@@ -246,10 +246,17 @@ export const PanelVendedor = () => {
 
   const multiplicadorEscenario = escenarioDashboard === 'conservador' ? 0.75 : escenarioDashboard === 'optimista' ? 1.35 : 1.0
 
-  // Ventas brutas base
-  const totalVentasBase = safePedidos.length > 0
+  const sinDatosTienda =
+    safeProductos.length === 0 &&
+    safePedidos.length === 0 &&
+    !(Number(stats?.ingresosTotales) > 0)
+
+  // Ventas brutas base (0 si es tienda nueva sin productos/ventas)
+  const totalVentasBase = sinDatosTienda
+    ? 0
+    : safePedidos.length > 0
     ? safePedidos.reduce((acc, p) => acc + (p.total || 0), 0)
-    : (stats?.ingresosTotales ? Math.round(stats.ingresosTotales / (1 - comisionTasa)) : 12450000)
+    : (stats?.ingresosTotales ? Math.round(stats.ingresosTotales / (1 - comisionTasa)) : 0)
 
   // Modelo predictivo en Python (Escenarios estadísticos):
   // Regla exacta de negocio: resultado = valor - porcentaje
@@ -416,8 +423,9 @@ export const PanelVendedor = () => {
               {/* TARJETA HERO: RENDIMIENTO DE TIENDA (DINÁMICA Y COHERENTE) */}
               <BentoSalesChart
                 titulo="Rendimiento de Mi Tienda"
-                baseTotal={Number(ingresosTiendaNetos) || 48500000}
+                baseTotal={Number(ingresosTiendaNetos) || 0}
                 pedidos={safePedidos}
+                sinDatos={sinDatosTienda}
                 timeRange={timeRange}
                 onTimeRangeChange={setTimeRange}
                 gradientId="vendorStoreChartGrad"
