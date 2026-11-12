@@ -55,7 +55,9 @@ export const PanelAdmin = () => {
   const obtenerFotoEvidenciaAdmin = (p) => {
     if (!p) return ''
     try {
-      const local = localStorage.getItem(mercatto_evidencia_) || localStorage.getItem(mercatto_evidencia_)
+      const local =
+        localStorage.getItem(`mercatto_evidencia_${p.codigo}`) ||
+        localStorage.getItem(`mercatto_evidencia_${p.id}`)
       if (local) return local
     } catch (_) {}
     return getMediaUrl(p.evidenciaEntregaUrl)

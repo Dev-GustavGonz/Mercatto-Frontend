@@ -84,6 +84,12 @@ export const Navbar = () => {
     return (usuario?.nombre?.trim()?.charAt(0).toUpperCase()) || 'U'
   })()
 
+  const rolFormateado = esAdmin 
+    ? (idioma === 'EN' ? 'Super Administrator' : 'Super Administrador')
+    : esVendedor 
+    ? (idioma === 'EN' ? 'Verified Seller' : 'Vendedor Verificado')
+    : (idioma === 'EN' ? 'Buyer' : 'Comprador')
+
   // Si estamos dentro del panel de administrador o panel de vendedor, ocultamos la barra pública
   // para que el panel trabaje a pantalla completa con su propio dock y cabecera profesional.
   const esRutaPanel = 

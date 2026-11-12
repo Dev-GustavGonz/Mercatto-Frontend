@@ -17,7 +17,7 @@ import { Lock, MapPin, CreditCard, ShieldCheck } from 'lucide-react'
 export const Checkout = () => {
   const { items, cupon, limpiarCarrito, total } = useCart()
   const { autenticado, usuario } = useAuth()
-  const { error: toastError } = useToast()
+  const { success, error: toastError } = useToast()
   const { t, idioma } = useLanguage()
   const navigate = useNavigate()
 

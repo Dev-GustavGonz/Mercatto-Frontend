@@ -44,6 +44,7 @@ export const OrdersTable = ({ pedidos = [], onPedidoActualizado }) => {
   const [subiendoEvidencia, setSubiendoEvidencia] = useState(false)
   const [modalVisorEvidencia, setModalVisorEvidencia] = useState(null)
   const [imgDetalleError, setImgDetalleError] = useState(false)
+  const [rotando, setRotando] = useState(false)
   const [camaraActiva, setCamaraActiva] = useState(false)
   const [camaraError, setCamaraError] = useState(null)
   const [facingMode, setFacingMode] = useState('environment')
