@@ -904,104 +904,131 @@ export const PanelAdmin = () => {
                 <tbody className="divide-y divide-slate-100">
                   {usuarios
                     .filter((u) => {
+                      const esMercatto = u.email?.toLowerCase() === 'realmercatto@gmail.com'
+                      const rolEfectivo = esMercatto ? 'ADMIN' : u.rol
                       const coincideTexto =
                         !busquedaUsuario ||
                         u.nombre?.toLowerCase().includes(busquedaUsuario.toLowerCase()) ||
                         u.email?.toLowerCase().includes(busquedaUsuario.toLowerCase())
-                      const coincideRol = filtroRolUsuario === 'TODOS' || u.rol === filtroRolUsuario
+                      const coincideRol = filtroRolUsuario === 'TODOS' || rolEfectivo === filtroRolUsuario
                       return coincideTexto && coincideRol
                     })
-                    .map((u) => (
-                      <tr key={u.id} className="hover:bg-slate-50/70 transition">
-                        <td className="p-4 font-bold text-slate-900">
-                          {u.email?.toLowerCase() === 'magudelo522@gmail.com' && u.nombre?.toLowerCase() === 'admin superior' ? 'admin' : u.nombre}
-                        </td>
-                        <td className="p-4 text-slate-600 font-mono text-[11px]">{u.email}</td>
-                        <td className="p-4">
-                          <div className="flex items-center gap-1.5">
-                            <select
-                              value={u.rol}
-                              disabled={u.email?.toLowerCase() === 'realmercatto@gmail.com'}
-                              onChange={async (e) => {
-                                const nuevoRol = e.target.value
-                                if (window.confirm(`¿Confirmas cambiar el rol de ${u.nombre || u.email} a ${nuevoRol}?`)) {
-                                  try {
-                                    await adminService.cambiarRolUsuario(u.id, nuevoRol)
-                                    mostrarExito(`Rol de ${u.nombre || u.email} actualizado a ${nuevoRol}`)
-                                    cargarDatos()
-                                  } catch (err) {
-                                    mostrarError(err.response?.data?.mensaje || 'Error al actualizar rol')
+                    .map((u) => {
+                      const esMercatto = u.email?.toLowerCase() === 'realmercatto@gmail.com'
+                      const esLogueadoMercatto = usuario?.email?.toLowerCase() === 'realmercatto@gmail.com'
+                      const rolEfectivo = esMercatto ? 'ADMIN' : u.rol
+
+                      return (
+                        <tr key={u.id} className="hover:bg-slate-50/70 transition">
+                          <td className="p-4 font-bold text-slate-900">
+                            {u.email?.toLowerCase() === 'magudelo522@gmail.com' && u.nombre?.toLowerCase() === 'admin superior' ? 'admin' : u.nombre}
+                          </td>
+                          <td className="p-4 text-slate-600 font-mono text-[11px]">{u.email}</td>
+                          <td className="p-4">
+                            {esMercatto ? (
+                              <div className="flex items-center gap-1.5">
+                                <span className="px-2.5 py-1 rounded-xl text-xs font-black bg-rose-50 text-rose-700 border border-rose-200">
+                                  ADMIN
+                                </span>
+                                <span className="text-[10px] font-bold text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full border border-violet-100 whitespace-nowrap">
+                                  Principal
+                                </span>
+                              </div>
+                            ) : rolEfectivo === 'VENDEDOR' ? (
+                              <span className="px-2.5 py-1 rounded-xl text-xs font-black bg-violet-50 text-violet-700 border border-violet-200">
+                                VENDEDOR
+                              </span>
+                            ) : esLogueadoMercatto ? (
+                              <select
+                                value={rolEfectivo}
+                                onChange={async (e) => {
+                                  const nuevoRol = e.target.value
+                                  if (window.confirm(`¿Confirmas cambiar el rol de ${u.nombre || u.email} a ${nuevoRol}?`)) {
+                                    try {
+                                      await adminService.cambiarRolUsuario(u.id, nuevoRol)
+                                      mostrarExito(`Rol de ${u.nombre || u.email} actualizado a ${nuevoRol}`)
+                                      cargarDatos()
+                                    } catch (err) {
+                                      mostrarError(err.response?.data?.mensaje || 'Error al actualizar rol')
+                                    }
                                   }
-                                }
-                              }}
-                              className={`px-2.5 py-1 rounded-xl text-xs font-black border transition cursor-pointer ${
-                                u.rol === 'ADMIN'
-                                  ? 'bg-rose-50 text-rose-700 border-rose-200 focus:ring-rose-500'
-                                  : u.rol === 'VENDEDOR'
-                                  ? 'bg-violet-50 text-violet-700 border-violet-200 focus:ring-violet-500'
-                                  : 'bg-slate-100 text-slate-700 border-slate-200 focus:ring-slate-400'
-                              } ${u.email?.toLowerCase() === 'realmercatto@gmail.com' ? 'opacity-90 cursor-not-allowed' : 'hover:border-violet-400'}`}
-                              title={u.email?.toLowerCase() === 'realmercatto@gmail.com' ? 'Cuenta administradora principal protegida' : 'Cambiar rol del usuario'}
-                            >
-                              <option value="COMPRADOR">COMPRADOR</option>
-                              <option value="VENDEDOR">VENDEDOR</option>
-                              <option value="ADMIN">ADMIN</option>
-                            </select>
-                            {u.email?.toLowerCase() === 'realmercatto@gmail.com' && (
-                              <span className="text-[10px] font-bold text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full border border-violet-100 whitespace-nowrap">
-                                Principal
+                                }}
+                                className={`px-2.5 py-1 rounded-xl text-xs font-black border transition cursor-pointer hover:border-violet-400 ${
+                                  rolEfectivo === 'ADMIN'
+                                    ? 'bg-rose-50 text-rose-700 border-rose-200 focus:ring-rose-500'
+                                    : 'bg-slate-100 text-slate-700 border-slate-200 focus:ring-slate-400'
+                                }`}
+                                title="Cambiar rol entre Comprador y Admin"
+                              >
+                                <option value="COMPRADOR">COMPRADOR</option>
+                                <option value="ADMIN">ADMIN</option>
+                              </select>
+                            ) : (
+                              <span className={`px-2.5 py-1 rounded-xl text-xs font-black border ${
+                                rolEfectivo === 'ADMIN'
+                                  ? 'bg-rose-50 text-rose-700 border-rose-200'
+                                  : 'bg-slate-100 text-slate-700 border-slate-200'
+                              }`}>
+                                {rolEfectivo}
                               </span>
                             )}
-                          </div>
-                        </td>
-                        <td className="p-4">
-                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                            u.activo ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
-                          }`}>
-                            {u.activo ? 'Activo' : 'Suspendido'}
-                          </span>
-                        </td>
-                        <td className="p-4 text-slate-400">
-                          {u.fechaRegistro ? new Date(u.fechaRegistro).toLocaleDateString('es-CO') : '-'}
-                        </td>
-                        <td className="p-4 text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            {u.email?.toLowerCase() !== 'realmercatto@gmail.com' && (
-                              <>
-                                <button
-                                  onClick={async () => {
-                                    try {
-                                      await adminService.cambiarEstadoUsuario(u.id, !u.activo)
-                                      mostrarExito(u.activo ? `Usuario ${u.nombre} suspendido` : `Usuario ${u.nombre} reactivado`)
-                                      cargarDatos()
-                                    } catch {
-                                      mostrarError('Error al modificar estado del usuario')
-                                    }
-                                  }}
-                                  className={`px-3 py-1 rounded-xl text-xs font-bold transition cursor-pointer ${
-                                    u.activo ? 'bg-rose-50 text-rose-600 hover:bg-rose-100' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
-                                  }`}
-                                >
-                                  {u.activo ? 'Suspender' : 'Reactivar'}
-                                </button>
-                                {u.rol !== 'ADMIN' && (
-                                  <button
-                                    onClick={() => {
-                                      setUsuarioAEliminar(u)
-                                      setModalEliminarUsuario(true)
-                                    }}
-                                    className="p-1.5 rounded-xl bg-slate-50 hover:bg-rose-50 text-slate-400 hover:text-rose-600 border border-slate-200 transition cursor-pointer"
-                                    title="Eliminar usuario (solo si no tiene pedidos ni actividad)"
-                                  >
-                                    <Trash2 size={14} />
-                                  </button>
-                                )}
-                              </>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                          </td>
+                          <td className="p-4">
+                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                              u.activo ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
+                            }`}>
+                              {u.activo ? 'Activo' : 'Suspendido'}
+                            </span>
+                          </td>
+                          <td className="p-4 text-slate-400">
+                            {u.fechaRegistro ? new Date(u.fechaRegistro).toLocaleDateString('es-CO') : '-'}
+                          </td>
+                          <td className="p-4 text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <button
+                                disabled={esMercatto}
+                                onClick={async () => {
+                                  if (esMercatto) return
+                                  try {
+                                    await adminService.cambiarEstadoUsuario(u.id, !u.activo)
+                                    mostrarExito(u.activo ? `Usuario ${u.nombre} suspendido` : `Usuario ${u.nombre} reactivado`)
+                                    cargarDatos()
+                                  } catch {
+                                    mostrarError('Error al modificar estado del usuario')
+                                  }
+                                }}
+                                className={`px-3 py-1 rounded-xl text-xs font-bold transition ${
+                                  esMercatto
+                                    ? 'opacity-30 cursor-not-allowed bg-slate-50 text-slate-400'
+                                    : u.activo
+                                    ? 'bg-rose-50 text-rose-600 hover:bg-rose-100 cursor-pointer'
+                                    : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100 cursor-pointer'
+                                }`}
+                                title={esMercatto ? 'Cuenta principal protegida' : (u.activo ? 'Suspender usuario' : 'Reactivar usuario')}
+                              >
+                                {u.activo ? 'Suspender' : 'Reactivar'}
+                              </button>
+                              <button
+                                disabled={esMercatto}
+                                onClick={() => {
+                                  if (esMercatto) return
+                                  setUsuarioAEliminar(u)
+                                  setModalEliminarUsuario(true)
+                                }}
+                                className={`p-1.5 rounded-xl border transition ${
+                                  esMercatto
+                                    ? 'opacity-30 cursor-not-allowed bg-slate-50 border-slate-200 text-slate-300'
+                                    : 'bg-slate-50 hover:bg-rose-50 text-slate-400 hover:text-rose-600 border-slate-200 cursor-pointer'
+                                }`}
+                                title={esMercatto ? 'Cuenta principal protegida' : 'Eliminar usuario (solo si no tiene actividad vinculada)'}
+                              >
+                                <Trash2 size={14} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      )
+                    })}
                 </tbody>
               </table>
             </div>
