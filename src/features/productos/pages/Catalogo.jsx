@@ -9,8 +9,10 @@ import ModalContactoVendedor from '../components/ModalContactoVendedor'
 import { Crown, Sparkles } from 'lucide-react'
 import { useLanguage } from '@/hooks/useLanguage'
 
+const PAGE_SIZE = 12
+
 const formatCatalogItems = (data, soloElite, orden) => {
-  let items = data?.content ? [...data.content] : []
+  let items = data?.content ? [...data.content] : Array.isArray(data) ? [...data] : []
   if (soloElite) {
     items = items.filter((p) => (p.vendedor?.tipoSuscripcion || p.vendedor?.plan || '').toUpperCase() === 'ELITE')
   }
@@ -25,7 +27,8 @@ const formatCatalogItems = (data, soloElite, orden) => {
       const pDiff = getPriority(b) - getPriority(a)
       if (pDiff !== 0) return pDiff
       if (b.destacado !== a.destacado) return (b.destacado ? 1 : 0) - (a.destacado ? 1 : 0)
-      return (b.totalVentas || 0) - (a.totalVentas || 0)
+      if ((b.totalVentas || 0) !== (a.totalVentas || 0)) return (b.totalVentas || 0) - (a.totalVentas || 0)
+      return new Date(b.fechaCreacion || 0) - new Date(a.fechaCreacion || 0)
     })
   }
   return items
@@ -51,27 +54,30 @@ export const Catalogo = () => {
     marca: marca || null,
     q: termino,
     orden,
-    pagina,
     precioMin,
     precioMax,
     soloElite: soloElite ? true : undefined,
-    tamano: 12,
-  }), [categoriaId, marca, termino, orden, pagina, precioMin, precioMax, soloElite])
+    pagina: 0,
+    tamano: 100,
+  }), [categoriaId, marca, termino, orden, precioMin, precioMax, soloElite])
 
   const initialCached = apiCache.peekExact('/productos', queryParams)
-  const [productos, setProductos] = useState(() => (initialCached ? formatCatalogItems(initialCached, soloElite, orden) : []))
-  const [totalPages, setTotalPages] = useState(() => initialCached?.totalPages || 0)
-  const [totalElements, setTotalElements] = useState(() => initialCached?.totalElements ?? (initialCached?.content?.length || 0))
+  const [todosLosProductos, setTodosLosProductos] = useState(() => (initialCached ? formatCatalogItems(initialCached, soloElite, orden) : []))
   const [loading, setLoading] = useState(!initialCached)
+
+  const totalElements = todosLosProductos.length
+  const totalPages = Math.ceil(totalElements / PAGE_SIZE) || 0
+  const productos = useMemo(() => {
+    const inicio = pagina * PAGE_SIZE
+    return todosLosProductos.slice(inicio, inicio + PAGE_SIZE)
+  }, [todosLosProductos, pagina])
 
   useEffect(() => {
     let activo = true
     const cached = apiCache.peekExact('/productos', queryParams)
     if (cached) {
       const items = formatCatalogItems(cached, soloElite, orden)
-      setProductos(items)
-      setTotalPages(cached.totalPages || 0)
-      setTotalElements(cached.totalElements ?? items.length)
+      setTodosLosProductos(items)
       setLoading(false)
     } else {
       setLoading(true)
@@ -82,14 +88,10 @@ export const Catalogo = () => {
         const data = await productoService.listar(queryParams)
         if (!activo) return
         const items = formatCatalogItems(data, soloElite, orden)
-        setProductos(items)
-        setTotalPages(data.totalPages || 0)
-        setTotalElements(data.totalElements ?? items.length)
+        setTodosLosProductos(items)
       } catch {
         if (!activo || cached) return
-        setProductos([])
-        setTotalPages(0)
-        setTotalElements(0)
+        setTodosLosProductos([])
       } finally {
         if (activo) setLoading(false)
       }

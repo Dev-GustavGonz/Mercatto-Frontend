@@ -11,7 +11,7 @@
  * 5. Invalida automáticamente la caché ante operaciones de mutación (POST, PUT, PATCH, DELETE).
  */
 
-const STORAGE_PREFIX = 'mercatto_cache:v2:'
+const STORAGE_PREFIX = 'mercatto_cache:v3:'
 const MAX_STALE_AGE = 24 * 60 * 60 * 1000 // Permitir datos en caché de hasta 24 horas como fallback instantáneo
 
 class ApiCacheManager {
@@ -53,9 +53,13 @@ class ApiCacheManager {
     try {
       if (typeof window === 'undefined' || !window.localStorage) return
       const now = Date.now()
-      for (let i = 0; i < localStorage.length; i++) {
+      for (let i = localStorage.length - 1; i >= 0; i--) {
         const key = localStorage.key(i)
-        if (key && key.startsWith(STORAGE_PREFIX)) {
+        if (key && key.startsWith('mercatto_cache:')) {
+          if (!key.startsWith(STORAGE_PREFIX)) {
+            localStorage.removeItem(key)
+            continue
+          }
           try {
             const raw = localStorage.getItem(key)
             if (!raw) continue
