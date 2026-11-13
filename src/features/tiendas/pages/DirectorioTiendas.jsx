@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { tiendaService } from '@/features/tiendas'
 import { apiCache } from '@/utils/apiCache'
-import { Store, Search, MapPin, Star, ShieldCheck, Tag, ArrowRight, MessageSquare, Sparkles, Crown, RefreshCw } from 'lucide-react'
+import { Store, Search, MapPin, Star, ShieldCheck, Tag, ArrowRight, MessageSquare, Sparkles, Crown, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react'
 import Spinner from '@/components/common/Spinner'
 import EmptyState from '@/components/common/EmptyState'
 import { getMediaUrl } from '@/utils/constants'
@@ -22,6 +22,13 @@ export const DirectorioTiendas = () => {
   const [criterioOrden, setCriterioOrden] = useState('plan')
   const { t, idioma } = useLanguage()
   const navigate = useNavigate()
+  const marcasCarouselRef = useRef(null)
+
+  const scrollMarcas = (direction) => {
+    if (marcasCarouselRef.current) {
+      marcasCarouselRef.current.scrollBy({ left: direction * 260, behavior: 'smooth' })
+    }
+  }
 
   useEffect(() => {
     cargarDatos()
@@ -240,7 +247,7 @@ export const DirectorioTiendas = () => {
           </button>
         </div>
 
-        {/* Marcas Destacadas Bar */}
+        {/* Marcas Destacadas Bar en Carrusel Moderno */}
         {marcas.length > 0 && (
           <div className="space-y-2.5">
             <div className="flex items-center justify-between">
@@ -248,20 +255,44 @@ export const DirectorioTiendas = () => {
                 <Tag size={15} className="text-mercatto-primary" />
                 <span>{t('marcas_oficiales')} ({marcas.length})</span>
               </h2>
-              {marcaFiltro && (
-                <button
-                  onClick={() => setMarcaFiltro('')}
-                  className="text-xs font-semibold text-rose-500 hover:text-rose-600 underline cursor-pointer"
-                >
-                  {t('limpiar')}
-                </button>
-              )}
+              <div className="flex items-center gap-2">
+                {marcaFiltro && (
+                  <button
+                    onClick={() => setMarcaFiltro('')}
+                    className="text-xs font-semibold text-rose-500 hover:text-rose-600 underline cursor-pointer mr-2"
+                  >
+                    {t('limpiar')}
+                  </button>
+                )}
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => scrollMarcas(-1)}
+                    type="button"
+                    title="Anterior"
+                    className="w-7 h-7 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer shadow-xs"
+                  >
+                    <ChevronLeft size={16} />
+                  </button>
+                  <button
+                    onClick={() => scrollMarcas(1)}
+                    type="button"
+                    title="Siguiente"
+                    className="w-7 h-7 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer shadow-xs"
+                  >
+                    <ChevronRight size={16} />
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2">
+            <div
+              ref={marcasCarouselRef}
+              className="flex items-center gap-2 overflow-x-auto pb-2 scroll-smooth select-none"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
               <button
                 onClick={() => setMarcaFiltro('')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap shrink-0 cursor-pointer ${
                   !marcaFiltro
                     ? 'bg-mercatto-primary text-white shadow-sm'
                     : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-mercatto-border dark:border-slate-700 hover:border-indigo-400'
@@ -273,7 +304,7 @@ export const DirectorioTiendas = () => {
                 <button
                   key={m}
                   onClick={() => setMarcaFiltro(marcaFiltro === m ? '' : m)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap shrink-0 cursor-pointer flex items-center gap-1.5 ${
                     marcaFiltro === m
                       ? 'bg-mercatto-primary text-white shadow-sm'
                       : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-mercatto-border dark:border-slate-700 hover:border-indigo-400'
