@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { tiendaService } from '@/features/tiendas'
 import { apiCache } from '@/utils/apiCache'
-import { Store, Search, MapPin, Star, ShieldCheck, Tag, ArrowRight, MessageSquare, Sparkles, Crown } from 'lucide-react'
+import { Store, Search, MapPin, Star, ShieldCheck, Tag, ArrowRight, MessageSquare, Sparkles, Crown, RefreshCw } from 'lucide-react'
 import Spinner from '@/components/common/Spinner'
 import EmptyState from '@/components/common/EmptyState'
 import { getMediaUrl } from '@/utils/constants'
@@ -27,12 +27,15 @@ export const DirectorioTiendas = () => {
     cargarDatos()
   }, [])
 
-  const cargarDatos = async () => {
+  const cargarDatos = async (force = false) => {
     try {
-      if (!tieneCache) setCargando(true)
+      if (!tieneCache || force) setCargando(true)
+      if (force) {
+        apiCache.invalidateByPrefix('/tiendas')
+      }
       const [tiendasData, marcasData] = await Promise.all([
-        tiendaService.listarTiendas(),
-        tiendaService.listarMarcas(),
+        tiendaService.listarTiendas(force ? { noCache: true } : {}),
+        tiendaService.listarMarcas(force ? { noCache: true } : {}),
       ])
       setTiendas(tiendasData || [])
       setMarcas(marcasData || [])
@@ -153,9 +156,18 @@ export const DirectorioTiendas = () => {
                 <option value="nombre">{idioma === 'EN' ? 'Name (A-Z)' : 'Nombre (A-Z)'}</option>
               </select>
             </div>
-            <span className="font-semibold text-slate-700 dark:text-slate-300">
-              {tiendasFiltradas.length} {t('tiendas_oficiales')}
-            </span>
+            <div className="flex items-center gap-1.5">
+              <span className="font-semibold text-slate-700 dark:text-slate-300">
+                {tiendasFiltradas.length} {t('tiendas_oficiales')}
+              </span>
+              <button
+                onClick={() => cargarDatos(true)}
+                title={idioma === 'EN' ? 'Refresh directory' : 'Actualizar directorio'}
+                className="p-1 rounded-lg text-slate-400 hover:text-mercatto-primary hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+              >
+                <RefreshCw size={12} className={cargando ? 'animate-spin' : ''} />
+              </button>
+            </div>
             {(busqueda || marcaFiltro || planFiltro || criterioOrden !== 'plan') && (
               <button
                 onClick={() => { setBusqueda(''); setMarcaFiltro(''); setPlanFiltro(''); setCriterioOrden('plan'); }}

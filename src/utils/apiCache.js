@@ -22,12 +22,12 @@ class ApiCacheManager {
     // Reglas de TTL fresco (en milisegundos)
     this.ttlRules = [
       { pattern: /^\/categorias/, ttl: 60 * 1000 },            // 1 minuto (SWR revalida en segundo plano)
-      { pattern: /^\/tiendas\/marcas/, ttl: 30 * 60 * 1000 }, // 30 minutos
-      { pattern: /^\/tiendas/, ttl: 10 * 60 * 1000 },          // 10 minutos
-      { pattern: /^\/productos\/(destacados|mas-vendidos|nuevos)/, ttl: 10 * 60 * 1000 }, // 10 minutos
-      { pattern: /^\/productos\/slug\//, ttl: 10 * 60 * 1000 }, // 10 minutos
-      { pattern: /^\/productos\/\d+$/, ttl: 10 * 60 * 1000 },  // 10 minutos
-      { pattern: /^\/productos/, ttl: 5 * 60 * 1000 },        // 5 minutos
+      { pattern: /^\/tiendas\/marcas/, ttl: 5 * 60 * 1000 },   // 5 minutos
+      { pattern: /^\/tiendas/, ttl: 30 * 1000 },               // 30 segundos (mantiene navegación instantánea y actualiza rápido nuevas tiendas)
+      { pattern: /^\/productos\/(destacados|mas-vendidos|nuevos)/, ttl: 5 * 60 * 1000 }, // 5 minutos
+      { pattern: /^\/productos\/slug\//, ttl: 5 * 60 * 1000 },
+      { pattern: /^\/productos\/\d+$/, ttl: 5 * 60 * 1000 },
+      { pattern: /^\/productos/, ttl: 2 * 60 * 1000 },
     ]
 
     // Rutas que SIEMPRE deben ser frescas y nunca guardarse en caché
@@ -293,13 +293,14 @@ class ApiCacheManager {
     if (url.includes('/productos')) {
       this.invalidateByPrefix('/productos')
       this.invalidateByPrefix('/tiendas')
-    } else if (url.includes('/tiendas') || url.includes('/vendedor')) {
+    } else if (url.includes('/tiendas') || url.includes('/vendedor') || url.includes('/admin/vendedores')) {
+      this.invalidateByPrefix('/tiendas')
+      this.invalidateByPrefix('/vendedor')
+    } else if (url.includes('/auth/registro') || url.includes('/auth/login') || url.includes('/auth/logout')) {
       this.invalidateByPrefix('/tiendas')
       this.invalidateByPrefix('/vendedor')
     } else if (url.includes('/categorias')) {
       this.invalidateByPrefix('/categorias')
-    } else if (url.includes('/auth/logout')) {
-      this.clear()
     }
   }
 
