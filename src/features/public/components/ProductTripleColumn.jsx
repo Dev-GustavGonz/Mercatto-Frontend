@@ -39,23 +39,16 @@ export const ProductTripleColumn = ({ destacados = [], nuevos = [], masVendidos 
     return poolProductos.slice(0, 3);
   }, [poolProductos]);
 
-  const bestSellers = useMemo(() => {
-    if (masVendidos && masVendidos.length > 0) {
-      const ordenados = [...masVendidos].sort((a, b) => (b.totalVentas || 0) - (a.totalVentas || 0));
-      return ordenados.slice(0, 3);
-    }
-    if (poolProductos.length === 0) return [];
-    const ordenados = [...poolProductos].sort((a, b) => (b.totalVentas || 0) - (a.totalVentas || 0));
-    return ordenados.slice(0, 3);
-  }, [masVendidos, poolProductos]);
-
   const topRated = useMemo(() => {
     if (poolProductos.length === 0) return [];
     const ordenados = [...poolProductos].sort((a, b) => (b.calificacion || 5.0) - (a.calificacion || 5.0));
+    const hotDealsIds = new Set(hotDeals.map(p => p.id));
+    const sinRepetir = ordenados.filter(p => !hotDealsIds.has(p.id));
+    if (sinRepetir.length >= 3) return sinRepetir.slice(0, 3);
     return ordenados.slice(0, 3);
-  }, [poolProductos]);
+  }, [poolProductos, hotDeals]);
 
-  if (hotDeals.length === 0 && bestSellers.length === 0 && topRated.length === 0) {
+  if (hotDeals.length === 0 && topRated.length === 0) {
     return null
   }
 
@@ -152,7 +145,7 @@ export const ProductTripleColumn = ({ destacados = [], nuevos = [], masVendidos 
   }
 
   return (
-    <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 items-stretch">
+    <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 items-stretch">
       
       {/* ============================================================== */}
       {/* COLUMNA 1: HOT DEALS (OFERTAS DEL MOMENTO)                     */}
@@ -163,7 +156,7 @@ export const ProductTripleColumn = ({ destacados = [], nuevos = [], masVendidos 
             <Flame size={16} />
           </div>
           <h3 className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white tracking-tight">
-            {t('ofertas_momento')}
+            {t('ofertas_momento') || (isEn ? 'Hot Deals' : 'Ofertas del Momento')}
           </h3>
         </div>
         <div className="space-y-3">
@@ -172,24 +165,7 @@ export const ProductTripleColumn = ({ destacados = [], nuevos = [], masVendidos 
       </div>
 
       {/* ============================================================== */}
-      {/* COLUMNA 2: BEST SELLER (MÁS VENDIDOS)                          */}
-      {/* ============================================================== */}
-      <div className="space-y-3.5">
-        <div className="flex items-center gap-2.5 border-b border-slate-200 dark:border-slate-800 pb-3">
-          <div className="w-8 h-8 rounded-2xl bg-violet-50 dark:bg-violet-950/60 text-violet-600 flex items-center justify-center shrink-0">
-            <TrendingUp size={16} />
-          </div>
-          <h3 className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white tracking-tight">
-            {t('mas_vendidos_col')}
-          </h3>
-        </div>
-        <div className="space-y-3">
-          {bestSellers.map((prod, idx) => renderItemCard(prod, `bestseller-${prod.id}-${idx}`))}
-        </div>
-      </div>
-
-      {/* ============================================================== */}
-      {/* COLUMNA 3: TOP RATED (MEJOR CALIFICADOS)                       */}
+      {/* COLUMNA 2: TOP RATED (MEJOR CALIFICADOS)                       */}
       {/* ============================================================== */}
       <div className="space-y-3.5">
         <div className="flex items-center gap-2.5 border-b border-slate-200 dark:border-slate-800 pb-3">
@@ -197,7 +173,7 @@ export const ProductTripleColumn = ({ destacados = [], nuevos = [], masVendidos 
             <Award size={16} />
           </div>
           <h3 className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white tracking-tight">
-            {t('mejor_calificados')}
+            {t('mejor_calificados') || (isEn ? 'Top Rated' : 'Mejor Calificados')}
           </h3>
         </div>
         <div className="space-y-3">
@@ -206,7 +182,7 @@ export const ProductTripleColumn = ({ destacados = [], nuevos = [], masVendidos 
       </div>
 
       {/* ============================================================== */}
-      {/* COLUMNA 4: BANNER VERTICAL DERECHO EN ESTILO BENTO PRO         */}
+      {/* COLUMNA 3: BANNER VERTICAL DERECHO EN ESTILO BENTO PRO         */}
       {/* ============================================================== */}
       <div 
         onClick={() => navigate('/catalogo')}
