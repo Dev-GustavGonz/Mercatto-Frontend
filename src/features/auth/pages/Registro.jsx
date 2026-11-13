@@ -149,20 +149,12 @@ export const Registro = () => {
     // Campos vendedor
     let tiendaPayload = null
     if (rol === 'VENDEDOR') {
-      const errsVendedor = validarDatosVendedor(
+      const errVendedor = validarDatosVendedor(
         { nombreTienda, nitCedula, ciudad: 'Cartagena de Indias', banco, cuentaBancaria },
         isEn
       )
-      if (errsVendedor.nombreTienda) {
-        reportError('nombreTienda', errsVendedor.nombreTienda)
-        return
-      }
-      if (errsVendedor.nitCedula) {
-        reportError('nitCedula', errsVendedor.nitCedula)
-        return
-      }
-      if (errsVendedor.cuentaBancaria) {
-        reportError('cuentaBancaria', errsVendedor.cuentaBancaria)
+      if (errVendedor) {
+        reportError(errVendedor.field, errVendedor.message)
         return
       }
 
