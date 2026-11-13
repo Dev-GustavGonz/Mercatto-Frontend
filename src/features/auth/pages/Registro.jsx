@@ -193,10 +193,10 @@ export const Registro = () => {
         if (rol === 'VENDEDOR') {
           success(
             isEn
-              ? 'Store registered! Our team will verify your account shortly.'
-              : '¡Tienda registrada! Nuestro equipo verificará tu vitrina pronto.'
+              ? 'Store registered and activated successfully! Welcome to your official vitrine.'
+              : '¡Tienda oficial registrada y activada con éxito! Ya puedes ver tu vitrina.'
           )
-          navigate('/login?registro=pendiente')
+          navigate('/tiendas')
         } else {
           success(isEn ? 'Account created successfully! Welcome to Mercatto.' : '¡Cuenta creada con éxito! Bienvenido a Mercatto.')
           navigate('/', { replace: true })

@@ -73,7 +73,9 @@ export const DirectorioTiendas = () => {
 
     return coincideTexto && coincideMarca && coincidePlan
   }).sort((a, b) => {
-    if (criterioOrden === 'calificacion') {
+    if (criterioOrden === 'recientes') {
+      return (b.id || 0) - (a.id || 0)
+    } else if (criterioOrden === 'calificacion') {
       const cDiff = (b.calificacion || 0) - (a.calificacion || 0)
       if (cDiff !== 0) return cDiff
     } else if (criterioOrden === 'ventas') {
@@ -91,7 +93,11 @@ export const DirectorioTiendas = () => {
       return pesoB - pesoA
     }
 
-    // Desempate dentro del mismo nivel de plan
+    // Desempate dentro del mismo nivel de plan: las más nuevas primero
+    if (b.id && a.id && b.id !== a.id) {
+      return b.id - a.id
+    }
+
     const califDiff = (b.calificacion || 0) - (a.calificacion || 0)
     if (califDiff !== 0) return califDiff
 
@@ -151,6 +157,7 @@ export const DirectorioTiendas = () => {
                 className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-bold px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-mercatto-primary cursor-pointer"
               >
                 <option value="plan">{t('orden_plan') || (idioma === 'EN' ? 'By Plan (Elite / Pro / Starter)' : 'Por Plan (Élite / Pro / Starter)')}</option>
+                <option value="recientes">{idioma === 'EN' ? 'Newest Stores' : 'Más Recientes / Nuevas'}</option>
                 <option value="calificacion">{t('mejor_calificadas') || (idioma === 'EN' ? 'Highest Rated' : 'Mayor Calificación')}</option>
                 <option value="ventas">{t('mas_vendidos') || (idioma === 'EN' ? 'Most Sales' : 'Más Ventas')}</option>
                 <option value="nombre">{idioma === 'EN' ? 'Name (A-Z)' : 'Nombre (A-Z)'}</option>
