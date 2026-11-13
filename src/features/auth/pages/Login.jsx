@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/useToast'
@@ -35,7 +35,7 @@ export const Login = () => {
   const [searchParams] = useSearchParams()
   const redirectUrl = searchParams.get('redirect') || '/'
 
-  const irSegunRol = (res) => {
+  const irSegunRol = useCallback((res) => {
     const rol = res?.usuario?.rol
     let destino = redirectUrl
     if (rol === 'VENDEDOR') {
@@ -44,7 +44,7 @@ export const Login = () => {
       destino = '/admin'
     }
     navigate(destino, { replace: true })
-  }
+  }, [navigate, redirectUrl])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -95,7 +95,7 @@ export const Login = () => {
     }
   }
 
-  const handleGoogle = async (credential) => {
+  const handleGoogle = useCallback(async (credential) => {
     if (loading) return
     setFormError('')
     setLoading(true)
@@ -121,7 +121,7 @@ export const Login = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [loading, loginGoogle, isEn, success, error, irSegunRol])
 
   return (
     <div className="min-h-screen lg:h-screen w-full lg:grid lg:grid-cols-12 font-sans selection:bg-violet-600 selection:text-white lg:overflow-hidden bg-white">
@@ -297,7 +297,7 @@ export const Login = () => {
                   placeholder={t('correo_placeholder') || 'ejemplo@mercatto.com'}
                   required
                   autoComplete="email"
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50/70 pl-9 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-violet-600 focus:ring-3 focus:ring-violet-500/10 transition-all"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50/70 pl-9 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-violet-600 focus:ring-2 focus:ring-violet-500/20 transition-colors"
                 />
               </div>
             </div>
@@ -329,7 +329,7 @@ export const Login = () => {
                   placeholder="••••••••"
                   required
                   autoComplete="current-password"
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50/70 pl-9 pr-9 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-violet-600 focus:ring-3 focus:ring-violet-500/10 transition-all"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50/70 pl-9 pr-9 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-violet-600 focus:ring-2 focus:ring-violet-500/20 transition-colors"
                 />
                 <button
                   type="button"
