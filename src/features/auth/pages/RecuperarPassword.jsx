@@ -72,12 +72,17 @@ export const RecuperarPassword = () => {
       setPaso(2)
       setCountdown(60)
     } catch (err) {
-      const msg = extractApiErrorMessage(
+      let msg = extractApiErrorMessage(
         err,
         isEn
           ? 'Unable to send recovery code. Please verify your email or contact support.'
           : 'No se pudo enviar el código de recuperación. Verifica tu correo o contacta a soporte.'
       )
+      if (msg.includes('No static resource') || msg.includes('404') || msg.includes('500') || msg.includes('Internal Server Error')) {
+        msg = isEn
+          ? 'The password recovery service is currently updating on the server. Please contact support via WhatsApp for immediate assistance.'
+          : 'El servicio de recuperación se está sincronizando en el servidor. Puedes contactar a soporte vía WhatsApp para asistencia inmediata.'
+      }
       setFormError(msg)
       error(msg)
     } finally {
@@ -132,12 +137,17 @@ export const RecuperarPassword = () => {
       )
       navigate('/login', { replace: true })
     } catch (err) {
-      const msg = extractApiErrorMessage(
+      let msg = extractApiErrorMessage(
         err,
         isEn
           ? 'Invalid or expired code. Please request a new one.'
           : 'Código inválido o expirado. Solicita uno nuevo.'
       )
+      if (msg.includes('No static resource') || msg.includes('500') || msg.includes('Internal Server Error')) {
+        msg = isEn
+          ? 'Could not process request. Please contact support via WhatsApp.'
+          : 'No se pudo procesar la solicitud en este momento. Contacta a soporte por WhatsApp.'
+      }
       setFormError(msg)
       error(msg)
     } finally {
