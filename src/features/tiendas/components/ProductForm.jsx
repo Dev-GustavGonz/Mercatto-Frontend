@@ -3,6 +3,7 @@ import Input from '@/components/common/Input'
 import Button from '@/components/common/Button'
 import { productoService } from '@/features/productos'
 import { tiendaService } from '@/features/tiendas'
+import api from '@/utils/api'
 import { useToast } from '@/hooks/useToast'
 import { prepararImagenParaSubida, formatearErrorImagen, validarUrlImagen } from '@/utils/imageUpload'
 import { getMediaUrl } from '@/utils/constants'
@@ -369,9 +370,11 @@ export const ProductForm = ({ productoInicial = null, onGuardado, onCancelar }) 
     try {
       if (productoInicial?.id) {
         await productoService.actualizar(productoInicial.id, payload)
+        api.clearCache()
         success('Producto actualizado exitosamente')
       } else {
         await productoService.crear(payload)
+        api.clearCache()
         try {
           localStorage.removeItem(STORAGE_KEY_PRODUCT_DRAFT)
         } catch (_) {}
