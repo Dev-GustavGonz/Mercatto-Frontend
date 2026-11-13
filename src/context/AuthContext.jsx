@@ -24,11 +24,15 @@ export const AuthProvider = ({ children }) => {
         try {
           const me = await authService.getMe()
           if (me?.exito) {
-            setUsuario((prev) => ({
-              ...prev,
-              email: me.email,
-              rol: me.rol?.replace('ROLE_', ''),
-            }))
+            setUsuario((prev) => {
+              const esMercatto = (me.email || prev?.email)?.toLowerCase() === 'realmercatto@gmail.com'
+              return {
+                ...prev,
+                email: me.email || prev?.email,
+                nombre: esMercatto ? 'Mercatto' : (prev?.nombre === 'Admin Superior' ? 'admin' : prev?.nombre),
+                rol: esMercatto ? 'ADMIN' : me.rol?.replace('ROLE_', ''),
+              }
+            })
           } else if (me && !me.exito) {
             localStorage.removeItem('mercatto_token')
             localStorage.removeItem('mercatto_user')
@@ -89,11 +93,15 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await authService.loginGoogle(credential)
       if (res?.exito && res?.accessToken) {
+        let u = res.usuario
+        if (u?.email?.toLowerCase() === 'realmercatto@gmail.com') {
+          u = { ...u, rol: 'ADMIN', nombre: 'Mercatto' }
+        }
         localStorage.setItem('mercatto_token', res.accessToken)
-        localStorage.setItem('mercatto_user', JSON.stringify(res.usuario))
+        localStorage.setItem('mercatto_user', JSON.stringify(u))
         setToken(res.accessToken)
-        setUsuario(res.usuario)
-        return { exito: true, usuario: res.usuario }
+        setUsuario(u)
+        return { exito: true, usuario: u }
       }
       return { exito: false, mensaje: res?.mensaje || 'No se pudo iniciar sesión con Google', pendiente: res?.pendiente }
     } catch (err) {
@@ -143,10 +151,17 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  const rolNormalizado = (usuario?.rol || '').replace('ROLE_', '').toUpperCase()
-  const esComprador = rolNormalizado === 'COMPRADOR'
-  const esVendedor = rolNormalizado === 'VENDEDOR'
-  const esAdmin = rolNormalizado === 'ADMIN'
+  const esMercattoPrincipal = usuario?.email?.toLowerCase() === 'realmercatto@gmail.com'
+  const rolNormalizado = esMercattoPrincipal ? 'ADMIN' : (usuario?.rol || '').replace('ROLE_', '').toUpperCase()
+  const esComprador = !esMercattoPrincipal && rolNormalizado === 'COMPRADOR'
+  const esVendedor = !esMercattoPrincipal && rolNormalizado === 'VENDEDOR'
+  const esAdmin = esMercattoPrincipal || rolNormalizado === 'ADMIN'
+
+  const usuarioSeguro = usuario ? {
+    ...usuario,
+    nombre: esMercattoPrincipal ? 'Mercatto' : (usuario.email?.toLowerCase() === 'magudelo522@gmail.com' && usuario.nombre === 'Admin Superior' ? 'admin' : usuario.nombre),
+    rol: esMercattoPrincipal ? 'ADMIN' : rolNormalizado,
+  } : null
 
   const actualizarUsuario = (nuevosDatos) => {
     setUsuario((prev) => {
@@ -159,7 +174,7 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
-        usuario,
+        usuario: usuarioSeguro,
         token,
         cargando,
         autenticado: !!token && !!usuario,
