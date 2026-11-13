@@ -75,7 +75,18 @@ export const PanelVendedor = () => {
   const [loading, setLoading] = useState(true)
 
   const { success, error } = useToast()
-  const [modoCrear, setModoCrear] = useState(false)
+  const [modoCrear, setModoCrear] = useState(() => {
+    try {
+      const sp = new URLSearchParams(window.location.search)
+      const tabVal = sp.get('tab')
+      const accionVal = sp.get('accion')
+      const hayBorrador = Boolean(localStorage.getItem('mercatto_draft_producto'))
+      if (tabVal === 'productos' && (accionVal === 'crear' || hayBorrador)) {
+        return true
+      }
+    } catch (_) {}
+    return false
+  })
   const [productoEditar, setProductoEditar] = useState(null)
   const [respuestaMsg, setRespuestaMsg] = useState('')
   const [msgSeleccionado, setMsgSeleccionado] = useState(null)
@@ -86,10 +97,12 @@ export const PanelVendedor = () => {
 
   // Navegación segura entre pestañas (no borra modoCrear si nos movemos dentro de productos)
   const setTab = (nuevoTab) => {
-    setSearchParams({ tab: nuevoTab })
     if (nuevoTab !== 'productos') {
       setModoCrear(false)
       setProductoEditar(null)
+      setSearchParams({ tab: nuevoTab })
+    } else {
+      setSearchParams(modoCrear ? { tab: 'productos', accion: 'crear' } : { tab: 'productos' })
     }
   }
 
@@ -97,18 +110,19 @@ export const PanelVendedor = () => {
   const handleCrearProducto = () => {
     setProductoEditar(null)
     setModoCrear(true)
-    setSearchParams({ tab: 'productos' })
+    setSearchParams({ tab: 'productos', accion: 'crear' })
   }
 
   const handleEditarProducto = (prod) => {
     setProductoEditar(prod)
     setModoCrear(true)
-    setSearchParams({ tab: 'productos' })
+    setSearchParams({ tab: 'productos', accion: 'editar', id: prod.id })
   }
 
   const handleCancelarForm = () => {
     setModoCrear(false)
     setProductoEditar(null)
+    setSearchParams({ tab: 'productos' })
   }
 
   const cargarTodo = async (silencioso = false) => {

@@ -7,26 +7,61 @@ import { useToast } from '@/hooks/useToast'
 import { prepararImagenParaSubida, formatearErrorImagen, validarUrlImagen } from '@/utils/imageUpload'
 import { getMediaUrl } from '@/utils/constants'
 import { sortCategoriesHierarchically } from '@/utils/categoryUtils'
-import { Plus, Trash2, Upload, Tag, Check } from 'lucide-react'
+import { Plus, Trash2, Upload, Tag, Check, Sparkles } from 'lucide-react'
+
+export const STORAGE_KEY_PRODUCT_DRAFT = 'mercatto_draft_producto'
 
 export const ProductForm = ({ productoInicial = null, onGuardado, onCancelar }) => {
-  const [titulo, setTitulo] = useState(productoInicial?.titulo || '')
-  const [categoriaId, setCategoriaId] = useState(
-    productoInicial?.categoria?.id || productoInicial?.categoriaId || ''
+  const draftInicial = useMemo(() => {
+    if (productoInicial) return null
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY_PRODUCT_DRAFT)
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        if (parsed && typeof parsed === 'object') return parsed
+      }
+    } catch (_) {}
+    return null
+  }, [productoInicial])
+
+  const [borradorRestaurado, setBorradorRestaurado] = useState(() => Boolean(draftInicial))
+
+  const [titulo, setTitulo] = useState(
+    productoInicial?.titulo || draftInicial?.titulo || ''
   )
-  const [descripcion, setDescripcion] = useState(productoInicial?.descripcion || '')
-  const [precio, setPrecio] = useState(productoInicial?.precio || '')
-  const [precioOferta, setPrecioOferta] = useState(productoInicial?.precioOferta || '')
-  const [stock, setStock] = useState(productoInicial?.stock ?? 10)
-  const [marca, setMarca] = useState(productoInicial?.marca || '')
-  const [estado, setEstado] = useState(productoInicial?.estado || 'NUEVO')
-  const [destacado, setDestacado] = useState(productoInicial?.destacado || false)
+  const [categoriaId, setCategoriaId] = useState(
+    productoInicial?.categoria?.id || productoInicial?.categoriaId || draftInicial?.categoriaId || ''
+  )
+  const [descripcion, setDescripcion] = useState(
+    productoInicial?.descripcion || draftInicial?.descripcion || ''
+  )
+  const [precio, setPrecio] = useState(
+    productoInicial?.precio || draftInicial?.precio || ''
+  )
+  const [precioOferta, setPrecioOferta] = useState(
+    productoInicial?.precioOferta || draftInicial?.precioOferta || ''
+  )
+  const [stock, setStock] = useState(
+    productoInicial?.stock ?? draftInicial?.stock ?? 10
+  )
+  const [marca, setMarca] = useState(
+    productoInicial?.marca || draftInicial?.marca || ''
+  )
+  const [estado, setEstado] = useState(
+    productoInicial?.estado || draftInicial?.estado || 'NUEVO'
+  )
+  const [destacado, setDestacado] = useState(
+    productoInicial?.destacado ?? draftInicial?.destacado ?? false
+  )
   const [imagenes, setImagenes] = useState(() => {
     if (productoInicial?.imagenes && productoInicial.imagenes.length > 0) {
       return productoInicial.imagenes.map(i => typeof i === 'string' ? i : i.url).filter(Boolean)
     }
     if (productoInicial?.imagenUrl) {
       return [productoInicial.imagenUrl]
+    }
+    if (draftInicial?.imagenes && Array.isArray(draftInicial.imagenes) && draftInicial.imagenes.length > 0) {
+      return draftInicial.imagenes
     }
     return ['']
   })
@@ -37,7 +72,7 @@ export const ProductForm = ({ productoInicial = null, onGuardado, onCancelar }) 
       precio: v.precio ?? '',
       stock: v.stock ?? 0,
       sku: v.sku || '',
-    })) || []
+    })) || draftInicial?.variantes || []
   )
   const [categorias, setCategorias] = useState([])
   const [marcasRegistradas, setMarcasRegistradas] = useState([])
@@ -174,6 +209,63 @@ export const ProductForm = ({ productoInicial = null, onGuardado, onCancelar }) 
     setVariantes(list)
   }
 
+  // Auto-guardado en localStorage cada vez que el vendedor escribe o modifica algo
+  useEffect(() => {
+    if (productoInicial) return
+
+    const tieneContenido =
+      Boolean(titulo?.trim()) ||
+      Boolean(descripcion?.trim()) ||
+      Boolean(precio) ||
+      Boolean(categoriaId) ||
+      Boolean(marca?.trim()) ||
+      (Array.isArray(imagenes) && imagenes.some(img => img && typeof img === 'string' && img.trim().length > 0)) ||
+      (Array.isArray(variantes) && variantes.length > 0)
+
+    if (tieneContenido) {
+      try {
+        const borrador = {
+          titulo,
+          categoriaId,
+          descripcion,
+          precio,
+          precioOferta,
+          stock,
+          marca,
+          estado,
+          destacado,
+          imagenes,
+          variantes,
+          guardadoEn: Date.now()
+        }
+        localStorage.setItem(STORAGE_KEY_PRODUCT_DRAFT, JSON.stringify(borrador))
+      } catch (_) {}
+    } else {
+      try {
+        localStorage.removeItem(STORAGE_KEY_PRODUCT_DRAFT)
+      } catch (_) {}
+    }
+  }, [titulo, categoriaId, descripcion, precio, precioOferta, stock, marca, estado, destacado, imagenes, variantes, productoInicial])
+
+  const handleLimpiarBorrador = () => {
+    try {
+      localStorage.removeItem(STORAGE_KEY_PRODUCT_DRAFT)
+    } catch (_) {}
+    setTitulo('')
+    setCategoriaId('')
+    setDescripcion('')
+    setPrecio('')
+    setPrecioOferta('')
+    setStock(10)
+    setMarca('')
+    setEstado('NUEVO')
+    setDestacado(false)
+    setImagenes([''])
+    setVariantes([])
+    setBorradorRestaurado(false)
+    success('Borrador descartado. Formulario reiniciado.')
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -280,6 +372,10 @@ export const ProductForm = ({ productoInicial = null, onGuardado, onCancelar }) 
         success('Producto actualizado exitosamente')
       } else {
         await productoService.crear(payload)
+        try {
+          localStorage.removeItem(STORAGE_KEY_PRODUCT_DRAFT)
+        } catch (_) {}
+        setBorradorRestaurado(false)
         success('¡Producto publicado exitosamente!')
       }
       if (onGuardado) onGuardado()
@@ -298,6 +394,25 @@ export const ProductForm = ({ productoInicial = null, onGuardado, onCancelar }) 
           {productoInicial ? 'Editar Producto' : 'Publicar Nuevo Producto'}
         </h3>
       </div>
+
+      {/* Banner de borrador restaurado */}
+      {borradorRestaurado && !productoInicial && (
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3.5 rounded-2xl bg-violet-50/90 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-800/60 text-xs text-violet-900 dark:text-violet-200 shadow-2xs animate-in fade-in duration-200">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+            <span>
+              <strong className="font-bold">Borrador recuperado:</strong> Se han restaurado los datos que tenías antes de recargar.
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={handleLimpiarBorrador}
+            className="text-[11px] font-bold text-rose-600 hover:text-rose-800 dark:text-rose-400 hover:underline cursor-pointer shrink-0 ml-auto sm:ml-3"
+          >
+            Descartar borrador
+          </button>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input
