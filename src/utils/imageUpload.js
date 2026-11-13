@@ -89,8 +89,9 @@ export const validarUrlImagen = (rawUrl, etiqueta = 'la imagen') => {
   if (lower.startsWith('blob:')) {
     return `El enlace de ${etiqueta} ("blob:...") es temporal y solo funciona en la pestaña donde lo copiaste (por ejemplo Gemini o ChatGPT). Descarga la imagen en tu equipo y súbela con el botón «Subir archivo desde PC».`
   }
-  if (lower.startsWith('data:')) {
-    return `Pegaste una imagen codificada en Base64 en ${etiqueta}, lo cual no es admitido. Descarga la imagen en tu equipo y usa «Subir archivo desde PC».`
+  // data:image es aceptado como respaldo en caso de que el backend devuelva temporalmente una imagen codificada mientras se sincroniza el almacenamiento en la nube
+  if (lower.startsWith('data:') && !lower.startsWith('data:image/')) {
+    return `Pegaste un contenido inválido en ${etiqueta}. Usa el botón «Subir archivo desde PC» para subir una imagen estándar.`
   }
   if (lower.startsWith('file://') || /^[a-z]:\\/i.test(url) || url.startsWith('\\\\')) {
     return `Pegaste una ruta local de tu computador en ${etiqueta}. Usa el botón «Subir archivo desde PC» para subirla correctamente.`
@@ -99,13 +100,13 @@ export const validarUrlImagen = (rawUrl, etiqueta = 'la imagen') => {
     return `El enlace de ${etiqueta} contiene espacios inválidos. Verifica la URL o sube el archivo desde tu PC.`
   }
 
-  const esRutaInternaValida = lower.startsWith('/uploads/') || lower.startsWith('/images/')
+  const esRutaInternaValida = lower.startsWith('/uploads/') || lower.startsWith('/images/') || lower.startsWith('data:image/')
   const esHttpValida = /^https?:\/\/[^\s/$.?#].[^\s]*$/i.test(url)
 
   if (!esRutaInternaValida && !esHttpValida) {
     return `El enlace de ${etiqueta} no es válido. Debe comenzar por https:// o http://, o puedes cargar el archivo con «Subir archivo desde PC».`
   }
-  if (url.length > 2000) {
+  if (!lower.startsWith('data:') && url.length > 2000) {
     return `El enlace de ${etiqueta} es demasiado largo (máximo 2000 caracteres). Descarga la imagen y súbela desde tu PC.`
   }
 
