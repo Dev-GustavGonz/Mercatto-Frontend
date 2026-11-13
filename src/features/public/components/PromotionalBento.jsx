@@ -153,12 +153,13 @@ export const PromotionalBento = ({ productos = [], onAddToCart }) => {
             <div className="flex items-center justify-center">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-50 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300 border border-violet-200/80 dark:border-violet-800/80 text-[11px] font-extrabold tracking-wider uppercase">
                 <Sparkles size={13} className="text-violet-600 fill-violet-600" />
-                <span>{t('audio_pro_titulo')}</span>
+                <span>{isEn ? 'Exclusive Selection' : 'Selección Exclusiva'}</span>
               </span>
             </div>
 
             <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-tight tracking-tight truncate">
-              {pNovedad?.titulo || t('audio_pro_titulo')}
+              {pNovedad?.marca ? `${pNovedad.marca} ` : ''}
+              <span className="text-violet-600 dark:text-violet-400">{isEn ? 'Official Edition' : 'Edición Oficial'}</span>
             </h3>
 
             <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold">
@@ -181,7 +182,7 @@ export const PromotionalBento = ({ productos = [], onAddToCart }) => {
             <div className="w-full h-full max-w-[240px] bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-100 dark:border-slate-800 p-2.5 shadow-xs flex items-center justify-center overflow-hidden">
               <img
                 src={imgNovedad}
-                alt={pNovedad?.titulo || t('audio_pro_titulo')}
+                alt={pNovedad?.titulo || (isEn ? 'Featured Product' : 'Producto Destacado')}
                 className="max-h-full max-w-full object-contain rounded-xl filter drop-shadow-sm group-hover:scale-108 transition-transform duration-500 mix-blend-multiply dark:mix-blend-normal"
               />
             </div>
@@ -189,7 +190,7 @@ export const PromotionalBento = ({ productos = [], onAddToCart }) => {
 
           <div className="relative z-10 space-y-1.5">
             <div className="px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 text-center text-xs text-slate-800 dark:text-slate-200 font-bold truncate">
-              {pNovedad?.marca ? `${t('distribuidor_oficial')} ${pNovedad.marca}` : (pNovedad?.vendedor?.nombreTienda || t('garantia_oficial_colombia'))}
+              {pNovedad?.titulo || (pNovedad?.marca ? `${t('distribuidor_oficial')} ${pNovedad.marca}` : t('garantia_oficial_colombia'))}
             </div>
             <div className="flex items-center justify-center gap-1.5 text-xs text-slate-500">
               <span className="flex items-center gap-1 text-amber-500 font-black">

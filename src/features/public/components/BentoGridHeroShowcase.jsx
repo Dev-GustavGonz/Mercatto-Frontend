@@ -26,7 +26,7 @@ import { translateCategoryName } from '@/utils/categoryUtils'
  * Showcase Bento 100% dinámico alimentado por los productos reales de la Base de Datos.
  * Sin fotos de modelos o elementos falsos. Cada tarjeta representa un producto real.
  */
-export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVendidos = [], onAddToCart }) => {
+export const BentoGridHeroShowcase = ({ categorias = [], productos = [], nuevos = [], masVendidos = [], onAddToCart }) => {
   const navigate = useNavigate()
   const { agregarItem } = useCart()
   const { toggleFavoriteId, favoriteIds } = useFavorites()
@@ -107,11 +107,28 @@ export const BentoGridHeroShowcase = ({ categorias = [], productos = [], masVend
     return dbProducts.find(p => p.id !== currentHero.id) || dbProducts[0];
   }, [dbProducts, currentHero]);
 
-  // Tarjeta izquierda: Tercer producto de la BD distinto al actual y superior derecha
+  // Tarjeta izquierda: El artículo más reciente registrado en el marketplace (Novedad Oficial)
   const productLeft = useMemo(() => {
-    if (!currentHero) return dbProducts[2] || dbProducts[0];
-    return dbProducts.find(p => p.id !== currentHero.id && p.id !== productTopRight?.id) || dbProducts[1] || dbProducts[0];
-  }, [dbProducts, currentHero, productTopRight]);
+    // 1. Si vienen productos en la lista de nuevos, tomar el más reciente
+    if (Array.isArray(nuevos) && nuevos.length > 0) {
+      const match = nuevos.find(p => p && p.id && p.id !== currentHero?.id && p.id !== productTopRight?.id)
+      if (match) return match
+      return nuevos[0]
+    }
+    // 2. Si no, ordenar dbProducts por fecha de creación o ID descendente para garantizar el más reciente
+    if (Array.isArray(dbProducts) && dbProducts.length > 0) {
+      const ordenados = [...dbProducts].sort((a, b) => {
+        const timeA = a.fechaCreacion || a.creadoEn || a.createdAt ? new Date(a.fechaCreacion || a.creadoEn || a.createdAt).getTime() : 0
+        const timeB = b.fechaCreacion || b.creadoEn || b.createdAt ? new Date(b.fechaCreacion || b.creadoEn || b.createdAt).getTime() : 0
+        if (timeB !== timeA) return timeB - timeA
+        return (b.id || 0) - (a.id || 0)
+      })
+      const match = ordenados.find(p => p && p.id && p.id !== currentHero?.id && p.id !== productTopRight?.id)
+      if (match) return match
+      return ordenados[0]
+    }
+    return dbProducts[0] || null
+  }, [nuevos, dbProducts, currentHero, productTopRight])
 
   // Si no hay productos en la base de datos, no renderizar elementos estáticos
   if (!currentHero) {

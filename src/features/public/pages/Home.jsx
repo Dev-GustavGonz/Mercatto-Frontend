@@ -175,7 +175,7 @@ export const Home = () => {
           categorias={categorias}
           masVendidos={masVendidos}
           productos={destacados}
-
+          nuevos={nuevos}
           onAddToCart={agregarItem} 
         />
       </section>
