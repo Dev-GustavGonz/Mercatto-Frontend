@@ -233,7 +233,7 @@ export const Home = () => {
         </section>
 
         {/* ========================================================= */}
-        {/* 7. MUESTRA DESTACADA DEL CATÁLOGO (ACCESO AL CATÁLOGO)     */}
+        {/* 7. SECCIÓN PRODUCTOS (ACCESO AL CATÁLOGO)                 */}
         {/* ========================================================= */}
         {destacados.length > 0 && (() => {
           const productosPreview = destacados.slice(0, CANTIDAD_PREVIEW_HOME)
@@ -244,13 +244,13 @@ export const Home = () => {
                 <div className="space-y-1">
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-100 dark:bg-violet-950/80 text-[11px] font-extrabold tracking-widest uppercase text-violet-700 dark:text-violet-300">
                     <Sparkles size={12} />
-                    <span>{t('todos_los_productos') || 'Catálogo de Artículos'}</span>
+                    <span>{isEn ? 'Official Catalog' : 'Catálogo Oficial'}</span>
                   </span>
                   <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                    Muestra del <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600">Catálogo</span>
+                    Productos
                   </h2>
                   <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                    Explora una selección de productos disponibles o accede al catálogo completo para filtrar por categoría, precio y tiendas.
+                    Explora una selección de productos disponibles de vendedores oficiales en Colombia
                   </p>
                 </div>
 
@@ -258,7 +258,7 @@ export const Home = () => {
                   onClick={() => navigate('/catalogo')}
                   className="self-start sm:self-auto inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-950 dark:bg-white text-white dark:text-slate-950 hover:bg-violet-600 dark:hover:bg-violet-500 hover:text-white dark:hover:text-white font-bold text-xs uppercase tracking-wider transition shadow-sm cursor-pointer"
                 >
-                  <span>{t('ver_todo_catalogo')}</span>
+                  <span>{t('ver_todo_catalogo') || (isEn ? 'View Full Catalog' : 'Ver todo el catálogo')}</span>
                   <ArrowRight size={14} />
                 </button>
               </div>
@@ -268,20 +268,6 @@ export const Home = () => {
                 loading={false}
                 onContactClick={(prod) => setProductoContacto(prod)}
               />
-
-              {/* Botón de acceso directo al Catálogo Completo */}
-              <div className="flex flex-col items-center justify-center pt-3 pb-2 text-center">
-                <button
-                  onClick={() => navigate('/catalogo')}
-                  className="group inline-flex items-center gap-3 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-extrabold text-sm sm:text-base shadow-lg hover:shadow-violet-500/25 transition-all duration-300 hover:scale-[1.02] cursor-pointer"
-                >
-                  <span>Ver Catálogo Completo ({destacados.length} Productos)</span>
-                  <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
-                </button>
-                <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 font-medium">
-                  Explora con filtros avanzados de precio, marcas y tiendas oficiales verificadas
-                </p>
-              </div>
             </section>
           )
         })()}
