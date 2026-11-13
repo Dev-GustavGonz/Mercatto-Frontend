@@ -218,7 +218,7 @@ export const VendorProfile = ({ perfil, onActualizado, onPerfilActualizado }) =>
     setFieldErrors({})
     setLoading(true)
     try {
-      await vendedorService.actualizarPerfil({
+      const res = await vendedorService.actualizarPerfil({
         nombreTienda: nombreTienda.trim().replace(/\s+/g, ' '),
         descripcion: descripcion.trim(),
         logoUrl: logoUrl.trim(),
@@ -228,9 +228,19 @@ export const VendorProfile = ({ perfil, onActualizado, onPerfilActualizado }) =>
         cuentaBancaria: cuentaBancaria.trim(),
         banco: banco.trim(),
       })
+      if (res) {
+        if (res.nombreTienda !== undefined) setNombreTienda(res.nombreTienda || '')
+        if (res.descripcion !== undefined) setDescripcion(res.descripcion || '')
+        if (res.logoUrl !== undefined) setLogoUrl(res.logoUrl || '')
+        if (res.portadaUrl !== undefined) setPortadaUrl(res.portadaUrl || '')
+        if (res.ciudad !== undefined) setCiudad(res.ciudad || '')
+        if (res.direccion !== undefined) setDireccion(res.direccion || '')
+        if (res.cuentaBancaria !== undefined) setCuentaBancaria(res.cuentaBancaria || '')
+        if (res.banco !== undefined) setBanco(res.banco || '')
+      }
       success('¡Perfil e imágenes de tu tienda actualizados con éxito!')
-      if (onActualizado) onActualizado()
-      if (onPerfilActualizado) onPerfilActualizado()
+      if (onActualizado) onActualizado(res)
+      if (onPerfilActualizado) onPerfilActualizado(res)
     } catch (err) {
       const msg = formatearErrorImagen(err, 'No se pudieron guardar los cambios de la tienda.')
       setFieldErrors({ general: msg })

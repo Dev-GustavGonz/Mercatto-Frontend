@@ -8,14 +8,22 @@ export const VendorMembershipModal = ({ perfil, onClose, onActualizado }) => {
   const [procesando, setProcesando] = useState(false)
   const { success, error } = useToast()
 
-  const [cuentaBancaria, setCuentaBancaria] = useState(perfil?.cuentaBancaria || '')
-  const [banco, setBanco] = useState(perfil?.banco || 'Bancolombia')
+  const cuentaRegistrada = perfil?.cuentaBancaria?.trim() || ''
+  const bancoRegistrado = perfil?.banco?.trim() || ''
+  const tieneCuenta = Boolean(cuentaRegistrada)
+
+  const [cuentaBancaria, setCuentaBancaria] = useState(cuentaRegistrada)
+  const [banco, setBanco] = useState(bancoRegistrado || 'Bancolombia')
+  const [editandoCuenta, setEditandoCuenta] = useState(!tieneCuenta)
   const [errorCuenta, setErrorCuenta] = useState('')
 
   useEffect(() => {
     if (perfil) {
       if (perfil.cuentaBancaria) setCuentaBancaria(perfil.cuentaBancaria)
       if (perfil.banco) setBanco(perfil.banco)
+      if (perfil.cuentaBancaria && perfil.cuentaBancaria.trim()) {
+        setEditandoCuenta(false)
+      }
     }
   }, [perfil])
 
@@ -88,13 +96,18 @@ export const VendorMembershipModal = ({ perfil, onClose, onActualizado }) => {
   ]
 
   const handleCambiarPlan = async (planId) => {
-    if (!cuentaBancaria || !cuentaBancaria.trim()) {
+    const cuentaFinal = (cuentaBancaria || perfil?.cuentaBancaria || '').trim()
+    const bancoFinal = (banco || perfil?.banco || 'Bancolombia').trim()
+
+    if (!cuentaFinal) {
+      setEditandoCuenta(true)
       setErrorCuenta('Debes ingresar tu número de cuenta bancaria para el cobro de la suscripción antes de seleccionar tu plan.')
       error('Por favor ingresa un número de cuenta bancaria para el débito de la suscripción.')
       return
     }
 
-    if (cuentaBancaria.trim().length < 5) {
+    if (cuentaFinal.length < 5) {
+      setEditandoCuenta(true)
       setErrorCuenta('Por favor ingresa un número de cuenta válido (mínimo 5 dígitos).')
       error('Número de cuenta bancaria demasiado corto.')
       return
@@ -110,10 +123,10 @@ export const VendorMembershipModal = ({ perfil, onClose, onActualizado }) => {
     try {
       await vendedorService.actualizarSuscripcion({
         plan: planId,
-        cuentaBancaria: cuentaBancaria.trim(),
-        banco: banco.trim() || 'Bancolombia'
+        cuentaBancaria: cuentaFinal,
+        banco: bancoFinal
       })
-      success(`¡Membresía actualizada con éxito al ${planId} con cuenta para débito registrada!`)
+      success(`¡Membresía actualizada con éxito al ${planId}!`)
       if (onActualizado) onActualizado()
       if (onClose) onClose()
     } catch (err) {
@@ -161,70 +174,113 @@ export const VendorMembershipModal = ({ perfil, onClose, onActualizado }) => {
           </button>
         </div>
 
-        {/* Sección Obligatoria: Número de Cuenta para Cobro de Suscripción */}
-        <div className="mx-4 sm:mx-6 mt-3 p-3.5 sm:p-4 rounded-2xl bg-violet-50/60 dark:bg-violet-950/30 border border-violet-200 dark:border-violet-800/60 space-y-2 shrink-0">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-violet-600 text-white flex items-center justify-center shrink-0">
-                <CreditCard size={15} />
+        {/* Sección de Cuenta Bancaria para Débito de Suscripción */}
+        {tieneCuenta && !editandoCuenta ? (
+          <div className="mx-4 sm:mx-6 mt-3 p-3.5 sm:p-4 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 shrink-0 animate-in fade-in duration-200">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                  <Check size={16} className="stroke-[3]" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
+                      Cuenta Vinculada para Débito y Liquidaciones
+                    </h4>
+                    <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/60 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+                      Cuenta Registrada
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-700 dark:text-slate-300 font-medium mt-0.5">
+                    Banco: <strong className="font-bold">{banco || perfil?.banco || 'Bancolombia'}</strong> &bull; Número: <span className="font-mono font-bold text-emerald-800 dark:text-emerald-300">{cuentaBancaria || perfil?.cuentaBancaria}</span>
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditandoCuenta(true)}
+                className="self-start sm:self-auto text-xs font-bold text-violet-700 dark:text-violet-300 hover:text-violet-900 dark:hover:text-violet-100 hover:underline cursor-pointer transition px-2 py-1 rounded-lg"
+              >
+                Cambiar cuenta
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="mx-4 sm:mx-6 mt-3 p-3.5 sm:p-4 rounded-2xl bg-violet-50/60 dark:bg-violet-950/30 border border-violet-200 dark:border-violet-800/60 space-y-2 shrink-0 animate-in fade-in duration-200">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-violet-600 text-white flex items-center justify-center shrink-0">
+                  <CreditCard size={15} />
+                </div>
+                <div>
+                  <h4 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+                    <span>Cuenta Bancaria para Débito de Suscripción</span>
+                    {!tieneCuenta && (
+                      <span className="text-[10px] font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/60 px-2 py-0.5 rounded-full border border-rose-200 dark:border-rose-800">
+                        Requerido antes de elegir plan
+                      </span>
+                    )}
+                  </h4>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-400">
+                    Ingresa el número de cuenta donde se realizará el cobro de la membresía y se consignarán tus liquidaciones.
+                  </p>
+                </div>
+              </div>
+              {tieneCuenta && (
+                <button
+                  type="button"
+                  onClick={() => setEditandoCuenta(false)}
+                  className="text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer"
+                >
+                  Cancelar
+                </button>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+              <div>
+                <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  Banco o Billetera Digital
+                </label>
+                <input
+                  type="text"
+                  value={banco}
+                  onChange={(e) => setBanco(e.target.value)}
+                  placeholder="Ej: Bancolombia, Davivienda, Nequi, Daviplata"
+                  className="w-full text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500 font-medium"
+                />
               </div>
               <div>
-                <h4 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
-                  <span>Cuenta Bancaria para Débito de Suscripción</span>
-                  <span className="text-[10px] font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/60 px-2 py-0.5 rounded-full border border-rose-200 dark:border-rose-800">
-                    Requerido antes de elegir plan
-                  </span>
-                </h4>
-                <p className="text-[11px] text-slate-600 dark:text-slate-400">
-                  Ingresa el número de cuenta donde se realizará el cobro de la membresía y se consignarán tus liquidaciones.
-                </p>
+                <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center justify-between">
+                  <span>Número de Cuenta Bancaria / Nequi *</span>
+                  {!cuentaBancaria.trim() && (
+                    <span className="text-[10px] text-rose-500 font-bold">Obligatorio</span>
+                  )}
+                </label>
+                <input
+                  type="text"
+                  value={cuentaBancaria}
+                  onChange={(e) => {
+                    setCuentaBancaria(e.target.value)
+                    if (errorCuenta) setErrorCuenta('')
+                  }}
+                  placeholder="Ej: 123-456789-00 o Celular Nequi"
+                  className={`w-full text-xs rounded-xl border px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500 font-mono font-bold ${
+                    !cuentaBancaria.trim()
+                      ? 'border-rose-400 bg-rose-50/30 dark:border-rose-800'
+                      : 'border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900'
+                  }`}
+                />
               </div>
             </div>
-          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
-            <div>
-              <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Banco o Billetera Digital
-              </label>
-              <input
-                type="text"
-                value={banco}
-                onChange={(e) => setBanco(e.target.value)}
-                placeholder="Ej: Bancolombia, Davivienda, Nequi, Daviplata"
-                className="w-full text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500 font-medium"
-              />
-            </div>
-            <div>
-              <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center justify-between">
-                <span>Número de Cuenta Bancaria / Nequi *</span>
-                {!cuentaBancaria.trim() && (
-                  <span className="text-[10px] text-rose-500 font-bold">Obligatorio</span>
-                )}
-              </label>
-              <input
-                type="text"
-                value={cuentaBancaria}
-                onChange={(e) => {
-                  setCuentaBancaria(e.target.value)
-                  if (errorCuenta) setErrorCuenta('')
-                }}
-                placeholder="Ej: 123-456789-00 o Celular Nequi"
-                className={`w-full text-xs rounded-xl border px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500 font-mono font-bold ${
-                  !cuentaBancaria.trim()
-                    ? 'border-rose-400 bg-rose-50/30 dark:border-rose-800'
-                    : 'border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900'
-                }`}
-              />
-            </div>
+            {errorCuenta && (
+              <p className="text-[11px] font-bold text-rose-600 dark:text-rose-400 flex items-center gap-1 mt-1">
+                <AlertCircle size={13} /> {errorCuenta}
+              </p>
+            )}
           </div>
-
-          {errorCuenta && (
-            <p className="text-[11px] font-bold text-rose-600 dark:text-rose-400 flex items-center gap-1 mt-1">
-              <AlertCircle size={13} /> {errorCuenta}
-            </p>
-          )}
-        </div>
+        )}
 
         {/* Tarjetas de Planes */}
         <div className="px-4 sm:px-6 py-3 sm:py-4 grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 overflow-y-auto lg:overflow-visible">

@@ -39,7 +39,8 @@ class ApiCacheManager {
       /^\/mensajes/,
       /^\/admin\/stats/,
       /^\/admin\/pedidos/,
-      /^\/panel-vendedor/
+      /^\/panel-vendedor/,
+      /^\/vendedor/
     ]
 
     // Cargar caché previa de localStorage a memoria de manera perezosa
@@ -294,6 +295,7 @@ class ApiCacheManager {
       this.invalidateByPrefix('/tiendas')
     } else if (url.includes('/tiendas') || url.includes('/vendedor')) {
       this.invalidateByPrefix('/tiendas')
+      this.invalidateByPrefix('/vendedor')
     } else if (url.includes('/categorias')) {
       this.invalidateByPrefix('/categorias')
     } else if (url.includes('/auth/logout')) {

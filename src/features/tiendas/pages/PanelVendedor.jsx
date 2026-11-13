@@ -1102,7 +1102,13 @@ export const PanelVendedor = () => {
         {/* Tab: Perfil de Tienda */}
         {tab === 'perfil' && (
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs">
-            <VendorProfile perfil={perfil} onActualizado={() => cargarTodo(true)} />
+            <VendorProfile
+              perfil={perfil}
+              onActualizado={(pActualizado) => {
+                if (pActualizado) setPerfil((prev) => ({ ...prev, ...pActualizado }))
+                cargarTodo(true)
+              }}
+            />
           </div>
         )}
 

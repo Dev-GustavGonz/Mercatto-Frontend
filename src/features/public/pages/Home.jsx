@@ -11,7 +11,6 @@ import { apiCache } from '@/utils/apiCache'
 import { getMediaUrl } from '@/utils/constants'
 import { sortCategoriesHierarchically } from '@/utils/categoryUtils'
 import Spinner from '@/components/common/Spinner'
-import Pagination from '@/components/common/Pagination'
 
 // Componentes del diseño Showcase Bento 2026
 import BentoGridHeroShowcase from '../components/BentoGridHeroShowcase'
@@ -101,8 +100,7 @@ export const Home = () => {
   const { t, idioma } = useLanguage()
   const navigate = useNavigate()
   const todosProductosRef = useRef(null)
-  const [paginaHome, setPaginaHome] = useState(0)
-  const PRODUCTOS_POR_PAGINA_HOME = 12
+  const CANTIDAD_PREVIEW_HOME = 8
 
   const isEn = idioma === 'EN'
 
@@ -235,13 +233,10 @@ export const Home = () => {
         </section>
 
         {/* ========================================================= */}
-        {/* 7. TODOS LOS PRODUCTOS DISPONIBLES EN MERCATTO            */}
+        {/* 7. MUESTRA DESTACADA DEL CATÁLOGO (ACCESO AL CATÁLOGO)     */}
         {/* ========================================================= */}
         {destacados.length > 0 && (() => {
-          const totalPaginasHome = Math.ceil(destacados.length / PRODUCTOS_POR_PAGINA_HOME)
-          const paginaSegura = Math.min(paginaHome, Math.max(0, totalPaginasHome - 1))
-          const inicio = paginaSegura * PRODUCTOS_POR_PAGINA_HOME
-          const productosPagina = destacados.slice(inicio, inicio + PRODUCTOS_POR_PAGINA_HOME)
+          const productosPreview = destacados.slice(0, CANTIDAD_PREVIEW_HOME)
 
           return (
             <section ref={todosProductosRef} className="space-y-6">
@@ -252,10 +247,10 @@ export const Home = () => {
                     <span>{t('todos_los_productos') || 'Catálogo de Artículos'}</span>
                   </span>
                   <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                    Todos los <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600">Productos</span>
+                    Muestra del <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600">Catálogo</span>
                   </h2>
                   <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                    Explora todos los artículos disponibles de vendedores oficiales en Colombia
+                    Explora una selección de productos disponibles o accede al catálogo completo para filtrar por categoría, precio y tiendas.
                   </p>
                 </div>
 
@@ -269,19 +264,24 @@ export const Home = () => {
               </div>
 
               <ProductGrid 
-                productos={productosPagina} 
+                productos={productosPreview} 
                 loading={false}
                 onContactClick={(prod) => setProductoContacto(prod)}
               />
 
-              <Pagination
-                currentPage={paginaSegura}
-                totalPages={totalPaginasHome}
-                onPageChange={(nuevaPagina) => {
-                  setPaginaHome(nuevaPagina)
-                  todosProductosRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                }}
-              />
+              {/* Botón de acceso directo al Catálogo Completo */}
+              <div className="flex flex-col items-center justify-center pt-3 pb-2 text-center">
+                <button
+                  onClick={() => navigate('/catalogo')}
+                  className="group inline-flex items-center gap-3 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-extrabold text-sm sm:text-base shadow-lg hover:shadow-violet-500/25 transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+                >
+                  <span>Ver Catálogo Completo ({destacados.length} Productos)</span>
+                  <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+                </button>
+                <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 font-medium">
+                  Explora con filtros avanzados de precio, marcas y tiendas oficiales verificadas
+                </p>
+              </div>
             </section>
           )
         })()}
