@@ -179,11 +179,13 @@ export const Registro = () => {
     setLoading(true)
     try {
       const payload = {
+        nombre: nombre.trim(),
         nombreCompleto: nombre.trim(),
         email: email.trim().toLowerCase(),
         password,
         rol,
         ...(tiendaPayload || {}),
+        vendedor: tiendaPayload,
       }
 
       const res = await registro(payload)
