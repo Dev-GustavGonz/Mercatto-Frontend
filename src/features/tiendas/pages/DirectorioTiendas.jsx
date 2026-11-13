@@ -73,6 +73,13 @@ export const DirectorioTiendas = () => {
 
     return coincideTexto && coincideMarca && coincidePlan
   }).sort((a, b) => {
+    // 1. REGLA SUPREMA: Tiendas manuales registradas (ID < 5000) SIEMPRE PRIMERO
+    const aManual = a.id && a.id < 5000
+    const bManual = b.id && b.id < 5000
+    if (aManual !== bManual) {
+      return aManual ? -1 : 1
+    }
+
     if (criterioOrden === 'recientes') {
       return (b.id || 0) - (a.id || 0)
     } else if (criterioOrden === 'calificacion') {

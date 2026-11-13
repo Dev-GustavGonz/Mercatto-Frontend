@@ -18,6 +18,11 @@ const formatCatalogItems = (data, soloElite, orden) => {
   }
   if (!orden || orden === 'recientes') {
     items.sort((a, b) => {
+      // 1. PRIORIZAR TIENDAS Y PRODUCTOS MANUALES (ID < 5000)
+      const aManual = (a.id && a.id < 5000) || (a.vendedor?.id && a.vendedor.id < 5000)
+      const bManual = (b.id && b.id < 5000) || (b.vendedor?.id && b.vendedor.id < 5000)
+      if (aManual !== bManual) return aManual ? -1 : 1
+
       const getPriority = (p) => {
         const s = (p.vendedor?.tipoSuscripcion || p.vendedor?.plan || '').toUpperCase()
         if (s === 'ELITE') return 3
@@ -58,7 +63,7 @@ export const Catalogo = () => {
     precioMax,
     soloElite: soloElite ? true : undefined,
     pagina: 0,
-    tamano: 100,
+    tamano: 600,
   }), [categoriaId, marca, termino, orden, precioMin, precioMax, soloElite])
 
   const initialCached = apiCache.peekExact('/productos', queryParams)
