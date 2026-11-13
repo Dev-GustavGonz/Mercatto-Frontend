@@ -467,7 +467,7 @@ export const Navbar = () => {
                           ? 'bg-indigo-50 text-indigo-700 border border-indigo-200'
                           : 'bg-slate-100 text-slate-700'
                       }`}>
-                        {esAdmin ? 'Super Administrador' : esVendedor ? 'Vendedor Verificado' : 'Comprador'}
+                        {esAdmin ? 'Administrador' : esVendedor ? 'Vendedor Verificado' : 'Comprador'}
                       </span>
                     </div>
                     <p className="font-bold text-slate-900 truncate">

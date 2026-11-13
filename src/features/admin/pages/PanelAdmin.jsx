@@ -319,7 +319,7 @@ export const PanelAdmin = () => {
               </h1>
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-50 text-violet-700 border border-violet-100 text-xs font-black shrink-0">
                 <ShieldCheck size={14} className="text-violet-600" />
-                <span>Super Admin</span>
+                <span>Admin</span>
               </span>
             </div>
             <p className="text-xs text-slate-400 mt-0.5">
@@ -379,7 +379,7 @@ export const PanelAdmin = () => {
                 {usuario?.nombre?.charAt(0) || 'A'}
               </div>
               <span className="text-xs font-bold text-slate-800 whitespace-nowrap">
-                {usuario?.nombre || 'Administrador'}
+                {usuario?.nombre?.toLowerCase() === 'admin superior' ? 'admin' : (usuario?.nombre || 'admin')}
               </span>
             </div>
           </div>
@@ -913,14 +913,46 @@ export const PanelAdmin = () => {
                     })
                     .map((u) => (
                       <tr key={u.id} className="hover:bg-slate-50/70 transition">
-                        <td className="p-4 font-bold text-slate-900">{u.nombre}</td>
-                        <td className="p-4 text-slate-600">{u.email}</td>
+                        <td className="p-4 font-bold text-slate-900">
+                          {u.email?.toLowerCase() === 'magudelo522@gmail.com' && u.nombre?.toLowerCase() === 'admin superior' ? 'admin' : u.nombre}
+                        </td>
+                        <td className="p-4 text-slate-600 font-mono text-[11px]">{u.email}</td>
                         <td className="p-4">
-                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                            u.rol === 'ADMIN' ? 'bg-rose-50 text-rose-600' : u.rol === 'VENDEDOR' ? 'bg-violet-50 text-violet-700' : 'bg-slate-100 text-slate-600'
-                          }`}>
-                            {u.rol}
-                          </span>
+                          <div className="flex items-center gap-1.5">
+                            <select
+                              value={u.rol}
+                              disabled={u.email?.toLowerCase() === 'realmercatto@gmail.com'}
+                              onChange={async (e) => {
+                                const nuevoRol = e.target.value
+                                if (window.confirm(`¿Confirmas cambiar el rol de ${u.nombre || u.email} a ${nuevoRol}?`)) {
+                                  try {
+                                    await adminService.cambiarRolUsuario(u.id, nuevoRol)
+                                    mostrarExito(`Rol de ${u.nombre || u.email} actualizado a ${nuevoRol}`)
+                                    cargarDatos()
+                                  } catch (err) {
+                                    mostrarError(err.response?.data?.mensaje || 'Error al actualizar rol')
+                                  }
+                                }
+                              }}
+                              className={`px-2.5 py-1 rounded-xl text-xs font-black border transition cursor-pointer ${
+                                u.rol === 'ADMIN'
+                                  ? 'bg-rose-50 text-rose-700 border-rose-200 focus:ring-rose-500'
+                                  : u.rol === 'VENDEDOR'
+                                  ? 'bg-violet-50 text-violet-700 border-violet-200 focus:ring-violet-500'
+                                  : 'bg-slate-100 text-slate-700 border-slate-200 focus:ring-slate-400'
+                              } ${u.email?.toLowerCase() === 'realmercatto@gmail.com' ? 'opacity-90 cursor-not-allowed' : 'hover:border-violet-400'}`}
+                              title={u.email?.toLowerCase() === 'realmercatto@gmail.com' ? 'Cuenta administradora principal protegida' : 'Cambiar rol del usuario'}
+                            >
+                              <option value="COMPRADOR">COMPRADOR</option>
+                              <option value="VENDEDOR">VENDEDOR</option>
+                              <option value="ADMIN">ADMIN</option>
+                            </select>
+                            {u.email?.toLowerCase() === 'realmercatto@gmail.com' && (
+                              <span className="text-[10px] font-bold text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full border border-violet-100 whitespace-nowrap">
+                                Principal
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td className="p-4">
                           <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
@@ -934,7 +966,7 @@ export const PanelAdmin = () => {
                         </td>
                         <td className="p-4 text-right">
                           <div className="flex items-center justify-end gap-2">
-                            {u.rol !== 'ADMIN' && (
+                            {u.email?.toLowerCase() !== 'realmercatto@gmail.com' && (
                               <>
                                 <button
                                   onClick={async () => {
@@ -952,16 +984,18 @@ export const PanelAdmin = () => {
                                 >
                                   {u.activo ? 'Suspender' : 'Reactivar'}
                                 </button>
-                                <button
-                                  onClick={() => {
-                                    setUsuarioAEliminar(u)
-                                    setModalEliminarUsuario(true)
-                                  }}
-                                  className="p-1.5 rounded-xl bg-slate-50 hover:bg-rose-50 text-slate-400 hover:text-rose-600 border border-slate-200 transition cursor-pointer"
-                                  title="Eliminar usuario (solo si no tiene pedidos ni actividad)"
-                                >
-                                  <Trash2 size={14} />
-                                </button>
+                                {u.rol !== 'ADMIN' && (
+                                  <button
+                                    onClick={() => {
+                                      setUsuarioAEliminar(u)
+                                      setModalEliminarUsuario(true)
+                                    }}
+                                    className="p-1.5 rounded-xl bg-slate-50 hover:bg-rose-50 text-slate-400 hover:text-rose-600 border border-slate-200 transition cursor-pointer"
+                                    title="Eliminar usuario (solo si no tiene pedidos ni actividad)"
+                                  >
+                                    <Trash2 size={14} />
+                                  </button>
+                                )}
                               </>
                             )}
                           </div>
