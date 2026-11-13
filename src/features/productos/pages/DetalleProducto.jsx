@@ -77,8 +77,18 @@ export const DetalleProducto = () => {
 
   const esFavorito = producto ? favoriteIds.includes(producto.id) : false
 
-  if (loading) {
-    return <Spinner size="lg" className="py-32" />
+  if (loading && !producto) {
+    return (
+      <div className="py-8 grid grid-cols-1 md:grid-cols-2 gap-8 animate-pulse">
+        <div className="h-80 sm:h-96 rounded-3xl bg-slate-100 dark:bg-slate-800" />
+        <div className="space-y-4">
+          <div className="h-8 bg-slate-100 dark:bg-slate-800 rounded-xl w-3/4" />
+          <div className="h-6 bg-slate-100 dark:bg-slate-800 rounded-lg w-1/3" />
+          <div className="h-20 bg-slate-100 dark:bg-slate-800 rounded-2xl w-full" />
+          <div className="h-12 bg-slate-100 dark:bg-slate-800 rounded-xl w-full" />
+        </div>
+      </div>
+    )
   }
 
   if (errorCarga || !producto) {

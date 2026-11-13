@@ -214,8 +214,18 @@ export const DirectorioCategorias = () => {
       </div>
 
       {/* Cuadrícula completa de Categorías */}
-      {cargando ? (
-        <Spinner size="lg" className="py-20" />
+      {cargando && categoriasFiltradas.length === 0 ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-5">
+          {[...Array(10)].map((_, i) => (
+            <div
+              key={i}
+              className="rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 animate-pulse space-y-3"
+            >
+              <div className="h-28 w-full rounded-xl bg-slate-100 dark:bg-slate-800" />
+              <div className="h-4 w-3/4 mx-auto rounded bg-slate-100 dark:bg-slate-800" />
+            </div>
+          ))}
+        </div>
       ) : categoriasFiltradas.length === 0 ? (
         <EmptyState
           title={isEn ? 'No categories found' : 'No encontramos categorías'}

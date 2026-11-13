@@ -146,8 +146,19 @@ export const VitrinaTienda = () => {
     setTimeout(() => setCopiado(false), 3000)
   }
 
-  if (cargandoTienda) {
-    return <Spinner size="lg" className="py-32" />
+  if (cargandoTienda && !tienda) {
+    return (
+      <div className="space-y-6 py-6 animate-pulse">
+        <div className="h-56 sm:h-72 w-full rounded-3xl bg-slate-100 dark:bg-slate-800" />
+        <div className="flex items-center gap-4">
+          <div className="h-20 w-20 rounded-2xl bg-slate-100 dark:bg-slate-800" />
+          <div className="space-y-2 flex-1">
+            <div className="h-6 w-1/3 rounded bg-slate-100 dark:bg-slate-800" />
+            <div className="h-4 w-1/4 rounded bg-slate-100 dark:bg-slate-800" />
+          </div>
+        </div>
+      </div>
+    )
   }
 
   if (!tienda) {

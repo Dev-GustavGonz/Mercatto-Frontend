@@ -281,8 +281,20 @@ export const DirectorioTiendas = () => {
       </div>
 
       {/* Grid de Tiendas */}
-      {cargando ? (
-        <Spinner size="lg" className="py-24" />
+      {cargando && tiendasFiltradas.length === 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 animate-pulse space-y-4"
+            >
+              <div className="h-36 w-full rounded-xl bg-slate-100 dark:bg-slate-800" />
+              <div className="h-5 w-2/3 rounded bg-slate-100 dark:bg-slate-800" />
+              <div className="h-4 w-1/2 rounded bg-slate-100 dark:bg-slate-800" />
+              <div className="h-10 w-full rounded-xl bg-slate-100 dark:bg-slate-800" />
+            </div>
+          ))}
+        </div>
       ) : tiendasFiltradas.length === 0 ? (
         <EmptyState
           title={idioma === 'EN' ? 'No stores found' : 'No se encontraron tiendas'}

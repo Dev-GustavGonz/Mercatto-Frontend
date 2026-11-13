@@ -81,15 +81,17 @@ const PublicChatbot = lazy(loadPublicChatbot)
 const PanelAdmin = lazy(loadPanelAdmin)
 const PanelVendedor = lazy(loadPanelVendedor)
 
+const RouteLoader = () => (
+  <div className="fixed top-0 left-0 right-0 z-[9999] h-[3px] bg-slate-100/60 dark:bg-slate-900/60 overflow-hidden pointer-events-none">
+    <div className="h-full bg-gradient-to-r from-violet-600 via-indigo-500 to-rose-500 animate-loading-bar w-full" />
+  </div>
+)
+
 // Protected Route Wrapper for Vendor
 const RutaVendedor = ({ children }) => {
   const { autenticado, esVendedor, esAdmin, cargando } = useAuth()
   if (cargando) {
-    return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <Spinner size="lg" />
-      </div>
-    )
+    return <RouteLoader />
   }
   if (!autenticado || (!esVendedor && !esAdmin)) {
     return <Navigate to="/login" replace />
@@ -101,11 +103,7 @@ const RutaVendedor = ({ children }) => {
 const RutaAdmin = ({ children }) => {
   const { autenticado, esAdmin, cargando } = useAuth()
   if (cargando) {
-    return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <Spinner size="lg" />
-      </div>
-    )
+    return <RouteLoader />
   }
   if (!autenticado || !esAdmin) {
     return <Navigate to="/login" replace />
@@ -117,11 +115,7 @@ const RutaAdmin = ({ children }) => {
 const RutaProtegida = ({ children }) => {
   const { autenticado, cargando } = useAuth()
   if (cargando) {
-    return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <Spinner size="lg" />
-      </div>
-    )
+    return <RouteLoader />
   }
   if (!autenticado) {
     return <Navigate to="/login" replace />
@@ -185,61 +179,25 @@ const AppLayout = () => {
     location.pathname.startsWith('/recuperar-password')
   const esHome = location.pathname === '/'
 
-  // Al abrir el Home (o iniciar la app), precargar en segundo plano todas las páginas para que navegar entre rutas sea instantáneo
+  // Precarga inmediata de rutas en segundo plano para navegación sin tiempos de espera
   useEffect(() => {
     if (routesPrefetchStarted) return
+    routesPrefetchStarted = true
 
-    let cancelled = false
-    let completed = false
-    const cleanups = []
+    // 1. Precarga inmediata e instantánea de todas las rutas principales
+    Promise.allSettled(CORE_ROUTE_LOADERS.map((loader) => {
+      try { return loader().catch(() => {}) } catch { return Promise.resolve() }
+    }))
 
-    const prefetchGroup = (loaders) =>
-      Promise.allSettled(
-        loaders.map((loader) => {
-          try {
-            return loader().catch(() => {})
-          } catch {
-            return Promise.resolve()
-          }
-        })
-      )
+    // 2. Precarga rápida de rutas secundarias
+    const timer = setTimeout(() => {
+      Promise.allSettled(SECONDARY_ROUTE_LOADERS.map((loader) => {
+        try { return loader().catch(() => {}) } catch { return Promise.resolve() }
+      }))
+    }, 200)
 
-    const startPrefetch = () => {
-      if (cancelled) return
-      routesPrefetchStarted = true
-      prefetchGroup(CORE_ROUTE_LOADERS).then(() => {
-        if (cancelled) return
-        // Cargar el resto en segundo lote cuando el hilo principal esté libre (priorizando Home sin bloquear el pintado)
-        const batchSize = 5
-        const runBatch = (offset) => {
-          if (cancelled) return
-          if (offset >= SECONDARY_ROUTE_LOADERS.length) {
-            completed = true
-            return
-          }
-          const slice = SECONDARY_ROUTE_LOADERS.slice(offset, offset + batchSize)
-          const cancelNext = scheduleIdle(
-            () => {
-              prefetchGroup(slice).then(() => runBatch(offset + batchSize))
-            },
-            esHome ? 150 : 350,
-            1500
-          )
-          cleanups.push(cancelNext)
-        }
-        runBatch(0)
-      })
-    }
-
-    const cancelInitial = scheduleIdle(startPrefetch, esHome ? 200 : 500, 1200)
-    cleanups.push(cancelInitial)
-
-    return () => {
-      cancelled = true
-      if (!completed) routesPrefetchStarted = false
-      cleanups.forEach((fn) => fn && fn())
-    }
-  }, [esHome])
+    return () => clearTimeout(timer)
+  }, [])
 
   return (
     <div className="min-h-screen flex flex-col bg-mercatto-bg dark:bg-slate-950 text-mercatto-text dark:text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
@@ -252,11 +210,7 @@ const AppLayout = () => {
       )}
 
       <main className={esRutaPanel || esHome || esRutaAuth ? "flex-1 w-full" : "flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6"}>
-        <Suspense fallback={
-          <div className="min-h-[50vh] flex items-center justify-center">
-            <Spinner size="lg" />
-          </div>
-        }>
+        <Suspense fallback={<RouteLoader />}>
           <Routes>
             {/* Public Marketplace routes */}
             <Route path="/" element={<Home />} />

@@ -55,10 +55,18 @@ const STORAGE_OCULTOS_KEY = 'mercatto_pedidos_cancelados_ocultos'
 
 
 export const MisPedidos = () => {
-
-  const [pedidos, setPedidos] = useState([])
-
-  const [loading, setLoading] = useState(true)
+  const [pedidos, setPedidos] = useState(() => {
+    try {
+      const c = sessionStorage.getItem('mercatto_pedidos_cache')
+      return c ? JSON.parse(c) : []
+    } catch { return [] }
+  })
+  const [loading, setLoading] = useState(() => {
+    try {
+      const c = sessionStorage.getItem('mercatto_pedidos_cache')
+      return !c || JSON.parse(c).length === 0
+    } catch { return true }
+  })
 
   const [cancelandoId, setCancelandoId] = useState(null)
 
@@ -98,17 +106,15 @@ export const MisPedidos = () => {
 
 
   const cargarPedidos = () => {
-
     pedidoService
-
       .misPedidos()
-
-      .then((data) => setPedidos(data.content || []))
-
+      .then((data) => {
+        const lista = data.content || []
+        setPedidos(lista)
+        try { sessionStorage.setItem('mercatto_pedidos_cache', JSON.stringify(lista)) } catch (_) {}
+      })
       .catch(() => setPedidos([]))
-
       .finally(() => setLoading(false))
-
   }
 
 
@@ -431,10 +437,14 @@ export const MisPedidos = () => {
 
 
 
-  if (loading) {
-
-    return <Spinner size="lg" className="py-24" />
-
+  if (loading && pedidos.length === 0) {
+    return (
+      <div className="py-8 space-y-4 animate-pulse">
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="h-32 rounded-2xl bg-slate-100 dark:bg-slate-800 w-full" />
+        ))}
+      </div>
+    )
   }
 
 

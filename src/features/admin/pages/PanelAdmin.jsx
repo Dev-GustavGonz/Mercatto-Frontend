@@ -79,16 +79,37 @@ export const PanelAdmin = () => {
 
   const [timeRange, setTimeRange] = useState('1M')
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [stats, setStats] = useState({})
-  const [vendedores, setVendedores] = useState([])
-  const [usuarios, setUsuarios] = useState([])
-  const [pedidos, setPedidos] = useState([])
+  const [stats, setStats] = useState(() => {
+    try {
+      const c = localStorage.getItem('mercatto_admin_cache_stats')
+      return c ? JSON.parse(c) : {}
+    } catch { return {} }
+  })
+  const [vendedores, setVendedores] = useState(() => {
+    try {
+      const c = localStorage.getItem('mercatto_admin_cache_vends')
+      return c ? JSON.parse(c) : []
+    } catch { return [] }
+  })
+  const [usuarios, setUsuarios] = useState(() => {
+    try {
+      const c = localStorage.getItem('mercatto_admin_cache_usrs')
+      return c ? JSON.parse(c) : []
+    } catch { return [] }
+  })
+  const [pedidos, setPedidos] = useState(() => {
+    try {
+      const c = localStorage.getItem('mercatto_admin_cache_peds')
+      return c ? JSON.parse(c) : []
+    } catch { return [] }
+  })
   const [busquedaUsuario, setBusquedaUsuario] = useState('')
   const [filtroRolUsuario, setFiltroRolUsuario] = useState('TODOS')
   const [busquedaPedido, setBusquedaPedido] = useState('')
   const [filtroEstadoPedido, setFiltroEstadoPedido] = useState('TODOS')
   const [pedidoDetalleModal, setPedidoDetalleModal] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const tieneDatosPrevios = vendedores.length > 0 || Object.keys(stats).length > 0
+  const [loading, setLoading] = useState(!tieneDatosPrevios)
   const [usuarioAEliminar, setUsuarioAEliminar] = useState(null)
   const [modalEliminarUsuario, setModalEliminarUsuario] = useState(false)
   const [eliminandoUsuario, setEliminandoUsuario] = useState(false)
@@ -115,7 +136,7 @@ export const PanelAdmin = () => {
   const navigate = useNavigate()
 
   const cargarDatos = async () => {
-    setLoading(true)
+    if (!tieneDatosPrevios && vendedores.length === 0) setLoading(true)
     const [stRes, vendsRes, usrsRes, ordsRes] = await Promise.allSettled([
       adminService.obtenerEstadisticas(),
       adminService.listarVendedores({ tamano: 500 }),
@@ -124,13 +145,17 @@ export const PanelAdmin = () => {
     ])
 
     if (stRes.status === 'fulfilled') {
-      setStats(stRes.value || {})
+      const st = stRes.value || {}
+      setStats(st)
+      try { localStorage.setItem('mercatto_admin_cache_stats', JSON.stringify(st)) } catch (_) {}
     } else {
       console.error('Error cargando estadísticas del admin:', stRes.reason)
     }
 
     if (vendsRes.status === 'fulfilled') {
-      setVendedores(vendsRes.value?.content || [])
+      const vends = vendsRes.value?.content || []
+      setVendedores(vends)
+      try { localStorage.setItem('mercatto_admin_cache_vends', JSON.stringify(vends)) } catch (_) {}
     } else {
       console.error('Error cargando vendedores:', vendsRes.reason)
       mostrarError(
@@ -140,13 +165,17 @@ export const PanelAdmin = () => {
     }
 
     if (usrsRes.status === 'fulfilled') {
-      setUsuarios(usrsRes.value?.content || [])
+      const usrs = usrsRes.value?.content || []
+      setUsuarios(usrs)
+      try { localStorage.setItem('mercatto_admin_cache_usrs', JSON.stringify(usrs)) } catch (_) {}
     } else {
       console.error('Error cargando usuarios:', usrsRes.reason)
     }
 
     if (ordsRes.status === 'fulfilled') {
-      setPedidos(ordsRes.value?.content || [])
+      const ords = ordsRes.value?.content || []
+      setPedidos(ords)
+      try { localStorage.setItem('mercatto_admin_cache_peds', JSON.stringify(ords)) } catch (_) {}
     } else {
       console.error('Error cargando pedidos:', ordsRes.reason)
     }
@@ -167,10 +196,16 @@ export const PanelAdmin = () => {
     navigate('/')
   }
 
-  if (loading) {
+  if (loading && !tieneDatosPrevios) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center bg-[#F8F9FC]">
-        <Spinner size="lg" />
+      <div className="min-h-screen bg-[#F8F9FC] dark:bg-slate-950 p-6 space-y-6 animate-pulse">
+        <div className="h-14 w-full rounded-2xl bg-slate-200 dark:bg-slate-800" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-28 rounded-2xl bg-slate-200 dark:bg-slate-800" />
+          ))}
+        </div>
+        <div className="h-96 rounded-2xl bg-slate-200 dark:bg-slate-800 w-full" />
       </div>
     )
   }

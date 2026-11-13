@@ -66,13 +66,39 @@ export const PanelVendedor = () => {
 
   const [timeRange, setTimeRange] = useState('1M')
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [stats, setStats] = useState({})
-  const [perfil, setPerfil] = useState(null)
-  const [productos, setProductos] = useState([])
+  const [stats, setStats] = useState(() => {
+    try {
+      const c = localStorage.getItem('mercatto_vendor_cache_stats')
+      return c ? JSON.parse(c) : {}
+    } catch { return {} }
+  })
+  const [perfil, setPerfil] = useState(() => {
+    try {
+      const c = localStorage.getItem('mercatto_vendor_cache_perfil')
+      return c ? JSON.parse(c) : null
+    } catch { return null }
+  })
+  const [productos, setProductos] = useState(() => {
+    try {
+      const c = localStorage.getItem('mercatto_vendor_cache_prods')
+      return c ? JSON.parse(c) : []
+    } catch { return [] }
+  })
   const [busquedaProducto, setBusquedaProducto] = useState('')
-  const [pedidos, setPedidos] = useState([])
-  const [mensajes, setMensajes] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [pedidos, setPedidos] = useState(() => {
+    try {
+      const c = localStorage.getItem('mercatto_vendor_cache_peds')
+      return c ? JSON.parse(c) : []
+    } catch { return [] }
+  })
+  const [mensajes, setMensajes] = useState(() => {
+    try {
+      const c = localStorage.getItem('mercatto_vendor_cache_msgs')
+      return c ? JSON.parse(c) : []
+    } catch { return [] }
+  })
+  const tieneCacheVendedor = Boolean(perfil || productos.length > 0 || pedidos.length > 0)
+  const [loading, setLoading] = useState(!tieneCacheVendedor)
 
   const { success, error } = useToast()
   const [modoCrear, setModoCrear] = useState(() => {
@@ -126,7 +152,7 @@ export const PanelVendedor = () => {
   }
 
   const cargarTodo = async (silencioso = false) => {
-    if (!silencioso) setLoading(true)
+    if (!silencioso && !tieneCacheVendedor) setLoading(true)
     try {
       const [st, pf, pds, ords, msgs] = await Promise.all([
         vendedorService.obtenerEstadisticas().catch(() => ({})),
@@ -135,24 +161,34 @@ export const PanelVendedor = () => {
         pedidoService.pedidosVendedor().catch(() => ({ content: [] })),
         mensajeService.obtenerContactos().catch(() => []),
       ])
-      setStats(st || {})
-      setPerfil(pf || {
+      const finalStats = st || {}
+      const finalPerfil = pf || {
         nombreTienda: usuario?.nombre || 'Mi Tienda Oficial',
         tipoSuscripcion: 'PRO',
         calificacion: 5.0,
         ciudad: 'Cartagena',
-      })
+      }
+      setStats(finalStats)
+      setPerfil(finalPerfil)
       const listaProds = Array.isArray(pds?.content) ? pds.content : (Array.isArray(pds) ? pds : [])
       const listaOrds = Array.isArray(ords?.content) ? ords.content : (Array.isArray(ords) ? ords : [])
       const listaMsgs = Array.isArray(msgs) ? msgs : (Array.isArray(msgs?.content) ? msgs.content : [])
       setProductos(listaProds)
       setPedidos(listaOrds)
       setMensajes(listaMsgs)
+
+      try {
+        localStorage.setItem('mercatto_vendor_cache_stats', JSON.stringify(finalStats))
+        localStorage.setItem('mercatto_vendor_cache_perfil', JSON.stringify(finalPerfil))
+        localStorage.setItem('mercatto_vendor_cache_prods', JSON.stringify(listaProds))
+        localStorage.setItem('mercatto_vendor_cache_peds', JSON.stringify(listaOrds))
+        localStorage.setItem('mercatto_vendor_cache_msgs', JSON.stringify(listaMsgs))
+      } catch (_) {}
     } catch (err) {
       console.error('Error al cargar panel de vendedor:', err)
       error('Error al sincronizar datos del panel')
     } finally {
-      if (!silencioso) setLoading(false)
+      setLoading(false)
     }
   }
 
@@ -218,10 +254,16 @@ export const PanelVendedor = () => {
     }
   }
 
-  if (loading) {
+  if (loading && !tieneCacheVendedor) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center bg-[#F8F9FC]">
-        <Spinner size="lg" />
+      <div className="min-h-screen bg-[#F8F9FC] dark:bg-slate-950 p-6 space-y-6 animate-pulse">
+        <div className="h-14 w-full rounded-2xl bg-slate-200 dark:bg-slate-800" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-28 rounded-2xl bg-slate-200 dark:bg-slate-800" />
+          ))}
+        </div>
+        <div className="h-96 rounded-2xl bg-slate-200 dark:bg-slate-800 w-full" />
       </div>
     )
   }
