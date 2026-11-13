@@ -25,6 +25,7 @@ const loadPrivacidad = () => import('./features/public/pages/Privacidad')
 
 const loadLogin = () => import('./features/auth/pages/Login')
 const loadRegistro = () => import('./features/auth/pages/Registro')
+const loadRecuperarPassword = () => import('./features/auth/pages/RecuperarPassword')
 
 const loadCatalogo = () => import('./features/productos/pages/Catalogo')
 const loadDetalleProducto = () => import('./features/productos/pages/DetalleProducto')
@@ -56,6 +57,7 @@ const Privacidad = lazy(loadPrivacidad)
 
 const Login = lazy(loadLogin)
 const Registro = lazy(loadRegistro)
+const RecuperarPassword = lazy(loadRecuperarPassword)
 
 const Catalogo = lazy(loadCatalogo)
 const DetalleProducto = lazy(loadDetalleProducto)
@@ -137,6 +139,7 @@ const CORE_ROUTE_LOADERS = [
   loadVitrinaTienda,
   loadLogin,
   loadRegistro,
+  loadRecuperarPassword,
   loadPublicChatbot,
 ]
 
@@ -272,6 +275,7 @@ const AppLayout = () => {
             <Route path="/privacidad" element={<Privacidad />} />
             <Route path="/login" element={<Login />} />
             <Route path="/registro" element={<Registro />} />
+            <Route path="/recuperar-password" element={<RecuperarPassword />} />
 
             {/* Buyer protected routes */}
             <Route path="/checkout" element={<Checkout />} />

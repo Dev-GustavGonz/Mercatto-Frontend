@@ -37,6 +37,16 @@ export const authService = {
     const res = await api.get('/auth/me')
     return res.data
   },
+
+  solicitarRecuperacion: async (email) => {
+    const res = await api.post('/auth/recuperar-password', { email })
+    return res.data
+  },
+
+  restablecerPassword: async (datos) => {
+    const res = await api.post('/auth/reset-password', datos)
+    return res.data
+  },
 }
 
 export default authService
