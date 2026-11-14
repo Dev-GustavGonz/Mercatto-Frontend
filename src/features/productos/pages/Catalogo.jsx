@@ -2,6 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { productoService } from '@/features/productos'
 import { apiCache } from '@/utils/apiCache'
+import {
+  getSnapshotAllProducts,
+  getSnapshotCategories,
+  filterAndSortCatalogProducts,
+} from '@/utils/catalogSnapshotHelper'
 import ProductGrid from '../components/ProductGrid'
 import ProductFilters from '../components/ProductFilters'
 import Pagination from '@/components/common/Pagination'
@@ -10,34 +15,6 @@ import { Crown, Sparkles } from 'lucide-react'
 import { useLanguage } from '@/hooks/useLanguage'
 
 const PAGE_SIZE = 12
-
-const formatCatalogItems = (data, soloElite, orden) => {
-  let items = data?.content ? [...data.content] : Array.isArray(data) ? [...data] : []
-  if (soloElite) {
-    items = items.filter((p) => (p.vendedor?.tipoSuscripcion || p.vendedor?.plan || '').toUpperCase() === 'ELITE')
-  }
-  if (!orden || orden === 'recientes') {
-    items.sort((a, b) => {
-      // 1. PRIORIZAR PRODUCTOS REALES SOBRE EL DATASET DEMO DE LA FERIA (SKU 'SEED-')
-      const aManual = !String(a.sku || '').startsWith('SEED-')
-      const bManual = !String(b.sku || '').startsWith('SEED-')
-      if (aManual !== bManual) return aManual ? -1 : 1
-
-      const getPriority = (p) => {
-        const s = (p.vendedor?.tipoSuscripcion || p.vendedor?.plan || '').toUpperCase()
-        if (s === 'ELITE') return 3
-        if (s === 'PRO') return 2
-        return 1
-      }
-      const pDiff = getPriority(b) - getPriority(a)
-      if (pDiff !== 0) return pDiff
-      if (b.destacado !== a.destacado) return (b.destacado ? 1 : 0) - (a.destacado ? 1 : 0)
-      if ((b.totalVentas || 0) !== (a.totalVentas || 0)) return (b.totalVentas || 0) - (a.totalVentas || 0)
-      return new Date(b.fechaCreacion || 0) - new Date(a.fechaCreacion || 0)
-    })
-  }
-  return items
-}
 
 export const Catalogo = () => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -54,58 +31,68 @@ export const Catalogo = () => {
   const precioMax = searchParams.get('precioMax') ? Number(searchParams.get('precioMax')) : null
   const soloElite = searchParams.get('soloElite') === 'true'
 
-  const queryParams = useMemo(() => ({
-    categoriaId,
-    marca: marca || null,
-    q: termino,
-    orden,
-    precioMin,
-    precioMax,
-    soloElite: soloElite ? true : undefined,
-    pagina: 0,
-    tamano: 1000,
-  }), [categoriaId, marca, termino, orden, precioMin, precioMax, soloElite])
+  const [categorias, setCategorias] = useState(() => {
+    const cached = apiCache.peekData('/categorias/todas') || apiCache.peekData('/categorias')
+    return Array.isArray(cached) && cached.length > 0 ? cached : getSnapshotCategories()
+  })
 
-  const initialCached = apiCache.peekExact('/productos', queryParams)
-  const [todosLosProductos, setTodosLosProductos] = useState(() => (initialCached ? formatCatalogItems(initialCached, soloElite, orden) : []))
-  const [loading, setLoading] = useState(!initialCached)
+  const [extraLiveProducts, setExtraLiveProducts] = useState(() => {
+    const cachedNuev = apiCache.peekExact('/productos/nuevos')
+    return Array.isArray(cachedNuev) ? cachedNuev : []
+  })
 
+  // Sincronización ligera en segundo plano para capturar productos nuevos creados en vivo
+  useEffect(() => {
+    let activo = true
+    productoService
+      .listarTodasCategorias()
+      .then((cats) => {
+        if (activo && Array.isArray(cats) && cats.length > 0) {
+          setCategorias(cats)
+        }
+      })
+      .catch(() => {})
+
+    productoService
+      .obtenerNuevos()
+      .then((nuev) => {
+        if (activo && Array.isArray(nuev) && nuev.length > 0) {
+          setExtraLiveProducts(nuev)
+        }
+      })
+      .catch(() => {})
+
+    return () => {
+      activo = false
+    }
+  }, [])
+
+  const catalogoBase = useMemo(
+    () => getSnapshotAllProducts(extraLiveProducts),
+    [extraLiveProducts]
+  )
+
+  const todosLosProductos = useMemo(
+    () =>
+      filterAndSortCatalogProducts(catalogoBase, categorias, {
+        categoriaId,
+        marca,
+        q: termino,
+        precioMin,
+        precioMax,
+        soloElite,
+        orden,
+      }),
+    [catalogoBase, categorias, categoriaId, marca, termino, precioMin, precioMax, soloElite, orden]
+  )
+
+  const loading = false
   const totalElements = todosLosProductos.length
   const totalPages = Math.ceil(totalElements / PAGE_SIZE) || 0
   const productos = useMemo(() => {
     const inicio = pagina * PAGE_SIZE
     return todosLosProductos.slice(inicio, inicio + PAGE_SIZE)
   }, [todosLosProductos, pagina])
-
-  useEffect(() => {
-    let activo = true
-    const cached = apiCache.peekExact('/productos', queryParams)
-    if (cached) {
-      const items = formatCatalogItems(cached, soloElite, orden)
-      setTodosLosProductos(items)
-      setLoading(false)
-    } else {
-      setLoading(true)
-    }
-
-    const fetchProductos = async () => {
-      try {
-        const data = await productoService.listar(queryParams)
-        if (!activo) return
-        const items = formatCatalogItems(data, soloElite, orden)
-        setTodosLosProductos(items)
-      } catch {
-        if (!activo || cached) return
-        setTodosLosProductos([])
-      } finally {
-        if (activo) setLoading(false)
-      }
-    }
-    fetchProductos()
-    return () => {
-      activo = false
-    }
-  }, [queryParams, soloElite, orden])
 
   const handleCategoryChange = (catId) => {
     const next = new URLSearchParams(searchParams)

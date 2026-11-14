@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/useToast'
 import { ProductGrid } from '@/features/productos'
 import Spinner from '@/components/common/Spinner'
 import { getMediaUrl } from '@/utils/constants'
+import { findStoreInSnapshot, findStoreProductsInSnapshot } from '@/utils/catalogSnapshotHelper'
 import {
   Store,
   MapPin,
@@ -49,15 +50,16 @@ export const VitrinaTienda = () => {
     return params
   }, [pagina, orden, marcaSeleccionada, busqueda])
 
-  const cachedTienda = id ? apiCache.peekExact(`/tiendas/${id}`) : null
+  const cachedTienda = id ? apiCache.peekExact(`/tiendas/${id}`) || findStoreInSnapshot(id) : null
+  const snapshotProds = useMemo(() => (id ? findStoreProductsInSnapshot(id) : []), [id])
   const cachedProds = id ? apiCache.peekExact(`/tiendas/${id}/productos`, productParams) : null
 
   const [tienda, setTienda] = useState(cachedTienda)
-  const [productos, setProductos] = useState(() => cachedProds?.content || [])
+  const [productos, setProductos] = useState(() => cachedProds?.content || snapshotProds.slice(0, 12))
   const [cargandoTienda, setCargandoTienda] = useState(!cachedTienda)
-  const [cargandoProductos, setCargandoProductos] = useState(!cachedProds)
-  const [totalPaginas, setTotalPaginas] = useState(() => cachedProds?.totalPages || 0)
-  const [totalElementos, setTotalElementos] = useState(() => cachedProds?.totalElements || 0)
+  const [cargandoProductos, setCargandoProductos] = useState(!cachedProds && snapshotProds.length === 0)
+  const [totalPaginas, setTotalPaginas] = useState(() => cachedProds?.totalPages || Math.ceil(snapshotProds.length / 12))
+  const [totalElementos, setTotalElementos] = useState(() => cachedProds?.totalElements || snapshotProds.length)
   const [copiado, setCopiado] = useState(false)
 
   // Cargar datos de la tienda en paralelo (sin bloquear la carga de productos)
@@ -73,7 +75,7 @@ export const VitrinaTienda = () => {
   }, [id, productParams])
 
   const cargarTienda = async () => {
-    const cached = id ? apiCache.peekExact(`/tiendas/${id}`) : null
+    const cached = id ? apiCache.peekExact(`/tiendas/${id}`) || findStoreInSnapshot(id) : null
     if (cached) {
       setTienda(cached)
       setCargandoTienda(false)
@@ -98,17 +100,38 @@ export const VitrinaTienda = () => {
       setTotalPaginas(cached.totalPages || 0)
       setTotalElementos(cached.totalElements || 0)
       setCargandoProductos(false)
+    } else if (snapshotProds.length > 0) {
+      let filtered = [...snapshotProds]
+      if (marcaSeleccionada) {
+        filtered = filtered.filter((p) => String(p.marca || '').toLowerCase() === marcaSeleccionada.toLowerCase())
+      }
+      if (busqueda.trim()) {
+        const q = busqueda.trim().toLowerCase()
+        filtered = filtered.filter(
+          (p) =>
+            String(p.titulo || '').toLowerCase().includes(q) ||
+            String(p.descripcion || '').toLowerCase().includes(q) ||
+            String(p.marca || '').toLowerCase().includes(q)
+        )
+      }
+      const start = pagina * 12
+      setProductos(filtered.slice(start, start + 12))
+      setTotalPaginas(Math.ceil(filtered.length / 12) || 0)
+      setTotalElementos(filtered.length)
+      setCargandoProductos(false)
     } else {
       setCargandoProductos(true)
     }
     try {
       const data = await tiendaService.obtenerProductosTienda(id, productParams)
-      setProductos(data.content || [])
-      setTotalPaginas(data.totalPages || 0)
-      setTotalElementos(data.totalElements || 0)
+      if (data && Array.isArray(data.content) && data.content.length > 0) {
+        setProductos(data.content)
+        setTotalPaginas(data.totalPages || 0)
+        setTotalElementos(data.totalElements || 0)
+      }
     } catch (err) {
       console.error('Error al cargar productos de la tienda:', err)
-      if (!cached) setProductos([])
+      if (!cached && snapshotProds.length === 0) setProductos([])
     } finally {
       setCargandoProductos(false)
     }

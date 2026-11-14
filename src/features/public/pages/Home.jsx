@@ -10,6 +10,14 @@ import { useLanguage } from '@/hooks/useLanguage'
 import { apiCache } from '@/utils/apiCache'
 import { getMediaUrl } from '@/utils/constants'
 import { sortCategoriesHierarchically } from '@/utils/categoryUtils'
+import {
+  getSnapshotManualProducts,
+  getSnapshotManualStores,
+  getSnapshotCategories,
+  isManualProduct,
+  isManualStore,
+  getPlanWeight,
+} from '@/utils/catalogSnapshotHelper'
 import Spinner from '@/components/common/Spinner'
 
 // Componentes del diseño Showcase Bento 2026
@@ -32,27 +40,13 @@ import {
   ArrowUpRight
 } from 'lucide-react'
 
-// Prioridad de membresía comercial garantizada: ELITE > PRO > STARTER
-const getPlanWeight = (prod, tiendasList) => {
-  let s = (prod?.vendedor?.tipoSuscripcion || prod?.vendedor?.plan || '').toUpperCase()
-  if (!s && (prod?.vendedor?.id || prod?.vendedorId) && Array.isArray(tiendasList)) {
-    const vId = prod?.vendedor?.id || prod?.vendedorId
-    const match = tiendasList.find((item) => String(item.id) === String(vId))
-    if (match) s = (match.tipoSuscripcion || match.plan || '').toUpperCase()
-  }
-  if (s === 'ELITE') return 3
-  if (s === 'PRO') return 2
-  return 1
-}
-
-const buildUnifiedProductPool = (dest, listaGeneral, masVend, nuev, tiendasList) => {
-  return [
-    ...(Array.isArray(dest) ? dest : []),
-    ...(Array.isArray(listaGeneral) ? listaGeneral : []),
-    ...(Array.isArray(masVend) ? masVend : []),
-    ...(Array.isArray(nuev) ? nuev : [])
+const buildUnifiedManualProductPool = (manualBase, nuevLive, tiendasList) => {
+  const combined = [
+    ...(Array.isArray(nuevLive) ? nuevLive.filter(isManualProduct) : []),
+    ...(Array.isArray(manualBase) ? manualBase.filter(isManualProduct) : []),
   ]
-    .filter((p, idx, arr) => p && p.id && arr.findIndex((item) => item.id === p.id) === idx)
+  return combined
+    .filter((p, idx, arr) => p && p.id && arr.findIndex((item) => Number(item.id) === Number(p.id)) === idx)
     .sort((a, b) => {
       const wB = getPlanWeight(b, tiendasList)
       const wA = getPlanWeight(a, tiendasList)
@@ -63,31 +57,35 @@ const buildUnifiedProductPool = (dest, listaGeneral, masVend, nuev, tiendasList)
 }
 
 export const Home = () => {
-  const cachedDest = apiCache.peekExact('/productos/destacados')
   const cachedNuev = apiCache.peekExact('/productos/nuevos')
-  const cachedMasV = apiCache.peekExact('/productos/mas-vendidos')
   const cachedTiendas = apiCache.peekExact('/tiendas')
   const cachedCats = apiCache.peekExact('/categorias/todas') || apiCache.peekExact('/categorias')
-  const cachedAllProds = apiCache.peekExact('/productos', { tamano: 50 })
-  const cachedEliteProds = apiCache.peekExact('/productos', { soloElite: true, tamano: 12 })
 
-  const initialTiendas = Array.isArray(cachedTiendas) ? cachedTiendas : []
-  const initialPool = buildUnifiedProductPool(
-    cachedDest,
-    cachedAllProds?.content,
-    cachedMasV,
-    cachedNuev,
-    initialTiendas
+  const baseManualStores = getSnapshotManualStores()
+  const baseManualProducts = getSnapshotManualProducts()
+  const baseCategories = getSnapshotCategories()
+
+  const initialTiendas =
+    Array.isArray(cachedTiendas) && cachedTiendas.filter(isManualStore).length > 0
+      ? cachedTiendas.filter(isManualStore)
+      : baseManualStores
+
+  const initialPool = buildUnifiedManualProductPool(baseManualProducts, cachedNuev, initialTiendas)
+  const initialNuevos = [...initialPool].sort((a, b) => (Number(b.id) || 0) - (Number(a.id) || 0)).slice(0, 8)
+  const initialMasVendidos = [...initialPool].sort((a, b) => (b.totalVentas || 0) - (a.totalVentas || 0))
+  const initialElite = initialPool.filter(
+    (p) => String(p?.vendedor?.tipoSuscripcion || p?.vendedor?.plan || '').toUpperCase() === 'ELITE'
   )
-  const tieneCachePrevia = initialPool.length > 0
 
   const [destacados, setDestacados] = useState(() => initialPool)
-  const [nuevos, setNuevos] = useState(() => (Array.isArray(cachedNuev) && cachedNuev.length > 0 ? cachedNuev : initialPool.slice(0, 8)))
-  const [masVendidos, setMasVendidos] = useState(() => (Array.isArray(cachedMasV) && cachedMasV.length > 0 ? cachedMasV : initialPool))
-  const [productosElite, setProductosElite] = useState(() => (Array.isArray(cachedEliteProds?.content) ? cachedEliteProds.content : []))
+  const [nuevos, setNuevos] = useState(() => initialNuevos)
+  const [masVendidos, setMasVendidos] = useState(() => initialMasVendidos)
+  const [productosElite, setProductosElite] = useState(() => (initialElite.length > 0 ? initialElite : initialPool))
   const [tiendas, setTiendas] = useState(() => initialTiendas)
-  const [categorias, setCategorias] = useState(() => (Array.isArray(cachedCats) ? sortCategoriesHierarchically(cachedCats) : []))
-  const [loading, setLoading] = useState(!tieneCachePrevia)
+  const [categorias, setCategorias] = useState(() =>
+    sortCategoriesHierarchically(Array.isArray(cachedCats) && cachedCats.length > 0 ? cachedCats : baseCategories)
+  )
+  const [loading, setLoading] = useState(false)
   const [productoContacto, setProductoContacto] = useState(null)
   const [failedStoreMedia, setFailedStoreMedia] = useState({})
 
@@ -104,7 +102,8 @@ export const Home = () => {
 
   const isEn = idioma === 'EN'
 
-  const tiendasMostradas = tiendas
+  // Exclusivamente las tiendas manuales creadas por el usuario en el Home
+  const tiendasMostradas = tiendas.filter(isManualStore)
 
   // Portadas por defecto para las tiendas oficiales que no hayan subido portada
   const coverDefaults = [
@@ -116,41 +115,48 @@ export const Home = () => {
   ]
 
   useEffect(() => {
+    let activo = true
     const cargarDatos = async () => {
       try {
-        const [dest, nuev, masVend, tiendasData, catsData, allProdsData, eliteData] = await Promise.all([
-          productoService.obtenerDestacados().catch(() => []),
+        const [nuev, tiendasData, catsData] = await Promise.all([
           productoService.obtenerNuevos().catch(() => []),
-          productoService.obtenerMasVendidos().catch(() => []),
-          tiendaService.listarTiendas({ forceRefresh: true }).catch(() => initialTiendas),
+          tiendaService.listarTiendas().catch(() => initialTiendas),
           productoService
             .listarTodasCategorias()
-            .catch(() => productoService.listarCategorias().catch(() => [])),
-          productoService.listar({ tamano: 50 }).catch(() => ({ content: [] })),
-          productoService.listar({ soloElite: true, tamano: 12 }).catch(() => ({ content: [] }))
+            .catch(() => productoService.listarCategorias().catch(() => baseCategories)),
         ])
-        const listaGeneral = allProdsData?.content || []
-        const listaElite = eliteData?.content || []
-        setProductosElite(listaElite)
+        if (!activo) return
 
-        const poolCompleto = buildUnifiedProductPool(dest, listaGeneral, masVend, nuev, tiendasData)
+        const tiendasManuales =
+          Array.isArray(tiendasData) && tiendasData.filter(isManualStore).length > 0
+            ? tiendasData.filter(isManualStore)
+            : baseManualStores
 
-        setDestacados(poolCompleto)
-        setNuevos(nuev && nuev.length > 0 ? nuev : poolCompleto.slice(0, 8))
-        
-        const listaVendidos = (masVend && masVend.length > 0)
-          ? [...masVend].sort((a, b) => (b.totalVentas || 0) - (a.totalVentas || 0))
-          : [...poolCompleto].sort((a, b) => (b.totalVentas || 0) - (a.totalVentas || 0))
-        setMasVendidos(listaVendidos)
-        setTiendas(tiendasData || [])
-        setCategorias(sortCategoriesHierarchically(catsData || []))
+        const poolManual = buildUnifiedManualProductPool(baseManualProducts, nuev, tiendasManuales)
+        const eliteManual = poolManual.filter(
+          (p) => String(p?.vendedor?.tipoSuscripcion || p?.vendedor?.plan || '').toUpperCase() === 'ELITE'
+        )
+        const nuevosManual = [...poolManual].sort((a, b) => (Number(b.id) || 0) - (Number(a.id) || 0)).slice(0, 8)
+        const vendidosManual = [...poolManual].sort((a, b) => (b.totalVentas || 0) - (a.totalVentas || 0))
+
+        setDestacados(poolManual)
+        setNuevos(nuevosManual)
+        setMasVendidos(vendidosManual)
+        setProductosElite(eliteManual.length > 0 ? eliteManual : poolManual)
+        setTiendas(tiendasManuales)
+        if (Array.isArray(catsData) && catsData.length > 0) {
+          setCategorias(sortCategoriesHierarchically(catsData))
+        }
       } catch (err) {
         console.error('Error cargando datos del home:', err)
       } finally {
-        setLoading(false)
+        if (activo) setLoading(false)
       }
     }
     cargarDatos()
+    return () => {
+      activo = false
+    }
   }, [])
 
   // Pantalla de carga hasta que respondan los artículos reales (solo si no hay caché previa)
@@ -300,9 +306,9 @@ export const Home = () => {
               </button>
             </div>
 
-            {/* Cuadrícula limpia de tiendas destacadas (sin scrollbar) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              {tiendasMostradas.slice(0, 4).map((tItem, idx) => {
+            {/* Cuadrícula limpia de tiendas destacadas (las 6 tiendas manuales del usuario) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {tiendasMostradas.slice(0, 6).map((tItem, idx) => {
                 const defaultCover = coverDefaults[idx % coverDefaults.length]
                 const rawCover = tItem.portadaUrl || tItem.bannerUrl || ''
                 const resolvedCover = getMediaUrl(rawCover, defaultCover) || defaultCover

@@ -9,6 +9,7 @@ import {
   translateCategoryName,
 } from '@/utils/categoryUtils'
 import { useLanguage } from '@/hooks/useLanguage'
+import { getSnapshotCategories } from '@/utils/catalogSnapshotHelper'
 import Spinner from '@/components/common/Spinner'
 import EmptyState from '@/components/common/EmptyState'
 import {
@@ -41,7 +42,7 @@ const ICON_MAP = {
 }
 
 export const DirectorioCategorias = () => {
-  const cachedCats = apiCache.peekData('/categorias/todas') || apiCache.peekData('/categorias')
+  const cachedCats = apiCache.peekData('/categorias/todas') || apiCache.peekData('/categorias') || getSnapshotCategories()
   const [categorias, setCategorias] = useState(() => (Array.isArray(cachedCats) ? cachedCats : []))
   const [cargando, setCargando] = useState(!cachedCats || cachedCats.length === 0)
   const [busqueda, setBusqueda] = useState('')

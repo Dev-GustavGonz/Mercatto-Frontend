@@ -7,9 +7,10 @@ import Spinner from '@/components/common/Spinner'
 import EmptyState from '@/components/common/EmptyState'
 import { getMediaUrl } from '@/utils/constants'
 import { useLanguage } from '@/hooks/useLanguage'
+import { getSnapshotAllStores, isManualStore } from '@/utils/catalogSnapshotHelper'
 
 export const DirectorioTiendas = () => {
-  const cachedTiendas = apiCache.peekExact('/tiendas')
+  const cachedTiendas = apiCache.peekExact('/tiendas') || getSnapshotAllStores()
   const cachedMarcas = apiCache.peekExact('/tiendas/marcas')
   const tieneCache = Boolean(cachedTiendas && cachedTiendas.length > 0)
 
@@ -81,8 +82,8 @@ export const DirectorioTiendas = () => {
     return coincideTexto && coincideMarca && coincidePlan
   }).sort((a, b) => {
     // 1. REGLA SUPREMA: Tiendas reales registradas SIEMPRE PRIMERO; dataset demo de feria al final
-    const aManual = !a.demo
-    const bManual = !b.demo
+    const aManual = isManualStore(a)
+    const bManual = isManualStore(b)
     if (aManual !== bManual) {
       return aManual ? -1 : 1
     }

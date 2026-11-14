@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/useToast'
 import { useFavorites } from '@/hooks/useFavorites'
 import { useLanguage } from '@/hooks/useLanguage'
 import { translateCategoryName } from '@/utils/categoryUtils'
+import { findProductInSnapshot } from '@/utils/catalogSnapshotHelper'
 import ProductImages from '../components/ProductImages'
 import ProductVariants from '../components/ProductVariants'
 import PriceDisplay from '../components/PriceDisplay'
@@ -20,7 +21,7 @@ import Spinner from '@/components/common/Spinner'
 import { ShoppingBag, Heart, MessageSquare, Store, ShieldCheck, Truck, RefreshCw, ChevronRight, CheckCircle2, Crown } from 'lucide-react'
 
 export const DetalleProducto = () => {
-  const { id } = useParams(); const location = useLocation(); const initialCached = (id && (!isNaN(id) ? apiCache.peekExact(`/productos/${id}`) : apiCache.peekExact(`/productos/slug/${id}`))) || location.state?.productoPreview || (id && !isNaN(id) ? apiCache.findProductById(id) : null)
+  const { id } = useParams(); const location = useLocation(); const initialCached = (id && (!isNaN(id) ? apiCache.peekExact(`/productos/${id}`) : apiCache.peekExact(`/productos/slug/${id}`))) || location.state?.productoPreview || (id && !isNaN(id) ? apiCache.findProductById(id) : null) || findProductInSnapshot(id)
   const [producto, setProducto] = useState(initialCached)
   const [loading, setLoading] = useState(!initialCached)
   const [varianteSeleccionada, setVarianteSeleccionada] = useState(() => (initialCached?.variantes?.length > 0 ? initialCached.variantes[0] : null))
@@ -37,7 +38,7 @@ export const DetalleProducto = () => {
   const [errorCarga, setErrorCarga] = useState(false)
 
   useEffect(() => {
-    const cached = (id && (!isNaN(id) ? apiCache.peekExact(`/productos/${id}`) : apiCache.peekExact(`/productos/slug/${id}`))) || location.state?.productoPreview || (id && !isNaN(id) ? apiCache.findProductById(id) : null)
+    const cached = (id && (!isNaN(id) ? apiCache.peekExact(`/productos/${id}`) : apiCache.peekExact(`/productos/slug/${id}`))) || location.state?.productoPreview || (id && !isNaN(id) ? apiCache.findProductById(id) : null) || findProductInSnapshot(id)
     if (cached) {
       setProducto(cached)
       setVarianteSeleccionada(cached.variantes?.length > 0 ? cached.variantes[0] : null)

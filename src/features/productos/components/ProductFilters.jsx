@@ -6,6 +6,7 @@ import { Filter, RotateCcw, Tag, Layers, ChevronDown, ChevronUp, Crown } from 'l
 import { useLanguage } from '@/hooks/useLanguage'
 import { sortCategoriesHierarchically, translateCategoryName } from '@/utils/categoryUtils'
 import { apiCache } from '@/utils/apiCache'
+import { getSnapshotCategories } from '@/utils/catalogSnapshotHelper'
 
 export const ProductFilters = ({
   selectedCategory,
@@ -21,7 +22,7 @@ export const ProductFilters = ({
   onReset,
 }) => {
   const [categorias, setCategorias] = useState(
-    () => apiCache.peekData('/categorias/todas') || apiCache.peekData('/categorias') || []
+    () => apiCache.peekData('/categorias/todas') || apiCache.peekData('/categorias') || getSnapshotCategories()
   )
   const [marcas, setMarcas] = useState(() => apiCache.peekData('/tiendas/marcas') || [])
   const [precioMin, setPrecioMin] = useState(priceRange.min || '')
