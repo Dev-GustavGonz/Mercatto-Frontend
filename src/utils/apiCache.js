@@ -11,8 +11,8 @@
  * 5. Invalida automáticamente la caché ante operaciones de mutación (POST, PUT, PATCH, DELETE).
  */
 
-const STORAGE_PREFIX = 'mercatto_cache:v3:'
-const MAX_STALE_AGE = 24 * 60 * 60 * 1000 // Permitir datos en caché de hasta 24 horas como fallback instantáneo
+const STORAGE_PREFIX = 'mercatto_cache:v5:'
+const MAX_STALE_AGE = 5 * 60 * 1000 // Máximo 5 minutos de caché persistente para evitar datos obsoletos tras cambios en BD
 
 class ApiCacheManager {
   constructor() {

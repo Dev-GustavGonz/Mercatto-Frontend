@@ -36,7 +36,7 @@ export const ProductFilters = ({
       .catch(() => {
         productoService.listarCategorias().then((data) => setCategorias(data || [])).catch(() => {})
       })
-    tiendaService.listarMarcas().then((data) => setMarcas(data || [])).catch(() => {})
+    tiendaService.listarMarcas({ forceRefresh: true }).then((data) => setMarcas(data || [])).catch(() => {})
   }, [])
 
   const categoriasOrdenadas = useMemo(() => sortCategoriesHierarchically(categorias), [categorias])

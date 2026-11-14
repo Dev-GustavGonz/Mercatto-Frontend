@@ -41,8 +41,8 @@ export const DirectorioTiendas = () => {
         apiCache.invalidateByPrefix('/tiendas')
       }
       const [tiendasData, marcasData] = await Promise.all([
-        tiendaService.listarTiendas(force ? { noCache: true } : {}),
-        tiendaService.listarMarcas(force ? { noCache: true } : {}),
+        tiendaService.listarTiendas(force ? { noCache: true } : { forceRefresh: true }),
+        tiendaService.listarMarcas(force ? { noCache: true } : { forceRefresh: true }),
       ])
       setTiendas(tiendasData || [])
       setMarcas(marcasData || [])
@@ -80,9 +80,9 @@ export const DirectorioTiendas = () => {
 
     return coincideTexto && coincideMarca && coincidePlan
   }).sort((a, b) => {
-    // 1. REGLA SUPREMA: Tiendas manuales registradas (ID < 5000) SIEMPRE PRIMERO
-    const aManual = a.id && a.id < 5000
-    const bManual = b.id && b.id < 5000
+    // 1. REGLA SUPREMA: Tiendas reales registradas SIEMPRE PRIMERO; dataset demo de feria al final
+    const aManual = !a.demo
+    const bManual = !b.demo
     if (aManual !== bManual) {
       return aManual ? -1 : 1
     }

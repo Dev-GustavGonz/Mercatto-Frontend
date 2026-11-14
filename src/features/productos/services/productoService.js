@@ -1,8 +1,8 @@
 import api from '@/utils/api'
 
 export const productoService = {
-  listar: async (params = {}) => {
-    const res = await api.get('/productos', { params })
+  listar: async (params = {}, config = {}) => {
+    const res = await api.get('/productos', { forceRefresh: true, ...config, params })
     return res.data
   },
 
